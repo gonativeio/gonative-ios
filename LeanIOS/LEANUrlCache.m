@@ -1,0 +1,90 @@
+//
+//  LEANUrlCache.m
+//  GoNativeIOS
+//
+//  Created by Weiyin He on 6/4/14.
+//  Copyright (c) 2014 The Lean App. All rights reserved.
+//
+
+#import "LEANUrlCache.h"
+#import <zipzap.h>
+
+@interface LEANUrlCache ()
+@property ZZArchive *cacheFile;
+@property id manifest;
+@property NSMutableDictionary *urlsToManifest;
+@property NSMutableDictionary *filesToEntries;
+@end
+
+@implementation LEANUrlCache
+
+- (id)initWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity diskPath:(NSString *)path
+{
+    self = [super initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:path];
+    if (self) {
+        NSURL *path = [[NSBundle mainBundle] URLForResource:@"localCache" withExtension:@"zip"];
+        
+        self.cacheFile = [ZZArchive archiveWithContentsOfURL:path];
+        self.filesToEntries = [[NSMutableDictionary alloc] init];
+        
+        for (ZZArchiveEntry *entry in self.cacheFile.entries) {
+            [self.filesToEntries setObject:entry forKey:entry.fileName];
+            
+            if ([entry.fileName isEqualToString:@"manifest.json"]) {
+                NSInputStream *inputStream = [entry newStreamWithError:nil];
+                [inputStream open];
+                self.manifest = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:nil];
+                [inputStream close];
+            }
+        }
+        
+        // process
+        if (self.manifest) {
+            self.urlsToManifest = [[NSMutableDictionary alloc] init];
+            for (id file in self.manifest[@"files"]) {
+                NSString *temp = [LEANUrlCache urlWithoutProtocol:file[@"url"]];
+                [self.urlsToManifest setObject:file forKey:temp];
+            }
+        }
+    }
+    
+    return self;
+}
+
+- (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request
+{
+    NSString *urlString = [LEANUrlCache urlWithoutProtocol:[[request URL] absoluteString]];
+    id cached = self.urlsToManifest[urlString];
+    if (cached) {
+        NSString *internalPath = cached[@"path"];
+        ZZArchiveEntry *entry = self.filesToEntries[internalPath];
+        if (entry) {
+            NSError *zipError;
+            NSData *data = [entry newDataWithError:&zipError];
+            
+            if (!zipError) {
+                NSString *mimeType = cached[@"mimetype"];
+                NSURLResponse *response = [[NSURLResponse alloc] initWithURL:[request URL] MIMEType:mimeType expectedContentLength:entry.uncompressedSize textEncodingName:nil];
+                NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:data];
+
+                return cachedResponse;
+            }
+        }
+
+    }
+    
+    return [super cachedResponseForRequest:request];
+}
+
++ (NSString*)urlWithoutProtocol:(NSString*)url
+{
+    NSRange loc = [url rangeOfString:@":"];
+    if (loc.location == NSNotFound) {
+        return url;
+    } else {
+        return [url substringFromIndex:loc.location+1];
+    }
+    
+}
+
+@end
