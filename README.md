@@ -5,7 +5,7 @@ This is the native IOS code used by https://www.gonative.io/. It allows the crea
 
 How to use
 ------------
-Open project in Xcode. Edit appConfig.plist as appropriate.
+Open project in Xcode. Edit appConfig.json as appropriate.
 
 License
 ------------
