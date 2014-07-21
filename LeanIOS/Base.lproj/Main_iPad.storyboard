@@ -43,7 +43,7 @@
         <!--Web View Controller-->
         <scene sceneID="Hbt-aL-W6F">
             <objects>
-                <viewController id="pAT-cy-F4U" customClass="LEANWebViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="webviewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pAT-cy-F4U" customClass="LEANWebViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="gx9-2G-kbI"/>
                         <viewControllerLayoutGuide type="bottom" id="L07-3g-3A1"/>
@@ -92,21 +92,13 @@
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="3tr-CU-uQt">
-                        <barButtonItem key="backBarButtonItem" title="Back" id="YcT-i7-tao"/>
-                        <barButtonItem key="leftBarButtonItem" image="navImage" id="Hqh-Vl-ByX">
-                            <connections>
-                                <action selector="showMenu" destination="pAT-cy-F4U" id="aSB-B1-Y4A"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="3tr-CU-uQt"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="activityIndicator" destination="wds-Gg-MEa" id="sJh-vB-OGX"/>
                         <outlet property="backButton" destination="UjW-2C-rfn" id="MYB-v0-o29"/>
                         <outlet property="forwardButton" destination="Sd5-cj-rGv" id="nD9-S3-6ds"/>
                         <outlet property="nav" destination="3tr-CU-uQt" id="UJr-xe-s8e"/>
-                        <outlet property="navButton" destination="Hqh-Vl-ByX" id="RgN-F6-UKO"/>
                         <outlet property="webview" destination="rxx-zW-qRM" id="PhJ-68-HOh"/>
                     </connections>
                 </viewController>
@@ -176,7 +168,6 @@
     </scenes>
     <resources>
         <image name="leftImage" width="36" height="36"/>
-        <image name="navImage" width="36" height="36"/>
         <image name="rightImage" width="36" height="36"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

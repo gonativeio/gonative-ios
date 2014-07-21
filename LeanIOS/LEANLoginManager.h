@@ -12,6 +12,7 @@ static NSString *kLEANLoginManagerNotificationName = @"io.gonative.ios.LoginMana
 
 @interface LEANLoginManager : NSObject
 @property BOOL loggedIn;
+@property NSString *loginStatus;
 
 // singleton
 +(LEANLoginManager*)sharedManager;

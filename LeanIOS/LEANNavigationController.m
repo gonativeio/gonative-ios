@@ -20,14 +20,16 @@
 {
     [super viewDidLoad];
     
+    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    
     // set title text color
-    if ([[LEANAppConfig sharedAppConfig][@"checkCustomStyling"] boolValue]) {
+    if ([appConfig[@"checkCustomStyling"] boolValue] && appConfig.titleTextColor) {
         self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [LEANAppConfig sharedAppConfig].titleTextColor};
     }
 
     // recognize swipe from left edge
     
-    if ([[LEANAppConfig sharedAppConfig][@"checkNativeNav"] boolValue]) {
+    if ([appConfig[@"checkNativeNav"] boolValue]) {
         UIScreenEdgePanGestureRecognizer *r = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
         r.edges = UIRectEdgeLeft;
         [self.view addGestureRecognizer:r];

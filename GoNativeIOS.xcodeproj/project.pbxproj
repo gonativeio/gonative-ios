@@ -23,7 +23,6 @@
 		2002B4C018A9991300495B3D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
 		2002B4C818A9991300495B3D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4C618A9991300495B3D /* InfoPlist.strings */; };
 		2002B4CA18A9991300495B3D /* LeanIOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4C918A9991300495B3D /* LeanIOSTests.m */; };
-		2002B4D418A9999100495B3D /* appConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4D318A9999100495B3D /* appConfig.plist */; };
 		2002B4D718A99A0A00495B3D /* LEANAppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4D618A99A0A00495B3D /* LEANAppConfig.m */; };
 		2002B4E518A99A9900495B3D /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4DA18A99A9900495B3D /* RECommonFunctions.m */; };
 		2002B4E618A99A9900495B3D /* REFrostedContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4DC18A99A9900495B3D /* REFrostedContainerViewController.m */; };
@@ -36,8 +35,6 @@
 		2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4F518A99C4100495B3D /* LEANRootViewController.m */; };
 		2002B4FC18A99C4100495B3D /* LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4F718A99C4100495B3D /* LEANUtilities.m */; };
 		2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */; };
-		2003418518FEFC2C003B3F2C /* menu_default.json in Resources */ = {isa = PBXBuildFile; fileRef = 2003418318FEFC2C003B3F2C /* menu_default.json */; };
-		2003418618FEFC2C003B3F2C /* menu_loggedin.json in Resources */ = {isa = PBXBuildFile; fileRef = 2003418418FEFC2C003B3F2C /* menu_loggedin.json */; };
 		2004820518B080DD005FDD9A /* HeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2004820418B080DD005FDD9A /* HeaderView.xib */; };
 		2004AF7B18F8F936001E01E9 /* LEANWebViewIntercept.m in Sources */ = {isa = PBXBuildFile; fileRef = 2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */; };
 		20054BD318B6891E00A422F9 /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20054BD218B6891E00A422F9 /* GoogleCast.framework */; };
@@ -46,10 +43,10 @@
 		2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE941907671A00EC4311 /* LEANUrlInspector.m */; };
 		20191C4419231A0900BF1549 /* LEANSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20191C4319231A0900BF1549 /* LEANSettingsController.m */; };
 		20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 20191C461923DF6400BF1549 /* LEANProfilePicker.m */; };
+		202B4D5219510F640099821E /* TextAreaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D5119510F640099821E /* TextAreaView.xib */; };
+		202B4D56195122FD0099821E /* DateCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D55195122FD0099821E /* DateCellView.xib */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
-		207170B018C13F7A002EBDD0 /* login_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 207170AF18C13F7A002EBDD0 /* login_config.json */; };
-		207170B218C1441F002EBDD0 /* signup_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 207170B118C1441F002EBDD0 /* signup_config.json */; };
 		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
 		207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C218C2E8B3002EBDD0 /* TextCellView.xib */; };
 		207170C518C2F0CF002EBDD0 /* PasswordCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C418C2F0CF002EBDD0 /* PasswordCellView.xib */; };
@@ -57,7 +54,10 @@
 		207170CB18C3A376002EBDD0 /* ListCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170CA18C3A376002EBDD0 /* ListCellView.xib */; };
 		2089662718AC6753007FC34F /* LEANLoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2089662618AC6753007FC34F /* LEANLoginManager.m */; };
 		208A9F42191AEBAD0049E664 /* appConfig.json in Resources */ = {isa = PBXBuildFile; fileRef = 208A9F41191AEBAD0049E664 /* appConfig.json */; };
-		20938E4E18E22DE100DA5D1C /* appConfig.plist.enc in Resources */ = {isa = PBXBuildFile; fileRef = 20938E4D18E22DE100DA5D1C /* appConfig.plist.enc */; };
+		209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 209B3218193FA36F0052A7C6 /* LEANUrlCache.m */; };
+		209B321D193FB11A0052A7C6 /* localCache.zip in Resources */ = {isa = PBXBuildFile; fileRef = 209B321C193FB11A0052A7C6 /* localCache.zip */; };
+		209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B3307193FC4CE0052A7C6 /* libzipzap.a */; settings = {ATTRIBUTES = (Required, ); }; };
+		209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B330A193FC5BD0052A7C6 /* libz.dylib */; };
 		20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A13A9519058A5600B997DD /* LEANCustomAction.m */; };
 		20A13A9819058AA200B997DD /* LoginHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13A9719058AA200B997DD /* LoginHeaderView.xib */; };
 		20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AA71905A43C00B997DD /* MenuGroupIcon.xib */; };
@@ -69,6 +69,7 @@
 		20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AB71905DFFC00B997DD /* MenuGroupNoIcon.xib */; };
 		20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */; };
 		20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20DE147F18F103850083F46A /* ForgotPasswordView.xib */; };
+		20EA5523194FE7900039735B /* LEANPushManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20EA5522194FE7900039735B /* LEANPushManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,7 +104,6 @@
 		2002B4C518A9991300495B3D /* GoNativeIOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoNativeIOSTests-Info.plist"; sourceTree = "<group>"; };
 		2002B4C718A9991300495B3D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2002B4C918A9991300495B3D /* LeanIOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LeanIOSTests.m; sourceTree = "<group>"; };
-		2002B4D318A9999100495B3D /* appConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = appConfig.plist; sourceTree = "<group>"; };
 		2002B4D518A99A0A00495B3D /* LEANAppConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANAppConfig.h; sourceTree = "<group>"; };
 		2002B4D618A99A0A00495B3D /* LEANAppConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANAppConfig.m; sourceTree = "<group>"; };
 		2002B4D918A99A9900495B3D /* RECommonFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RECommonFunctions.h; sourceTree = "<group>"; };
@@ -127,8 +127,6 @@
 		2002B4F618A99C4100495B3D /* LEANUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANUtilities.h; sourceTree = "<group>"; };
 		2002B4F718A99C4100495B3D /* LEANUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUtilities.m; sourceTree = "<group>"; };
 		2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "jquery-2.1.0.min.js"; sourceTree = "<group>"; };
-		2003418318FEFC2C003B3F2C /* menu_default.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = menu_default.json; sourceTree = "<group>"; };
-		2003418418FEFC2C003B3F2C /* menu_loggedin.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = menu_loggedin.json; sourceTree = "<group>"; };
 		2004820418B080DD005FDD9A /* HeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeaderView.xib; sourceTree = "<group>"; };
 		2004AF7918F8F936001E01E9 /* LEANWebViewIntercept.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewIntercept.h; sourceTree = "<group>"; };
 		2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewIntercept.m; sourceTree = "<group>"; };
@@ -142,12 +140,12 @@
 		20191C4319231A0900BF1549 /* LEANSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANSettingsController.m; sourceTree = "<group>"; };
 		20191C451923DF6400BF1549 /* LEANProfilePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANProfilePicker.h; sourceTree = "<group>"; };
 		20191C461923DF6400BF1549 /* LEANProfilePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANProfilePicker.m; sourceTree = "<group>"; };
+		202B4D5119510F640099821E /* TextAreaView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextAreaView.xib; sourceTree = "<group>"; };
+		202B4D55195122FD0099821E /* DateCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DateCellView.xib; sourceTree = "<group>"; };
 		204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+LEANUtilities.h"; sourceTree = "<group>"; };
 		204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+LEANUtilities.m"; sourceTree = "<group>"; };
 		204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
-		207170AF18C13F7A002EBDD0 /* login_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = login_config.json; sourceTree = "<group>"; };
-		207170B118C1441F002EBDD0 /* signup_config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = signup_config.json; sourceTree = "<group>"; };
 		207170BE18C2E47A002EBDD0 /* LEANWebFormController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebFormController.h; sourceTree = "<group>"; };
 		207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebFormController.m; sourceTree = "<group>"; };
 		207170C218C2E8B3002EBDD0 /* TextCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextCellView.xib; sourceTree = "<group>"; };
@@ -157,7 +155,16 @@
 		2089662518AC6753007FC34F /* LEANLoginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANLoginManager.h; sourceTree = "<group>"; };
 		2089662618AC6753007FC34F /* LEANLoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANLoginManager.m; sourceTree = "<group>"; };
 		208A9F41191AEBAD0049E664 /* appConfig.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = appConfig.json; sourceTree = "<group>"; };
-		20938E4D18E22DE100DA5D1C /* appConfig.plist.enc */ = {isa = PBXFileReference; lastKnownFileType = file; path = appConfig.plist.enc; sourceTree = "<group>"; };
+		209B3217193FA36F0052A7C6 /* LEANUrlCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANUrlCache.h; sourceTree = "<group>"; };
+		209B3218193FA36F0052A7C6 /* LEANUrlCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUrlCache.m; sourceTree = "<group>"; };
+		209B321C193FB11A0052A7C6 /* localCache.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = localCache.zip; sourceTree = "<group>"; };
+		209B3302193FC4CE0052A7C6 /* zipzap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipzap.h; sourceTree = "<group>"; };
+		209B3303193FC4CE0052A7C6 /* ZZArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZArchive.h; sourceTree = "<group>"; };
+		209B3304193FC4CE0052A7C6 /* ZZArchiveEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZArchiveEntry.h; sourceTree = "<group>"; };
+		209B3305193FC4CE0052A7C6 /* ZZConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZConstants.h; sourceTree = "<group>"; };
+		209B3306193FC4CE0052A7C6 /* ZZError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZError.h; sourceTree = "<group>"; };
+		209B3307193FC4CE0052A7C6 /* libzipzap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzipzap.a; sourceTree = "<group>"; };
+		209B330A193FC5BD0052A7C6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		20A13A9419058A5500B997DD /* LEANCustomAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANCustomAction.h; sourceTree = "<group>"; };
 		20A13A9519058A5600B997DD /* LEANCustomAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANCustomAction.m; sourceTree = "<group>"; };
 		20A13A9719058AA200B997DD /* LoginHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginHeaderView.xib; sourceTree = "<group>"; };
@@ -173,6 +180,8 @@
 		20A13AB71905DFFC00B997DD /* MenuGroupNoIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuGroupNoIcon.xib; sourceTree = "<group>"; };
 		20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuChildNoIcon.xib; sourceTree = "<group>"; };
 		20DE147F18F103850083F46A /* ForgotPasswordView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgotPasswordView.xib; sourceTree = "<group>"; };
+		20EA5521194FE7900039735B /* LEANPushManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANPushManager.h; sourceTree = "<group>"; };
+		20EA5522194FE7900039735B /* LEANPushManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANPushManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +189,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */,
+				209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */,
 				20054BD318B6891E00A422F9 /* GoogleCast.framework in Frameworks */,
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
 				2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */,
@@ -203,6 +214,7 @@
 		2002B48F18A9991300495B3D = {
 			isa = PBXGroup;
 			children = (
+				209B32FF193FC4CE0052A7C6 /* lib */,
 				2002B4A118A9991300495B3D /* LeanIOS */,
 				2002B4C318A9991300495B3D /* LeanIOSTests */,
 				2002B49A18A9991300495B3D /* Frameworks */,
@@ -222,6 +234,7 @@
 		2002B49A18A9991300495B3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				209B330A193FC5BD0052A7C6 /* libz.dylib */,
 				20054BD218B6891E00A422F9 /* GoogleCast.framework */,
 				2002B49B18A9991300495B3D /* Foundation.framework */,
 				2002B49D18A9991300495B3D /* CoreGraphics.framework */,
@@ -244,6 +257,8 @@
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				2002B4D518A99A0A00495B3D /* LEANAppConfig.h */,
 				2002B4D618A99A0A00495B3D /* LEANAppConfig.m */,
+				20EA5521194FE7900039735B /* LEANPushManager.h */,
+				20EA5522194FE7900039735B /* LEANPushManager.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
 				2002B4AB18A9991300495B3D /* LEANAppDelegate.m */,
 				20054BD418B68D1E00A422F9 /* LEANCastController.h */,
@@ -258,6 +273,8 @@
 				2002B4F518A99C4100495B3D /* LEANRootViewController.m */,
 				20191C4219231A0900BF1549 /* LEANSettingsController.h */,
 				20191C4319231A0900BF1549 /* LEANSettingsController.m */,
+				209B3217193FA36F0052A7C6 /* LEANUrlCache.h */,
+				209B3218193FA36F0052A7C6 /* LEANUrlCache.m */,
 				2018EE931907671A00EC4311 /* LEANUrlInspector.h */,
 				2018EE941907671A00EC4311 /* LEANUrlInspector.m */,
 				2002B4F618A99C4100495B3D /* LEANUtilities.h */,
@@ -333,13 +350,44 @@
 				207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */,
 				207170C218C2E8B3002EBDD0 /* TextCellView.xib */,
 				20DE147F18F103850083F46A /* ForgotPasswordView.xib */,
+				202B4D55195122FD0099821E /* DateCellView.xib */,
 				207170CA18C3A376002EBDD0 /* ListCellView.xib */,
 				207170C418C2F0CF002EBDD0 /* PasswordCellView.xib */,
 				207170C618C2F250002EBDD0 /* OptionCellView.xib */,
 				200103B218E38AED004EAC71 /* CheckboxView.xib */,
 				200A392419070B1500EFDDD6 /* CheckingLoginView.xib */,
+				202B4D5119510F640099821E /* TextAreaView.xib */,
 			);
 			name = Forms;
+			sourceTree = "<group>";
+		};
+		209B32FF193FC4CE0052A7C6 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				209B3300193FC4CE0052A7C6 /* include */,
+				209B3307193FC4CE0052A7C6 /* libzipzap.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		209B3300193FC4CE0052A7C6 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				209B3301193FC4CE0052A7C6 /* zipzap */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		209B3301193FC4CE0052A7C6 /* zipzap */ = {
+			isa = PBXGroup;
+			children = (
+				209B3302193FC4CE0052A7C6 /* zipzap.h */,
+				209B3303193FC4CE0052A7C6 /* ZZArchive.h */,
+				209B3304193FC4CE0052A7C6 /* ZZArchiveEntry.h */,
+				209B3305193FC4CE0052A7C6 /* ZZConstants.h */,
+				209B3306193FC4CE0052A7C6 /* ZZError.h */,
+			);
+			path = zipzap;
 			sourceTree = "<group>";
 		};
 		20A13AA61905A3EC00B997DD /* Menus */ = {
@@ -375,12 +423,7 @@
 			isa = PBXGroup;
 			children = (
 				208A9F41191AEBAD0049E664 /* appConfig.json */,
-				2002B4D318A9999100495B3D /* appConfig.plist */,
-				20938E4D18E22DE100DA5D1C /* appConfig.plist.enc */,
-				207170AF18C13F7A002EBDD0 /* login_config.json */,
-				207170B118C1441F002EBDD0 /* signup_config.json */,
-				2003418318FEFC2C003B3F2C /* menu_default.json */,
-				2003418418FEFC2C003B3F2C /* menu_loggedin.json */,
+				209B321C193FB11A0052A7C6 /* localCache.zip */,
 			);
 			name = Config;
 			sourceTree = "<group>";
@@ -462,21 +505,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				207170B218C1441F002EBDD0 /* signup_config.json in Resources */,
 				207170CB18C3A376002EBDD0 /* ListCellView.xib in Resources */,
 				2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */,
 				20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */,
 				20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */,
-				207170B018C13F7A002EBDD0 /* login_config.json in Resources */,
 				200A392519070B1500EFDDD6 /* CheckingLoginView.xib in Resources */,
-				2003418518FEFC2C003B3F2C /* menu_default.json in Resources */,
-				2003418618FEFC2C003B3F2C /* menu_loggedin.json in Resources */,
+				202B4D56195122FD0099821E /* DateCellView.xib in Resources */,
 				20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */,
 				2002B4B218A9991300495B3D /* Main_iPad.storyboard in Resources */,
 				200103B318E38AED004EAC71 /* CheckboxView.xib in Resources */,
 				2002B4B718A9991300495B3D /* Images.xcassets in Resources */,
 				20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */,
-				20938E4E18E22DE100DA5D1C /* appConfig.plist.enc in Resources */,
+				209B321D193FB11A0052A7C6 /* localCache.zip in Resources */,
 				208A9F42191AEBAD0049E664 /* appConfig.json in Resources */,
 				2002B4AF18A9991300495B3D /* Main_iPhone.storyboard in Resources */,
 				207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */,
@@ -485,7 +525,7 @@
 				207170C518C2F0CF002EBDD0 /* PasswordCellView.xib in Resources */,
 				20A13AB21905CB6C00B997DD /* FontAwesome.ttf in Resources */,
 				20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */,
-				2002B4D418A9999100495B3D /* appConfig.plist in Resources */,
+				202B4D5219510F640099821E /* TextAreaView.xib in Resources */,
 				20A13A9819058AA200B997DD /* LoginHeaderView.xib in Resources */,
 				207170C718C2F250002EBDD0 /* OptionCellView.xib in Resources */,
 			);
@@ -528,10 +568,12 @@
 				204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */,
 				20A13AB31905CB6C00B997DD /* NSString+FontAwesome.m in Sources */,
 				2002B4A818A9991300495B3D /* main.m in Sources */,
+				20EA5523194FE7900039735B /* LEANPushManager.m in Sources */,
 				2002B4E718A99A9900495B3D /* REFrostedViewController.m in Sources */,
 				2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */,
 				2002B4E818A99A9900495B3D /* UIImage+REFrostedViewController.m in Sources */,
 				2002B4E918A99A9900495B3D /* UIView+REFrostedViewController.m in Sources */,
+				209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */,
 				2002B4F918A99C4100495B3D /* LEANMenuViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -622,6 +664,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"lib/include/**",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -656,6 +703,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"lib/include/**",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -678,6 +730,10 @@
 				GCC_PREFIX_HEADER = "LeanIOS/GoNativeIOS-Prefix.pch";
 				INFOPLIST_FILE = "LeanIOS/GoNativeIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib",
+				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "${TARGET_NAME}";
@@ -701,6 +757,10 @@
 				GCC_PREFIX_HEADER = "LeanIOS/GoNativeIOS-Prefix.pch";
 				INFOPLIST_FILE = "LeanIOS/GoNativeIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib",
+				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "${TARGET_NAME}";

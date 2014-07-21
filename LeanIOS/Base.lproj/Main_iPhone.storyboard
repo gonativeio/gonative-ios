@@ -146,22 +146,13 @@
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" id="3CK-Lb-JmW">
-                        <barButtonItem key="backBarButtonItem" title="Back" id="tjI-jT-dyN"/>
-                        <barButtonItem key="leftBarButtonItem" image="navImage" id="RIO-A4-nyA">
-                            <inset key="imageInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
-                            <connections>
-                                <action selector="showMenu" destination="vXZ-lx-hvc" id="D7x-qS-ZG4"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="3CK-Lb-JmW"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="activityIndicator" destination="vcS-3e-fYP" id="auE-gF-hzy"/>
                         <outlet property="backButton" destination="0CQ-TP-1mv" id="7sm-nK-79X"/>
                         <outlet property="forwardButton" destination="k9E-fy-iJ1" id="Sqc-EU-jlZ"/>
                         <outlet property="nav" destination="3CK-Lb-JmW" id="Fo1-9P-tsj"/>
-                        <outlet property="navButton" destination="RIO-A4-nyA" id="Js5-t0-lXh"/>
                         <outlet property="webview" destination="21Z-2V-MUj" id="EXY-SC-jQg"/>
                         <segue destination="eZY-8R-8cf" kind="push" identifier="settings" id="onY-CN-A8a"/>
                     </connections>
@@ -173,7 +164,6 @@
     </scenes>
     <resources>
         <image name="leftImage" width="36" height="36"/>
-        <image name="navImage" width="36" height="36"/>
         <image name="rightImage" width="36" height="36"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

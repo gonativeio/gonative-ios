@@ -50,8 +50,10 @@
     
     NSURL *url = [LEANAppConfig sharedAppConfig].loginDetectionURL;
     if (!url) {
+        NSLog(@"Warning: trying to check login without a loginDetectionURL");
         self.loggedIn = NO;
-        [self statusUpdated];
+        [self performSelector:@selector(statusUpdated) withObject:self afterDelay:1.0];
+        return;
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -78,11 +80,32 @@
         self.isChecking = NO;
         [connection cancel];
         
+        
+        // iterate through loginDetectionRegexes
+        NSArray *regexes = [LEANAppConfig sharedAppConfig].loginDetectRegexes;
+        NSString *urlString = [self.currentUrl absoluteString];
+        for (NSUInteger i = 0; i < [regexes count]; i++) {
+            NSPredicate *predicate = regexes[i];
+            if ([predicate evaluateWithObject:urlString]) {
+                id entry = [LEANAppConfig sharedAppConfig].loginDetectLocations[i];
+                self.loggedIn = [entry[@"loggedIn"] boolValue];
+                self.loginStatus = entry[@"status"];
+                if (!self.loginStatus) self.loginStatus = self.loggedIn ? @"loggedIn" : @"default";
+                
+                [self statusUpdated];
+                return;
+            }
+        }
+        
+        
+        // old logic if no regex matches
         if ([self.currentUrl matchesPathOf:[LEANAppConfig sharedAppConfig].loginDetectionURLnotloggedin]) {
             self.loggedIn = NO;
+            self.loginStatus = @"default";
         }
         else {
             self.loggedIn = YES;
+            self.loginStatus = @"loggedIn";
         }
         
         [self statusUpdated];

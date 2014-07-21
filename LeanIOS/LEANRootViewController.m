@@ -9,7 +9,7 @@
 #import "LEANRootViewController.h"
 #import "LEANMenuViewController.h"
 #import "LEANAppConfig.h"
-#import "LEANWebFormController.h"
+#import "LEANWebViewController.h"
 
 @interface LEANRootViewController ()
 @property UIInterfaceOrientationMask forcedOrientations;
@@ -41,9 +41,36 @@
     
     // pre-load the menu view
     [self.menuViewController view];
-    
-
 }
+
+- (void)loadUrl:(NSURL *)url
+{
+    UINavigationController *nav = (UINavigationController*)self.contentViewController;
+    UIViewController *topController = nav.topViewController;
+    if ([topController isKindOfClass:[LEANWebViewController class]]) {
+        [((LEANWebViewController*)topController) loadUrl:url];
+    }
+}
+
+- (void)setInitialUrl:(NSURL *)url
+{
+    // designed to be called from push notification
+    UINavigationController *nav = (UINavigationController*)self.contentViewController;
+    for (UIViewController *vc in nav.viewControllers) {
+        if ([vc isKindOfClass:[LEANWebViewController class]]) {
+            ((LEANWebViewController*)vc).initialUrl = url;
+            break;
+        }
+    }
+}
+
+- (BOOL)webviewOnTop
+{
+    return [((UINavigationController*)self.contentViewController).topViewController isKindOfClass:[LEANWebViewController class]];
+}
+
+
+
 
 - (NSUInteger)supportedInterfaceOrientations
 {

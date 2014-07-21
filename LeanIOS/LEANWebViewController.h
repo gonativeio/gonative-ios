@@ -15,6 +15,7 @@
 @property IBOutlet UIWebView* webview;
 @property BOOL checkLoginSignup;
 @property LEANProfilePicker *profilePicker;
+@property NSURL *initialUrl;
 
 - (IBAction) showMenu;
 - (void) loadUrl:(NSURL*) url;

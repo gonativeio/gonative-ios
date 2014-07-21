@@ -11,6 +11,6 @@
 #import "LEANLoginManager.h"
 
 @interface LEANMenuViewController : UITableViewController
-- (void)updateMenu:(BOOL)loggedIn;
+- (void)updateMenuWithStatus:(NSString*)status;
 - (void)showSettings:(BOOL)showSettings;
 @end

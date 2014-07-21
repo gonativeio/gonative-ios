@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface LEANWebFormController : UITableViewController
+@property (nonatomic, weak) UIViewController *originatingViewController;
 
 - (id)initWithJsonResource:(NSString*)jsonRes formUrl:(NSURL*)formUrl errorUrl:(NSURL*)errorUrl title:(NSString*) title isLogin:(BOOL)isLogin;
 
-- (void)loadJsonResource:(NSString*)resource;
+- (id)initWithJsonObject:(id)json;
+
 
 @end

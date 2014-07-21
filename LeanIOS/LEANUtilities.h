@@ -18,4 +18,6 @@
 + (UIColor *)colorFromHexString:(NSString *)hexString;
 + (void)addJqueryToWebView:(UIWebView*)webView;
 +(NSString*)jsWrapString:(NSString*)string;
++(NSString*)capitalizeWords:(NSString*)string;
++(NSString*)getLaunchImageName;
 @end

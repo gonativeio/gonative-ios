@@ -27,15 +27,18 @@
 @property IBOutlet UINavigationItem* nav;
 @property IBOutlet UIBarButtonItem* navButton;
 @property IBOutlet UIActivityIndicatorView *activityIndicator;
+@property NSArray *defaultLeftNavBarItems;
 @property NSArray *defaultToolbarItems;
 @property UIBarButtonItem *customActionButton;
 @property NSArray *customActions;
 @property UIBarButtonItem *searchButton;
 @property UISearchBar *searchBar;
+@property UIView *statusBarBackground;
 
 @property BOOL willBeLandscape;
 
 @property NSURLRequest *currentRequest;
+@property NSInteger urlLevel; // -1 for unknown
 @property NSString *profilePickerJs;
 @property NSTimer *timer;
 @property BOOL startedLoading; // for transitions
@@ -52,17 +55,20 @@
     self.checkLoginSignup = YES;
     
     // push login controller if it should be the first thing shown
-    if ([LEANAppConfig sharedAppConfig].loginIsFirstPage) {
+    if ([LEANAppConfig sharedAppConfig].loginIsFirstPage && [self isRootWebView]) {
         LEANWebFormController *wfc = [[LEANWebFormController alloc]
                                       initWithJsonResource:@"login_config"
                                       formUrl:[LEANAppConfig sharedAppConfig].loginURL
                                       errorUrl:[LEANAppConfig sharedAppConfig].loginURLfail
                                       title:[LEANAppConfig sharedAppConfig][@"appName"] isLogin:YES];
+        wfc.originatingViewController = self;
         [self.navigationController pushViewController:wfc animated:NO];
     }
     
-    // set title
-    self.navigationItem.title = [LEANAppConfig sharedAppConfig][@"appName"];
+    // set title to application title
+    if ([[LEANAppConfig sharedAppConfig].navTitles count] == 0) {
+        self.navigationItem.title = [LEANAppConfig sharedAppConfig][@"appName"];
+    }
     
     // configure zoomability
     self.webview.scalesPageToFit = [LEANAppConfig sharedAppConfig].allowZoom;
@@ -72,12 +78,22 @@
         self.navButton.customView = [[UIView alloc] init];
     }
     
+    // add nav button
+    if ([[LEANAppConfig sharedAppConfig][@"checkNativeNav"] boolValue] &&  [self isRootWebView]) {
+        self.navButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navImage"] style:UIBarButtonItemStyleBordered target:self action:@selector(showMenu)];
+        // hack to space it a bit closer to the left edge
+        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        [negativeSpacer setWidth:-10];
+        
+        self.navigationItem.leftBarButtonItems = @[negativeSpacer, self.navButton];
+    }
+    self.defaultLeftNavBarItems = self.navigationItem.leftBarButtonItems;
+    
     // profile picker
     if ([[LEANAppConfig sharedAppConfig] hasKey:@"profilePickerJS"] && [[LEANAppConfig sharedAppConfig][@"profilePickerJS"] length] > 0) {
         self.profilePickerJs = [LEANAppConfig sharedAppConfig][@"profilePickerJS"];
         self.profilePicker = [[LEANProfilePicker alloc] init];
     }
-    
     
     self.visitedLoginOrSignup = NO;
     
@@ -85,11 +101,21 @@
     self.webview.delegate = self;
     
     // load initial url
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
-    [self loadUrl:appConfig.initialURL];
+    self.urlLevel = -1;
+    if (!self.initialUrl) {
+        LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+        self.initialUrl = appConfig.initialURL;
+    }
+    [self loadUrl:self.initialUrl];
     
-    //    self.webview.scrollView.contentInset = UIEdgeInsetsMake(-60, 0, 0, 0);
+    
     self.webview.scrollView.bounces = NO;
+    
+    // hidden nav bar
+    if (![LEANAppConfig sharedAppConfig].showNavigationBar && [self isRootWebView]) {
+        self.statusBarBackground = [[UINavigationBar alloc] init];
+        [self.view addSubview:self.statusBarBackground];
+    }
     
     if ([LEANAppConfig sharedAppConfig][@"searchTemplateURL"]) {
         self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchPressed:)];
@@ -98,7 +124,7 @@
         self.searchBar.delegate = self;
     }
     
-    [self showNavigationItemButtons];
+    [self showNavigationItemButtonsAnimated:NO];
     [self buildDefaultToobar];
 }
 
@@ -106,8 +132,14 @@
 {
     [super viewWillAppear:animated];
     
-    [self.navigationController setNavigationBarHidden:![LEANAppConfig sharedAppConfig].showNavigationBar animated:YES];
+    if ([self isRootWebView]) {
+        [self.navigationController setNavigationBarHidden:![LEANAppConfig sharedAppConfig].showNavigationBar animated:YES];
+    } else {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
+
 }
+
 
 - (void) buildDefaultToobar
 {
@@ -221,10 +253,10 @@
     [self.searchBar becomeFirstResponder];
 }
 
-- (void) showNavigationItemButtons
+- (void) showNavigationItemButtonsAnimated:(BOOL)animated
 {
-    // left: navigation button
-    [self.navigationItem setLeftBarButtonItem:self.navButton animated:YES];
+    //left
+    [self.navigationItem setLeftBarButtonItems:self.defaultLeftNavBarItems animated:animated];
     
     NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
     
@@ -239,7 +271,7 @@
         [buttons addObject:appDelegate.castController.castButton];
     }
     
-    [self.navigationItem setRightBarButtonItems:buttons animated:YES];
+    [self.navigationItem setRightBarButtonItems:buttons animated:animated];
 }
 
 - (void) sharePage
@@ -263,14 +295,11 @@
     }
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    // load initial page
-    [self loadUrl:[LEANAppConfig sharedAppConfig].initialURL];
+    // load initial page in bottom webview
+    [self.navigationController popToRootViewControllerAnimated:NO];
+    [self.navigationController.viewControllers[0] loadUrl:[LEANAppConfig sharedAppConfig].initialURL];
     
-    [(LEANMenuViewController*)self.frostedViewController.menuViewController updateMenu:NO];
-    
-//    [self.webview stringByEvaluatingJavaScriptFromString:
-//     [NSString stringWithFormat: @"jQuery('a.logout').click();"]];
-
+    [(LEANMenuViewController*)self.frostedViewController.menuViewController updateMenuWithStatus:@"default"];
 }
 
 - (IBAction) showMenu
@@ -280,20 +309,99 @@
 
 - (void) loadUrl:(NSURL *)url
 {
-    [self hideWebview];
     [self.webview loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
 
 - (void) loadRequest:(NSURLRequest*) request
 {
-    [self hideWebview];
     [self.webview loadRequest:request];
 }
 
 - (void) runJavascript:(NSString *) script
 {
     [self.webview stringByEvaluatingJavaScriptFromString:script];
+}
+
+// is this is the first LEANWebViewController in the navigation stack?
+- (BOOL) isRootWebView
+{
+    for (UIViewController *vc in self.navigationController.viewControllers) {
+        if ([vc isKindOfClass:[LEANWebViewController class]]) {
+            return vc == self;
+        }
+    }
+    
+    return NO;
+}
+
++ (NSInteger) urlLevelForUrl:(NSURL*)url;
+{
+    NSArray *entries = [LEANAppConfig sharedAppConfig].navStructureLevels;
+    if (entries) {
+        NSString *urlString = [url absoluteString];
+        for (NSDictionary *entry in entries) {
+            NSPredicate *predicate = entry[@"predicate"];
+            if ([predicate evaluateWithObject:urlString]) {
+                return [entry[@"level"] integerValue];
+            }
+        }
+    }
+
+    // return -1 for unknown
+    return -1;
+}
+
++ (NSString*) titleForUrl:(NSURL*)url
+{
+    NSArray *entries = [LEANAppConfig sharedAppConfig].navTitles;
+    NSString *title;
+    
+    if (entries) {
+        NSString *urlString = [url absoluteString];
+        for (NSDictionary *entry in entries) {
+            NSPredicate *predicate = entry[@"predicate"];
+            if ([predicate evaluateWithObject:urlString]) {
+                if (entry[@"title"]) {
+                    title = entry[@"title"];
+                }
+                
+                if (!title && entry[@"urlRegex"]) {
+                    NSRegularExpression *regex = entry[@"urlRegex"];
+                    NSTextCheckingResult *match = [regex firstMatchInString:urlString options:0 range:NSMakeRange(0, [urlString length])];
+                    if ([match range].location != NSNotFound) {
+                        NSString *temp = [urlString substringWithRange:[match rangeAtIndex:1]];
+                        
+                        // dashes to spaces, capitalize
+                        temp = [temp stringByReplacingOccurrencesOfString:@"-" withString:@" "];
+                        title = [LEANUtilities capitalizeWords:temp];
+                    }
+                    
+                    // remove words from end of title
+                    if (title && [entry[@"urlChompWords"] intValue] > 0) {
+                        __block NSInteger numWords = 0;
+                        __block NSRange lastWordRange = NSMakeRange(0, [title length]);
+                        [title enumerateSubstringsInRange:NSMakeRange(0, [title length]) options:NSStringEnumerationByWords | NSStringEnumerationReverse usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                            
+                            numWords++;
+                            if (numWords >= [entry[@"urlChompWords"] intValue]) {
+                                lastWordRange = substringRange;
+                                *stop = YES;
+                            }
+                        }];
+                        
+                        title = [title substringToIndex:lastWordRange.location];
+                        title = [title stringByTrimmingCharactersInSet:
+                                 [NSCharacterSet whitespaceCharacterSet]];
+                    }
+                }
+                
+                break;
+            }
+        }
+    }
+    
+    return title;
 }
 
 #pragma mark - Search Bar Delegate
@@ -307,20 +415,22 @@
     [self loadUrl:url];
     
     self.navigationItem.titleView = nil;
-    [self showNavigationItemButtons];
+    [self showNavigationItemButtonsAnimated:YES];
 }
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     self.navigationItem.titleView = nil;
-    [self showNavigationItemButtons];
+    [self showNavigationItemButtonsAnimated:YES];
 }
 
 
 #pragma mark - UIWebViewDelegate
 - (BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
     NSURL *url = [request URL];
+    NSString *urlString = [url absoluteString];
     NSString* hostname = [url host];
     
 //    NSLog(@"should start load %d %@", navigationType, url);
@@ -328,8 +438,8 @@
     [[LEANUrlInspector sharedInspector] inspectUrl:url];
     
     // check redirects
-    if ([LEANAppConfig sharedAppConfig].redirects != nil) {
-        NSString *to = [[LEANAppConfig sharedAppConfig].redirects valueForKey:[url absoluteString]];
+    if (appConfig.redirects != nil) {
+        NSString *to = [appConfig.redirects valueForKey:urlString];
         if (to) {
             url = [NSURL URLWithString:to];
             
@@ -339,7 +449,7 @@
     }
     
     // log out by clearing cookies
-    if ([[url absoluteString] caseInsensitiveCompare:@"file://gonative_logout"] == NSOrderedSame) {
+    if ([urlString caseInsensitiveCompare:@"file://gonative_logout"] == NSOrderedSame) {
         [self logout];
         return false;
     }
@@ -349,11 +459,11 @@
     self.checkLoginSignup = YES;
     
     // log in
-    if (checkLoginSignup && [[LEANAppConfig sharedAppConfig][@"checkNativeLogin"] boolValue] &&
-        [url matchesPathOf:[LEANAppConfig sharedAppConfig].loginURL]) {
+    if (checkLoginSignup && [appConfig[@"checkNativeLogin"] boolValue] &&
+        [url matchesPathOf:appConfig.loginURL]) {
         [self showWebview];
         
-        if ([LEANAppConfig sharedAppConfig].loginIsFirstPage) {
+        if (appConfig.loginIsFirstPage) {
             if (self.webview.request) {
                 // this is not the first page loaded, so was probably called via Logout.
                 
@@ -362,9 +472,10 @@
                 
                 LEANWebFormController *wfc = [[LEANWebFormController alloc]
                                               initWithJsonResource:@"login_config"
-                                              formUrl:[LEANAppConfig sharedAppConfig].loginURL
-                                              errorUrl:[LEANAppConfig sharedAppConfig].loginURLfail
-                                              title:[LEANAppConfig sharedAppConfig][@"appName"] isLogin:YES];
+                                              formUrl:appConfig.loginURL
+                                              errorUrl:appConfig.loginURLfail
+                                              title:appConfig[@"appName"] isLogin:YES];
+                wfc.originatingViewController = self;
                 [self.navigationController pushViewController:wfc animated:YES];
             } else {
                 // this is the first page loaded, which means that the form controller has already been pushed in viewDidLoad. Do nothing.
@@ -375,9 +486,10 @@
         
         LEANWebFormController *wfc = [[LEANWebFormController alloc]
                                       initWithJsonResource:@"login_config"
-                                      formUrl:[LEANAppConfig sharedAppConfig].loginURL
-                                      errorUrl:[LEANAppConfig sharedAppConfig].loginURLfail
+                                      formUrl:appConfig.loginURL
+                                      errorUrl:appConfig.loginURLfail
                                       title:@"Log In" isLogin:YES];
+        wfc.originatingViewController = self;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
             formSheet.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -389,15 +501,16 @@
     }
     
     // sign up
-    if (checkLoginSignup && [[LEANAppConfig sharedAppConfig][@"checkNativeSignup"] boolValue] &&
-        [url matchesPathOf:[LEANAppConfig sharedAppConfig].signupURL]) {
+    if (checkLoginSignup && [appConfig[@"checkNativeSignup"] boolValue] &&
+        [url matchesPathOf:appConfig.signupURL]) {
         [self showWebview];
 
         LEANWebFormController *wfc = [[LEANWebFormController alloc]
                                       initWithJsonResource:@"signup_config"
-                                      formUrl:[LEANAppConfig sharedAppConfig].signupURL
-                                      errorUrl:[LEANAppConfig sharedAppConfig].signupURLfail
+                                      formUrl:appConfig.signupURL
+                                      errorUrl:appConfig.signupURLfail
                                       title:@"Sign Up" isLogin:NO];
+        wfc.originatingViewController = self;
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
@@ -409,6 +522,29 @@
         }
         return NO;
     }
+    
+    // other forms
+    if (appConfig.interceptForms) {
+        for (id form in appConfig.interceptForms) {
+            if ([url matchesPathOf:[NSURL URLWithString:form[@"url"]]]) {
+                [self showWebview];
+                
+                LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithJsonObject:form];
+                wfc.originatingViewController = self;
+                if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                    UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
+                    formSheet.modalPresentationStyle = UIModalPresentationFormSheet;
+                    [self presentViewController:formSheet animated:YES completion:nil];
+                }
+                else {
+                    [self.navigationController pushViewController:wfc animated:YES];
+                }
+                
+                return NO;
+            }
+        }
+    }
+    
     
     // twitter app
     if ([hostname isEqualToString:@"twitter.com"] && [[[request URL] path] isEqualToString:@"/intent/tweet"])
@@ -431,17 +567,96 @@
         return NO;
     }
     
-    // external sites
-    if (navigationType == UIWebViewNavigationTypeLinkClicked)
-    {
-        NSString *initialHost = [LEANAppConfig sharedAppConfig].initialHost;
-        if (![hostname isEqualToString:initialHost] &&
-            ![hostname hasSuffix:[@"." stringByAppendingString:initialHost]] &&
-            ![[LEANAppConfig sharedAppConfig][@"internalHosts"] containsObject:hostname]) {
-            // open in external web browser
-            [[UIApplication sharedApplication] openURL:[request URL]];
+    // external sites: don't launch if in iframe.
+    if ([[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]
+        && ![[request URL] matchesPathOf:[[webView request] URL]]) {
+        // first check regexInternalExternal
+        bool matchedRegex = NO;
+        for (NSUInteger i = 0; i < [appConfig.regexInternalEternal count]; i++) {
+            NSPredicate *predicate = appConfig.regexInternalEternal[i];
+            if ([predicate evaluateWithObject:urlString]) {
+                matchedRegex = YES;
+                if (![appConfig.regexIsInternal[i] boolValue]) {
+                    // external
+                    [[UIApplication sharedApplication] openURL:[request URL]];
+                    return NO;
+                }
+                break;
+            }
+        }
+        
+        if (!matchedRegex) {
+            if (![hostname isEqualToString:appConfig.initialHost] &&
+                ![hostname hasSuffix:[@"." stringByAppendingString:appConfig.initialHost]] &&
+                ![[LEANAppConfig sharedAppConfig][@"internalHosts"] containsObject:hostname]) {
+                // open in external web browser
+                [[UIApplication sharedApplication] openURL:[request URL]];
+                return NO;
+            }
+        }
+    }
+    
+    // Starting here, we are going to load the request, but possibly in a different webview depending on the structured nav level
+    NSInteger newLevel = [LEANWebViewController urlLevelForUrl:url];
+    if (self.urlLevel >= 0 && newLevel >= 0) {
+        if (newLevel > self.urlLevel) {
+            // push a new controller
+            LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
+            newvc.initialUrl = url;
+            
+            NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
+            while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
+                [controllers removeLastObject];
+            }
+            [controllers addObject:newvc];
+            [self.navigationController setViewControllers:controllers animated:YES];
+            
             return NO;
         }
+        else if (newLevel < self.urlLevel) {
+            // find controller on top of the first controller with a lower-numbered level
+            NSArray *vcs = self.navigationController.viewControllers;
+            LEANWebViewController *wvc = self;
+            for (NSInteger i = vcs.count - 1; i >= 0; i--) {
+                if ([vcs[i] isKindOfClass:[LEANWebViewController class]]) {
+                    if (newLevel > ((LEANWebViewController*)vcs[i]).urlLevel) {
+                        break;
+                    }
+                    
+                    // save into as the 'previous to last' controller
+                    wvc = vcs[i];
+                }
+            }
+            
+            if (wvc != self) {
+                wvc.urlLevel = newLevel;
+                [wvc loadRequest:request];
+                [self.navigationController popToViewController:wvc animated:YES];
+                return NO;
+            }
+        }
+    }
+    
+    
+    // Starting here, the request will be loaded in this WebView.
+    NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
+    BOOL changedControllerStack = NO;
+    while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
+        [controllers removeLastObject];
+        changedControllerStack = YES;
+    }
+    if (changedControllerStack) {
+        [self.navigationController setViewControllers:controllers animated:YES];
+    }
+    
+    
+    if (newLevel >= 0) {
+        self.urlLevel = [LEANWebViewController urlLevelForUrl:url];
+    }
+    
+    NSString *newTitle = [LEANWebViewController titleForUrl:url];
+    if (newTitle) {
+        self.navigationItem.title = newTitle;
     }
     
     // save for reload
@@ -450,8 +665,7 @@
     ((LEANAppDelegate*)[[UIApplication sharedApplication] delegate]).currentRequest = request;
     
     // if not iframe and not loading the same page, hide the webview and show activity indicator.
-    if (navigationType != UIWebViewNavigationTypeOther
-        && [[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]
+    if ([[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]
         && ![[request URL] matchesPathOf:[[webView request] URL]]) {
         [self hideWebview];
     }
@@ -501,17 +715,9 @@
         self.nav.title = theTitle;
     }
     
-    // refresh menu if loading certain URLs
-    NSArray *refreshURLs = [LEANAppConfig sharedAppConfig][@"menuRefreshURLs"];
-    if ([refreshURLs containsObject:[url absoluteString]]) {
-        [[LEANLoginManager sharedManager] checkLogin];
-    }
-    
-    // need to update menu if previous page was login or signup
+    // update menu
     if ([[LEANAppConfig sharedAppConfig][@"checkUserAuth"] boolValue]) {
-        if (self.visitedLoginOrSignup) {
-            [[LEANLoginManager sharedManager] checkLogin];
-        }
+        [[LEANLoginManager sharedManager] checkLogin];
         
         self.visitedLoginOrSignup = [url matchesPathOf:[LEANAppConfig sharedAppConfig].loginURL] ||
         [url matchesPathOf:[LEANAppConfig sharedAppConfig].signupURL];
@@ -525,13 +731,6 @@
     }
     
     
-    // disable horizontal scrolling
-    /*
-     CGSize size = webView.scrollView.contentSize;
-     size.width = webView.frame.size.width;
-     webView.scrollView.contentSize = size;
-     */
-    
     if ([LEANAppConfig sharedAppConfig].enableChromecast) {
         [self detectVideo];
         // [self performSelector:@selector(detectVideo) withObject:nil afterDelay:1];
@@ -542,18 +741,27 @@
 
 - (void)checkReadyStatus
 {
+    // if interactiveDelay is specified, then look for readyState=interactive, and show webview
+    // with a delay. If not specified, wait for readyState=complete.
+    NSNumber *interactiveDelay = [LEANAppConfig sharedAppConfig].interactiveDelay;
+    
     NSString *status = [self.webview stringByEvaluatingJavaScriptFromString:@"document.readyState"];
     // we keep track of startedLoading because loading is only really finished when we have gone to
     // "loading" or "interactive" before going to complete. When the web page first starts loading,
     // it will be in "complete", then "loading", "interactive", and finally "complete".
-    if ([status isEqualToString:@"loading"] || [status isEqualToString:@"interactive"]) {
+    if ([status isEqualToString:@"loading"] || (!interactiveDelay && [status isEqualToString:@"interactive"])){
         self.startedLoading = YES;
     }
-    else if (self.startedLoading && [status isEqualToString:@"complete"]) {
-        self.startedLoading = NO;
-        [self.timer invalidate];
-        self.timer = nil;
-        [self showWebview];
+    else if ((interactiveDelay && [status isEqualToString:@"interactive"])
+             || (self.startedLoading && [status isEqualToString:@"complete"])) {
+        
+        if ([status isEqualToString:@"interactive"]){
+            // note: doubleValue will be 0 if interactiveDelay is null
+            [self showWebviewWithDelay:[interactiveDelay doubleValue]];
+        }
+        else {
+            [self showWebview];
+        }
     }
 }
 
@@ -570,14 +778,19 @@
     self.startedLoading = NO;
     [self.timer invalidate];
     self.timer = nil;
-    
     self.webview.userInteractionEnabled = YES;
+    
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^(void){
         self.webview.alpha = 1.0;
         self.activityIndicator.alpha = 0.0;
     } completion:^(BOOL finished){
         [self.activityIndicator stopAnimating];
     }];
+}
+
+- (void)showWebviewWithDelay:(NSTimeInterval)delay
+{
+    [self performSelector:@selector(showWebview) withObject:nil afterDelay:delay];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -661,5 +874,17 @@
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
+
+- (void)viewWillLayoutSubviews
+{
+    if (self.statusBarBackground) {
+        // fix sizing (usually because of rotation) when navigation bar is hidden
+        CGSize statusSize = [UIApplication sharedApplication].statusBarFrame.size;
+        CGFloat height = MIN(statusSize.height, statusSize.width);
+        CGFloat width = MAX(statusSize.height, statusSize.width);
+        self.statusBarBackground.frame = CGRectMake(0, 0, width, height);
+    }
+}
+
 
 @end

@@ -76,10 +76,7 @@
 
 +(BOOL)isValidEmail:(NSString*)email
 {
-    BOOL stricterFilter = NO; // Discussion http://blog.logichigh.com/2010/09/02/validating-an-e-mail-address/
-    NSString *stricterFilterString = @"[A-Z0-9a-z\\._%+-]+@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}";
-    NSString *laxString = @".+@([A-Za-z0-9]+\\.)+[A-Za-z]{2}[A-Za-z]*";
-    NSString *emailRegex = stricterFilter ? stricterFilterString : laxString;
+    NSString *emailRegex = @"\\S+@\\S+\\.\\S+";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     return [emailTest evaluateWithObject:email];
 }
@@ -111,21 +108,146 @@
 
 // injects jquery into webviews using packaged jquery file
 + (void)addJqueryToWebView:(UIWebView*)webView {
-    if (![webView stringByEvaluatingJavaScriptFromString:@"window.jQuery"]) {
+    NSString *loaded = [webView stringByEvaluatingJavaScriptFromString:@"window.jQuery"];
+    
+    if (!loaded || [loaded length] == 0) {
         NSURL *jquery = [[NSBundle mainBundle] URLForResource:@"jquery-2.1.0.min" withExtension:@"js"];
-        NSString *js = [NSString stringWithFormat:
-                        @"var gonativejs = document.createElement(\"script\");"
-                        "gonativejs.type = \"text/javascript\";"
-                        "gonativejs.src = decodeURIComponent(\"%@\");"
-                        "document.body.appendChild(gonativejs);",
-                        [[jquery absoluteString] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        [webView stringByEvaluatingJavaScriptFromString:js];
+        NSString *contents = [NSString stringWithContentsOfURL:jquery encoding:NSUTF8StringEncoding error:nil];
+        [webView stringByEvaluatingJavaScriptFromString:contents];
+        [webView stringByEvaluatingJavaScriptFromString:@"jQuery.noConflict()"];
     }
 }
 
 +(NSString*)jsWrapString:(NSString*)string
 {
     return [NSString stringWithFormat:@"decodeURIComponent(\"%@\")", [string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+}
+
++(NSString*)capitalizeWords:(NSString *)string
+{
+    NSMutableString *result = [string mutableCopy];
+    [result enumerateSubstringsInRange:NSMakeRange(0, [result length])
+                               options:NSStringEnumerationByWords
+                            usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                                [result replaceCharactersInRange:NSMakeRange(substringRange.location, 1)
+                                                      withString:[[substring substringToIndex:1] uppercaseString]];
+                            }];
+    
+    return result;
+}
+
+
++(NSString*)getLaunchImageName
+{
+    
+    NSArray* images= @[@"LaunchImage.png", @"LaunchImage@2x.png",@"LaunchImage-700@2x.png",@"LaunchImage-568h@2x.png",@"LaunchImage-700-568h@2x.png",@"LaunchImage-700-Portrait@2x~ipad.png",@"LaunchImage-Portrait@2x~ipad.png",@"LaunchImage-700-Portrait~ipad.png",@"LaunchImage-Portrait~ipad.png",@"LaunchImage-Landscape@2x~ipad.png",@"LaunchImage-700-Landscape@2x~ipad.png",@"LaunchImage-Landscape~ipad.png",@"LaunchImage-700-Landscape~ipad.png"];
+    
+    UIImage *splashImage;
+    
+    if ([self isDeviceiPhone])
+    {
+        if ([self isDeviceiPhone4] && [self isDeviceRetina])
+        {
+            splashImage = [UIImage imageNamed:images[1]];
+            if (splashImage.size.width!=0)
+            return images[1];
+            else
+            return images[2];
+        }
+        else if ([self isDeviceiPhone5])
+        {
+            splashImage = [UIImage imageNamed:images[1]];
+            if (splashImage.size.width!=0)
+            return images[3];
+            else
+            return images[4];
+        }
+        else
+        return images[0]; //Non-retina iPhone
+    }
+    else if ([[UIDevice currentDevice] orientation]==UIDeviceOrientationPortrait || [[UIDevice currentDevice] orientation] == UIDeviceOrientationPortraitUpsideDown)//iPad Portrait
+    {
+        if ([self isDeviceRetina])
+        {
+            splashImage = [UIImage imageNamed:images[5]];
+            if (splashImage.size.width!=0)
+            return images[5];
+            else
+            return images[6];
+        }
+        else
+        {
+            splashImage = [UIImage imageNamed:images[7]];
+            if (splashImage.size.width!=0)
+            return images[7];
+            else
+            return images[8];
+        }
+        
+    }
+    else
+    {
+        if ([self isDeviceRetina])
+        {
+            splashImage = [UIImage imageNamed:images[9]];
+            if (splashImage.size.width!=0)
+            return images[9];
+            else
+            return images[10];
+        }
+        else
+        {
+            splashImage = [UIImage imageNamed:images[11]];
+            if (splashImage.size.width!=0)
+            return images[11];
+            else
+            return images[12];
+        }
+    }
+}
+
+
+
++(BOOL)isDeviceiPhone
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        return TRUE;
+    }
+    
+    return FALSE;
+}
+
++(BOOL)isDeviceiPhone4
+{
+    if ([[UIScreen mainScreen] bounds].size.height==480)
+    return TRUE;
+    
+    return FALSE;
+}
+
+
++(BOOL)isDeviceRetina
+{
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
+        ([UIScreen mainScreen].scale == 2.0))        // Retina display
+    {
+        return TRUE;
+    }
+    else                                          // non-Retina display
+    {
+        return FALSE;
+    }
+}
+
+
++(BOOL)isDeviceiPhone5
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && [[UIScreen mainScreen] bounds].size.height>480)
+    {
+        return TRUE;
+    }
+    return FALSE;
 }
 
 @end

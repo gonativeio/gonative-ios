@@ -9,12 +9,24 @@
 #import "LEANAppDelegate.h"
 #import "LEANAppConfig.h"
 #import "LEANWebViewIntercept.h"
+#import "LEANUrlCache.h"
+#import "LEANPushManager.h"
+#import "LEANRootViewController.h"
+
+@interface LEANAppDelegate() <UIAlertViewDelegate>
+@property UIAlertView *alertView;
+@property NSURL *url;
+
+@end
 
 @implementation LEANAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    
+    // local cache
+    [NSURLCache setSharedURLCache:[[LEANUrlCache alloc] init]];
     
     // tint color from app config
     if ([[LEANAppConfig sharedAppConfig][@"checkCustomStyling"] boolValue]) {
@@ -35,13 +47,88 @@
     NSDictionary *dictionary = @{@"UserAgent": newAgent};
     [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
     
-    // proxy handler for custom CSS
-    if ([LEANAppConfig sharedAppConfig][@"customCss"] || [LEANAppConfig sharedAppConfig][@"stringViewport"]) {
-        [LEANWebViewIntercept initialize];
+    // proxy handler to intercept HTML for custom CSS and viewport
+    [LEANWebViewIntercept initialize];
+    
+    // Register for remote push notifications
+    if ([LEANAppConfig sharedAppConfig].pushNotifications) {
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
     }
+    
+    // If launched from push notification and it contains a url, set the initialUrl.
+    id notification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (notification && notification[@"u"]) {
+        NSURL *url = [NSURL URLWithString:notification[@"u"]];
+        if (url) {
+            UIViewController *rvc = self.window.rootViewController;
+            if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+                [(LEANRootViewController*)rvc setInitialUrl:url];
+            }
+        }
+    }
+    
+    // clear notifications
+    application.applicationIconBadgeNumber = 1;
+    application.applicationIconBadgeNumber = 0;
     
     return YES;
 }
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    [LEANPushManager sharedPush].token = deviceToken;
+}
+
+
+- (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
+    NSLog(@"Error registering for push notifications: %@", err);
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSString *urlString = userInfo[@"u"];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSString *message = userInfo[@"aps"][@"alert"];
+    
+    UIViewController *rvc = self.window.rootViewController;
+    BOOL webviewOnTop = NO;
+    if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+        webviewOnTop = [(LEANRootViewController*)rvc webviewOnTop];
+    }
+    
+    if (application.applicationState == UIApplicationStateActive) {
+        // app was in foreground. Show an alert, and include a "view" button if there is a url and the webview is currently the top view.
+        if (url && webviewOnTop) {
+            self.alertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"View", nil];
+            self.url = url;
+        } else {
+            self.alertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [self.alertView show];
+        }
+        
+        [self.alertView show];
+    } else {
+        // app was in background, and user tapped on notification
+        if (url && webviewOnTop) {
+            [(LEANRootViewController*)rvc loadUrl:url];
+        }
+    }
+    
+    // clear notifications
+    application.applicationIconBadgeNumber = 1;
+    application.applicationIconBadgeNumber = 0;
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        UIViewController *rvc = self.window.rootViewController;
+        if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+            [(LEANRootViewController*)rvc loadUrl:self.url];
+        }
+    }
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {

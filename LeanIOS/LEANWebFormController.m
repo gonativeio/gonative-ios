@@ -14,6 +14,8 @@
 #import "NSURL+LEANUtilities.h"
 #import "LEANAppConfig.h"
 #import "LEANLoginManager.h"
+#import "LEANPushManager.h"
+#import "REFrostedViewController/UIImage+REFrostedViewController.h"
 
 @interface LEANWebFormController () <UIWebViewDelegate>
 
@@ -31,11 +33,40 @@
 @property BOOL checkingLogin;
 @property UIWebView *hiddenWebView;
 @property BOOL submitted;
+@property NSString *tempUserID;
 
 
 @end
 
 @implementation LEANWebFormController
+
+- (id)initWithJsonObject:(id)json
+{
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        self.title = json[@"title"];
+        self.formUrl = [NSURL URLWithString:json[@"url"]];
+        self.errorUrl = [NSURL URLWithString:json[@"errorUrl"]];
+        self.isLogin = [json[@"isLogin"] boolValue];
+        
+        if (self.isLogin && [LEANAppConfig sharedAppConfig][@"forgotPasswordURL"]) {
+            self.forgotPasswordUrl = [NSURL URLWithString:[LEANAppConfig sharedAppConfig][@"forgotPasswordURL"]];
+        }
+        
+        self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+        
+        self.hiddenWebView = [[UIWebView alloc] init];
+        self.hiddenWebView.delegate = self;
+        
+        // if login is first page, wait until after we've checked to load the login url
+        // if loaded too early, may break some csrf protected pages.
+        if (!self.isLogin || ![LEANAppConfig sharedAppConfig].loginIsFirstPage)
+            [self.hiddenWebView loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
+        
+        [self loadJsonObject:json];
+    }
+    return self;
+}
 
 - (id)initWithJsonResource:(NSString*)jsonRes formUrl:(NSURL*)formUrl errorUrl:(NSURL*)errorUrl title:(NSString*)title isLogin:(BOOL)isLogin
 {
@@ -49,6 +80,8 @@
         if (self.isLogin && [LEANAppConfig sharedAppConfig][@"forgotPasswordURL"]) {
             self.forgotPasswordUrl = [NSURL URLWithString:[LEANAppConfig sharedAppConfig][@"forgotPasswordURL"]];
         }
+        
+        self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     
         self.hiddenWebView = [[UIWebView alloc] init];
         self.hiddenWebView.delegate = self;
@@ -58,7 +91,7 @@
         if (![LEANAppConfig sharedAppConfig].loginIsFirstPage)
             [self.hiddenWebView loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
         
-        [self loadJsonResource:jsonRes];
+        [self loadJsonObject:[LEANAppConfig sharedAppConfig][jsonRes]];
     }
     return self;
 }
@@ -66,6 +99,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+
     
     // Add "done" button to navigation bar
     self.submitButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submit:)];
@@ -79,10 +114,23 @@
         self.checkingLogin = YES;
         self.navigationItem.hidesBackButton = YES;
         
+        // background launch image
+        if ([LEANAppConfig sharedAppConfig].loginLaunchBackground) {
+            UIImage *image = [UIImage imageNamed:[LEANUtilities getLaunchImageName]];
+            
+            
+            UIColor *blurTintColor = [UIColor colorWithWhite:1.0 alpha:0.3f];
+            image = [image re_applyBlurWithRadius:5 tintColor:blurTintColor saturationDeltaFactor:1.0 maskImage:nil];
+            UIImageView *background = [[UIImageView alloc] initWithImage:image];
+            self.tableView.backgroundView = background;
+        }
+        
         // add header
-        NSArray *arr = [[NSBundle mainBundle] loadNibNamed:@"LoginHeaderView" owner:nil options:nil];
-        UIView *headerView = arr[0];
-        self.tableView.tableHeaderView = headerView;
+        if ([LEANAppConfig sharedAppConfig].loginIconImage) {
+            NSArray *arr = [[NSBundle mainBundle] loadNibNamed:@"LoginHeaderView" owner:nil options:nil];
+            UIView *headerView = arr[0];
+            self.tableView.tableHeaderView = headerView;
+        }
     } else {
         self.checkingLogin = NO;
         self.navigationItem.rightBarButtonItem = self.submitButton;
@@ -133,15 +181,9 @@
     }
 }
 
-
-- (void)loadJsonResource:(NSString*)resource
+- (void)loadJsonObject:(id)json
 {
-    // read json
-    NSString *path = [[NSBundle mainBundle] pathForResource:resource ofType:@"json"];
-    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:path];
-    [inputStream open];
-    self.json = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:nil];
-    [inputStream close];
+    self.json = json;
     
     // process fields into sections
     NSMutableArray *sections = [[NSMutableArray alloc] init];
@@ -221,12 +263,14 @@
 - (IBAction)submit:(id)sender {
     if ([self validateFormShowErrors:YES]) {
 //        self.view = self.hiddenWebView;
+        
         // hide keyboard
         [self.view endEditing:YES];
         self.submitted = YES;
         self.submitButton.enabled = NO;
         
         // fill in web form
+        NSInteger fieldNum = 0;
         for (int sectNum = 0; sectNum < [self.sections count]; sectNum++) {
             id sect = self.sections[sectNum];
             if ([sect isKindOfClass:[NSArray class]]) {
@@ -247,6 +291,29 @@
                             [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
                              [NSString stringWithFormat: @"jQuery(%@).val(%@);", [LEANUtilities jsWrapString:field[@"selector2"]], [LEANUtilities jsWrapString:textField.text]]];
                         }
+                        
+                        // user id for push notifications
+                        if ([field[@"isUserID"] boolValue]) {
+                            self.tempUserID = textField.text;
+                        }
+                        
+                    }
+                    else if ([field[@"type"] isEqualToString:@"textarea"]){
+                        UITextView *textView = (UITextView*)[cell viewWithTag:2];
+                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
+                         [NSString stringWithFormat: @"jQuery(%@).val(%@);", [LEANUtilities jsWrapString:field[@"selector"]], [LEANUtilities jsWrapString:textView.text]]];
+                    }
+                    else if ([field[@"type"] isEqualToString:@"date"]) {
+                        UIDatePicker *datePicker = (UIDatePicker*)[cell viewWithTag:2];
+                        NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+                        NSDateComponents *components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit fromDate:datePicker.date];
+                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
+                         [NSString stringWithFormat: @"jQuery(%@).val(%d);", [LEANUtilities jsWrapString:field[@"yearSelector"]], components.year]];
+                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
+                         [NSString stringWithFormat: @"jQuery(%@).val(%d);", [LEANUtilities jsWrapString:field[@"monthSelector"]], components.month]];
+                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
+                         [NSString stringWithFormat: @"jQuery(%@).val(%d);", [LEANUtilities jsWrapString:field[@"daySelector"]], components.day]];
+                        
                     }
                     else if ([field[@"type"] isEqualToString:@"options"]){
                         UIView *innerView = cell.contentView.subviews[0];
@@ -256,6 +323,9 @@
                             NSString *selector = field[@"choices"][seg.selectedSegmentIndex][@"selector"];
                             [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
                              [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:selector]]];
+                            [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
+                             [NSString stringWithFormat: @"jQuery(%@).prop('selected', true);", [LEANUtilities jsWrapString:selector]]];
+                            
                         }
                     }
                     else if ([field[@"type"] isEqualToString:@"checkbox"]){
@@ -269,6 +339,8 @@
                             [self.hiddenWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"jQuery(%@).prop('checked', false);", [LEANUtilities jsWrapString:field[@"selector"]]]];
                         }
                     }
+                    
+                    fieldNum++;
                 }
             }
             else {
@@ -281,15 +353,21 @@
                         NSString *selector = field[@"choices"][i][@"selector"];
                         [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
                          [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:selector]]];
+                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
+                         [NSString stringWithFormat: @"jQuery(%@).prop('selected', true);", [LEANUtilities jsWrapString:selector]]];
                     }
                 }
                 
+                fieldNum++;
             }
         }
         
         // submit the form
-        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-         [NSString stringWithFormat: @"jQuery(%@).submit();", [LEANUtilities jsWrapString:self.json[@"formSelector"]]]];
+        if ([self.json[@"submitButtonSelector"] length] > 0) {
+            [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:self.json[@"submitButtonSelector"]]]];
+        } else {
+            [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat: @"jQuery(%@).submit();", [LEANUtilities jsWrapString:self.json[@"formSelector"]]]];
+        }
         
         // for ajax login forms
         if (self.isLogin && [self.json[@"isAjax"] boolValue])
@@ -328,36 +406,46 @@
     id field = self.sections[indexPath.section][indexPath.row];
     UITableViewCell *cell = [self tableView:self.tableView cellForRowAtIndexPath:indexPath];
     
-    if ([@[@"email", @"name", @"text", @"number",@"password"] containsObject:field[@"type"]]){
-        // these fields have a text field
-        UIView *innerView = cell.contentView.subviews[0];
-        UITextField *textField = innerView.subviews[1];
+    if ([@[@"email", @"name", @"text", @"number",@"password",@"textarea"] containsObject:field[@"type"]]){
+        // these fields have text
+        NSString *text;
+        UIResponder *responder;
+        if ([field[@"type"] isEqualToString:@"textarea"]) {
+            UITextView *textView = (UITextView*)[cell viewWithTag:2];
+            text = textView.text;
+            responder = textView;
+        } else {
+            UIView *innerView = cell.contentView.subviews[0];
+            UITextField *textField = innerView.subviews[1];
+            text = textField.text;
+            responder = textField;
+        }
         
         // trim text
-        textField.text = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        text = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         
-        if (field[@"required"] && field[@"required"] != [NSNull null] && [field[@"required"] boolValue] && [textField.text length] == 0) {
+        if (field[@"required"] && field[@"required"] != [NSNull null] && [field[@"required"] boolValue] && [text length] == 0) {
             if (showErrors) {
                 [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Missing %@", field[@"label"]] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil] show];
-                [textField becomeFirstResponder];
+                [responder becomeFirstResponder];
                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
             }
             return NO;
         }
         
-        if (field[@"minLength"] && [textField.text length] < [field[@"minLength"] integerValue]) {
+        if (field[@"minLength"] && [text length] < [field[@"minLength"] integerValue]) {
             if (showErrors) {
                 [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ must be at least %d characters", field[@"label"], [field[@"minLength"] integerValue]] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil] show];
-                [textField becomeFirstResponder];
+                [responder becomeFirstResponder];
                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
             }
             return NO;
         }
         
-        if ([field[@"type"] isEqualToString:@"email"] && ![textField.text isEqualToString:@""]  && ![LEANUtilities isValidEmail:textField.text]) {
+        if ([field[@"type"] isEqualToString:@"email"] && ![text isEqualToString:@""]  && ![LEANUtilities isValidEmail:text]) {
             if (showErrors) {
                 [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not a valid email address", field[@"label"]] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil] show];
-                [textField becomeFirstResponder];
+                [responder becomeFirstResponder];
                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
             }
             return NO;
@@ -413,8 +501,8 @@
 
 - (void)dismiss
 {
-    [self.navigationController popToRootViewControllerAnimated:YES]; // iphone
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil]; // ipad
+    // only has an effect on ipad, where the current controller is in a navigation controller embedded in a form sheet. On iphone, let the web view controller manage dismissing the form controller
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)scheduleSubmissionCheckTimer
@@ -489,9 +577,30 @@
     if (self.checkingLogin) {
         return 88;
     } else {
+        
+        id sect = self.sections[indexPath.section];
+        // regular field section
+        if ([sect isKindOfClass:[NSArray class]]) {
+            id field = sect[indexPath.row];
+            if ([field[@"type"] isEqualToString:@"textarea"]) {
+                return 200;
+            } else if ([field[@"type"] isEqualToString:@"date"]) {
+                return 252;
+            }
+        }
+        
+        
         return [super tableView:tableView heightForRowAtIndexPath:indexPath];
     }
 }
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UIView *backView = [[UIView alloc] initWithFrame:CGRectZero];
+    backView.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.5];
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -508,6 +617,7 @@
     id sect = self.sections[indexPath.section];
     
     cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil]; // no reuse of cells allowed
+
     
     // regular field section
     if ([sect isKindOfClass:[NSArray class]]) {
@@ -536,6 +646,16 @@
                 textField.keyboardType = UIKeyboardTypeNumberPad;
             
             [cell.contentView addSubview:view];
+        }
+        else if ([field[@"type"] isEqualToString:@"textarea"]) {
+            cell = [[NSBundle mainBundle] loadNibNamed:@"TextAreaView" owner:self.tableView options:0][0];
+            label = (UILabel*)[cell viewWithTag:1];
+            label.text = field[@"label"];
+        }
+        else if ([field[@"type"] isEqualToString:@"date"]) {
+            cell = [[NSBundle mainBundle] loadNibNamed:@"DateCellView" owner:self.tableView options:0][0];
+            label = (UILabel*)[cell viewWithTag:1];
+            label.text = field[@"label"];
         }
         else if ([field[@"type"] isEqualToString:@"password"]) {
             view = [[NSBundle mainBundle] loadNibNamed:@"PasswordCellView" owner:nil options:nil][0];
@@ -716,18 +836,22 @@
     }
     
     if (success) {
+        [LEANPushManager sharedPush].userID = self.tempUserID;
+        
         [self dismiss];
-
+        
         // load url in main view
-        LEANWebViewController *wv = ((LEANRootViewController*)self.frostedViewController).webViewController;
-        if (self.json[@"successUrl"] && self.json[@"successUrl"] != [NSNull null]) {
-            [wv loadUrl:[NSURL URLWithString:self.json[@"successUrl"]]];
-        } else {
-            [wv loadUrl:url];
+        if ([self.originatingViewController isKindOfClass:[LEANWebViewController class]]) {
+            LEANWebViewController *wv = (LEANWebViewController*)self.originatingViewController;
+            if (self.json[@"successUrl"] && self.json[@"successUrl"] != [NSNull null]) {
+                [wv loadUrl:[NSURL URLWithString:self.json[@"successUrl"]]];
+            } else {
+                [wv loadUrl:url];
+            }
         }
 
-        // swap out menu
-        [(LEANMenuViewController*)self.frostedViewController.menuViewController updateMenu:YES];
+        // update menu
+        [[LEANLoginManager sharedManager] checkIfNotAlreadyChecking];
     }
     
 }

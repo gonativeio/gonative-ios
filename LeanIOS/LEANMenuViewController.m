@@ -17,7 +17,7 @@
 #import "LEANUrlInspector.h"
 #import "LEANSettingsController.h"
 
-@interface LEANMenuViewController () <UIAlertViewDelegate>
+@interface LEANMenuViewController ()
 
 @property id menuItems;
 @property NSMutableArray *groupExpanded;
@@ -53,7 +53,8 @@
     NSArray *arr = [[NSBundle mainBundle] loadNibNamed:@"HeaderView" owner:nil options:nil];
 
     UIView *headerView = arr[0];
-    UIButton *headerButton = headerView.subviews[0];
+    headerView.autoresizingMask = UIViewAutoresizingNone;
+    UIButton *headerButton = (UIButton*)[headerView viewWithTag:1];
     [headerButton addTarget:self action:@selector(picturePressed:) forControlEvents:UIControlEventTouchUpInside];
     
     self.settingsButton = (UIButton*)[headerView viewWithTag:2];
@@ -62,7 +63,7 @@
     self.tableView.tableHeaderView = headerView;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     
-    [self updateMenu: NO];
+    [self updateMenuWithStatus:@"default"];
 
     if ([[LEANAppConfig sharedAppConfig][@"checkUserAuth"] boolValue]) {
         // subscribe to login notifications
@@ -70,7 +71,6 @@
         [[LEANLoginManager sharedManager] checkIfNotAlreadyChecking];
     }
 
-    
     // pre-load images. Color them too.
     self.collapsedIndicator = [[UIImage imageNamed:@"chevronDown"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.expandedIndicator = [[UIImage imageNamed:@"chevronUp"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -83,28 +83,19 @@
     // webviewcontroller reference
     LEANNavigationController* nav = (LEANNavigationController*)self.frostedViewController.contentViewController;
     self.wvc = (LEANWebViewController*)nav.viewControllers[0];
-    
 }
 
 - (void)didReceiveLoginNotification:(NSNotification*)notification
 {
     LEANLoginManager *loginManager = [notification object];
-    [self updateMenu:loginManager.loggedIn];
+    [self updateMenuWithStatus:loginManager.loginStatus];
 }
 
-- (void)updateMenu:(BOOL)loggedIn
+- (void)updateMenuWithStatus:(NSString *)status
 {
-    NSString *path;
-    if (loggedIn)
-        path = [[NSBundle mainBundle] pathForResource:@"menu_loggedin" ofType:@"json"];
-    else
-        path = [[NSBundle mainBundle] pathForResource:@"menu_default" ofType:@"json"];
+    if (!status) status = @"default";
     
-    // parse JSON
-    NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:path];
-    [inputStream open];
-    self.menuItems = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:nil];
-    [inputStream close];
+    self.menuItems = [LEANAppConfig sharedAppConfig].menus[status];
     
     // see if any menu items have icons. Used for layout indentation.
     self.groupsHaveIcons = NO;
@@ -136,7 +127,7 @@
 - (void)logOut
 {
     [self.wvc logout];
-    [self updateMenu:NO];
+    [self updateMenuWithStatus:@"default"];
 }
 
 - (void)showSettings:(BOOL)showSettings
@@ -297,26 +288,6 @@
             [self.wvc loadUrl:[NSURL URLWithString:url]];
         }
         [self.frostedViewController hideMenuViewController];
-    }
-    
-    /*
-    LEANMenuItem* menuItem = self.menu.menuItems[indexPath.row];
-    
-    if ([menuItem.title isEqualToString:@"Log Out"]) {
-        [[[UIAlertView alloc] initWithTitle:@"Log Out" message:@"Are you sure?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Log Out", nil] show];
-    }
-    else {
-        [self.wvc loadUrl: menuItem.url];
-    }
-    
-    [self.frostedViewController hideMenuViewController]; */
-}
-
-#pragma mark - Alert view delegate
-- (void) alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 1) {
-        [self logOut];
     }
 }
 

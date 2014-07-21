@@ -86,10 +86,11 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
     NSString *origString = [[NSString alloc] initWithData:htmlBuffer encoding:self.htmlEncoding];
     
     // find closing </head> tag
-    NSRange insertPoint = [origString rangeOfString:@"</head>"];
+    NSRange insertPoint = [origString rangeOfString:@"</head>" options:NSCaseInsensitiveSearch];
     if (insertPoint.location != NSNotFound) {
         NSString *customCss = [LEANAppConfig sharedAppConfig][@"customCss"];
         NSString *stringViewport = [LEANAppConfig sharedAppConfig][@"stringViewport"];
+        NSNumber *viewportWidth = [LEANAppConfig sharedAppConfig][@"viewportWidth"];
         
         NSMutableString *newString = [[origString substringToIndex:insertPoint.location] mutableCopy];
         if (customCss) {
@@ -97,17 +98,56 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
             [newString appendString:customCss];
             [newString appendString:@"</style>"];
         }
+        
+        
         if (stringViewport) {
             [newString appendString:@"<meta name=\"viewport\" content=\""];
             [newString appendString:[stringViewport gtm_stringByEscapingForHTML]];
             [newString appendString:@"\">"];
         }
+        if (viewportWidth) {
+            [newString appendFormat:@"<meta name=\"viewport\" content=\"width=%@,user-scalable=no\"/>", viewportWidth];
+        }
+        
+        if (!stringViewport && !viewportWidth) {
+            // find original viewport
+            NSString *origViewport = [LEANWebViewIntercept extractViewport:origString];
+            
+            if ([origViewport length] > 0) {
+                [newString appendFormat:@"<meta name=\"viewport\" content=\"%@,user-scalable=no\"/>", origViewport];
+            }
+            else {
+                [newString appendFormat:@"<meta name=\"viewport\" content=\"user-scalable=no\"/>"];
+            }
+        }
+        
         [newString appendString:[origString substringFromIndex:insertPoint.location]];
         return [newString dataUsingEncoding:self.htmlEncoding];
     } else {
         return htmlBuffer;
     }
 
+}
+
++(NSString *)extractViewport:(NSString*)html
+{
+    if (!html) return nil;
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<meta\\s+name=[\"']viewport[\"']\\s+content=[\"']([-;,=\\.\\w\\s]+)[\"']\\s*/?>" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSArray *results = [regex matchesInString:html options:0 range:NSMakeRange(0, [html length])];
+    if ([results count] > 0) {
+        NSTextCheckingResult *result = results[0];
+        return [html substringWithRange:[result rangeAtIndex:1]];
+    }
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:@"<meta\\s+content=[\"']([-;,=\\.\\w\\s]+)[\"']\\s+name=[\"']viewport[\"']\\s*/?>" options:NSRegularExpressionCaseInsensitive error:nil];
+    results = [regex matchesInString:html options:0 range:NSMakeRange(0, [html length])];
+    if ([results count] > 0) {
+        NSTextCheckingResult *result = results[0];
+        return [html substringWithRange:[result rangeAtIndex:1]];
+    }
+    
+    return nil;
 }
 
 #pragma mark - URL Connection Data Delegate

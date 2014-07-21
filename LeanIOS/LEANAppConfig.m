@@ -25,9 +25,14 @@
         if (!sharedAppConfig){
             sharedAppConfig = [[LEANAppConfig alloc] init];
             
-            NSString *configPath = [[NSBundle mainBundle] pathForResource:@"appConfig" ofType:@"plist"];
-            sharedAppConfig.dict = [[NSDictionary alloc] initWithContentsOfFile:configPath];
-            
+            // read json
+            NSError *jsonError;
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"appConfig" ofType:@"json"];
+            NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:path];
+            [inputStream open];
+            sharedAppConfig.json = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:&jsonError];
+            if (jsonError) NSLog(@"Error parsing json: %@", jsonError);
+            [inputStream close];
             
             sharedAppConfig.tintColor = [LEANUtilities colorFromHexString:sharedAppConfig[@"iosTintColor"]];
             
@@ -60,12 +65,7 @@
                 sharedAppConfig.allowZoom = YES;
             
             
-            // read json
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"appConfig" ofType:@"json"];
-            NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:path];
-            [inputStream open];
-            sharedAppConfig.json = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:nil];
-            [inputStream close];
+
             
             if ([sharedAppConfig hasKey:@"redirects"]) {
                 NSUInteger len = [sharedAppConfig[@"redirects"] count];
@@ -83,6 +83,118 @@
                 sharedAppConfig.showNavigationBar = [sharedAppConfig[@"showNavigationBar"] boolValue];
             else sharedAppConfig.showNavigationBar = YES;
             
+            if ([sharedAppConfig hasKey:@"pushNotifications"])
+                sharedAppConfig.pushNotifications = [sharedAppConfig[@"pushNotifications"] boolValue];
+            else sharedAppConfig.pushNotifications = NO;
+            
+            if ([sharedAppConfig hasKey:@"navStructure"]) {
+                id urlLevels = sharedAppConfig[@"navStructure"][@"urlLevels"];
+                sharedAppConfig.navStructureLevels = [[NSMutableArray alloc] initWithCapacity:[urlLevels count]];
+                
+                for (id entry in urlLevels) {
+                    if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"] && entry[@"level"]) {
+                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                        NSNumber *level = entry[@"level"];
+                        
+                        [sharedAppConfig.navStructureLevels addObject:@{@"predicate": predicate, @"level": level}];
+                    }
+                }
+                
+                id titles = sharedAppConfig[@"navStructure"][@"titles"];
+                sharedAppConfig.navTitles = [[NSMutableArray alloc] initWithCapacity:[titles count]];
+                
+                for (id entry in titles) {
+                    if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"]) {
+                        NSMutableDictionary *toAdd = [[NSMutableDictionary alloc] init];
+                        
+                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                        [toAdd setObject:predicate forKey:@"predicate"];
+                        
+                        
+                        if (entry[@"title"]) {
+                            [toAdd setObject:entry[@"title"] forKey:@"title"];
+                        }
+                        
+                        if (entry[@"urlRegex"]) {
+                            [toAdd setObject:[NSRegularExpression regularExpressionWithPattern:entry[@"urlRegex"] options:0 error:nil] forKey:@"urlRegex"];
+                        }
+                        
+                        if (entry[@"urlChompWords"]) {
+                            [toAdd setObject:entry[@"urlChompWords"] forKey:@"urlChompWords"];
+                        }
+                        
+                        [sharedAppConfig.navTitles addObject:toAdd];
+                    }
+                }
+            }
+            
+            if ([sharedAppConfig hasKey:@"interactiveDelay"]) {
+                sharedAppConfig.interactiveDelay = sharedAppConfig[@"interactiveDelay"];
+            }
+            
+            if ([sharedAppConfig hasKey:@"interceptForms"]) {
+                sharedAppConfig.interceptForms = sharedAppConfig[@"interceptForms"];
+            }
+            
+            if ([sharedAppConfig hasKey:@"regexInternalExternal"]) {
+                id temp = sharedAppConfig[@"regexInternalExternal"];
+                
+                NSUInteger num = [temp count];
+                sharedAppConfig.regexInternalEternal = [[NSMutableArray alloc] initWithCapacity:num];
+                sharedAppConfig.regexIsInternal = [[NSMutableArray alloc] initWithCapacity:num];
+                for (id entry in temp) {
+                    if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"] && entry[@"internal"]) {
+                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                        NSNumber *internal = entry[@"internal"];
+                        if (predicate) {
+                            [sharedAppConfig.regexInternalEternal addObject:predicate];
+                            [sharedAppConfig.regexIsInternal addObject:internal];
+                        }
+                    }
+
+                }
+            }
+            
+            if ([sharedAppConfig hasKey:@"loginLaunchBackground"]) {
+                sharedAppConfig.loginLaunchBackground = [sharedAppConfig[@"loginLaunchBackground"] boolValue];
+            } else sharedAppConfig.loginLaunchBackground = NO;
+            
+            if ([sharedAppConfig hasKey:@"loginIconImage"]) {
+                sharedAppConfig.loginIconImage = [sharedAppConfig[@"loginIconImage"] boolValue];
+            } else sharedAppConfig.loginIconImage = YES;
+            
+            // json menus
+            id menus = sharedAppConfig.json[@"menus"];
+            if ([menus isKindOfClass:[NSDictionary class]]) {
+                sharedAppConfig.menus = [NSMutableDictionary dictionary];
+                for (id key in menus) {
+                    if ([menus[key][@"items"] isKindOfClass:[NSArray class]]) {
+                        [sharedAppConfig.menus setObject:menus[key][@"items"] forKey:key];
+                    }
+                }
+            }
+            
+            // json login detection
+            id loginDetect = sharedAppConfig.json[@"loginDetection"];
+            if ([loginDetect isKindOfClass:[NSDictionary class]]) {
+                id url = loginDetect[@"url"];
+                if ([url isKindOfClass:[NSString class]]) {
+                    sharedAppConfig.loginDetectionURL = [NSURL URLWithString:url];
+                }
+                
+                id redirectLocations = loginDetect[@"redirectLocations"];
+                if ([redirectLocations isKindOfClass:[NSArray class]]) {
+                    sharedAppConfig.loginDetectRegexes = [NSMutableArray array];
+                    sharedAppConfig.loginDetectLocations = [NSMutableArray array];
+                    for (id entry in redirectLocations) {
+                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                        if (predicate) {
+                            [sharedAppConfig.loginDetectRegexes addObject:predicate];
+                            [sharedAppConfig.loginDetectLocations addObject:entry];
+                        }
+                    }
+                }
+            }
         }
         
         return sharedAppConfig;
@@ -91,16 +203,16 @@
 
 - (BOOL)hasKey:(id)key
 {
-    return (self.json[key] && self.json[key] != [NSNull null]) || self.dict[key];
+    return self.json[key] && self.json[key] != [NSNull null];
 }
 
 - (id)objectForKey:(id)aKey;
 {
-    // first check json
-    if (self.json[aKey]) {
-        return self.json[aKey];
-    } else
-        return [self.dict objectForKey:aKey];
+    id ret = self.json[aKey];
+    if (ret == [NSNull null]) {
+        return nil;
+    }
+    return ret;
 }
 
 - (id)objectForKeyedSubscript:(id)key

@@ -30,7 +30,19 @@
 @property BOOL allowZoom;
 @property BOOL showToolbar;
 @property BOOL showNavigationBar;
+@property BOOL pushNotifications;
+@property BOOL loginLaunchBackground;
+@property BOOL loginIconImage;
 @property NSDictionary *redirects;
+@property NSMutableArray *navStructureLevels;
+@property NSMutableArray *navTitles;
+@property NSNumber *interactiveDelay;
+@property NSArray *interceptForms;
+@property NSMutableArray *regexInternalEternal;
+@property NSMutableArray *regexIsInternal;
+@property NSMutableDictionary *menus;
+@property NSMutableArray *loginDetectRegexes;
+@property NSMutableArray *loginDetectLocations;
 
 + (LEANAppConfig *)sharedAppConfig;
 
