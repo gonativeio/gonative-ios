@@ -26,13 +26,26 @@
             sharedAppConfig = [[LEANAppConfig alloc] init];
             
             // read json
-            NSError *jsonError;
-            NSString *path = [[NSBundle mainBundle] pathForResource:@"appConfig" ofType:@"json"];
-            NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:path];
-            [inputStream open];
-            sharedAppConfig.json = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:&jsonError];
-            if (jsonError) NSLog(@"Error parsing json: %@", jsonError);
-            [inputStream close];
+            NSURL *otaJson = [LEANAppConfig urlForOtaConfig];
+            NSURL *packageJson = [[NSBundle mainBundle] URLForResource:@"appConfig" withExtension:@"json"];
+            
+            for (NSURL *url in @[otaJson, packageJson]) {
+                if (![[NSFileManager defaultManager] fileExistsAtPath:[url path] isDirectory:NO]) {
+                    continue;
+                }
+                
+                NSError *jsonError;
+                NSInputStream *inputStream = [NSInputStream inputStreamWithURL:url];
+                [inputStream open];
+                sharedAppConfig.json = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:&jsonError];
+                [inputStream close];
+                if (!jsonError) {
+                    // success!
+                    break;
+                } else {
+                    NSLog(@"Error parsing json: %@", jsonError);
+                }
+            }
             
             sharedAppConfig.tintColor = [LEANUtilities colorFromHexString:sharedAppConfig[@"iosTintColor"]];
             
@@ -199,6 +212,13 @@
         
         return sharedAppConfig;
     }
+}
+
++ (NSURL*)urlForOtaConfig
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *library = [fileManager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask][0];
+    return [library URLByAppendingPathComponent:@"appConfig.json"];
 }
 
 - (BOOL)hasKey:(id)key

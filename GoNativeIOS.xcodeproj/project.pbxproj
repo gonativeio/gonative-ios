@@ -68,6 +68,7 @@
 		20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AB51905DED100B997DD /* MenuChildIcon.xib */; };
 		20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AB71905DFFC00B997DD /* MenuGroupNoIcon.xib */; };
 		20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */; };
+		20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */; };
 		20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20DE147F18F103850083F46A /* ForgotPasswordView.xib */; };
 		20EA5523194FE7900039735B /* LEANPushManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20EA5522194FE7900039735B /* LEANPushManager.m */; };
 /* End PBXBuildFile section */
@@ -179,6 +180,8 @@
 		20A13AB51905DED100B997DD /* MenuChildIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuChildIcon.xib; sourceTree = "<group>"; };
 		20A13AB71905DFFC00B997DD /* MenuGroupNoIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuGroupNoIcon.xib; sourceTree = "<group>"; };
 		20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuChildNoIcon.xib; sourceTree = "<group>"; };
+		20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANConfigUpdater.h; sourceTree = "<group>"; };
+		20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANConfigUpdater.m; sourceTree = "<group>"; };
 		20DE147F18F103850083F46A /* ForgotPasswordView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgotPasswordView.xib; sourceTree = "<group>"; };
 		20EA5521194FE7900039735B /* LEANPushManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANPushManager.h; sourceTree = "<group>"; };
 		20EA5522194FE7900039735B /* LEANPushManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANPushManager.m; sourceTree = "<group>"; };
@@ -257,6 +260,8 @@
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				2002B4D518A99A0A00495B3D /* LEANAppConfig.h */,
 				2002B4D618A99A0A00495B3D /* LEANAppConfig.m */,
+				20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */,
+				20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */,
 				20EA5521194FE7900039735B /* LEANPushManager.h */,
 				20EA5522194FE7900039735B /* LEANPushManager.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
@@ -474,7 +479,7 @@
 			attributes = {
 				CLASSPREFIX = LEAN;
 				LastUpgradeCheck = 0510;
-				ORGANIZATIONNAME = "The Lean App";
+				ORGANIZATIONNAME = "GoNative.io LLC";
 				TargetAttributes = {
 					2002B4BB18A9991300495B3D = {
 						TestTargetID = 2002B49718A9991300495B3D;
@@ -559,6 +564,7 @@
 				204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */,
 				207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */,
 				20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */,
+				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
 				20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
 				2002B4E518A99A9900495B3D /* RECommonFunctions.m in Sources */,

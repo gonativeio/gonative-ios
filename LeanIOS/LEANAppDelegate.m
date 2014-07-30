@@ -12,6 +12,7 @@
 #import "LEANUrlCache.h"
 #import "LEANPushManager.h"
 #import "LEANRootViewController.h"
+#import "LEANConfigUpdater.h"
 
 @interface LEANAppDelegate() <UIAlertViewDelegate>
 @property UIAlertView *alertView;
@@ -70,6 +71,9 @@
     // clear notifications
     application.applicationIconBadgeNumber = 1;
     application.applicationIconBadgeNumber = 0;
+    
+    // download new config
+    [[[LEANConfigUpdater alloc] init] updateConfig];
     
     return YES;
 }

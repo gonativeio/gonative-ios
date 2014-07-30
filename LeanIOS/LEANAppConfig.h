@@ -45,6 +45,7 @@
 @property NSMutableArray *loginDetectLocations;
 
 + (LEANAppConfig *)sharedAppConfig;
++ (NSURL*)urlForOtaConfig;
 
 - (BOOL)hasKey:(NSString *)key;
 - (id)objectForKey:(id)aKey;
