@@ -95,7 +95,7 @@
 
 // Assumes input like "#00FF00" (#RRGGBB).
 + (UIColor *)colorFromHexString:(NSString *)hexString {
-    if (!hexString || ![hexString hasPrefix:@"#"]) {
+    if (![hexString isKindOfClass:[NSString class]] || ![hexString hasPrefix:@"#"]) {
         return nil;
     }
     

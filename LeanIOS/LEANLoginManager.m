@@ -80,7 +80,6 @@
         self.isChecking = NO;
         [connection cancel];
         
-        
         // iterate through loginDetectionRegexes
         NSArray *regexes = [LEANAppConfig sharedAppConfig].loginDetectRegexes;
         NSString *urlString = [self.currentUrl absoluteString];
@@ -96,19 +95,6 @@
                 return;
             }
         }
-        
-        
-        // old logic if no regex matches
-        if ([self.currentUrl matchesPathOf:[LEANAppConfig sharedAppConfig].loginDetectionURLnotloggedin]) {
-            self.loggedIn = NO;
-            self.loginStatus = @"default";
-        }
-        else {
-            self.loggedIn = YES;
-            self.loginStatus = @"loggedIn";
-        }
-        
-        [self statusUpdated];
     }
 }
 

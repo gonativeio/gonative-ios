@@ -65,7 +65,7 @@
     
     [self updateMenuWithStatus:@"default"];
 
-    if ([[LEANAppConfig sharedAppConfig][@"checkUserAuth"] boolValue]) {
+    if ([LEANAppConfig sharedAppConfig].loginDetectionURL) {
         // subscribe to login notifications
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveLoginNotification:) name:kLEANLoginManagerNotificationName object:nil];
         [[LEANLoginManager sharedManager] checkIfNotAlreadyChecking];
@@ -213,7 +213,7 @@
     }
     
     // text
-    label.text = [menuItem[@"name"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    label.text = [menuItem[@"label"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     // expand/collapse indicator
     if ([menuItem[@"isGrouping"] boolValue]) {
@@ -241,7 +241,7 @@
     }
     
     // configure text color
-    if ([[LEANAppConfig sharedAppConfig][@"checkCustomStyling"] boolValue]) {
+    if ([LEANAppConfig sharedAppConfig].tintColor) {
         label.textColor = [LEANAppConfig sharedAppConfig].tintColor;
         icon.textColor = [LEANAppConfig sharedAppConfig].tintColor;
         cell.tintColor = [LEANAppConfig sharedAppConfig].tintColor;

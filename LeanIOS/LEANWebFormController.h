@@ -11,9 +11,8 @@
 @interface LEANWebFormController : UITableViewController
 @property (nonatomic, weak) UIViewController *originatingViewController;
 
-- (id)initWithJsonResource:(NSString*)jsonRes formUrl:(NSURL*)formUrl errorUrl:(NSURL*)errorUrl title:(NSString*) title isLogin:(BOOL)isLogin;
-
 - (id)initWithJsonObject:(id)json;
 
+- (id)initWithDictionary:(NSDictionary*)config title:(NSString*)title isLogin:(BOOL)isLogin;
 
 @end

@@ -17,12 +17,12 @@
 
 - (void)updateConfig
 {
-    NSString *appnumHashed = [LEANAppConfig sharedAppConfig][@"appnumHashed"];
-    if (!appnumHashed) {
+    NSString *publicKey = [LEANAppConfig sharedAppConfig].publicKey;
+    if (!publicKey) {
         return;
     }
     
-    NSString *urlString = [NSString stringWithFormat:@"https://gonative.io/static/appConfig/%@.json", appnumHashed];
+    NSString *urlString = [NSString stringWithFormat:@"https://gonative.io/static/appConfig/%@.json", publicKey];
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDownloadTask *downloadTask =  [session downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {

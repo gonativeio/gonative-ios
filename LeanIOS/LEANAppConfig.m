@@ -47,75 +47,95 @@
                 }
             }
             
-            sharedAppConfig.tintColor = [LEANUtilities colorFromHexString:sharedAppConfig[@"iosTintColor"]];
+            ////////////////////////////////////////////////////////////
+            // General
+            ////////////////////////////////////////////////////////////
+            NSDictionary *general = sharedAppConfig.json[@"general"];
             
-            sharedAppConfig.titleTextColor = [LEANUtilities colorFromHexString:sharedAppConfig[@"iosTitleColor"]];
-            sharedAppConfig.initialURL = [NSURL URLWithString:sharedAppConfig[@"initialURL"]];
+            sharedAppConfig.userAgentAdd = general[@"userAgentAdd"];
+            sharedAppConfig.initialURL = [NSURL URLWithString:general[@"initialUrl"]];
             sharedAppConfig.initialHost = [sharedAppConfig.initialURL host];
+            sharedAppConfig.appName = general[@"appName"];
+            sharedAppConfig.publicKey = general[@"publicKey"];
+            
             if ([sharedAppConfig.initialHost hasPrefix:@"www."]) {
                 sharedAppConfig.initialHost = [sharedAppConfig.initialHost stringByReplacingCharactersInRange:NSMakeRange(0, [@"www." length]) withString:@""];
             }
-            sharedAppConfig.loginDetectionURL = [NSURL URLWithString:sharedAppConfig[@"loginDetectionURL"]];
-            sharedAppConfig.loginDetectionURLnotloggedin = [NSURL URLWithString:sharedAppConfig[@"loginDetectionURLnotloggedin"]];
-            sharedAppConfig.loginURL = [NSURL URLWithString:sharedAppConfig[@"loginURL"]];
-            sharedAppConfig.loginURLfail = [NSURL URLWithString:sharedAppConfig[@"loginURLfail"]];
-            sharedAppConfig.forgotPasswordURL = [NSURL URLWithString:sharedAppConfig[@"forgotPasswordURL"]];
-            sharedAppConfig.forgotPasswordURLfail = [NSURL URLWithString:sharedAppConfig[@"forgotPasswordURLfail"]];
-            sharedAppConfig.signupURL = [NSURL URLWithString:sharedAppConfig[@"signupURL"]];
-            sharedAppConfig.signupURLfail = [NSURL URLWithString:sharedAppConfig[@"signupURLfail"]];
-            sharedAppConfig.loginIsFirstPage = [sharedAppConfig[@"loginIsFirstPage"] boolValue];
-            sharedAppConfig.showShareButton = [sharedAppConfig[@"showShareButton"] boolValue];
-            sharedAppConfig.enableChromecast = [sharedAppConfig[@"enableChromecast"] boolValue];
             
-            if (sharedAppConfig[@"forceLandscapeRegex"]) {
-                sharedAppConfig.forceLandscapeMatch = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", sharedAppConfig[@"forceLandscapeRegex"]];
-            }
+            ////////////////////////////////////////////////////////////
+            // Navigation
+            ////////////////////////////////////////////////////////////
+            NSDictionary *navigation = sharedAppConfig.json[@"navigation"];
+            NSDictionary *sidebarNav = navigation[@"sidebarNavigation"];
             
-            if (sharedAppConfig[@"allowZoom"]) {
-                sharedAppConfig.allowZoom = [sharedAppConfig[@"allowZoom"] boolValue];
-            }
-            else
-                sharedAppConfig.allowZoom = YES;
-            
-            
-
-            
-            if ([sharedAppConfig hasKey:@"redirects"]) {
-                NSUInteger len = [sharedAppConfig[@"redirects"] count];
-                sharedAppConfig.redirects = [[NSMutableDictionary alloc] initWithCapacity:len];
-                for (id redirect in sharedAppConfig[@"redirects"]) {
-                    [sharedAppConfig.redirects setValue:redirect[@"to"] forKey:redirect[@"from"]];
+            // menus
+            id menus = sidebarNav[@"menus"];
+            NSUInteger numActiveMenus = 0;
+            if ([menus isKindOfClass:[NSArray class]]) {
+                sharedAppConfig.menus = [NSMutableDictionary dictionary];
+                for (id menu in menus) {
+                    // skip if not active
+                    if (![menu[@"active"] boolValue]) {
+                        continue;
+                    }
+                    
+                    numActiveMenus++;
+                    
+                    NSString *name = menu[@"name"];
+                    if (name && [menu[@"items"] isKindOfClass:[NSArray class]]) {
+                        sharedAppConfig.menus[name] = menu[@"items"];
+                        
+                        // show menu if the menu named "default" is active
+                        if ([name isEqualToString:@"default"]) {
+                            sharedAppConfig.showNavigationMenu = YES;
+                        }
+                    }
                 }
             }
             
-            if ([sharedAppConfig hasKey:@"showToolbar"])
-                sharedAppConfig.showToolbar = [sharedAppConfig[@"showToolbar"] boolValue];
-            else sharedAppConfig.showToolbar = YES;
+            if ([sidebarNav[@"userIdRegex"] isKindOfClass:[NSString class]]) {
+                sharedAppConfig.userIdRegex = sidebarNav[@"userIdRegex"];
+            }
             
-            if ([sharedAppConfig hasKey:@"showNavigationBar"])
-                sharedAppConfig.showNavigationBar = [sharedAppConfig[@"showNavigationBar"] boolValue];
-            else sharedAppConfig.showNavigationBar = YES;
-            
-            if ([sharedAppConfig hasKey:@"pushNotifications"])
-                sharedAppConfig.pushNotifications = [sharedAppConfig[@"pushNotifications"] boolValue];
-            else sharedAppConfig.pushNotifications = NO;
-            
-            if ([sharedAppConfig hasKey:@"navStructure"]) {
-                id urlLevels = sharedAppConfig[@"navStructure"][@"urlLevels"];
-                sharedAppConfig.navStructureLevels = [[NSMutableArray alloc] initWithCapacity:[urlLevels count]];
+            // menu selection config
+            id menuSelectionConfig = sidebarNav[@"menuSelectionConfig"];
+            if (numActiveMenus > 1 && [menuSelectionConfig isKindOfClass:[NSDictionary class]]) {
+                id testUrl = menuSelectionConfig[@"testURL"];
+                if ([testUrl isKindOfClass:[NSString class]]) {
+                    sharedAppConfig.loginDetectionURL = [NSURL URLWithString:testUrl];
+                }
                 
+                id redirectLocations = menuSelectionConfig[@"redirectLocations"];
+                if ([redirectLocations isKindOfClass:[NSArray class]]) {
+                    sharedAppConfig.loginDetectRegexes = [NSMutableArray array];
+                    sharedAppConfig.loginDetectLocations = [NSMutableArray array];
+                    for (id entry in redirectLocations) {
+                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                        if (predicate) {
+                            [sharedAppConfig.loginDetectRegexes addObject:predicate];
+                            [sharedAppConfig.loginDetectLocations addObject:entry];
+                        }
+                    }
+                }
+            }
+            
+            // navigation levels
+            if ([navigation[@"navigationLevels"][@"active"] boolValue]) {
+                id urlLevels = navigation[@"navigationLevels"][@"levels"];
+                sharedAppConfig.navStructureLevels = [[NSMutableArray alloc] initWithCapacity:[urlLevels count]];
                 for (id entry in urlLevels) {
                     if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"] && entry[@"level"]) {
                         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
                         NSNumber *level = entry[@"level"];
-                        
                         [sharedAppConfig.navStructureLevels addObject:@{@"predicate": predicate, @"level": level}];
                     }
                 }
-                
-                id titles = sharedAppConfig[@"navStructure"][@"titles"];
+            }
+            
+            // navigation titles
+            if ([navigation[@"navigationTitles"][@"active"] boolValue]) {
+                id titles = navigation[@"navigationTitles"][@"titles"];
                 sharedAppConfig.navTitles = [[NSMutableArray alloc] initWithCapacity:[titles count]];
-                
                 for (id entry in titles) {
                     if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"]) {
                         NSMutableDictionary *toAdd = [[NSMutableDictionary alloc] init];
@@ -123,15 +143,12 @@
                         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
                         [toAdd setObject:predicate forKey:@"predicate"];
                         
-                        
                         if (entry[@"title"]) {
                             [toAdd setObject:entry[@"title"] forKey:@"title"];
                         }
-                        
                         if (entry[@"urlRegex"]) {
                             [toAdd setObject:[NSRegularExpression regularExpressionWithPattern:entry[@"urlRegex"] options:0 error:nil] forKey:@"urlRegex"];
                         }
-                        
                         if (entry[@"urlChompWords"]) {
                             [toAdd setObject:entry[@"urlChompWords"] forKey:@"urlChompWords"];
                         }
@@ -139,18 +156,25 @@
                         [sharedAppConfig.navTitles addObject:toAdd];
                     }
                 }
+                
             }
             
-            if ([sharedAppConfig hasKey:@"interactiveDelay"]) {
-                sharedAppConfig.interactiveDelay = sharedAppConfig[@"interactiveDelay"];
+            if ([navigation[@"redirects"] isKindOfClass:[NSArray class]]) {
+                NSUInteger len = [navigation[@"redirects"] count];
+                sharedAppConfig.redirects = [[NSMutableDictionary alloc] initWithCapacity:len];
+                for (id redirect in navigation[@"redirects"]) {
+                    [sharedAppConfig.redirects setValue:redirect[@"to"] forKey:redirect[@"from"]];
+                }
             }
             
-            if ([sharedAppConfig hasKey:@"interceptForms"]) {
-                sharedAppConfig.interceptForms = sharedAppConfig[@"interceptForms"];
+            if ([navigation[@"profilePickerJS"] isKindOfClass:[NSString class]]) {
+                sharedAppConfig.profilePickerJS = navigation[@"profilePickerJS"];
             }
             
-            if ([sharedAppConfig hasKey:@"regexInternalExternal"]) {
-                id temp = sharedAppConfig[@"regexInternalExternal"];
+            // regex for internal vs external links
+            // note that we ignore "active" here.
+            if (navigation[@"regexInternalExternal"]) {
+                id temp = navigation[@"regexInternalExternal"][@"rules"];
                 
                 NSUInteger num = [temp count];
                 sharedAppConfig.regexInternalEternal = [[NSMutableArray alloc] initWithCapacity:num];
@@ -164,51 +188,102 @@
                             [sharedAppConfig.regexIsInternal addObject:internal];
                         }
                     }
-
+                    
                 }
             }
             
-            if ([sharedAppConfig hasKey:@"loginLaunchBackground"]) {
-                sharedAppConfig.loginLaunchBackground = [sharedAppConfig[@"loginLaunchBackground"] boolValue];
-            } else sharedAppConfig.loginLaunchBackground = NO;
             
-            if ([sharedAppConfig hasKey:@"loginIconImage"]) {
-                sharedAppConfig.loginIconImage = [sharedAppConfig[@"loginIconImage"] boolValue];
+            ////////////////////////////////////////////////////////////
+            // Styling
+            ////////////////////////////////////////////////////////////
+            NSDictionary *styling = sharedAppConfig.json[@"styling"];
+            
+            if ([styling[@"customCSS"] isKindOfClass:[NSString class]]) {
+                sharedAppConfig.customCss = styling[@"customCSS"];
+            }
+            
+            if ([styling[@"forceViewportWidth"] isKindOfClass:[NSNumber class]]) {
+                sharedAppConfig.forceViewportWidth = styling[@"forceViewportWidth"];
+            }
+            
+            
+            if ([styling[@"showNavigationBar"] isKindOfClass:[NSNumber class]])
+                sharedAppConfig.showNavigationBar = [styling[@"showNavigationBar"] boolValue];
+            else sharedAppConfig.showNavigationBar = YES;
+            sharedAppConfig.tintColor = [LEANUtilities colorFromHexString:styling[@"iosTintColor"]];
+            sharedAppConfig.titleTextColor = [LEANUtilities colorFromHexString:styling[@"iosTitleColor"]];
+            sharedAppConfig.menuAnimationDuration = styling[@"menuAnimationDuration"];
+            sharedAppConfig.interactiveDelay = styling[@"transitionInteractiveDelayMax"];
+            
+            if ([styling[@"showToolbar"] isKindOfClass:[NSNumber class]])
+                sharedAppConfig.showToolbar = [styling[@"showToolbar"] boolValue];
+            else sharedAppConfig.showToolbar = NO;
+            
+            
+            ////////////////////////////////////////////////////////////
+            // Forms
+            ////////////////////////////////////////////////////////////
+            NSDictionary *forms = sharedAppConfig.json[@"forms"];
+            
+            // search
+            NSDictionary *search = forms[@"search"];
+            if (search && [search[@"active"] boolValue]) {
+                sharedAppConfig.searchTemplateURL = search[@"searchTemplateURL"];
+            }
+            
+            // login
+            NSDictionary *loginConfig = forms[@"loginConfig"];
+            if (loginConfig && [loginConfig[@"active"] boolValue]) {
+                sharedAppConfig.loginConfig = loginConfig;
+                sharedAppConfig.loginURL = [NSURL URLWithString:loginConfig[@"interceptUrl"]];
+                sharedAppConfig.loginIsFirstPage = [loginConfig[@"loginIsFirstPage"] boolValue];
+            }
+            
+            sharedAppConfig.loginLaunchBackground = [forms[@"loginLaunchBackground"] boolValue];
+            if ([forms[@"loginIconImage"] isKindOfClass:[NSNumber class]]) {
+                sharedAppConfig.loginIconImage = [forms[@"loginIconImage"] boolValue];
             } else sharedAppConfig.loginIconImage = YES;
             
-            // json menus
-            id menus = sharedAppConfig.json[@"menus"];
-            if ([menus isKindOfClass:[NSDictionary class]]) {
-                sharedAppConfig.menus = [NSMutableDictionary dictionary];
-                for (id key in menus) {
-                    if ([menus[key][@"items"] isKindOfClass:[NSArray class]]) {
-                        [sharedAppConfig.menus setObject:menus[key][@"items"] forKey:key];
-                    }
-                }
+            // signup
+            NSDictionary *signupConfig = forms[@"signupConfig"];
+            if (signupConfig && [signupConfig[@"active"] boolValue]) {
+                sharedAppConfig.signupConfig = signupConfig;
+                sharedAppConfig.signupURL = [NSURL URLWithString:signupConfig[@"interceptUrl"]];
             }
             
-            // json login detection
-            id loginDetect = sharedAppConfig.json[@"loginDetection"];
-            if ([loginDetect isKindOfClass:[NSDictionary class]]) {
-                id url = loginDetect[@"url"];
-                if ([url isKindOfClass:[NSString class]]) {
-                    sharedAppConfig.loginDetectionURL = [NSURL URLWithString:url];
-                }
-                
-                id redirectLocations = loginDetect[@"redirectLocations"];
-                if ([redirectLocations isKindOfClass:[NSArray class]]) {
-                    sharedAppConfig.loginDetectRegexes = [NSMutableArray array];
-                    sharedAppConfig.loginDetectLocations = [NSMutableArray array];
-                    for (id entry in redirectLocations) {
-                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
-                        if (predicate) {
-                            [sharedAppConfig.loginDetectRegexes addObject:predicate];
-                            [sharedAppConfig.loginDetectLocations addObject:entry];
-                        }
-                    }
-                }
+            // other forms to be intercepted
+            NSDictionary *interceptForms = forms[@"interceptForms"];
+            if (interceptForms && [interceptForms[@"active"] boolValue]) {
+                sharedAppConfig.interceptForms = interceptForms[@"forms"];
             }
+            
+            
+            ////////////////////////////////////////////////////////////
+            // Services
+            ////////////////////////////////////////////////////////////
+            NSDictionary *services = sharedAppConfig.json[@"services"];
+            
+            NSDictionary *push = services[@"push"];
+            sharedAppConfig.pushNotifications = [push[@"active"] boolValue];
+            
+            
+            ////////////////////////////////////////////////////////////
+            // Miscellaneous stuff
+            ////////////////////////////////////////////////////////////
+            sharedAppConfig.showShareButton = [sharedAppConfig.json[@"showShareButton"] boolValue];
+            sharedAppConfig.enableChromecast = [sharedAppConfig.json[@"enableChromecast"] boolValue];
+            
+            if (sharedAppConfig.json[@"forceLandscapeRegex"]) {
+                sharedAppConfig.forceLandscapeMatch = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", sharedAppConfig.json[@"forceLandscapeRegex"]];
+            }
+            
+            if (sharedAppConfig.json[@"allowZoom"]) {
+                sharedAppConfig.allowZoom = [sharedAppConfig.json[@"allowZoom"] boolValue];
+            }
+            else
+                sharedAppConfig.allowZoom = YES;
         }
+        
         
         return sharedAppConfig;
     }
@@ -219,25 +294,6 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *library = [fileManager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask][0];
     return [library URLByAppendingPathComponent:@"appConfig.json"];
-}
-
-- (BOOL)hasKey:(id)key
-{
-    return self.json[key] && self.json[key] != [NSNull null];
-}
-
-- (id)objectForKey:(id)aKey;
-{
-    id ret = self.json[aKey];
-    if (ret == [NSNull null]) {
-        return nil;
-    }
-    return ret;
-}
-
-- (id)objectForKeyedSubscript:(id)key
-{
-    return [self objectForKey:key];
 }
 
 @end

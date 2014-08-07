@@ -88,9 +88,9 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
     // find closing </head> tag
     NSRange insertPoint = [origString rangeOfString:@"</head>" options:NSCaseInsensitiveSearch];
     if (insertPoint.location != NSNotFound) {
-        NSString *customCss = [LEANAppConfig sharedAppConfig][@"customCss"];
-        NSString *stringViewport = [LEANAppConfig sharedAppConfig][@"stringViewport"];
-        NSNumber *viewportWidth = [LEANAppConfig sharedAppConfig][@"viewportWidth"];
+        NSString *customCss = [LEANAppConfig sharedAppConfig].customCss;
+        NSString *stringViewport = [LEANAppConfig sharedAppConfig].stringViewport;
+        NSNumber *viewportWidth = [LEANAppConfig sharedAppConfig].forceViewportWidth;
         
         NSMutableString *newString = [[origString substringToIndex:insertPoint.location] mutableCopy];
         if (customCss) {

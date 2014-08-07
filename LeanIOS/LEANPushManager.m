@@ -37,8 +37,8 @@ static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api
 
 - (void)register
 {
-    if (![LEANAppConfig sharedAppConfig][@"appnumHashed"]) {
-        NSLog(@"appnumHashed is required for push");
+    if (![LEANAppConfig sharedAppConfig].publicKey) {
+        NSLog(@"publicKey is required for push");
         return;
     }
     
@@ -51,7 +51,7 @@ static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api
     
     NSMutableDictionary *toSend = [@{@"platform": @"ios",
                                      @"token": [self.token base64EncodedStringWithOptions:0],
-                                     @"appnumHashed": [LEANAppConfig sharedAppConfig][@"appnumHashed"],
+                                     @"appnumHashed": [LEANAppConfig sharedAppConfig].publicKey,
                                      @"appVersion": appVersion}
                                    mutableCopy];
     if (self.userID) [toSend setObject:self.userID forKey:@"userID"];

@@ -27,7 +27,7 @@
 
 - (void)awakeFromNib
 {
-    self.animationDuration = [[LEANAppConfig sharedAppConfig][@"menuAnimationDuration"] floatValue];
+    self.animationDuration = [[LEANAppConfig sharedAppConfig].menuAnimationDuration floatValue];
     self.limitMenuViewSize = YES;
     self.menuViewSize = CGSizeMake(270, NAN);
     

@@ -28,7 +28,7 @@
 @property NSString *title;
 @property NSURL *formUrl;
 @property NSURL *errorUrl;
-@property NSURL *forgotPasswordUrl;
+@property NSURL *passwordResetUrl;
 @property BOOL isLogin;
 @property BOOL checkingLogin;
 @property UIWebView *hiddenWebView;
@@ -45,12 +45,12 @@
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         self.title = json[@"title"];
-        self.formUrl = [NSURL URLWithString:json[@"url"]];
+        self.formUrl = [NSURL URLWithString:json[@"interceptUrl"]];
         self.errorUrl = [NSURL URLWithString:json[@"errorUrl"]];
         self.isLogin = [json[@"isLogin"] boolValue];
         
-        if (self.isLogin && [LEANAppConfig sharedAppConfig][@"forgotPasswordURL"]) {
-            self.forgotPasswordUrl = [NSURL URLWithString:[LEANAppConfig sharedAppConfig][@"forgotPasswordURL"]];
+        if (self.isLogin && json[@"passwordResetUrl"]) {
+            self.passwordResetUrl = [NSURL URLWithString:json[@"passwordResetUrl"]];
         }
         
         self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
@@ -68,30 +68,30 @@
     return self;
 }
 
-- (id)initWithJsonResource:(NSString*)jsonRes formUrl:(NSURL*)formUrl errorUrl:(NSURL*)errorUrl title:(NSString*)title isLogin:(BOOL)isLogin
+- (id)initWithDictionary:(NSDictionary *)config title:(NSString *)title isLogin:(BOOL)isLogin
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         self.title = title;
-        self.formUrl = formUrl;
-        self.errorUrl = errorUrl;
+        self.formUrl = [NSURL URLWithString:config[@"interceptUrl"]];
+        self.errorUrl = [NSURL URLWithString:config[@"errorUrl"]];
         self.isLogin = isLogin;
         
-        if (self.isLogin && [LEANAppConfig sharedAppConfig][@"forgotPasswordURL"]) {
-            self.forgotPasswordUrl = [NSURL URLWithString:[LEANAppConfig sharedAppConfig][@"forgotPasswordURL"]];
+        if (self.isLogin && config[@"passwordResetUrl"]) {
+            self.passwordResetUrl = [NSURL URLWithString:config[@"passwordResetUrl"]];
         }
         
         self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
-    
+        
         self.hiddenWebView = [[UIWebView alloc] init];
         self.hiddenWebView.delegate = self;
         
         // if login is first page, wait until after we've checked to load the login url
         // if loaded too early, may break some csrf protected pages.
-        if (![LEANAppConfig sharedAppConfig].loginIsFirstPage)
+        if (!self.isLogin || ![LEANAppConfig sharedAppConfig].loginIsFirstPage)
             [self.hiddenWebView loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
         
-        [self loadJsonObject:[LEANAppConfig sharedAppConfig][jsonRes]];
+        [self loadJsonObject:config];
     }
     return self;
 }
@@ -99,8 +99,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-
     
     // Add "done" button to navigation bar
     self.submitButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submit:)];
@@ -189,12 +187,21 @@
     NSMutableArray *sections = [[NSMutableArray alloc] init];
     NSMutableArray *currentSection = [[NSMutableArray alloc] init];
     
-    int numCells = 0;
+    int numCells = 0; // only used for more efficient allocation of indexPathToCell
     
-    for (id field in self.json[@"fields"]) {
+    NSMutableDictionary *lastPasswordField;
+    for (id field in self.json[@"formInputs"]) {
         if (![field[@"type"] isEqualToString:@"list"]) {
-            [currentSection addObject:field];
-            numCells += [field[@"choices"] count];
+            if ([field[@"type"] isEqualToString:@"password"]) {
+                lastPasswordField = [field mutableCopy];
+                [currentSection addObject:lastPasswordField];
+                numCells++;
+            } else if ([field[@"type"] isEqualToString:@"password (hidden)"]) {
+                lastPasswordField[@"selector2"] = field[@"selector"];
+            } else {
+                [currentSection addObject:field];
+                numCells++;
+            }
         }
         else {
             if ([currentSection count] > 0) {
@@ -202,7 +209,7 @@
             }
             
             [sections addObject:field];
-            numCells++;
+            numCells += [field[@"choices"] count];
             
             currentSection = [[NSMutableArray alloc] init];
         }
@@ -213,8 +220,9 @@
     }
     
     // add forgot password field
-    if (self.forgotPasswordUrl) {
+    if (self.passwordResetUrl) {
         [sections addObject:@[@{@"type": @"forgot_password"}]];
+        numCells++;
     }
     
     self.sections = sections;
@@ -495,7 +503,7 @@
 - (void)forgotPassword
 {
     LEANWebViewController *wv = ((LEANRootViewController*)self.frostedViewController).webViewController;
-    [wv loadUrl:self.forgotPasswordUrl];
+    [wv loadUrl:self.passwordResetUrl];
     [self dismiss];
 }
 
@@ -807,7 +815,7 @@
     BOOL success = NO;
     
     // if redirected to different page, then we are done
-    if (![url matchesPathOf:self.formUrl] && ![url matchesPathOf:self.errorUrl] && ![url matchesPathOf:self.forgotPasswordUrl]) {
+    if (![url matchesPathOf:self.formUrl] && ![url matchesPathOf:self.errorUrl] && ![url matchesPathOf:self.passwordResetUrl]) {
         success = YES;
     }
     

@@ -30,7 +30,7 @@
     [NSURLCache setSharedURLCache:[[LEANUrlCache alloc] init]];
     
     // tint color from app config
-    if ([[LEANAppConfig sharedAppConfig][@"checkCustomStyling"] boolValue]) {
+    if ([LEANAppConfig sharedAppConfig].tintColor) {
         self.window.tintColor = [LEANAppConfig sharedAppConfig].tintColor;
     }
     
@@ -41,10 +41,11 @@
     }
     
     // modify default user agent to include the suffix
-    UIWebView* webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-    NSString* originalAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-    NSString* newAgent = [NSString stringWithFormat:@"%@ %@", originalAgent,
-                          [LEANAppConfig sharedAppConfig][@"userAgentAdd"]];
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+    NSString *originalAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+    NSString *userAgentAdd = [LEANAppConfig sharedAppConfig].userAgentAdd;
+    if (!userAgentAdd) userAgentAdd = @"gonative";
+    NSString *newAgent = [NSString stringWithFormat:@"%@ %@", originalAgent, userAgentAdd];
     NSDictionary *dictionary = @{@"UserAgent": newAgent};
     [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
     

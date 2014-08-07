@@ -25,8 +25,8 @@
             sharedInspector = [[LEANUrlInspector alloc] init];
             
             sharedInspector.userId = @"";
-            if ([[LEANAppConfig sharedAppConfig] hasKey:@"userIdRegex"]) {
-                sharedInspector.userIdRegex = [NSRegularExpression regularExpressionWithPattern:[LEANAppConfig sharedAppConfig][@"userIdRegex"] options:0 error:nil];
+            if ([LEANAppConfig sharedAppConfig].userIdRegex) {
+                sharedInspector.userIdRegex = [NSRegularExpression regularExpressionWithPattern:[LEANAppConfig sharedAppConfig].userIdRegex options:0 error:nil];
             }
         }
         

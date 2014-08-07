@@ -10,45 +10,63 @@
 
 @interface LEANAppConfig : NSObject
 
-@property NSDictionary *dict;
+// general
 @property NSURL *initialURL;
 @property NSString *initialHost;
-@property NSURL *loginDetectionURL;
-@property NSURL *loginDetectionURLnotloggedin;
-@property NSURL *loginURL;
-@property NSURL *loginURLfail;
-@property NSURL *forgotPasswordURL;
-@property NSURL *forgotPasswordURLfail;
-@property NSURL *signupURL;
-@property NSURL *signupURLfail;
-@property NSPredicate *forceLandscapeMatch;
-@property UIColor *tintColor;
-@property UIColor *titleTextColor;
-@property BOOL showShareButton;
-@property BOOL loginIsFirstPage;
-@property BOOL enableChromecast;
-@property BOOL allowZoom;
-@property BOOL showToolbar;
-@property BOOL showNavigationBar;
-@property BOOL pushNotifications;
-@property BOOL loginLaunchBackground;
-@property BOOL loginIconImage;
-@property NSDictionary *redirects;
-@property NSMutableArray *navStructureLevels;
-@property NSMutableArray *navTitles;
-@property NSNumber *interactiveDelay;
-@property NSArray *interceptForms;
-@property NSMutableArray *regexInternalEternal;
-@property NSMutableArray *regexIsInternal;
+@property NSString *appName;
+@property NSString *publicKey;
+@property NSString *userAgentAdd;
+
+// navigation
 @property NSMutableDictionary *menus;
+@property NSURL *loginDetectionURL;
 @property NSMutableArray *loginDetectRegexes;
 @property NSMutableArray *loginDetectLocations;
+@property BOOL showNavigationMenu;
+@property NSMutableArray *navStructureLevels;
+@property NSMutableArray *navTitles;
+@property NSMutableArray *regexInternalEternal;
+@property NSMutableArray *regexIsInternal;
+@property NSDictionary *redirects;
+@property NSString *profilePickerJS;
+@property NSString *userIdRegex;
+@property BOOL useWebpageTitle;
+
+// styling
+@property NSString *customCss;
+@property NSNumber *forceViewportWidth;
+@property NSString *stringViewport;
+@property UIColor *tintColor;
+@property UIColor *titleTextColor;
+@property BOOL showToolbar;
+@property BOOL showNavigationBar;
+@property NSNumber *menuAnimationDuration;
+@property NSNumber *interactiveDelay;
+
+
+// forms
+@property NSString *searchTemplateURL;
+@property NSDictionary *loginConfig;
+@property NSURL *loginURL;
+@property BOOL loginIsFirstPage;
+@property BOOL loginLaunchBackground;
+@property BOOL loginIconImage;
+@property NSURL *signupURL;
+@property NSDictionary *signupConfig;
+@property NSArray *interceptForms;
+
+
+// services
+@property BOOL pushNotifications;
+
+// misc
+@property NSPredicate *forceLandscapeMatch;
+@property BOOL showShareButton;
+@property BOOL enableChromecast;
+@property BOOL allowZoom;
+
 
 + (LEANAppConfig *)sharedAppConfig;
 + (NSURL*)urlForOtaConfig;
-
-- (BOOL)hasKey:(NSString *)key;
-- (id)objectForKey:(id)aKey;
-- (id)objectForKeyedSubscript:(id)key;
 
 @end

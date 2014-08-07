@@ -54,32 +54,30 @@
     [super viewDidLoad];
     self.checkLoginSignup = YES;
     
+    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    
     // push login controller if it should be the first thing shown
-    if ([LEANAppConfig sharedAppConfig].loginIsFirstPage && [self isRootWebView]) {
-        LEANWebFormController *wfc = [[LEANWebFormController alloc]
-                                      initWithJsonResource:@"login_config"
-                                      formUrl:[LEANAppConfig sharedAppConfig].loginURL
-                                      errorUrl:[LEANAppConfig sharedAppConfig].loginURLfail
-                                      title:[LEANAppConfig sharedAppConfig][@"appName"] isLogin:YES];
+    if (appConfig.loginIsFirstPage && [self isRootWebView]) {
+        LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.loginConfig title:appConfig.appName isLogin:YES];
         wfc.originatingViewController = self;
         [self.navigationController pushViewController:wfc animated:NO];
     }
     
     // set title to application title
-    if ([[LEANAppConfig sharedAppConfig].navTitles count] == 0) {
-        self.navigationItem.title = [LEANAppConfig sharedAppConfig][@"appName"];
+    if ([appConfig.navTitles count] == 0) {
+        self.navigationItem.title = appConfig.appName;
     }
     
     // configure zoomability
-    self.webview.scalesPageToFit = [LEANAppConfig sharedAppConfig].allowZoom;
+    self.webview.scalesPageToFit = appConfig.allowZoom;
     
     // hide button if no native nav
-    if (![[LEANAppConfig sharedAppConfig][@"checkNativeNav"] boolValue]) {
+    if (!appConfig.showNavigationMenu) {
         self.navButton.customView = [[UIView alloc] init];
     }
     
     // add nav button
-    if ([[LEANAppConfig sharedAppConfig][@"checkNativeNav"] boolValue] &&  [self isRootWebView]) {
+    if (appConfig.showNavigationMenu &&  [self isRootWebView]) {
         self.navButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navImage"] style:UIBarButtonItemStyleBordered target:self action:@selector(showMenu)];
         // hack to space it a bit closer to the left edge
         UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
@@ -90,8 +88,8 @@
     self.defaultLeftNavBarItems = self.navigationItem.leftBarButtonItems;
     
     // profile picker
-    if ([[LEANAppConfig sharedAppConfig] hasKey:@"profilePickerJS"] && [[LEANAppConfig sharedAppConfig][@"profilePickerJS"] length] > 0) {
-        self.profilePickerJs = [LEANAppConfig sharedAppConfig][@"profilePickerJS"];
+    if (appConfig.profilePickerJS && [appConfig.profilePickerJS length] > 0) {
+        self.profilePickerJs = appConfig.profilePickerJS;
         self.profilePicker = [[LEANProfilePicker alloc] init];
     }
     
@@ -103,7 +101,6 @@
     // load initial url
     self.urlLevel = -1;
     if (!self.initialUrl) {
-        LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
         self.initialUrl = appConfig.initialURL;
     }
     [self loadUrl:self.initialUrl];
@@ -112,12 +109,12 @@
     self.webview.scrollView.bounces = NO;
     
     // hidden nav bar
-    if (![LEANAppConfig sharedAppConfig].showNavigationBar && [self isRootWebView]) {
+    if (!appConfig.showNavigationBar && [self isRootWebView]) {
         self.statusBarBackground = [[UINavigationBar alloc] init];
         [self.view addSubview:self.statusBarBackground];
     }
     
-    if ([LEANAppConfig sharedAppConfig][@"searchTemplateURL"]) {
+    if (appConfig.searchTemplateURL) {
         self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchPressed:)];
         self.searchBar = [[UISearchBar alloc] init];
         self.searchBar.showsCancelButton = YES;
@@ -410,7 +407,7 @@
     // the default url character does not escape '/', so use this function. NSString is toll-free bridged with CFStringRef
     NSString *searchText = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)searchBar.text,NULL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",kCFStringEncodingUTF8 ));
     // the search template can have any allowable url character, but we need to escape unicode characters like '✓' so that the NSURL creation doesn't die.
-    NSString *searchTemplate = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)[LEANAppConfig sharedAppConfig][@"searchTemplateURL"],(CFStringRef)@"!*'();:@&=+$,/?%#[]",NULL,kCFStringEncodingUTF8 ));
+    NSString *searchTemplate = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)[LEANAppConfig sharedAppConfig].searchTemplateURL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",NULL,kCFStringEncodingUTF8 ));
     NSURL *url = [NSURL URLWithString:[searchTemplate stringByAppendingString:searchText]];
     [self loadUrl:url];
     
@@ -449,7 +446,7 @@
     }
     
     // log out by clearing cookies
-    if ([urlString caseInsensitiveCompare:@"file://gonative_logout"] == NSOrderedSame) {
+    if (urlString && [urlString caseInsensitiveCompare:@"file://gonative_logout"] == NSOrderedSame) {
         [self logout];
         return false;
     }
@@ -459,7 +456,7 @@
     self.checkLoginSignup = YES;
     
     // log in
-    if (checkLoginSignup && [appConfig[@"checkNativeLogin"] boolValue] &&
+    if (checkLoginSignup && appConfig.loginConfig &&
         [url matchesPathOf:appConfig.loginURL]) {
         [self showWebview];
         
@@ -470,11 +467,8 @@
                 // recheck status as it has probably changed
                 [[LEANLoginManager sharedManager] checkLogin];
                 
-                LEANWebFormController *wfc = [[LEANWebFormController alloc]
-                                              initWithJsonResource:@"login_config"
-                                              formUrl:appConfig.loginURL
-                                              errorUrl:appConfig.loginURLfail
-                                              title:appConfig[@"appName"] isLogin:YES];
+                LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.loginConfig title:appConfig.appName isLogin:YES];
+
                 wfc.originatingViewController = self;
                 [self.navigationController pushViewController:wfc animated:YES];
             } else {
@@ -484,11 +478,7 @@
             return NO;
         }
         
-        LEANWebFormController *wfc = [[LEANWebFormController alloc]
-                                      initWithJsonResource:@"login_config"
-                                      formUrl:appConfig.loginURL
-                                      errorUrl:appConfig.loginURLfail
-                                      title:@"Log In" isLogin:YES];
+        LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.loginConfig title:@"Log In" isLogin:YES];
         wfc.originatingViewController = self;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
@@ -501,15 +491,11 @@
     }
     
     // sign up
-    if (checkLoginSignup && [appConfig[@"checkNativeSignup"] boolValue] &&
+    if (checkLoginSignup && appConfig.signupURL &&
         [url matchesPathOf:appConfig.signupURL]) {
         [self showWebview];
 
-        LEANWebFormController *wfc = [[LEANWebFormController alloc]
-                                      initWithJsonResource:@"signup_config"
-                                      formUrl:appConfig.signupURL
-                                      errorUrl:appConfig.signupURLfail
-                                      title:@"Sign Up" isLogin:NO];
+        LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.signupConfig title:@"Sign Up" isLogin:NO];
         wfc.originatingViewController = self;
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -526,7 +512,7 @@
     // other forms
     if (appConfig.interceptForms) {
         for (id form in appConfig.interceptForms) {
-            if ([url matchesPathOf:[NSURL URLWithString:form[@"url"]]]) {
+            if ([url matchesPathOf:[NSURL URLWithString:form[@"interceptUrl"]]]) {
                 [self showWebview];
                 
                 LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithJsonObject:form];
@@ -587,8 +573,7 @@
         
         if (!matchedRegex) {
             if (![hostname isEqualToString:appConfig.initialHost] &&
-                ![hostname hasSuffix:[@"." stringByAppendingString:appConfig.initialHost]] &&
-                ![[LEANAppConfig sharedAppConfig][@"internalHosts"] containsObject:hostname]) {
+                ![hostname hasSuffix:[@"." stringByAppendingString:appConfig.initialHost]]) {
                 // open in external web browser
                 [[UIApplication sharedApplication] openURL:[request URL]];
                 return NO;
@@ -710,13 +695,13 @@
     [LEANUtilities addJqueryToWebView:webView];
     
     // update navigation title
-    if ([[LEANAppConfig sharedAppConfig][@"useWebpageTitle"] boolValue]) {
+    if ([LEANAppConfig sharedAppConfig].useWebpageTitle) {
         NSString *theTitle=[self.webview stringByEvaluatingJavaScriptFromString:@"document.title"];
         self.nav.title = theTitle;
     }
     
     // update menu
-    if ([[LEANAppConfig sharedAppConfig][@"checkUserAuth"] boolValue]) {
+    if ([LEANAppConfig sharedAppConfig].loginDetectionURL) {
         [[LEANLoginManager sharedManager] checkLogin];
         
         self.visitedLoginOrSignup = [url matchesPathOf:[LEANAppConfig sharedAppConfig].loginURL] ||
