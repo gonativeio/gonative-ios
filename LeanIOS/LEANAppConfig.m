@@ -62,6 +62,45 @@
                 sharedAppConfig.initialHost = [sharedAppConfig.initialHost stringByReplacingCharactersInRange:NSMakeRange(0, [@"www." length]) withString:@""];
             }
             
+            
+            ////////////////////////////////////////////////////////////
+            // Forms
+            ////////////////////////////////////////////////////////////
+            NSDictionary *forms = sharedAppConfig.json[@"forms"];
+            
+            // search
+            NSDictionary *search = forms[@"search"];
+            if (search && [search[@"active"] boolValue]) {
+                sharedAppConfig.searchTemplateURL = search[@"searchTemplateURL"];
+            }
+            
+            // login
+            NSDictionary *loginConfig = forms[@"loginConfig"];
+            if (loginConfig && [loginConfig[@"active"] boolValue]) {
+                sharedAppConfig.loginConfig = loginConfig;
+                sharedAppConfig.loginURL = [NSURL URLWithString:loginConfig[@"interceptUrl"]];
+                sharedAppConfig.loginIsFirstPage = [loginConfig[@"loginIsFirstPage"] boolValue];
+            }
+            
+            sharedAppConfig.loginLaunchBackground = [forms[@"loginLaunchBackground"] boolValue];
+            if ([forms[@"loginIconImage"] isKindOfClass:[NSNumber class]]) {
+                sharedAppConfig.loginIconImage = [forms[@"loginIconImage"] boolValue];
+            } else sharedAppConfig.loginIconImage = YES;
+            
+            // signup
+            NSDictionary *signupConfig = forms[@"signupConfig"];
+            if (signupConfig && [signupConfig[@"active"] boolValue]) {
+                sharedAppConfig.signupConfig = signupConfig;
+                sharedAppConfig.signupURL = [NSURL URLWithString:signupConfig[@"interceptUrl"]];
+            }
+            
+            // other forms to be intercepted
+            NSDictionary *interceptForms = forms[@"interceptForms"];
+            if (interceptForms && [interceptForms[@"active"] boolValue]) {
+                sharedAppConfig.interceptForms = interceptForms[@"forms"];
+            }
+            
+            
             ////////////////////////////////////////////////////////////
             // Navigation
             ////////////////////////////////////////////////////////////
@@ -99,7 +138,7 @@
             
             // menu selection config
             id menuSelectionConfig = sidebarNav[@"menuSelectionConfig"];
-            if (numActiveMenus > 1 && [menuSelectionConfig isKindOfClass:[NSDictionary class]]) {
+            if ((numActiveMenus > 1 || sharedAppConfig.loginIsFirstPage) && [menuSelectionConfig isKindOfClass:[NSDictionary class]]) {
                 id testUrl = menuSelectionConfig[@"testURL"];
                 if ([testUrl isKindOfClass:[NSString class]]) {
                     sharedAppConfig.loginDetectionURL = [NSURL URLWithString:testUrl];
@@ -219,43 +258,6 @@
                 sharedAppConfig.showToolbar = [styling[@"showToolbar"] boolValue];
             else sharedAppConfig.showToolbar = NO;
             
-            
-            ////////////////////////////////////////////////////////////
-            // Forms
-            ////////////////////////////////////////////////////////////
-            NSDictionary *forms = sharedAppConfig.json[@"forms"];
-            
-            // search
-            NSDictionary *search = forms[@"search"];
-            if (search && [search[@"active"] boolValue]) {
-                sharedAppConfig.searchTemplateURL = search[@"searchTemplateURL"];
-            }
-            
-            // login
-            NSDictionary *loginConfig = forms[@"loginConfig"];
-            if (loginConfig && [loginConfig[@"active"] boolValue]) {
-                sharedAppConfig.loginConfig = loginConfig;
-                sharedAppConfig.loginURL = [NSURL URLWithString:loginConfig[@"interceptUrl"]];
-                sharedAppConfig.loginIsFirstPage = [loginConfig[@"loginIsFirstPage"] boolValue];
-            }
-            
-            sharedAppConfig.loginLaunchBackground = [forms[@"loginLaunchBackground"] boolValue];
-            if ([forms[@"loginIconImage"] isKindOfClass:[NSNumber class]]) {
-                sharedAppConfig.loginIconImage = [forms[@"loginIconImage"] boolValue];
-            } else sharedAppConfig.loginIconImage = YES;
-            
-            // signup
-            NSDictionary *signupConfig = forms[@"signupConfig"];
-            if (signupConfig && [signupConfig[@"active"] boolValue]) {
-                sharedAppConfig.signupConfig = signupConfig;
-                sharedAppConfig.signupURL = [NSURL URLWithString:signupConfig[@"interceptUrl"]];
-            }
-            
-            // other forms to be intercepted
-            NSDictionary *interceptForms = forms[@"interceptForms"];
-            if (interceptForms && [interceptForms[@"active"] boolValue]) {
-                sharedAppConfig.interceptForms = interceptForms[@"forms"];
-            }
             
             
             ////////////////////////////////////////////////////////////
