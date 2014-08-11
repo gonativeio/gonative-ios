@@ -8,6 +8,7 @@
 
 #import "LEANConfigUpdater.h"
 #import "LEANAppConfig.h"
+#import "LEANInstallation.h"
 
 @interface LEANConfigUpdater ()
 
@@ -50,6 +51,27 @@
         [fileManager moveItemAtURL:location toURL:destination error:nil];
     }];
     [downloadTask resume];
+}
+
+
++ (void)registerEvent
+{
+    NSMutableDictionary *dict = [[LEANInstallation info] mutableCopy];
+    dict[@"event"] = @"launch";
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
+    
+    NSURL *url = [NSURL URLWithString:@"https://events.gonative.io/api/events/new"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setHTTPBody:jsonData];
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    }];
+    
 }
 
 @end

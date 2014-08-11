@@ -11,5 +11,7 @@
 @interface LEANConfigUpdater : NSObject
 
 - (void)updateConfig;
++ (void)registerEvent;
+
 
 @end

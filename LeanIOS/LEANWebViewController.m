@@ -40,6 +40,7 @@
 @property NSURLRequest *currentRequest;
 @property NSInteger urlLevel; // -1 for unknown
 @property NSString *profilePickerJs;
+@property NSString *analyticsJs;
 @property NSTimer *timer;
 @property BOOL startedLoading; // for transitions
 
@@ -91,6 +92,20 @@
     if (appConfig.profilePickerJS && [appConfig.profilePickerJS length] > 0) {
         self.profilePickerJs = appConfig.profilePickerJS;
         self.profilePicker = [[LEANProfilePicker alloc] init];
+    }
+    
+    if (appConfig.analytics) {
+        NSString *template = @"var _paq = _paq || []; "
+        "_paq.push(['trackPageView']); "
+        "_paq.push(['enableLinkTracking']); "
+        "(function() { "
+        "    var u = 'https://analytics.gonative.io/'; "
+        "    _paq.push(['setTrackerUrl', u+'piwik.php']); "
+        "    _paq.push(['setSiteId', %d]); "
+        "    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; "
+        "    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s); "
+        "})(); ";
+        self.analyticsJs = [NSString stringWithFormat:template, appConfig.idsite];
     }
     
     self.visitedLoginOrSignup = NO;
@@ -701,7 +716,7 @@
     }
     
     // update menu
-    if ([LEANAppConfig sharedAppConfig].loginDetectionURL) {
+    if ([LEANAppConfig sharedAppConfig].loginDetectionURL && !webView.isLoading) {
         [[LEANLoginManager sharedManager] checkLogin];
         
         self.visitedLoginOrSignup = [url matchesPathOf:[LEANAppConfig sharedAppConfig].loginURL] ||
@@ -715,6 +730,10 @@
         [(LEANMenuViewController*)self.frostedViewController.menuViewController showSettings:[self.profilePicker hasProfiles]];
     }
     
+    // analytics
+    if (self.analyticsJs && !webView.isLoading) {
+        [webView stringByEvaluatingJavaScriptFromString:self.analyticsJs];
+    }
     
     if ([LEANAppConfig sharedAppConfig].enableChromecast) {
         [self detectVideo];

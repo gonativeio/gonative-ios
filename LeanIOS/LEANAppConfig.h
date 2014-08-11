@@ -15,6 +15,7 @@
 @property NSString *initialHost;
 @property NSString *appName;
 @property NSString *publicKey;
+@property NSString *deviceRegKey;
 @property NSString *userAgentAdd;
 
 // navigation
@@ -58,6 +59,8 @@
 
 // services
 @property BOOL pushNotifications;
+@property BOOL analytics;
+@property NSInteger idsite;
 
 // misc
 @property NSPredicate *forceLandscapeMatch;

@@ -43,6 +43,7 @@
 		2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE941907671A00EC4311 /* LEANUrlInspector.m */; };
 		20191C4419231A0900BF1549 /* LEANSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20191C4319231A0900BF1549 /* LEANSettingsController.m */; };
 		20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 20191C461923DF6400BF1549 /* LEANProfilePicker.m */; };
+		201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201AB2D51996AD66008C31BF /* LEANInstallation.m */; };
 		202B4D5219510F640099821E /* TextAreaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D5119510F640099821E /* TextAreaView.xib */; };
 		202B4D56195122FD0099821E /* DateCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D55195122FD0099821E /* DateCellView.xib */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
@@ -141,6 +142,8 @@
 		20191C4319231A0900BF1549 /* LEANSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANSettingsController.m; sourceTree = "<group>"; };
 		20191C451923DF6400BF1549 /* LEANProfilePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANProfilePicker.h; sourceTree = "<group>"; };
 		20191C461923DF6400BF1549 /* LEANProfilePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANProfilePicker.m; sourceTree = "<group>"; };
+		201AB2D41996AD66008C31BF /* LEANInstallation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANInstallation.h; sourceTree = "<group>"; };
+		201AB2D51996AD66008C31BF /* LEANInstallation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANInstallation.m; sourceTree = "<group>"; };
 		202B4D5119510F640099821E /* TextAreaView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextAreaView.xib; sourceTree = "<group>"; };
 		202B4D55195122FD0099821E /* DateCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DateCellView.xib; sourceTree = "<group>"; };
 		204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+LEANUtilities.h"; sourceTree = "<group>"; };
@@ -262,6 +265,8 @@
 				2002B4D618A99A0A00495B3D /* LEANAppConfig.m */,
 				20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */,
 				20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */,
+				201AB2D41996AD66008C31BF /* LEANInstallation.h */,
+				201AB2D51996AD66008C31BF /* LEANInstallation.m */,
 				20EA5521194FE7900039735B /* LEANPushManager.h */,
 				20EA5522194FE7900039735B /* LEANPushManager.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
@@ -569,6 +574,7 @@
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
 				2002B4E518A99A9900495B3D /* RECommonFunctions.m in Sources */,
 				2002B4D718A99A0A00495B3D /* LEANAppConfig.m in Sources */,
+				201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */,
 				2002B4AC18A9991300495B3D /* LEANAppDelegate.m in Sources */,
 				20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */,
 				204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */,

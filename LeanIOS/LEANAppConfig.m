@@ -57,6 +57,7 @@
             sharedAppConfig.initialHost = [sharedAppConfig.initialURL host];
             sharedAppConfig.appName = general[@"appName"];
             sharedAppConfig.publicKey = general[@"publicKey"];
+            sharedAppConfig.deviceRegKey = general[@"deviceRegKey"];
             
             if ([sharedAppConfig.initialHost hasPrefix:@"www."]) {
                 sharedAppConfig.initialHost = [sharedAppConfig.initialHost stringByReplacingCharactersInRange:NSMakeRange(0, [@"www." length]) withString:@""];
@@ -267,6 +268,18 @@
             
             NSDictionary *push = services[@"push"];
             sharedAppConfig.pushNotifications = [push[@"active"] boolValue];
+            
+            NSDictionary *analytics = services[@"analytics"];
+            sharedAppConfig.analytics = [analytics[@"active"] boolValue];
+            if (sharedAppConfig.analytics) {
+                id idsite = analytics[@"idsite"];
+                if ([idsite isKindOfClass:[NSNumber class]]) {
+                    sharedAppConfig.idsite = [idsite integerValue];
+                } else {
+                    NSLog(@"Analytics requires idsite");
+                    sharedAppConfig.analytics = NO;
+                }
+            }
             
             
             ////////////////////////////////////////////////////////////

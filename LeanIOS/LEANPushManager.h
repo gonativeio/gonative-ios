@@ -14,6 +14,6 @@
 @property NSString *userID;
 
 // singleton
-+(LEANPushManager*)sharedPush;
++(LEANPushManager*)sharedManager;
 
 @end

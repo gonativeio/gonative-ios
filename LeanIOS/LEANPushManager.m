@@ -8,20 +8,16 @@
 
 #import "LEANPushManager.h"
 #import "LEANAppConfig.h"
+#import "LEANInstallation.h"
 
 @interface LEANPushManager ()
 @end
 
 @implementation LEANPushManager
 
-#ifdef DEBUG
-static NSString * kGonativeRegistrationEndpoint = @"http://push-dev.gonative.io/api/register";
-#else
 static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api/register";
-#endif
 
-
-+ (LEANPushManager *)sharedPush
++ (LEANPushManager *)sharedManager
 {
     static LEANPushManager *sharedPush;
     
@@ -46,20 +42,13 @@ static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api
         return;
     }
     
+    NSMutableDictionary *toSend = [[LEANInstallation info] mutableCopy];
+    toSend[@"token"] = [self.token base64EncodedStringWithOptions:0];
     
-    NSString *appVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
-    
-    NSMutableDictionary *toSend = [@{@"platform": @"ios",
-                                     @"token": [self.token base64EncodedStringWithOptions:0],
-                                     @"appnumHashed": [LEANAppConfig sharedAppConfig].publicKey,
-                                     @"appVersion": appVersion}
-                                   mutableCopy];
-    if (self.userID) [toSend setObject:self.userID forKey:@"userID"];
-    
+    if (self.userID) toSend[@"userID"] = self.userID;
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:toSend options:0 error:nil];
 //    NSLog(@"sending registration json: %@", [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]);
-    
     
     NSURL *url = [NSURL URLWithString:kGonativeRegistrationEndpoint];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -93,6 +82,7 @@ static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api
 - (void)setToken:(NSData *)token
 {
     _token = token;
+    [self register];
 }
 
 - (NSData*)token

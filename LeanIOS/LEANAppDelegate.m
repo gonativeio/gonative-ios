@@ -57,6 +57,9 @@
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
     }
     
+    // Register launch
+    [LEANConfigUpdater registerEvent];
+    
     // If launched from push notification and it contains a url, set the initialUrl.
     id notification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
     if (notification && notification[@"u"]) {
@@ -81,7 +84,7 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    [LEANPushManager sharedPush].token = deviceToken;
+    [LEANPushManager sharedManager].token = deviceToken;
 }
 
 

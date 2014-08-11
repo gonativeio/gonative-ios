@@ -844,7 +844,7 @@
     }
     
     if (success) {
-        [LEANPushManager sharedPush].userID = self.tempUserID;
+        [LEANPushManager sharedManager].userID = self.tempUserID;
         
         [self dismiss];
         
