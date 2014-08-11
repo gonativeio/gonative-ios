@@ -33,6 +33,8 @@
     NSString *distribution;
     if (debug) {
         distribution = @"debug";
+    } else if ([[NSUserDefaults standardUserDefaults] objectForKey:@"isAppio"]) {
+        distribution = @"appio";
     } else if ([[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
         distribution = @"appstore";
     } else {
