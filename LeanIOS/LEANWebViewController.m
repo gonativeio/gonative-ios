@@ -19,6 +19,7 @@
 #import "LEANCustomAction.h"
 #import "LEANUrlInspector.h"
 #import "LEANProfilePicker.h"
+#import "LEANInstallation.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate>
 
@@ -95,6 +96,12 @@
     }
     
     if (appConfig.analytics) {
+        NSString *distribution = [LEANInstallation info][@"distribution"];
+        NSInteger idsite;
+        if ([distribution isEqualToString:@"appstore"]) idsite = appConfig.idsite_prod;
+        else idsite = appConfig.idsite_test;
+        
+        
         NSString *template = @"var _paq = _paq || []; "
         "_paq.push(['trackPageView']); "
         "_paq.push(['enableLinkTracking']); "
@@ -105,7 +112,7 @@
         "    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; "
         "    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s); "
         "})(); ";
-        self.analyticsJs = [NSString stringWithFormat:template, appConfig.idsite];
+        self.analyticsJs = [NSString stringWithFormat:template, idsite];
     }
     
     self.visitedLoginOrSignup = NO;

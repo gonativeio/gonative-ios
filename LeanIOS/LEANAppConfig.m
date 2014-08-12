@@ -272,11 +272,15 @@
             NSDictionary *analytics = services[@"analytics"];
             sharedAppConfig.analytics = [analytics[@"active"] boolValue];
             if (sharedAppConfig.analytics) {
-                id idsite = analytics[@"idsite"];
-                if ([idsite isKindOfClass:[NSNumber class]]) {
-                    sharedAppConfig.idsite = [idsite integerValue];
+                id idsite_test = analytics[@"idsite_test"];
+                id idsite_prod = analytics[@"idsite_prod"];
+
+                if ([idsite_test isKindOfClass:[NSNumber class]] &&
+                    [idsite_prod isKindOfClass:[NSNumber class]]) {
+                    sharedAppConfig.idsite_test = [idsite_test integerValue];
+                    sharedAppConfig.idsite_prod = [idsite_prod integerValue];
                 } else {
-                    NSLog(@"Analytics requires idsite");
+                    NSLog(@"Analytics requires idsite_test and idsite_prod");
                     sharedAppConfig.analytics = NO;
                 }
             }

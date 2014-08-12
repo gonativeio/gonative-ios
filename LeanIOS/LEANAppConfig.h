@@ -60,7 +60,8 @@
 // services
 @property BOOL pushNotifications;
 @property BOOL analytics;
-@property NSInteger idsite;
+@property NSInteger idsite_test;
+@property NSInteger idsite_prod;
 
 // misc
 @property NSPredicate *forceLandscapeMatch;
