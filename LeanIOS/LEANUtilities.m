@@ -255,6 +255,7 @@
     webview.frame = [[UIScreen mainScreen] bounds];
     webview.scalesPageToFit = YES;
     webview.backgroundColor = [UIColor whiteColor];
+    webview.scrollView.bounces = NO;
     // we are using autolayout, to disable autoresizingmask stuff
     [webview setTranslatesAutoresizingMaskIntoConstraints:NO];
 }

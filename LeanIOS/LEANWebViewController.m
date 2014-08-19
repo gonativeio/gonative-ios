@@ -152,7 +152,6 @@
     
     [self showNavigationItemButtonsAnimated:NO];
     [self buildDefaultToobar];
-    [self adjustInsets];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -307,7 +306,7 @@
     top += [UIApplication sharedApplication].statusBarFrame.size.height;
     
     CGFloat bottom = 0;
-    if (self.tabBar) {
+    if (self.tabBar && !self.tabBar.hidden) {
         bottom = self.tabBar.bounds.size.height;
     }
     
