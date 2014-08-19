@@ -97,7 +97,7 @@
         <!--Web View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController storyboardIdentifier="webviewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="vXZ-lx-hvc" customClass="LEANWebViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="webviewController" extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="vXZ-lx-hvc" customClass="LEANWebViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="xzn-yM-UJR"/>
                         <viewControllerLayoutGuide type="bottom" id="h3e-Xf-rQK"/>

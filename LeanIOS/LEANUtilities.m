@@ -250,4 +250,12 @@
     return FALSE;
 }
 
++(void)configureWebView:(UIWebView*)webview
+{
+    webview.frame = [[UIScreen mainScreen] bounds];
+    webview.scalesPageToFit = YES;
+    // we are using autolayout, to disable autoresizingmask stuff
+    [webview setTranslatesAutoresizingMaskIntoConstraints:NO];
+}
+
 @end

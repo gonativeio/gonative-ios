@@ -24,28 +24,37 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
     
     // local cache
     [NSURLCache setSharedURLCache:[[LEANUrlCache alloc] init]];
     
     // tint color from app config
-    if ([LEANAppConfig sharedAppConfig].tintColor) {
-        self.window.tintColor = [LEANAppConfig sharedAppConfig].tintColor;
+    if (appConfig.tintColor) {
+        self.window.tintColor = appConfig.tintColor;
     }
     
     // start cast controller
-    if ([LEANAppConfig sharedAppConfig].enableChromecast) {
+    if (appConfig.enableChromecast) {
         self.castController = [[LEANCastController alloc] init];
         [self.castController performScan:YES];
     }
     
-    // modify default user agent to include the suffix
+    // modify user agent
     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-    NSString *originalAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-    NSString *userAgentAdd = [LEANAppConfig sharedAppConfig].userAgentAdd;
-    if (!userAgentAdd) userAgentAdd = @"gonative";
-    NSString *newAgent = [NSString stringWithFormat:@"%@ %@", originalAgent, userAgentAdd];
+    NSString *newAgent;
+    if ([appConfig.forceUserAgent length] > 0) {
+        newAgent = appConfig.forceUserAgent;
+    } else {
+        NSString *originalAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+        NSString *userAgentAdd = [LEANAppConfig sharedAppConfig].userAgentAdd;
+        if (!userAgentAdd) userAgentAdd = @"gonative";
+        if ([userAgentAdd length] > 0) {
+            newAgent = [NSString stringWithFormat:@"%@ %@", originalAgent, userAgentAdd];
+        } else {
+            newAgent = originalAgent;
+        }
+    }
     NSDictionary *dictionary = @{@"UserAgent": newAgent};
     [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
     
@@ -53,7 +62,7 @@
     [LEANWebViewIntercept initialize];
     
     // Register for remote push notifications
-    if ([LEANAppConfig sharedAppConfig].pushNotifications) {
+    if (appConfig.pushNotifications) {
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
     }
     

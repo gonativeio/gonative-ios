@@ -53,6 +53,7 @@
             NSDictionary *general = sharedAppConfig.json[@"general"];
             
             sharedAppConfig.userAgentAdd = general[@"userAgentAdd"];
+            sharedAppConfig.forceUserAgent = general[@"forceUserAgent"];
             sharedAppConfig.initialURL = [NSURL URLWithString:general[@"initialUrl"]];
             sharedAppConfig.initialHost = [sharedAppConfig.initialURL host];
             sharedAppConfig.appName = general[@"appName"];
@@ -232,6 +233,9 @@
                 }
             }
             
+            // tab menus
+            id tabNavigation = navigation[@"tabNavigation"];
+            [sharedAppConfig processTabNavigation:tabNavigation];
             
             ////////////////////////////////////////////////////////////
             // Styling
@@ -285,6 +289,16 @@
                 }
             }
             
+            ////////////////////////////////////////////////////////////
+            // Performance
+            ////////////////////////////////////////////////////////////
+            NSDictionary *performance = sharedAppConfig.json[@"performance"];
+            
+            // webview pool urls
+            if ([performance[@"webviewPools"] isKindOfClass:[NSArray class]]) {
+                sharedAppConfig.webviewPools = performance[@"webviewPools"];
+            }
+            
             
             ////////////////////////////////////////////////////////////
             // Miscellaneous stuff
@@ -301,6 +315,9 @@
             }
             else
                 sharedAppConfig.allowZoom = YES;
+            
+            sharedAppConfig.updateConfigJS = sharedAppConfig.json[@"updateConfigJS"];
+
         }
         
         
@@ -313,6 +330,61 @@
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *library = [fileManager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask][0];
     return [library URLByAppendingPathComponent:@"appConfig.json"];
+}
+
+- (void)processConfigUpdate:(NSString *)json
+{
+    if (!json || [json length] == 0) {
+        return;
+    }
+    
+    NSError *error;
+    id parsedJson = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+    if (error) {
+        NSLog(@"Error processing config update: %@", error);
+        return;
+    }
+    
+    if (![parsedJson isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    
+    id tabNavigation = parsedJson[@"tabNavigation"];
+    if (tabNavigation && [tabNavigation isKindOfClass:[NSDictionary class]]) {
+        [self processTabNavigation:tabNavigation];
+    }
+}
+
+- (void)processTabNavigation:(NSDictionary*)tabNavigation
+{
+    // tab menus
+    id tabMenus = tabNavigation[@"tabMenus"];
+    if ([tabMenus isKindOfClass:[NSArray class]]) {
+        self.tabMenus = [NSMutableDictionary dictionary];
+        for (id menu in tabMenus) {
+            NSString *tabMenuId = menu[@"id"];
+            if (tabMenuId && [menu[@"items"] isKindOfClass:[NSArray class]]) {
+                self.tabMenus[tabMenuId] = menu[@"items"];
+            }
+        }
+    }
+    
+    id tabSelection = tabNavigation[@"tabSelectionConfig"];
+    if (tabSelection && [tabSelection isKindOfClass:[NSArray class]]) {
+        self.tabMenuRegexes = [NSMutableArray array];
+        self.tabMenuIDs = [NSMutableArray array];
+        
+        for (id entry in tabSelection) {
+            if ([entry isKindOfClass:[NSDictionary class]] &&
+                entry[@"regex"] && entry[@"id"]) {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                NSString *menuId = entry[@"id"];
+                
+                [self.tabMenuRegexes addObject:predicate];
+                [self.tabMenuIDs addObject:menuId];
+            }
+        }
+    }
 }
 
 @end

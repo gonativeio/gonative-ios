@@ -263,6 +263,7 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     NSString *url = nil;
+    NSString *javascript = nil;
     
     // if is first row, then check if it is grouped.
     if (indexPath.row == 0) {
@@ -271,10 +272,12 @@
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
         } else {
             url = self.menuItems[indexPath.section][@"url"];
+            javascript = self.menuItems[indexPath.section][@"javascript"];
         }
     } else {
         // regular child
         url = self.menuItems[indexPath.section][@"subLinks"][indexPath.row - 1][@"url"];
+        javascript = self.menuItems[indexPath.section][@"subLinks"][indexPath.row - 1][@"javascript"];
     }
     
     if (url != nil) {
@@ -285,7 +288,11 @@
             NSString *js = [url substringFromIndex: [@"javascript:" length]];
             [self.wvc runJavascript:js];
         } else {
-            [self.wvc loadUrl:[NSURL URLWithString:url]];
+            if ([javascript length] > 0) {
+                [self.wvc loadUrl:[NSURL URLWithString:url] andJavascript:javascript];
+            } else {
+                [self.wvc loadUrl:[NSURL URLWithString:url]];
+            }
         }
         [self.frostedViewController hideMenuViewController];
     }

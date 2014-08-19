@@ -10,6 +10,9 @@
 #import "REFrostedViewController.h"
 #import "LEANProfilePicker.h"
 
+static NSString *kLEANWebViewControllerUserStartedLoading = @"io.gonative.ios.WebViewController.started";
+static NSString *kLEANWebViewControllerUserFinishedLoading = @"io.gonative.ios.WebViewController.finished";
+
 @interface LEANWebViewController : UIViewController <UIWebViewDelegate>
 
 @property IBOutlet UIWebView* webview;
@@ -20,7 +23,10 @@
 - (IBAction) showMenu;
 - (void) loadUrl:(NSURL*) url;
 - (void) loadRequest:(NSURLRequest*) request;
+- (void) loadUrl:(NSURL *)url andJavascript:(NSString*)js;
 - (void) runJavascript:(NSString *) script;
 - (void) logout;
+- (void) showTabBar;
+- (void) hideTabBar;
 
 @end

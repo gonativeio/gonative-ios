@@ -20,4 +20,5 @@
 +(NSString*)jsWrapString:(NSString*)string;
 +(NSString*)capitalizeWords:(NSString*)string;
 +(NSString*)getLaunchImageName;
++(void)configureWebView:(UIWebView*)webview;
 @end

@@ -71,7 +71,9 @@
 		20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */; };
 		20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */; };
 		20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20DE147F18F103850083F46A /* ForgotPasswordView.xib */; };
+		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20EA5523194FE7900039735B /* LEANPushManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20EA5522194FE7900039735B /* LEANPushManager.m */; };
+		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -186,8 +188,12 @@
 		20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANConfigUpdater.h; sourceTree = "<group>"; };
 		20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANConfigUpdater.m; sourceTree = "<group>"; };
 		20DE147F18F103850083F46A /* ForgotPasswordView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgotPasswordView.xib; sourceTree = "<group>"; };
+		20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewPool.h; sourceTree = "<group>"; };
+		20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewPool.m; sourceTree = "<group>"; };
 		20EA5521194FE7900039735B /* LEANPushManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANPushManager.h; sourceTree = "<group>"; };
 		20EA5522194FE7900039735B /* LEANPushManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANPushManager.m; sourceTree = "<group>"; };
+		20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANTabManager.h; sourceTree = "<group>"; };
+		20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANTabManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +262,7 @@
 				20C23645193E32EA00F6ADF0 /* Config */,
 				20A13AA91905CB6C00B997DD /* FontAwesome */,
 				207170C118C2E820002EBDD0 /* Forms */,
+				20A13AA61905A3EC00B997DD /* Menus */,
 				204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */,
 				204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */,
 				2004820418B080DD005FDD9A /* HeaderView.xib */,
@@ -263,26 +270,28 @@
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				2002B4D518A99A0A00495B3D /* LEANAppConfig.h */,
 				2002B4D618A99A0A00495B3D /* LEANAppConfig.m */,
-				20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */,
-				20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */,
-				201AB2D41996AD66008C31BF /* LEANInstallation.h */,
-				201AB2D51996AD66008C31BF /* LEANInstallation.m */,
-				20EA5521194FE7900039735B /* LEANPushManager.h */,
-				20EA5522194FE7900039735B /* LEANPushManager.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
 				2002B4AB18A9991300495B3D /* LEANAppDelegate.m */,
 				20054BD418B68D1E00A422F9 /* LEANCastController.h */,
 				20054BD518B68D1E00A422F9 /* LEANCastController.m */,
+				20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */,
+				20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */,
 				20A13A9419058A5500B997DD /* LEANCustomAction.h */,
 				20A13A9519058A5600B997DD /* LEANCustomAction.m */,
+				201AB2D41996AD66008C31BF /* LEANInstallation.h */,
+				201AB2D51996AD66008C31BF /* LEANInstallation.m */,
 				2089662518AC6753007FC34F /* LEANLoginManager.h */,
 				2089662618AC6753007FC34F /* LEANLoginManager.m */,
 				2002B4F218A99C4100495B3D /* LEANNavigationController.h */,
 				2002B4F318A99C4100495B3D /* LEANNavigationController.m */,
+				20EA5521194FE7900039735B /* LEANPushManager.h */,
+				20EA5522194FE7900039735B /* LEANPushManager.m */,
 				2002B4F418A99C4100495B3D /* LEANRootViewController.h */,
 				2002B4F518A99C4100495B3D /* LEANRootViewController.m */,
 				20191C4219231A0900BF1549 /* LEANSettingsController.h */,
 				20191C4319231A0900BF1549 /* LEANSettingsController.m */,
+				20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */,
+				20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */,
 				209B3217193FA36F0052A7C6 /* LEANUrlCache.h */,
 				209B3218193FA36F0052A7C6 /* LEANUrlCache.m */,
 				2018EE931907671A00EC4311 /* LEANUrlInspector.h */,
@@ -293,10 +302,11 @@
 				2002B4B418A9991300495B3D /* LEANWebViewController.m */,
 				2004AF7918F8F936001E01E9 /* LEANWebViewIntercept.h */,
 				2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */,
+				20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */,
+				20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */,
 				20A13A9719058AA200B997DD /* LoginHeaderView.xib */,
 				2002B4B018A9991300495B3D /* Main_iPad.storyboard */,
 				2002B4AD18A9991300495B3D /* Main_iPhone.storyboard */,
-				20A13AA61905A3EC00B997DD /* Menus */,
 				204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */,
 				204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */,
 				2002B4D818A99A9900495B3D /* REFrostedViewController */,
@@ -565,6 +575,7 @@
 				2089662718AC6753007FC34F /* LEANLoginManager.m in Sources */,
 				20054BD618B68D1E00A422F9 /* LEANCastController.m in Sources */,
 				2002B4FC18A99C4100495B3D /* LEANUtilities.m in Sources */,
+				20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */,
 				20A13AB41905CB6C00B997DD /* UIFont+FontAwesome.m in Sources */,
 				204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */,
 				207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */,
@@ -585,6 +596,7 @@
 				2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */,
 				2002B4E818A99A9900495B3D /* UIImage+REFrostedViewController.m in Sources */,
 				2002B4E918A99A9900495B3D /* UIView+REFrostedViewController.m in Sources */,
+				20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */,
 				209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */,
 				2002B4F918A99C4100495B3D /* LEANMenuViewController.m in Sources */,
 			);

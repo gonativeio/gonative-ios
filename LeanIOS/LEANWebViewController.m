@@ -20,8 +20,10 @@
 #import "LEANUrlInspector.h"
 #import "LEANProfilePicker.h"
 #import "LEANInstallation.h"
+#import "LEANTabManager.h"
+#import "LEANWebViewPool.h"
 
-@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate>
+@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate>
 
 @property IBOutlet UIBarButtonItem* backButton;
 @property IBOutlet UIBarButtonItem* forwardButton;
@@ -35,6 +37,7 @@
 @property UIBarButtonItem *searchButton;
 @property UISearchBar *searchBar;
 @property UIView *statusBarBackground;
+@property UITabBar *tabBar;
 
 @property BOOL willBeLandscape;
 
@@ -44,6 +47,10 @@
 @property NSString *analyticsJs;
 @property NSTimer *timer;
 @property BOOL startedLoading; // for transitions
+@property LEANTabManager *tabManager;
+@property BOOL isPoolWebview;
+
+@property NSString *postLoadJavascript;
 
 @property BOOL visitedLoginOrSignup;
 
@@ -145,6 +152,7 @@
     
     [self showNavigationItemButtonsAnimated:NO];
     [self buildDefaultToobar];
+    [self adjustInsets];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -159,6 +167,13 @@
 
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    if (self.isMovingFromParentViewController) {
+        self.webview.delegate = nil;
+    }
+    [super viewWillDisappear:animated];
+}
 
 - (void) buildDefaultToobar
 {
@@ -194,6 +209,7 @@
         [array addObject:self.customActionButton];
         [self setToolbarItems:array animated:YES];
     }
+    
 }
 
 - (void)showCustomActions:(id)sender
@@ -221,6 +237,82 @@
     actionSheet.delegate = self;
     
     [actionSheet showFromBarButtonItem:self.customActionButton animated:YES];
+}
+
+- (void)checkTabsForUrl:(NSURL*) url;
+{
+    if (![LEANAppConfig sharedAppConfig].tabMenus) {
+        [self hideTabBar];
+        return;
+    }
+    
+    if (!self.tabBar) {
+        self.tabBar = [[UITabBar alloc] init];
+        self.tabBar.delegate = self;
+        self.tabBar.hidden = YES;
+        self.tabBar.alpha = 0.0;
+    }
+    
+    if (![self.tabBar isDescendantOfView:self.view]) {
+        [self.view addSubview:self.tabBar];
+
+    }
+    
+    if (!self.tabManager) {
+        self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
+    }
+    
+    [self.tabManager didLoadUrl:url];
+}
+
+- (void)hideTabBar
+{
+    if (!self.tabBar) {
+        return;
+    }
+    
+    if (!self.tabBar.hidden) {
+        [UIView animateWithDuration:0.3 animations:^(void){
+            self.tabBar.alpha = 0.0;
+        }completion:^(BOOL finished){
+            self.tabBar.hidden = YES;
+            self.tabBar.frame = CGRectZero;
+            [self adjustInsets];
+        }];
+    }
+}
+
+- (void)showTabBar
+{
+    [self.navigationController setToolbarHidden:YES animated:NO];
+    
+    if (self.tabBar.hidden) {
+        self.tabBar.alpha = 0;
+        self.tabBar.hidden = NO;
+        self.tabBar.frame = CGRectMake(0, self.view.bounds.size.height - 49, self.view.bounds.size.width, 49);
+        [UIView animateWithDuration:0.3 animations:^(void){
+            self.tabBar.alpha = 1.0;
+        } completion:^(BOOL finished){
+            [self adjustInsets];
+        }];
+    }
+}
+
+- (void)adjustInsets
+{
+    CGFloat top = 0;
+    if (!self.navigationController.navigationBarHidden && self.navigationController.navigationBar) {
+        top = self.navigationController.navigationBar.bounds.size.height;
+    }
+    top += [UIApplication sharedApplication].statusBarFrame.size.height;
+    
+    CGFloat bottom = 0;
+    if (self.tabBar) {
+        bottom = self.tabBar.bounds.size.height;
+    }
+    
+    self.webview.scrollView.contentInset = UIEdgeInsetsMake(top, 0, bottom, 0);
+    self.webview.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(top, 0, bottom, 0);
 }
 
 - (IBAction) buttonPressed:(id)sender
@@ -334,6 +426,22 @@
 
 - (void) loadRequest:(NSURLRequest*) request
 {
+    [self.webview loadRequest:request];
+}
+
+- (void) loadUrl:(NSURL *)url andJavascript:(NSString *)js
+{
+    if ([[[self.webview.request URL] absoluteString] isEqualToString:[url absoluteString]]) {
+        [self.webview stringByEvaluatingJavaScriptFromString:js];
+    } else {
+        self.postLoadJavascript = js;
+        [self loadUrl:url];
+    }
+}
+
+- (void) loadRequest:(NSURLRequest *)request andJavascript:(NSString*)js
+{
+    self.postLoadJavascript = js;
     [self.webview loadRequest:request];
 }
 
@@ -453,6 +561,12 @@
     NSString* hostname = [url host];
     
 //    NSLog(@"should start load %d %@", navigationType, url);
+    
+    // always allow iframes to load
+    if (![[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]
+        || [[request URL] matchesPathOf:[[webView request] URL]]) {
+        return YES;
+    }
     
     [[LEANUrlInspector sharedInspector] inspectUrl:url];
     
@@ -603,13 +717,15 @@
         }
     }
     
-    // Starting here, we are going to load the request, but possibly in a different webview depending on the structured nav level
+    // Starting here, we are going to load the request, but possibly in a different webviewcontroller depending on the structured nav level
     NSInteger newLevel = [LEANWebViewController urlLevelForUrl:url];
     if (self.urlLevel >= 0 && newLevel >= 0) {
         if (newLevel > self.urlLevel) {
             // push a new controller
             LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
             newvc.initialUrl = url;
+            newvc.postLoadJavascript = self.postLoadJavascript;
+            self.postLoadJavascript = nil;
             
             NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
             while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
@@ -637,7 +753,12 @@
             
             if (wvc != self) {
                 wvc.urlLevel = newLevel;
-                [wvc loadRequest:request];
+                if (self.postLoadJavascript) {
+                    [wvc loadRequest:request andJavascript:self.postLoadJavascript];
+                    self.postLoadJavascript = nil;
+                } else {
+                    [wvc loadRequest:request];
+                }
                 [self.navigationController popToViewController:wvc animated:YES];
                 return NO;
             }
@@ -645,7 +766,8 @@
     }
     
     
-    // Starting here, the request will be loaded in this WebView.
+    // Starting here, the request will be loaded in this webviewcontroller
+    // pop to the top webviewcontroller in the stack
     NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
     BOOL changedControllerStack = NO;
     while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
@@ -655,7 +777,6 @@
     if (changedControllerStack) {
         [self.navigationController setViewControllers:controllers animated:YES];
     }
-    
     
     if (newLevel >= 0) {
         self.urlLevel = [LEANWebViewController urlLevelForUrl:url];
@@ -671,9 +792,27 @@
     // save for html interception
     ((LEANAppDelegate*)[[UIApplication sharedApplication] delegate]).currentRequest = request;
     
-    // if not iframe and not loading the same page, hide the webview and show activity indicator.
+
+    
+    // if not iframe and not loading the same page
     if ([[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]
         && ![[request URL] matchesPathOf:[[webView request] URL]]) {
+        
+        
+        UIWebView *poolWebview = [[LEANWebViewPool sharedPool] webviewForUrl:url];
+        if (poolWebview) {
+            self.isPoolWebview = YES;
+            [self switchToWebView:poolWebview];
+            return NO;
+        } else if (self.isPoolWebview) {
+            UIWebView *newWebview = [[UIWebView alloc] init];
+            [LEANUtilities configureWebView:newWebview];
+            [self switchToWebView:newWebview];
+            self.isPoolWebview = NO;
+            [self.webview loadRequest:request];
+            return NO;
+        }
+        
         [self hideWebview];
     }
     
@@ -682,8 +821,37 @@
     return YES;
 }
 
+- (void)switchToWebView:(UIWebView*)webview
+{
+    self.webview.delegate = nil;
+    webview.delegate = self;
+    [webview.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    
+    [self.webview removeFromSuperview];
+    
+    self.webview = webview;
+    [self hideWebview];
+    [self adjustInsets];
+    [self.view addSubview:webview];
+   
+    // add layout constraints
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+    
+    if (self.postLoadJavascript) {
+        [self.webview stringByEvaluatingJavaScriptFromString:self.postLoadJavascript];
+        self.postLoadJavascript = nil;
+    }
+    
+    [self showWebview];
+}
+
 - (void) webViewDidStartLoad:(UIWebView *)webView
 {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
+    
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [self.customActionButton setEnabled:NO];
     
@@ -730,6 +898,12 @@
         [url matchesPathOf:[LEANAppConfig sharedAppConfig].signupURL];
     }
     
+    // dynamic config updater
+    if ([LEANAppConfig sharedAppConfig].updateConfigJS && !webView.isLoading) {
+        NSString *result = [webView stringByEvaluatingJavaScriptFromString:[LEANAppConfig sharedAppConfig].updateConfigJS];
+        [[LEANAppConfig sharedAppConfig] processConfigUpdate:result];
+    }
+    
     // profile picker
     if (self.profilePickerJs) {
         NSString *json = [webView stringByEvaluatingJavaScriptFromString:self.profilePickerJs];
@@ -748,6 +922,21 @@
     }
     
     [self updateCustomActions];
+    
+    // tabs
+    [self checkTabsForUrl: url];
+    
+    // post-load js
+    if (self.postLoadJavascript && !webView.isLoading) {
+        NSString *js = self.postLoadJavascript;
+        self.postLoadJavascript = nil;
+        [self runJavascript:js];
+    }
+    
+    // post notification
+    if (!webView.isLoading) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
+    }
 }
 
 - (void)checkReadyStatus
@@ -884,6 +1073,11 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+}
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+{
+    [self adjustInsets];
 }
 
 - (void)viewWillLayoutSubviews

@@ -115,10 +115,6 @@
         // background launch image
         if ([LEANAppConfig sharedAppConfig].loginLaunchBackground) {
             UIImage *image = [UIImage imageNamed:[LEANUtilities getLaunchImageName]];
-            
-            
-            UIColor *blurTintColor = [UIColor colorWithWhite:1.0 alpha:0.3f];
-            image = [image re_applyBlurWithRadius:5 tintColor:blurTintColor saturationDeltaFactor:1.0 maskImage:nil];
             UIImageView *background = [[UIImageView alloc] initWithImage:image];
             self.tableView.backgroundView = background;
         }

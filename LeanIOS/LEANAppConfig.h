@@ -17,6 +17,7 @@
 @property NSString *publicKey;
 @property NSString *deviceRegKey;
 @property NSString *userAgentAdd;
+@property NSString *forceUserAgent;
 
 // navigation
 @property NSMutableDictionary *menus;
@@ -32,6 +33,11 @@
 @property NSString *profilePickerJS;
 @property NSString *userIdRegex;
 @property BOOL useWebpageTitle;
+
+@property NSMutableDictionary *tabMenus;
+@property NSMutableArray *tabMenuRegexes;
+@property NSMutableArray *tabMenuIDs;
+
 
 // styling
 @property NSString *customCss;
@@ -68,9 +74,13 @@
 @property BOOL showShareButton;
 @property BOOL enableChromecast;
 @property BOOL allowZoom;
+@property NSString *updateConfigJS;
+
+@property NSArray *webviewPools;
 
 
 + (LEANAppConfig *)sharedAppConfig;
 + (NSURL*)urlForOtaConfig;
+- (void)processConfigUpdate:(NSString*)json;
 
 @end
