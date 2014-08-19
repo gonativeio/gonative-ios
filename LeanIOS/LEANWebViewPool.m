@@ -16,7 +16,6 @@
 @property NSMutableArray *urlSets;
 @property NSMutableSet *urlsToLoad;
 @property UIWebView *currentLoadingWebview;
-@property NSURLRequest *currentLoadingRequest;
 @property NSString *currentLoadingUrl;
 
 @end

@@ -10,6 +10,7 @@
 #import "LEANAppDelegate.h"
 #import "LEANAppConfig.h"
 #import "GTMNSString+HTML.h"
+#import "LEANWebViewPool.h"
 
 static NSPredicate* webViewUserAgentTest;
 static NSPredicate* schemeHttpTest;
@@ -46,8 +47,9 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
     
     // if is equal to current url being loaded, then intercept
     NSURLRequest *currentRequest = ((LEANAppDelegate*)[UIApplication sharedApplication].delegate).currentRequest;
+    NSURLRequest *poolRequest = [LEANWebViewPool sharedPool].currentLoadingRequest;
     
-    if ([[request URL] isEqual:[currentRequest URL]] &&
+    if (([[request URL] isEqual:[currentRequest URL]] || [[request URL] isEqual:[poolRequest URL]]) &&
         [[request HTTPMethod] isEqualToString:[currentRequest HTTPMethod]] &&
         [request HTTPBody] == [currentRequest HTTPBody] &&
         [request HTTPBodyStream] == [currentRequest HTTPBodyStream]) {

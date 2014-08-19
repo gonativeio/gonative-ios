@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface LEANWebViewPool : NSObject
+@property NSURLRequest *currentLoadingRequest;
 
 + (LEANWebViewPool*)sharedPool;
 

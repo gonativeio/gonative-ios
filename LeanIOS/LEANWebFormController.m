@@ -15,7 +15,6 @@
 #import "LEANAppConfig.h"
 #import "LEANLoginManager.h"
 #import "LEANPushManager.h"
-#import "REFrostedViewController/UIImage+REFrostedViewController.h"
 
 @interface LEANWebFormController () <UIWebViewDelegate>
 
