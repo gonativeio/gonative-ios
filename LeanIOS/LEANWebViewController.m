@@ -565,8 +565,7 @@
 //    NSLog(@"should start load %d %@", navigationType, url);
     
     // always allow iframes to load
-    if (![[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]
-        || [[request URL] matchesPathOf:[[webView request] URL]]) {
+    if (![[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]) {
         return YES;
     }
     
@@ -794,25 +793,19 @@
     // save for html interception
     ((LEANAppDelegate*)[[UIApplication sharedApplication] delegate]).currentRequest = request;
     
-
     
-    // if not iframe and not loading the same page
-    if ([[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]
-        && ![[request URL] matchesPathOf:[[webView request] URL]]) {
-        
-        
-        UIWebView *poolWebview = [[LEANWebViewPool sharedPool] webviewForUrl:url];
-        if (poolWebview) {
-            self.isPoolWebview = YES;
-            [self switchToWebView:poolWebview];
-            return NO;
-        } else if (self.isPoolWebview) {
-            [[LEANWebViewPool sharedPool] disownWebview:self.webview];
-            self.isPoolWebview = NO;
-        }
-        
-        [self hideWebview];
+    // check to see if the webview exists in pool. Swap it in if it's not the same url.
+    UIWebView *poolWebview = [[LEANWebViewPool sharedPool] webviewForUrl:url];
+    if (poolWebview && ![[request URL] matchesPathOf:[[webView request] URL]]) {
+        self.isPoolWebview = YES;
+        [self switchToWebView:poolWebview];
+        return NO;
+    } else if (self.isPoolWebview) {
+        [[LEANWebViewPool sharedPool] disownWebview:self.webview];
+        self.isPoolWebview = NO;
     }
+    
+    [self hideWebview];
     
     [self setNavigationButtonStatus];
     
