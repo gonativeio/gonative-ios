@@ -152,6 +152,7 @@
     
     [self showNavigationItemButtonsAnimated:NO];
     [self buildDefaultToobar];
+    [self adjustInsets];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -310,6 +311,8 @@
         bottom = self.tabBar.bounds.size.height;
     }
     
+    // the following line should not be necessary, but adding it helps prevent a black bar from flashing at the bottom of the screen for a fraction of a second.
+    self.webview.scrollView.contentInset = UIEdgeInsetsMake(top, 0, -top + bottom, 0);
     self.webview.scrollView.contentInset = UIEdgeInsetsMake(top, 0, bottom, 0);
     self.webview.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(top, 0, bottom, 0);
 }
