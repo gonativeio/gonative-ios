@@ -807,12 +807,8 @@
             [self switchToWebView:poolWebview];
             return NO;
         } else if (self.isPoolWebview) {
-            UIWebView *newWebview = [[UIWebView alloc] init];
-            [LEANUtilities configureWebView:newWebview];
-            [self switchToWebView:newWebview];
+            [[LEANWebViewPool sharedPool] disownWebview:self.webview];
             self.isPoolWebview = NO;
-            [self.webview loadRequest:request];
-            return NO;
         }
         
         [self hideWebview];

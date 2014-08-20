@@ -66,6 +66,13 @@
     return self;
 }
 
+- (void)disownWebview:(UIWebView *)webview
+{
+    NSArray *keys = [self.urlToWebview allKeysForObject:webview];
+    [self.urlToWebview removeObjectsForKeys:keys];
+    [self.urlsToLoad addObjectsFromArray:keys];
+}
+
 - (void)didReceiveNotification:(NSNotification*)notification
 {
     if ([[notification name] isEqualToString:kLEANWebViewControllerUserStartedLoading]) {

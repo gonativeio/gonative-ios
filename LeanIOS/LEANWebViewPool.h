@@ -14,6 +14,6 @@
 + (LEANWebViewPool*)sharedPool;
 
 - (UIWebView*)webviewForUrl:(NSURL*)url;
-
+- (void)disownWebview:(UIWebView*)webview;
 
 @end
