@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+static NSString *kLEANAppConfigNotificationProcessedMenu = @"io.gonative.ios.LEANAppConfig.processedMenu";
+static NSString *kLEANAppConfigNotificationProcessedTabNavigation = @"io.gonative.ios.LEANAppConfig.processedTabNavigation";
+static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative.ios.LEANAppConfig.processedWebViewPools";
+
+
+
 @interface LEANAppConfig : NSObject
 
 // general
@@ -18,6 +24,7 @@
 @property NSString *deviceRegKey;
 @property NSString *userAgentAdd;
 @property NSString *forceUserAgent;
+@property NSString *userAgent;
 
 // navigation
 @property NSMutableDictionary *menus;

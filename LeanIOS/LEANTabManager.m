@@ -14,6 +14,7 @@
 @property UITabBar *tabBar;
 @property NSArray *menu;
 @property (weak, nonatomic) LEANWebViewController* wvc;
+@property NSString *currentMenuID;
 @end
 
 @implementation LEANTabManager
@@ -55,16 +56,29 @@
 
 - (void)loadTabBarMenu:(NSString*)menuID
 {
+    if ([menuID isEqualToString:self.currentMenuID]) {
+        return;
+    }
+    
+    self.currentMenuID = menuID;
+    
     NSArray *menu = [LEANAppConfig sharedAppConfig].tabMenus[menuID];
     NSMutableArray *items = [[NSMutableArray alloc] initWithCapacity:[menu count]];
     
     for (NSUInteger i = 0; i < [menu count]; i++) {
         NSString *label = menu[i][@"label"];
-        [items addObject:[[UITabBarItem alloc] initWithTitle:label image:nil tag:i]];
+        NSString *iconName = menu[i][@"icon"];
+        UIImage *iconImage = [UIImage imageNamed:[NSString stringWithFormat:@"tabbar-%@", iconName]];
+        [items addObject:[[UITabBarItem alloc] initWithTitle:label image:iconImage tag:i]];
     }
     
     self.menu = menu;
     [self.tabBar setItems:items animated:NO];
+    
+    // select first item
+    if ([items count] > 0) {
+        self.tabBar.selectedItem = items[0];
+    }
 }
 
 

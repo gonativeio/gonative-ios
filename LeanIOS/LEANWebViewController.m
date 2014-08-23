@@ -153,6 +153,15 @@
     [self showNavigationItemButtonsAnimated:NO];
     [self buildDefaultToobar];
     [self adjustInsets];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedTabNavigation object:nil];
+}
+
+- (void)didReceiveNotification:(NSNotification*)notification
+{
+    if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedTabNavigation]) {
+        [self checkTabsForUrl:[self.webview.request URL]];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -164,13 +173,17 @@
     } else {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
-
+    
+    [self adjustInsets];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     if (self.isMovingFromParentViewController) {
         self.webview.delegate = nil;
+        [self.webview stopLoading];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
     [super viewWillDisappear:animated];
 }
@@ -302,13 +315,15 @@
 {
     CGFloat top = 0;
     if (!self.navigationController.navigationBarHidden && self.navigationController.navigationBar) {
-        top = self.navigationController.navigationBar.bounds.size.height;
+        top = MIN(self.navigationController.navigationBar.bounds.size.height,
+                  self.navigationController.navigationBar.bounds.size.width);
     }
-    top += [UIApplication sharedApplication].statusBarFrame.size.height;
+    top += MIN([UIApplication sharedApplication].statusBarFrame.size.height,
+               [UIApplication sharedApplication].statusBarFrame.size.width);
     
     CGFloat bottom = 0;
     if (self.tabBar && !self.tabBar.hidden) {
-        bottom = self.tabBar.bounds.size.height;
+        bottom = MIN(self.tabBar.bounds.size.height, self.tabBar.bounds.size.width);
     }
     
     // the following line should not be necessary, but adding it helps prevent a black bar from flashing at the bottom of the screen for a fraction of a second.
@@ -434,7 +449,9 @@
 - (void) loadUrl:(NSURL *)url andJavascript:(NSString *)js
 {
     if ([[[self.webview.request URL] absoluteString] isEqualToString:[url absoluteString]]) {
+        [self hideWebview];
         [self.webview stringByEvaluatingJavaScriptFromString:js];
+        [self showWebview];
     } else {
         self.postLoadJavascript = js;
         [self loadUrl:url];
@@ -795,12 +812,36 @@
     
     
     // check to see if the webview exists in pool. Swap it in if it's not the same url.
-    UIWebView *poolWebview = [[LEANWebViewPool sharedPool] webviewForUrl:url];
-    if (poolWebview && ![[request URL] matchesPathOf:[[webView request] URL]]) {
+    UIWebView *poolWebview = nil;
+    LEANWebViewPoolDisownPolicy poolDisownPolicy;
+    poolWebview = [[LEANWebViewPool sharedPool] webviewForUrl:url policy:&poolDisownPolicy];
+    
+    if (poolWebview && poolDisownPolicy == LEANWebViewPoolDisownPolicyAlways) {
+        self.isPoolWebview = NO;
+        [self switchToWebView:poolWebview];
+        [self checkTabsForUrl:url];
+        [[LEANWebViewPool sharedPool] disownWebview:poolWebview];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
+        return NO;
+    }
+    
+    if (poolWebview && poolDisownPolicy == LEANWebViewPoolDisownPolicyNever) {
         self.isPoolWebview = YES;
         [self switchToWebView:poolWebview];
+        [self checkTabsForUrl:url];
         return NO;
-    } else if (self.isPoolWebview) {
+    }
+    
+    if (poolWebview && poolDisownPolicy == LEANWebViewPoolDisownPolicyReload &&
+        ![[request URL] matchesPathOf:[[webView request] URL]]) {
+        self.isPoolWebview = YES;
+        [self switchToWebView:poolWebview];
+        [self checkTabsForUrl:url];
+        return NO;
+    }
+    
+    if (self.isPoolWebview) {
+        // if we are here, either the policy is reload and we are reloading the page, or policy is never but we are going to a different page. So take ownership of the webview.
         [[LEANWebViewPool sharedPool] disownWebview:self.webview];
         self.isPoolWebview = NO;
     }
@@ -812,18 +853,21 @@
     return YES;
 }
 
-- (void)switchToWebView:(UIWebView*)webview
+- (void)switchToWebView:(UIWebView*)newView
 {
-    self.webview.delegate = nil;
-    webview.delegate = self;
-    [webview.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    UIWebView *oldView = self.webview;
+    self.webview = newView;
+
+    oldView.delegate = nil;
+    newView.delegate = self;
+    [newView.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     
-    [self.webview removeFromSuperview];
-    
-    self.webview = webview;
     [self hideWebview];
+    if (oldView != newView) {
+        [self.view insertSubview:newView aboveSubview:oldView];
+        [oldView removeFromSuperview];
+    }
     [self adjustInsets];
-    [self.view addSubview:webview];
    
     // add layout constraints
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
@@ -834,6 +878,11 @@
     if (self.postLoadJavascript) {
         [self.webview stringByEvaluatingJavaScriptFromString:self.postLoadJavascript];
         self.postLoadJavascript = nil;
+    }
+    
+    // fix for black boxes
+    for (UIView *view in newView.scrollView.subviews) {
+        [view setNeedsDisplayInRect:newView.bounds];
     }
     
     [self showWebview];

@@ -13,10 +13,13 @@
 
 @interface LEANWebViewPool () <UIWebViewDelegate>
 @property NSMutableDictionary *urlToWebview;
+@property NSMutableDictionary *urlToDisownPolicy;
 @property NSMutableArray *urlSets;
 @property NSMutableSet *urlsToLoad;
 @property UIWebView *currentLoadingWebview;
 @property NSString *currentLoadingUrl;
+@property NSURL *lastUrlRequested;
+@property BOOL isViewControllerLoading;
 
 @end
 
@@ -37,33 +40,78 @@
     }
 }
 
-
 - (instancetype)init
 {
     self = [super init];
     if (self) {
         self.urlToWebview = [NSMutableDictionary dictionary];
+        self.urlToDisownPolicy = [NSMutableDictionary dictionary];
         self.urlSets = [NSMutableArray array];
-        
-        NSArray *config = [LEANAppConfig sharedAppConfig].webviewPools;
-        for (NSDictionary *entry in config) {
-            if ([entry[@"urls"] isKindOfClass:[NSArray class]]) {
-                NSMutableSet *urlSet = [NSMutableSet set];
-                for (NSString *url in entry[@"urls"]) {
-                    [urlSet addObject:url];
-                }
-                
-                [self.urlSets addObject:urlSet];
-            }
-        }
-        
         self.urlsToLoad = [NSMutableSet set];
+        self.isViewControllerLoading = YES;
         
         // subscribe to notification about webview loading
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerUserStartedLoading object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerUserFinishedLoading object:nil];
+        
+        // subscribe to dynamic config change notification
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedWebViewPools object:nil];
+        
+        [self processConfig];
     }
     return self;
+}
+
+- (void)processConfig
+{
+    NSArray *config = [LEANAppConfig sharedAppConfig].webviewPools;
+    if (![config isKindOfClass:[NSArray class]]) {
+        return;
+    }
+    
+    for (NSDictionary *entry in config) {
+        if ([entry[@"urls"] isKindOfClass:[NSArray class]]) {
+            NSMutableSet *urlSet = [NSMutableSet set];
+            for (id urlEntry in entry[@"urls"]) {
+                NSString *urlString = nil;
+                LEANWebViewPoolDisownPolicy policy = kLEANWebViewPoolDisownPolicyDefault;
+                
+                if ([urlEntry isKindOfClass:[NSString class]]) {
+                    urlString = urlEntry;
+                } else if ([urlEntry isKindOfClass:[NSDictionary class]] && [urlEntry[@"url"] isKindOfClass:[NSString class]]) {
+                    
+                    urlString = urlEntry[@"url"];
+                    
+                    NSString *policyString = urlEntry[@"disown"];
+                    
+                    if ([policyString isKindOfClass:[NSString class]]) {
+                        if ([policyString isEqualToString:@"reload"]) {
+                            policy = LEANWebViewPoolDisownPolicyReload;
+                        } else if ([policyString isEqualToString:@"never"]) {
+                            policy = LEANWebViewPoolDisownPolicyNever;
+                        } else if ([policyString isEqualToString:@"always"]) {
+                            policy = LEANWebViewPoolDisownPolicyAlways;
+                        }
+                    }
+                }
+                
+                if (urlString) {
+                    [urlSet addObject:urlString];
+                    self.urlToDisownPolicy[urlString] = @(policy);
+                }
+                
+            }
+            
+            [self.urlSets addObject:urlSet];
+        }
+    }
+    
+    // if config changed, we may have to load webviews corresponding to the previously requested url
+    if (self.lastUrlRequested) {
+        [self webviewForUrl:self.lastUrlRequested policy:nil];
+    }
+    
+    [self resumeLoading];
 }
 
 - (void)disownWebview:(UIWebView *)webview
@@ -76,21 +124,30 @@
 - (void)didReceiveNotification:(NSNotification*)notification
 {
     if ([[notification name] isEqualToString:kLEANWebViewControllerUserStartedLoading]) {
+        self.isViewControllerLoading = YES;
         [self.currentLoadingWebview stopLoading];
     }
     else if ([[notification name] isEqualToString:kLEANWebViewControllerUserFinishedLoading]) {
-        if (self.currentLoadingWebview && self.currentLoadingRequest) {
-            [self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
-        } else {
-            [self loadNextRequest];
-        }
+        self.isViewControllerLoading = NO;
+        [self resumeLoading];
+    }
+    else if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedWebViewPools]) {
+        [self processConfig];
     }
 }
 
-- (void)loadNextRequest
+- (void)resumeLoading
 {
+    if (self.isViewControllerLoading) {
+        return;
+    }
+    
+    if (self.currentLoadingWebview && self.currentLoadingRequest) {
+        [self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
+        return;
+    }
+    
     if ([self.urlsToLoad count] > 0) {
-        
         NSString *urlString = [self.urlsToLoad anyObject];
         self.currentLoadingUrl = urlString;
         
@@ -115,21 +172,18 @@
         self.currentLoadingRequest = nil;
         self.currentLoadingWebview = nil;
         
-        [self loadNextRequest];
+        [self resumeLoading];
     }
 }
 
-- (UIWebView*)webviewForUrl:(NSURL *)url
+- (UIWebView*)webviewForUrl:(NSURL *)url policy:(LEANWebViewPoolDisownPolicy*)policy
 {
+    self.lastUrlRequested = url;
     NSString *urlString = [url absoluteString];
-    UIWebView *webview = self.urlToWebview[urlString];
-    if (webview) {
-        return webview;
-    }
     
     NSSet *urlSet = [self urlSetForUrl:urlString];
     if (urlSet) {
-        // remove urls already loaded or loading
+        // do not add the urls already loaded or loading
         NSMutableSet *newUrls = [urlSet mutableCopy];
         if (self.currentLoadingUrl) {
             [newUrls removeObject:self.currentLoadingUrl];
@@ -137,10 +191,23 @@
         [newUrls minusSet:[NSSet setWithArray:[self.urlToWebview allKeys]]];
         
         [self.urlsToLoad unionSet:newUrls];
-        
     }
     
-    return nil;
+    UIWebView *webview = self.urlToWebview[urlString];
+    if (webview) {
+        // if the policy pointer is provided, output the policy by writing to the pointer
+        if (policy) {
+            if (self.urlToDisownPolicy[urlString]) {
+                *policy = [self.urlToDisownPolicy[urlString] integerValue];
+            } else {
+                *policy = kLEANWebViewPoolDisownPolicyDefault;
+            }
+        }
+        
+        [self resumeLoading];
+    }
+    
+    return webview;
 }
 
 - (NSSet*)urlSetForUrl:(NSString*)url

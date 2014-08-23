@@ -40,24 +40,6 @@
         [self.castController performScan:YES];
     }
     
-    // modify user agent
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
-    NSString *newAgent;
-    if ([appConfig.forceUserAgent length] > 0) {
-        newAgent = appConfig.forceUserAgent;
-    } else {
-        NSString *originalAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-        NSString *userAgentAdd = [LEANAppConfig sharedAppConfig].userAgentAdd;
-        if (!userAgentAdd) userAgentAdd = @"gonative";
-        if ([userAgentAdd length] > 0) {
-            newAgent = [NSString stringWithFormat:@"%@ %@", originalAgent, userAgentAdd];
-        } else {
-            newAgent = originalAgent;
-        }
-    }
-    NSDictionary *dictionary = @{@"UserAgent": newAgent};
-    [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
-    
     // proxy handler to intercept HTML for custom CSS and viewport
     [LEANWebViewIntercept initialize];
     

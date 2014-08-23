@@ -31,6 +31,7 @@
 
 @property BOOL groupsHaveIcons;
 @property BOOL childrenHaveIcons;
+@property NSString *lastUpdatedStatus;
 
 @end
 
@@ -74,6 +75,16 @@
     // pre-load images. Color them too.
     self.collapsedIndicator = [[UIImage imageNamed:@"chevronDown"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.expandedIndicator = [[UIImage imageNamed:@"chevronUp"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedMenu object:nil];
+}
+
+- (void)didReceiveNotification:(NSNotification*)notification
+{
+    // dynamic menu update
+    if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedMenu]) {
+        [self updateMenuWithStatus:self.lastUpdatedStatus];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -94,6 +105,8 @@
 - (void)updateMenuWithStatus:(NSString *)status
 {
     if (!status) status = @"default";
+    
+    self.lastUpdatedStatus = status;
     
     self.menuItems = [LEANAppConfig sharedAppConfig].menus[status];
     

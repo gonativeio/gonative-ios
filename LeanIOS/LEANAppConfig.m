@@ -12,6 +12,8 @@
 
 @interface LEANAppConfig ()
 @property id json;
+@property NSUInteger numActiveMenus;
+@property NSString *lastConfigUpdate;
 @end
 
 @implementation LEANAppConfig
@@ -64,6 +66,25 @@
                 sharedAppConfig.initialHost = [sharedAppConfig.initialHost stringByReplacingCharactersInRange:NSMakeRange(0, [@"www." length]) withString:@""];
             }
             
+            // modify user agent app-wide
+            UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+            NSString *newAgent;
+            if ([sharedAppConfig.forceUserAgent length] > 0) {
+                newAgent = sharedAppConfig.forceUserAgent;
+            } else {
+                NSString *originalAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+                NSString *userAgentAdd = [LEANAppConfig sharedAppConfig].userAgentAdd;
+                if (!userAgentAdd) userAgentAdd = @"gonative";
+                if ([userAgentAdd length] > 0) {
+                    newAgent = [NSString stringWithFormat:@"%@ %@", originalAgent, userAgentAdd];
+                } else {
+                    newAgent = originalAgent;
+                }
+            }
+            sharedAppConfig.userAgent = newAgent;
+            NSDictionary *dictionary = @{@"UserAgent": sharedAppConfig.userAgent};
+            [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
+            
             
             ////////////////////////////////////////////////////////////
             // Forms
@@ -109,96 +130,12 @@
             NSDictionary *navigation = sharedAppConfig.json[@"navigation"];
             NSDictionary *sidebarNav = navigation[@"sidebarNavigation"];
             
-            // menus
-            id menus = sidebarNav[@"menus"];
-            NSUInteger numActiveMenus = 0;
-            if ([menus isKindOfClass:[NSArray class]]) {
-                sharedAppConfig.menus = [NSMutableDictionary dictionary];
-                for (id menu in menus) {
-                    // skip if not active
-                    if (![menu[@"active"] boolValue]) {
-                        continue;
-                    }
-                    
-                    numActiveMenus++;
-                    
-                    NSString *name = menu[@"name"];
-                    if (name && [menu[@"items"] isKindOfClass:[NSArray class]]) {
-                        sharedAppConfig.menus[name] = menu[@"items"];
-                        
-                        // show menu if the menu named "default" is active
-                        if ([name isEqualToString:@"default"]) {
-                            sharedAppConfig.showNavigationMenu = YES;
-                        }
-                    }
-                }
-            }
+            [sharedAppConfig processSidebarNav:sidebarNav];
             
-            if ([sidebarNav[@"userIdRegex"] isKindOfClass:[NSString class]]) {
-                sharedAppConfig.userIdRegex = sidebarNav[@"userIdRegex"];
-            }
+            [sharedAppConfig processNavigationLevels:navigation[@"navigationLevels"]];
             
-            // menu selection config
-            id menuSelectionConfig = sidebarNav[@"menuSelectionConfig"];
-            if ((numActiveMenus > 1 || sharedAppConfig.loginIsFirstPage) && [menuSelectionConfig isKindOfClass:[NSDictionary class]]) {
-                id testUrl = menuSelectionConfig[@"testURL"];
-                if ([testUrl isKindOfClass:[NSString class]]) {
-                    sharedAppConfig.loginDetectionURL = [NSURL URLWithString:testUrl];
-                }
-                
-                id redirectLocations = menuSelectionConfig[@"redirectLocations"];
-                if ([redirectLocations isKindOfClass:[NSArray class]]) {
-                    sharedAppConfig.loginDetectRegexes = [NSMutableArray array];
-                    sharedAppConfig.loginDetectLocations = [NSMutableArray array];
-                    for (id entry in redirectLocations) {
-                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
-                        if (predicate) {
-                            [sharedAppConfig.loginDetectRegexes addObject:predicate];
-                            [sharedAppConfig.loginDetectLocations addObject:entry];
-                        }
-                    }
-                }
-            }
+            [sharedAppConfig processNavigationTitles:navigation[@"navigationTitles"]];
             
-            // navigation levels
-            if ([navigation[@"navigationLevels"][@"active"] boolValue]) {
-                id urlLevels = navigation[@"navigationLevels"][@"levels"];
-                sharedAppConfig.navStructureLevels = [[NSMutableArray alloc] initWithCapacity:[urlLevels count]];
-                for (id entry in urlLevels) {
-                    if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"] && entry[@"level"]) {
-                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
-                        NSNumber *level = entry[@"level"];
-                        [sharedAppConfig.navStructureLevels addObject:@{@"predicate": predicate, @"level": level}];
-                    }
-                }
-            }
-            
-            // navigation titles
-            if ([navigation[@"navigationTitles"][@"active"] boolValue]) {
-                id titles = navigation[@"navigationTitles"][@"titles"];
-                sharedAppConfig.navTitles = [[NSMutableArray alloc] initWithCapacity:[titles count]];
-                for (id entry in titles) {
-                    if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"]) {
-                        NSMutableDictionary *toAdd = [[NSMutableDictionary alloc] init];
-                        
-                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
-                        [toAdd setObject:predicate forKey:@"predicate"];
-                        
-                        if (entry[@"title"]) {
-                            [toAdd setObject:entry[@"title"] forKey:@"title"];
-                        }
-                        if (entry[@"urlRegex"]) {
-                            [toAdd setObject:[NSRegularExpression regularExpressionWithPattern:entry[@"urlRegex"] options:0 error:nil] forKey:@"urlRegex"];
-                        }
-                        if (entry[@"urlChompWords"]) {
-                            [toAdd setObject:entry[@"urlChompWords"] forKey:@"urlChompWords"];
-                        }
-                        
-                        [sharedAppConfig.navTitles addObject:toAdd];
-                    }
-                }
-                
-            }
             
             if ([navigation[@"redirects"] isKindOfClass:[NSArray class]]) {
                 NSUInteger len = [navigation[@"redirects"] count];
@@ -295,10 +232,7 @@
             NSDictionary *performance = sharedAppConfig.json[@"performance"];
             
             // webview pool urls
-            if ([performance[@"webviewPools"] isKindOfClass:[NSArray class]]) {
-                sharedAppConfig.webviewPools = performance[@"webviewPools"];
-            }
-            
+            [sharedAppConfig processWebViewPools:performance[@"webviewPools"]];
             
             ////////////////////////////////////////////////////////////
             // Miscellaneous stuff
@@ -317,7 +251,6 @@
                 sharedAppConfig.allowZoom = YES;
             
             sharedAppConfig.updateConfigJS = sharedAppConfig.json[@"updateConfigJS"];
-
         }
         
         
@@ -334,9 +267,11 @@
 
 - (void)processConfigUpdate:(NSString *)json
 {
-    if (!json || [json length] == 0) {
+    if (!json || [json length] == 0 || [json isEqualToString:self.lastConfigUpdate]) {
         return;
     }
+    
+    self.lastConfigUpdate = json;
     
     NSError *error;
     id parsedJson = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
@@ -349,14 +284,84 @@
         return;
     }
     
-    id tabNavigation = parsedJson[@"tabNavigation"];
-    if (tabNavigation && [tabNavigation isKindOfClass:[NSDictionary class]]) {
-        [self processTabNavigation:tabNavigation];
+    [self processTabNavigation:parsedJson[@"tabNavigation"]];
+    [self processSidebarNav:parsedJson[@"sidebarNavigation"]];
+    [self processNavigationLevels:parsedJson[@"navigationLevels"]];
+    [self processNavigationTitles:parsedJson[@"navigationTitles"]];
+    [self processWebViewPools:parsedJson[@"webviewPools"]];
+}
+
+- (void)processSidebarNav:(NSDictionary*)sidebarNav
+{
+    if (![sidebarNav isKindOfClass:[NSDictionary class]]) {
+        return;
     }
+    
+    // menus
+    id menus = sidebarNav[@"menus"];
+    if ([menus isKindOfClass:[NSArray class]]) {
+        [self processMenus:menus];
+    }
+    
+    if ([sidebarNav[@"userIdRegex"] isKindOfClass:[NSString class]]) {
+        self.userIdRegex = sidebarNav[@"userIdRegex"];
+    }
+    
+    // menu selection config
+    id menuSelectionConfig = sidebarNav[@"menuSelectionConfig"];
+    if ((self.numActiveMenus > 1 || self.loginIsFirstPage) && [menuSelectionConfig isKindOfClass:[NSDictionary class]]) {
+        id testUrl = menuSelectionConfig[@"testURL"];
+        if ([testUrl isKindOfClass:[NSString class]]) {
+            self.loginDetectionURL = [NSURL URLWithString:testUrl];
+        }
+        
+        id redirectLocations = menuSelectionConfig[@"redirectLocations"];
+        if ([redirectLocations isKindOfClass:[NSArray class]]) {
+            self.loginDetectRegexes = [NSMutableArray array];
+            self.loginDetectLocations = [NSMutableArray array];
+            for (id entry in redirectLocations) {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                if (predicate) {
+                    [self.loginDetectRegexes addObject:predicate];
+                    [self.loginDetectLocations addObject:entry];
+                }
+            }
+        }
+    }
+
+}
+
+- (void)processMenus:(NSArray*)menus
+{
+    self.menus = [NSMutableDictionary dictionary];
+    for (id menu in menus) {
+        // skip if not active
+        if (![menu[@"active"] boolValue]) {
+            continue;
+        }
+        
+        self.numActiveMenus++;
+        
+        NSString *name = menu[@"name"];
+        if (name && [menu[@"items"] isKindOfClass:[NSArray class]]) {
+            self.menus[name] = menu[@"items"];
+            
+            // show menu if the menu named "default" is active
+            if ([name isEqualToString:@"default"]) {
+                self.showNavigationMenu = YES;
+            }
+        }
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationProcessedMenu object:self];
 }
 
 - (void)processTabNavigation:(NSDictionary*)tabNavigation
 {
+    if (![tabNavigation isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    
     // tab menus
     id tabMenus = tabNavigation[@"tabMenus"];
     if ([tabMenus isKindOfClass:[NSArray class]]) {
@@ -385,6 +390,72 @@
             }
         }
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationProcessedTabNavigation object:self];
+}
+
+- (void)processNavigationLevels:(NSDictionary*)navigationLevels
+{
+    if (![navigationLevels isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    
+    // navigation levels
+    if ([navigationLevels[@"active"] boolValue]) {
+        id urlLevels = navigationLevels[@"levels"];
+        self.navStructureLevels = [[NSMutableArray alloc] initWithCapacity:[urlLevels count]];
+        for (id entry in urlLevels) {
+            if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"] && entry[@"level"]) {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                NSNumber *level = entry[@"level"];
+                [self.navStructureLevels addObject:@{@"predicate": predicate, @"level": level}];
+            }
+        }
+    }
+}
+
+- (void)processNavigationTitles:(NSDictionary*)navigationTitles
+{
+    if (![navigationTitles isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    
+    // navigation titles
+    if ([navigationTitles[@"active"] boolValue]) {
+        id titles = navigationTitles[@"titles"];
+        self.navTitles = [[NSMutableArray alloc] initWithCapacity:[titles count]];
+        for (id entry in titles) {
+            if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"]) {
+                NSMutableDictionary *toAdd = [[NSMutableDictionary alloc] init];
+                
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                [toAdd setObject:predicate forKey:@"predicate"];
+                
+                if (entry[@"title"]) {
+                    [toAdd setObject:entry[@"title"] forKey:@"title"];
+                }
+                if (entry[@"urlRegex"]) {
+                    [toAdd setObject:[NSRegularExpression regularExpressionWithPattern:entry[@"urlRegex"] options:0 error:nil] forKey:@"urlRegex"];
+                }
+                if (entry[@"urlChompWords"]) {
+                    [toAdd setObject:entry[@"urlChompWords"] forKey:@"urlChompWords"];
+                }
+                
+                [self.navTitles addObject:toAdd];
+            }
+        }
+    }
+}
+
+- (void)processWebViewPools:(NSArray*)webviewPools
+{
+    if (![webviewPools isKindOfClass:[NSArray class]]) {
+        return;
+    }
+    
+    self.webviewPools = webviewPools;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationProcessedWebViewPools object:self];
 }
 
 @end

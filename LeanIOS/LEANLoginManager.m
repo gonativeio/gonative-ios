@@ -57,11 +57,10 @@
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:url];
-    NSDictionary * headers = [NSHTTPCookie requestHeaderFieldsWithCookies:cookies];
-    [request setAllHTTPHeaderFields:headers];
     NSString *userAgent = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserAgent"];
     [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+    [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
+    [request setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
 
     self.connection = [NSURLConnection connectionWithRequest:request delegate:self];
 }
@@ -108,6 +107,9 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     self.isChecking = NO;
+    self.loginStatus = @"default";
+    self.loggedIn = NO;
+    [self statusUpdated];
 }
 
 

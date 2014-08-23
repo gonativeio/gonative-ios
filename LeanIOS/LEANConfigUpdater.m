@@ -29,7 +29,7 @@
     NSURLSessionDownloadTask *downloadTask =  [session downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
         
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
-        if (httpResponse.statusCode >= 400) {
+        if (error || httpResponse.statusCode != 200 || !location) {
             return;
         }
         

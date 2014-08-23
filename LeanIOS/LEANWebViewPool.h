@@ -8,12 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, LEANWebViewPoolDisownPolicy) {
+    LEANWebViewPoolDisownPolicyAlways,
+    LEANWebViewPoolDisownPolicyReload,
+    LEANWebViewPoolDisownPolicyNever
+};
+
+static LEANWebViewPoolDisownPolicy kLEANWebViewPoolDisownPolicyDefault = LEANWebViewPoolDisownPolicyReload;
+
 @interface LEANWebViewPool : NSObject
 @property NSURLRequest *currentLoadingRequest;
 
 + (LEANWebViewPool*)sharedPool;
 
-- (UIWebView*)webviewForUrl:(NSURL*)url;
+- (UIWebView*)webviewForUrl:(NSURL *)url policy:(LEANWebViewPoolDisownPolicy*)policy;
 - (void)disownWebview:(UIWebView*)webview;
 
 @end

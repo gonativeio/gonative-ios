@@ -691,6 +691,10 @@
             view = [[NSBundle mainBundle] loadNibNamed:@"CheckboxView" owner:nil options:nil][0];
             label = view.subviews[0];
             label.text = field[@"label"];
+            if ([field[@"checked"] boolValue]) {
+                UISwitch *checkbox = (UISwitch*)[view viewWithTag:2];
+                [checkbox setOn:YES];
+            }
             [cell.contentView addSubview:view];
         }
         else if ([field[@"type"] isEqualToString:@"forgot_password"]) {
