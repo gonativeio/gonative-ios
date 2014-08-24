@@ -35,31 +35,31 @@
     {
         if (!sharedPool) {
             sharedPool = [[LEANWebViewPool alloc] init];
+            [sharedPool setup];
         }
         return sharedPool;
     }
 }
 
-- (instancetype)init
+- (void)setup
 {
-    self = [super init];
-    if (self) {
-        self.urlToWebview = [NSMutableDictionary dictionary];
-        self.urlToDisownPolicy = [NSMutableDictionary dictionary];
-        self.urlSets = [NSMutableArray array];
-        self.urlsToLoad = [NSMutableSet set];
-        self.isViewControllerLoading = YES;
-        
-        // subscribe to notification about webview loading
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerUserStartedLoading object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerUserFinishedLoading object:nil];
-        
-        // subscribe to dynamic config change notification
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedWebViewPools object:nil];
-        
-        [self processConfig];
-    }
-    return self;
+    self.urlToWebview = [NSMutableDictionary dictionary];
+    self.urlToDisownPolicy = [NSMutableDictionary dictionary];
+    self.urlSets = [NSMutableArray array];
+    self.urlsToLoad = [NSMutableSet set];
+    self.isViewControllerLoading = YES;
+    
+    // first remove to make sure we don't get duplicate notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // subscribe to notification about webview loading
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerUserStartedLoading object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerUserFinishedLoading object:nil];
+    
+    // subscribe to dynamic config change notification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedWebViewPools object:nil];
+    
+    [self processConfig];
 }
 
 - (void)processConfig

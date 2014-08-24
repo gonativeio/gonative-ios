@@ -23,14 +23,20 @@
     {
         if (!sharedInspector){
             sharedInspector = [[LEANUrlInspector alloc] init];
-            
-            sharedInspector.userId = @"";
-            if ([LEANAppConfig sharedAppConfig].userIdRegex) {
-                sharedInspector.userIdRegex = [NSRegularExpression regularExpressionWithPattern:[LEANAppConfig sharedAppConfig].userIdRegex options:0 error:nil];
-            }
+            [sharedInspector setup];
         }
         
         return sharedInspector;
+    }
+}
+
+- (void)setup
+{
+    self.userId = @"";
+    if ([LEANAppConfig sharedAppConfig].userIdRegex) {
+        self.userIdRegex = [NSRegularExpression regularExpressionWithPattern:[LEANAppConfig sharedAppConfig].userIdRegex options:0 error:nil];
+    } else {
+        self.userIdRegex = nil;
     }
 }
 

@@ -36,7 +36,13 @@
     } else if ([[NSUserDefaults standardUserDefaults] objectForKey:@"isAppio"]) {
         distribution = @"appio";
     } else if ([[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
-        distribution = @"appstore";
+        NSData *filedata = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]];
+        NSData *search = [@"<key>ProvisionedDevices</key>" dataUsingEncoding:NSASCIIStringEncoding];
+        if ([filedata rangeOfData:search options:0 range:NSMakeRange(0, [filedata length])].location != NSNotFound) {
+            distribution = @"adhoc";
+        } else {
+            distribution = @"appstore";
+        }
     } else {
         distribution = @"adhoc";
     }

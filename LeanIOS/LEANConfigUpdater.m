@@ -54,10 +54,17 @@
 }
 
 
-+ (void)registerEvent
++ (void)registerEvent:(NSString*)event data:(NSDictionary *)data
 {
+    if (!event) {
+        return;
+    }
+    
     NSMutableDictionary *dict = [[LEANInstallation info] mutableCopy];
-    dict[@"event"] = @"launch";
+    dict[@"event"] = event;
+    if (data) {
+        dict[@"additionalData"] = data;
+    }
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:0 error:nil];
     

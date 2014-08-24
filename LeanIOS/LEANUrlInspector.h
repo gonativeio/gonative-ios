@@ -12,6 +12,7 @@
 
 @property NSString *userId;
 
+- (void)setup;
 + (LEANUrlInspector*)sharedInspector;
 - (void)inspectUrl:(NSURL*)url;
 @end

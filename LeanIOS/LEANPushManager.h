@@ -16,4 +16,6 @@
 // singleton
 +(LEANPushManager*)sharedManager;
 
+- (void)sendRegistration;
+
 @end

@@ -112,5 +112,13 @@
     [self statusUpdated];
 }
 
-
+- (void)stopChecking
+{
+    if (self.connection) {
+        [self.connection cancel];
+        self.connection = nil;
+    }
+    self.currentUrl = nil;
+    self.isChecking = NO;
+}
 @end

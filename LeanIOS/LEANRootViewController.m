@@ -27,6 +27,14 @@
 
 - (void)awakeFromNib
 {
+    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+        self.liveBlurBackgroundStyle = REFrostedViewControllerLiveBackgroundStyleDark;
+        self.blurTintColor = [UIColor colorWithWhite:0 alpha:0.75f];
+    } else {
+        self.liveBlurBackgroundStyle = REFrostedViewControllerLiveBackgroundStyleLight;
+        self.blurTintColor = nil;
+    }
+    
     self.animationDuration = [[LEANAppConfig sharedAppConfig].menuAnimationDuration floatValue];
     self.limitMenuViewSize = YES;
     self.menuViewSize = CGSizeMake(270, NAN);

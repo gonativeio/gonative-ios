@@ -47,6 +47,7 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 
 
 // styling
+@property NSString *iosTheme;
 @property NSString *customCss;
 @property NSNumber *forceViewportWidth;
 @property NSString *stringViewport;
@@ -83,11 +84,19 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property BOOL allowZoom;
 @property NSString *updateConfigJS;
 
+// simulator
+@property BOOL isSimulator;
+@property BOOL isSimulating;
+@property UIImage *appIcon;
+
 @property NSArray *webviewPools;
 
 
 + (LEANAppConfig *)sharedAppConfig;
 + (NSURL*)urlForOtaConfig;
-- (void)processConfigUpdate:(NSString*)json;
++ (NSURL*)urlForSimulatorConfig;
++ (NSURL*)urlForSimulatorIcon;
+- (void)setupFromJsonFiles;
+- (void)processDynamicUpdate:(NSString*)json;
 
 @end

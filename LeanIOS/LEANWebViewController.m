@@ -261,6 +261,13 @@
     
     if (!self.tabBar) {
         self.tabBar = [[UITabBar alloc] init];
+        
+        if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+            self.tabBar.barStyle = UIBarStyleBlack;
+        } else {
+            self.tabBar.barStyle = UIBarStyleDefault;
+        }
+        
         self.tabBar.delegate = self;
         self.tabBar.hidden = YES;
         self.tabBar.alpha = 0.0;
@@ -941,7 +948,7 @@
     // dynamic config updater
     if ([LEANAppConfig sharedAppConfig].updateConfigJS && !webView.isLoading) {
         NSString *result = [webView stringByEvaluatingJavaScriptFromString:[LEANAppConfig sharedAppConfig].updateConfigJS];
-        [[LEANAppConfig sharedAppConfig] processConfigUpdate:result];
+        [[LEANAppConfig sharedAppConfig] processDynamicUpdate:result];
     }
     
     // profile picker

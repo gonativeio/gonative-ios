@@ -122,6 +122,14 @@
         if ([LEANAppConfig sharedAppConfig].loginIconImage) {
             NSArray *arr = [[NSBundle mainBundle] loadNibNamed:@"LoginHeaderView" owner:nil options:nil];
             UIView *headerView = arr[0];
+            
+            if ([LEANAppConfig sharedAppConfig].appIcon) {
+                UIButton *button = (UIButton*)[headerView viewWithTag:1];
+                if ([button isKindOfClass:[UIButton class]]) {
+                    button.imageView.image = [LEANAppConfig sharedAppConfig].appIcon;
+                }
+            }
+            
             self.tableView.tableHeaderView = headerView;
         }
     } else {

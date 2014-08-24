@@ -13,6 +13,7 @@
 #import "LEANPushManager.h"
 #import "LEANRootViewController.h"
 #import "LEANConfigUpdater.h"
+#import "LEANSimulator.h"
 
 @interface LEANAppDelegate() <UIAlertViewDelegate>
 @property UIAlertView *alertView;
@@ -29,16 +30,8 @@
     // local cache
     [NSURLCache setSharedURLCache:[[LEANUrlCache alloc] init]];
     
-    // tint color from app config
-    if (appConfig.tintColor) {
-        self.window.tintColor = appConfig.tintColor;
-    }
-    
-    // start cast controller
-    if (appConfig.enableChromecast) {
-        self.castController = [[LEANCastController alloc] init];
-        [self.castController performScan:YES];
-    }
+    // Register launch
+    [LEANConfigUpdater registerEvent:@"launch" data:nil];
     
     // proxy handler to intercept HTML for custom CSS and viewport
     [LEANWebViewIntercept initialize];
@@ -47,9 +40,6 @@
     if (appConfig.pushNotifications) {
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
     }
-    
-    // Register launch
-    [LEANConfigUpdater registerEvent];
     
     // If launched from push notification and it contains a url, set the initialUrl.
     id notification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -63,14 +53,37 @@
         }
     }
     
-    // clear notifications
-    application.applicationIconBadgeNumber = 1;
-    application.applicationIconBadgeNumber = 0;
-    
     // download new config
     [[[LEANConfigUpdater alloc] init] updateConfig];
     
+    [self configureApplication];
+    
     return YES;
+}
+
+- (void)configureApplication
+{
+    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+
+    // tint color from app config
+    if (appConfig.tintColor) {
+        self.window.tintColor = appConfig.tintColor;
+    }
+    
+    // start cast controller
+    if (appConfig.enableChromecast) {
+        self.castController = [[LEANCastController alloc] init];
+        [self.castController performScan:YES];
+    } else {
+        [self.castController performScan:NO];
+        self.castController = nil;
+    }
+    
+    // clear notifications
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 1;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    
+    [LEANSimulator checkStatus];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -120,6 +133,7 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
+    // for push notifications
     if (buttonIndex == 1) {
         UIViewController *rvc = self.window.rootViewController;
         if ([rvc isKindOfClass:[LEANRootViewController class]]) {
@@ -128,6 +142,22 @@
     }
 }
 
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [LEANSimulator openURL:url];
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+    if ([LEANAppConfig sharedAppConfig].isSimulator) {
+        [LEANSimulator checkSimulatorSetting];
+    }
+}
+
+- (void)application:(UIApplication *)application didChangeStatusBarOrientation:(UIInterfaceOrientation)oldStatusBarOrientation
+{
+    [LEANSimulator didChangeStatusBarOrientation];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
@@ -144,11 +174,6 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

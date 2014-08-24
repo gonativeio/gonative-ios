@@ -30,8 +30,7 @@ static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api
     }
 }
 
-
-- (void)register
+- (void)sendRegistration
 {
     if (![LEANAppConfig sharedAppConfig].publicKey) {
         NSLog(@"publicKey is required for push");
@@ -82,7 +81,7 @@ static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api
 - (void)setToken:(NSData *)token
 {
     _token = token;
-    [self register];
+    [self sendRegistration];
 }
 
 - (NSData*)token
@@ -95,7 +94,7 @@ static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api
 {
     if ((_userID && ![_userID isEqualToString:userID]) || _userID != userID) {
         _userID = userID;
-        [self register];
+        [self sendRegistration];
     }
     _userID = userID;
 }

@@ -57,6 +57,9 @@
     headerView.autoresizingMask = UIViewAutoresizingNone;
     UIButton *headerButton = (UIButton*)[headerView viewWithTag:1];
     [headerButton addTarget:self action:@selector(picturePressed:) forControlEvents:UIControlEventTouchUpInside];
+    if ([LEANAppConfig sharedAppConfig].appIcon) {
+        headerButton.imageView.image = [LEANAppConfig sharedAppConfig].appIcon;
+    }
     
     self.settingsButton = (UIButton*)[headerView viewWithTag:2];
     [self.settingsButton addTarget:self action:@selector(settingsPressed:) forControlEvents:UIControlEventTouchUpInside];

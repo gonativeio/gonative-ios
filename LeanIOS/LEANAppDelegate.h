@@ -15,4 +15,6 @@
 @property LEANCastController *castController;
 @property NSURLRequest *currentRequest;
 
+- (void)configureApplication;
+
 @end

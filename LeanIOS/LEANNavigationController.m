@@ -22,6 +22,13 @@
     
     LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
     
+    // theme
+    if ([appConfig.iosTheme isEqualToString:@"dark"]) {
+        self.navigationBar.barStyle = UIBarStyleBlack;
+    } else {
+        self.navigationBar.barStyle = UIBarStyleDefault;
+    }
+    
     // set title text color
     if (appConfig.titleTextColor) {
         self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [LEANAppConfig sharedAppConfig].titleTextColor};

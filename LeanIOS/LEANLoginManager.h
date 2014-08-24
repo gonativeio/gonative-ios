@@ -22,4 +22,6 @@ static NSString *kLEANLoginManagerNotificationName = @"io.gonative.ios.LoginMana
 
 // Run a check if there is not one already pending.
 -(void) checkIfNotAlreadyChecking;
+
+-(void) stopChecking;
 @end
