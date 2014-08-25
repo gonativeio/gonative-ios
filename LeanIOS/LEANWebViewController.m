@@ -49,6 +49,7 @@
 @property BOOL startedLoading; // for transitions
 @property LEANTabManager *tabManager;
 @property BOOL isPoolWebview;
+@property UIView *defaultTitleView;
 
 @property NSString *postLoadJavascript;
 
@@ -89,6 +90,7 @@
             [backView addSubview:iv];
             
             iv.center = backView.center;
+            self.defaultTitleView = backView;
             self.navigationItem.titleView = backView;
         }
     }
@@ -590,13 +592,13 @@
     NSURL *url = [NSURL URLWithString:[searchTemplate stringByAppendingString:searchText]];
     [self loadUrl:url];
     
-    self.navigationItem.titleView = nil;
+    self.navigationItem.titleView = self.defaultTitleView;
     [self showNavigationItemButtonsAnimated:YES];
 }
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
-    self.navigationItem.titleView = nil;
+    self.navigationItem.titleView = self.defaultTitleView;
     [self showNavigationItemButtonsAnimated:YES];
 }
 
