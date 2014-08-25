@@ -182,7 +182,7 @@
     NSString *urlString = [url absoluteString];
     
     NSSet *urlSet = [self urlSetForUrl:urlString];
-    if (urlSet) {
+    if (urlSet && [urlSet count] > 0) {
         // do not add the urls already loaded or loading
         NSMutableSet *newUrls = [urlSet mutableCopy];
         if (self.currentLoadingUrl) {
@@ -205,6 +205,8 @@
         }
         
         [self resumeLoading];
+    } else {
+        // if webview is not found, then presumably the webviewcontroller will be loading the page. resumeLoading will happen once the finish notification is received.
     }
     
     return webview;
@@ -212,12 +214,13 @@
 
 - (NSSet*)urlSetForUrl:(NSString*)url
 {
+    NSMutableSet *result = [NSMutableSet set];
     for (NSSet *set in self.urlSets) {
         if ([set containsObject:url]) {
-            return set;
+            [result unionSet:set];
         }
     }
-    return nil;
+    return result;
 }
 
 @end
