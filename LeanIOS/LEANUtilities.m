@@ -260,12 +260,8 @@
     // we are using autolayout, to disable autoresizingmask stuff
     [webview setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    // dark theme
-    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
-        webview.backgroundColor = [UIColor blackColor];
-    } else {
-        webview.backgroundColor = [UIColor whiteColor];
-    }
+    webview.opaque = NO;
+    webview.backgroundColor = [UIColor clearColor];
 }
 
 @end

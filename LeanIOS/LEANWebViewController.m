@@ -96,10 +96,8 @@
     // dark theme
     if ([appConfig.iosTheme isEqualToString:@"dark"]) {
         self.view.backgroundColor = [UIColor blackColor];
-        self.webview.backgroundColor = [UIColor blackColor];
     } else {
         self.view.backgroundColor = [UIColor whiteColor];
-        self.webview.backgroundColor = [UIColor whiteColor];
     }
     
     // configure zoomability
@@ -1145,8 +1143,6 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    
-    NSLog(@"navbar frame %@", NSStringFromCGRect(self.navigationController.navigationBar.frame));
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
