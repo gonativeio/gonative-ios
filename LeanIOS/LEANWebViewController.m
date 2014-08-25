@@ -93,6 +93,15 @@
         }
     }
     
+    // dark theme
+    if ([appConfig.iosTheme isEqualToString:@"dark"]) {
+        self.view.backgroundColor = [UIColor blackColor];
+        self.webview.backgroundColor = [UIColor blackColor];
+    } else {
+        self.view.backgroundColor = [UIColor whiteColor];
+        self.webview.backgroundColor = [UIColor whiteColor];
+    }
+    
     // configure zoomability
     self.webview.scalesPageToFit = appConfig.allowZoom;
     

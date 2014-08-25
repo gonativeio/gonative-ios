@@ -7,6 +7,7 @@
 //
 
 #import "LEANUtilities.h"
+#import "LEANAppConfig.h"
 
 @implementation LEANUtilities
 
@@ -258,6 +259,13 @@
     webview.scrollView.bounces = NO;
     // we are using autolayout, to disable autoresizingmask stuff
     [webview setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    // dark theme
+    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+        webview.backgroundColor = [UIColor blackColor];
+    } else {
+        webview.backgroundColor = [UIColor whiteColor];
+    }
 }
 
 @end
