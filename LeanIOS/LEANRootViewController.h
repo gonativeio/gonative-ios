@@ -13,8 +13,6 @@
 
 @property LEANWebViewController *webViewController;
 
-- (void)forceOrientations:(UIInterfaceOrientationMask)orientations;
-- (NSUInteger)supportedInterfaceOrientations;
 - (void)loadUrl:(NSURL*)url;
 - (BOOL)webviewOnTop;
 - (void)setInitialUrl:(NSURL *)url; // for initial launch from push notification

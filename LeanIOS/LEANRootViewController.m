@@ -12,7 +12,7 @@
 #import "LEANWebViewController.h"
 
 @interface LEANRootViewController ()
-@property UIInterfaceOrientationMask forcedOrientations;
+
 @end
 
 @implementation LEANRootViewController
@@ -20,7 +20,7 @@
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle
 {
     if (self = [super initWithNibName:nibName bundle:nibBundle]) {
-        self.forcedOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
+        
     }
     return self;
 }
@@ -78,27 +78,5 @@
 }
 
 
-
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return self.forcedOrientations;
-}
-
-- (void)forceOrientations:(UIInterfaceOrientationMask)orientations
-{
-    self.forcedOrientations = orientations;
-
-    // hack to do a rotation if the current orientaiton is not one of the force orientations
-    if (~(orientations | (1 << [[UIDevice currentDevice] orientation]))) {
-        // force rotation
-        UIViewController *anyVC = [[UIViewController alloc] init];
-        [anyVC setModalPresentationStyle:UIModalPresentationCurrentContext];
-        anyVC.view.frame = CGRectZero;
-        [self presentViewController:anyVC animated:NO completion:^(void){
-            [anyVC dismissViewControllerAnimated:NO completion:nil];
-        }];
-    }
-}
 
 @end

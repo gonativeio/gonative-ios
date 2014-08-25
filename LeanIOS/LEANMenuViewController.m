@@ -230,6 +230,9 @@
     
     // text
     label.text = [menuItem[@"label"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    if ([LEANAppConfig sharedAppConfig].iosSidebarFont) {
+        label.font = [LEANAppConfig sharedAppConfig].iosSidebarFont;
+    }
     
     // expand/collapse indicator
     if ([menuItem[@"isGrouping"] boolValue]) {
@@ -247,7 +250,7 @@
         // add icon to imageView
         icon = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageView.bounds.size.width, imageView.bounds.size.height)];
         icon.textAlignment = NSTextAlignmentCenter;
-        icon.font = [UIFont fontAwesomeFontOfSize:label.font.pointSize];
+        icon.font = [UIFont fontAwesomeFontOfSize:[UIFont systemFontSize]];
         icon.text = [NSString fontAwesomeIconStringForIconIdentifier:menuItem[@"icon"]];
         [imageView addSubview:icon];
     } else {

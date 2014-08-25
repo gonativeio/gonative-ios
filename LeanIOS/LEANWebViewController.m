@@ -83,12 +83,10 @@
         UIImage *im = [UIImage imageNamed:@"navbar_logo"];
         if (im) {
             CGRect bounds = CGRectMake(0, 0, 30 * im.size.width / im.size.height, 30);
-            
-            UIView *backView = [[UIView alloc] init];
+            UIView *backView = [[UIView alloc] initWithFrame:bounds];
             UIImageView *iv = [[UIImageView alloc] initWithImage:im];
             iv.bounds = bounds;
             [backView addSubview:iv];
-            
             iv.center = backView.center;
             self.defaultTitleView = backView;
             self.navigationItem.titleView = backView;
@@ -927,16 +925,6 @@
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [self.customActionButton setEnabled:NO];
     
-    LEANRootViewController *rootVC = (LEANRootViewController*)self.frostedViewController;
-    // check orientation
-    NSPredicate *forceLandscape = [LEANAppConfig sharedAppConfig].forceLandscapeMatch;
-    if (forceLandscape && [forceLandscape evaluateWithObject:[[self.currentRequest URL] absoluteString]]) {
-        [rootVC forceOrientations:UIInterfaceOrientationMaskLandscape];
-    }
-    else {
-        [rootVC forceOrientations:UIInterfaceOrientationMaskAllButUpsideDown];
-    }
-    
     [self.timer invalidate];
     self.timer = [NSTimer timerWithTimeInterval:0.05 target:self selector:@selector(checkReadyStatus) userInfo:nil repeats:YES];
     [self.timer setTolerance:0.02];
@@ -1071,8 +1059,8 @@
 
     [self showWebview];
     
-    if ([[error domain] isEqualToString:@"NSURLErrorDomain"] && [error code] == -1009) {
-        [[[UIAlertView alloc] initWithTitle:@"No connection" message:@"The internet connection appears to be offline" delegate:nil cancelButtonTitle:@"Okay" otherButtonTitles: nil] show];
+    if ([[error domain] isEqualToString:NSURLErrorDomain] && [error code] == NSURLErrorNotConnectedToInternet) {
+        [[[UIAlertView alloc] initWithTitle:@"No connection" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
     }
 }
 
@@ -1139,7 +1127,12 @@
 
 - (BOOL)prefersStatusBarHidden
 {
-    return self.willBeLandscape;
+    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+    {
+        return NO;
+    } else {
+        return self.willBeLandscape;
+    }
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation

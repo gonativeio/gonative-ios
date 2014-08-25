@@ -263,7 +263,19 @@
         self.showToolbar = [styling[@"showToolbar"] boolValue];
     else self.showToolbar = NO;
     
-    
+    // fonts
+    id sidebarFont = styling[@"iosSidebarFont"];
+    if ([sidebarFont isKindOfClass:[NSString class]]) {
+        self.iosSidebarFont = [UIFont fontWithName:sidebarFont size:[UIFont systemFontSize]];
+    } else if ([sidebarFont isKindOfClass:[NSDictionary class]] &&
+               [sidebarFont[@"name"] isKindOfClass:[NSString class]]) {
+        NSString *fontName = sidebarFont[@"name"];
+        NSNumber *fontSize = sidebarFont[@"size"];
+        if (![fontSize isKindOfClass:[NSNumber class]]) {
+            fontSize = [NSNumber numberWithFloat:[UIFont systemFontSize]];
+        }
+        self.iosSidebarFont = [UIFont fontWithName:fontName size:[fontSize floatValue]];
+    }
     
     ////////////////////////////////////////////////////////////
     // Services

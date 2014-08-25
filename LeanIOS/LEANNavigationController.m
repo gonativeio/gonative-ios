@@ -35,7 +35,6 @@
     }
 
     // recognize swipe from left edge
-    
     if (appConfig.showNavigationMenu) {
         UIScreenEdgePanGestureRecognizer *r = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
         r.edges = UIRectEdgeLeft;
