@@ -245,6 +245,8 @@
     self.tintColor = [LEANUtilities colorFromHexString:styling[@"iosTintColor"]];
     self.titleTextColor = [LEANUtilities colorFromHexString:styling[@"iosTitleColor"]];
     
+    self.navigationTitleImage = [styling[@"navigationTitleImage"] boolValue];
+    
     if ([styling[@"menuAnimationDuration"] isKindOfClass:[NSNumber class]]) {
         self.menuAnimationDuration = styling[@"menuAnimationDuration"];
     } else {

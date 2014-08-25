@@ -55,6 +55,7 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property UIColor *titleTextColor;
 @property BOOL showToolbar;
 @property BOOL showNavigationBar;
+@property BOOL navigationTitleImage;
 @property NSNumber *menuAnimationDuration;
 @property NSNumber *interactiveDelay;
 

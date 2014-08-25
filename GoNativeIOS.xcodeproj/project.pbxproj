@@ -48,6 +48,7 @@
 		202B4D56195122FD0099821E /* DateCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D55195122FD0099821E /* DateCellView.xib */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
+		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
 		207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C218C2E8B3002EBDD0 /* TextCellView.xib */; };
 		207170C518C2F0CF002EBDD0 /* PasswordCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C418C2F0CF002EBDD0 /* PasswordCellView.xib */; };
@@ -153,6 +154,7 @@
 		204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+LEANUtilities.m"; sourceTree = "<group>"; };
 		204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
 		207170BE18C2E47A002EBDD0 /* LEANWebFormController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebFormController.h; sourceTree = "<group>"; };
 		207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebFormController.m; sourceTree = "<group>"; };
 		207170C218C2E8B3002EBDD0 /* TextCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextCellView.xib; sourceTree = "<group>"; };
@@ -270,6 +272,7 @@
 				204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */,
 				2004820418B080DD005FDD9A /* HeaderView.xib */,
 				2002B4B618A9991300495B3D /* Images.xcassets */,
+				2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */,
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				2002B4D518A99A0A00495B3D /* LEANAppConfig.h */,
 				2002B4D618A99A0A00495B3D /* LEANAppConfig.m */,
@@ -534,6 +537,7 @@
 				2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */,
 				20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */,
 				20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */,
+				2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */,
 				200A392519070B1500EFDDD6 /* CheckingLoginView.xib in Resources */,
 				202B4D56195122FD0099821E /* DateCellView.xib in Resources */,
 				20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */,

@@ -77,6 +77,22 @@
         self.navigationItem.title = appConfig.appName;
     }
     
+    // show logo in navigation bar
+    if (appConfig.navigationTitleImage) {
+        UIImage *im = [UIImage imageNamed:@"navbar_logo"];
+        if (im) {
+            CGRect bounds = CGRectMake(0, 0, 30 * im.size.width / im.size.height, 30);
+            
+            UIView *backView = [[UIView alloc] init];
+            UIImageView *iv = [[UIImageView alloc] initWithImage:im];
+            iv.bounds = bounds;
+            [backView addSubview:iv];
+            
+            iv.center = backView.center;
+            self.navigationItem.titleView = backView;
+        }
+    }
+    
     // configure zoomability
     self.webview.scalesPageToFit = appConfig.allowZoom;
     
@@ -1120,6 +1136,8 @@
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    NSLog(@"navbar frame %@", NSStringFromCGRect(self.navigationController.navigationBar.frame));
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
