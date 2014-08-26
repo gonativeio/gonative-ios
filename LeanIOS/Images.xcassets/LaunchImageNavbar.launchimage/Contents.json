@@ -5,14 +5,14 @@
       "idiom" : "iphone",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "ios_launch_640x960_statusbar.png",
+      "filename" : "ios_launch_640x960_navbar.png",
       "scale" : "2x"
     },
     {
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "retina4",
-      "filename" : "ios_launch_640x1136_statusbar.png",
+      "filename" : "ios_launch_640x1136_navbar.png",
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
       "scale" : "2x"
@@ -22,7 +22,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "ios_launch_768x1024_statusbar.png",
+      "filename" : "ios_launch_768x1024_navbar.png",
       "scale" : "1x"
     },
     {
@@ -30,7 +30,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "ios_launch_1024x768_statusbar.png",
+      "filename" : "ios_launch_1024x768_navbar.png",
       "scale" : "1x"
     },
     {
@@ -38,7 +38,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "ios_launch_1536x2048_statusbar.png",
+      "filename" : "ios_launch_1536x2048_navbar.png",
       "scale" : "2x"
     },
     {
@@ -46,7 +46,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "ios_launch_2048x1536_statusbar.png",
+      "filename" : "ios_launch_2048x1536_navbar.png",
       "scale" : "2x"
     }
   ],

@@ -33,6 +33,7 @@
 @property UIWebView *hiddenWebView;
 @property BOOL submitted;
 @property NSString *tempUserID;
+@property UIColor *backgroundColor;
 
 
 @end
@@ -43,6 +44,7 @@
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        self.json = json;
         self.title = json[@"title"];
         self.formUrl = [NSURL URLWithString:json[@"interceptUrl"]];
         self.errorUrl = [NSURL URLWithString:json[@"errorUrl"]];
@@ -71,6 +73,7 @@
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        self.json = config;
         self.title = title;
         self.formUrl = [NSURL URLWithString:config[@"interceptUrl"]];
         self.errorUrl = [NSURL URLWithString:config[@"errorUrl"]];
@@ -98,6 +101,26 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // show logo in navigation bar
+    if ([LEANAppConfig sharedAppConfig].navigationTitleImage) {
+        UIImage *im = [UIImage imageNamed:@"navbar_logo"];
+        if (im) {
+            CGRect bounds = CGRectMake(0, 0, 30 * im.size.width / im.size.height, 30);
+            UIView *backView = [[UIView alloc] initWithFrame:bounds];
+            UIImageView *iv = [[UIImageView alloc] initWithImage:im];
+            iv.bounds = bounds;
+            [backView addSubview:iv];
+            iv.center = backView.center;
+            self.navigationItem.titleView = backView;
+        }
+    }
+        
+    // background color
+    self.backgroundColor = [LEANUtilities colorFromHexString:self.json[@"iosBackgroundColor"]];
+    if (self.backgroundColor) {
+        self.view.backgroundColor = self.backgroundColor;
+    }
     
     // Add "done" button to navigation bar
     self.submitButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submit:)];

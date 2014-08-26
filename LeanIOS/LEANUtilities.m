@@ -166,7 +166,7 @@
         else
         return images[0]; //Non-retina iPhone
     }
-    else if ([[UIDevice currentDevice] orientation]==UIDeviceOrientationPortrait || [[UIDevice currentDevice] orientation] == UIDeviceOrientationPortraitUpsideDown)//iPad Portrait
+    else if (UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation))//iPad Portrait
     {
         if ([self isDeviceRetina])
         {

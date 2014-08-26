@@ -22,6 +22,7 @@
 #import "LEANInstallation.h"
 #import "LEANTabManager.h"
 #import "LEANWebViewPool.h"
+#import "LEANDocumentSharer.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate>
 
@@ -38,6 +39,7 @@
 @property UISearchBar *searchBar;
 @property UIView *statusBarBackground;
 @property UITabBar *tabBar;
+@property UIBarButtonItem *shareButton;
 
 @property BOOL willBeLandscape;
 
@@ -48,6 +50,7 @@
 @property NSTimer *timer;
 @property BOOL startedLoading; // for transitions
 @property LEANTabManager *tabManager;
+@property LEANDocumentSharer *documentSharer;
 @property BOOL isPoolWebview;
 @property UIView *defaultTitleView;
 
@@ -169,7 +172,7 @@
     if (appConfig.searchTemplateURL) {
         self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchPressed:)];
         self.searchBar = [[UISearchBar alloc] init];
-        self.searchBar.showsCancelButton = YES;
+        self.searchBar.showsCancelButton = NO;
         self.searchBar.delegate = self;
     }
     
@@ -406,9 +409,17 @@
 - (void) searchPressed:(id)sender
 {
     self.navigationItem.titleView = self.searchBar;
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(searchCanceled)];
+    
     [self.navigationItem setLeftBarButtonItems:nil animated:YES];
-    [self.navigationItem setRightBarButtonItems:nil animated:YES];
+    [self.navigationItem setRightBarButtonItems:@[cancelButton] animated:YES];
     [self.searchBar becomeFirstResponder];
+}
+
+- (void) sharePressed:(UIBarButtonItem*)sender
+{
+    self.documentSharer = [[LEANDocumentSharer alloc] init];
+    [self.documentSharer shareRequest:self.webview.request fromButton:sender];
 }
 
 - (void) showNavigationItemButtonsAnimated:(BOOL)animated
@@ -436,7 +447,6 @@
 {
     UIActivityViewController * avc = [[UIActivityViewController alloc]
                                       initWithActivityItems:@[[self.webview.request URL]] applicationActivities:nil];
-    
     [self presentViewController:avc animated:YES completion:nil];
     
 }
@@ -595,6 +605,11 @@
 }
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    [self searchCanceled];
+}
+
+- (void) searchCanceled
 {
     self.navigationItem.titleView = self.defaultTitleView;
     [self showNavigationItemButtonsAnimated:YES];
@@ -929,6 +944,11 @@
     self.timer = [NSTimer timerWithTimeInterval:0.05 target:self selector:@selector(checkReadyStatus) userInfo:nil repeats:YES];
     [self.timer setTolerance:0.02];
     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
+    
+    // remove share button
+    if (self.shareButton && self.navigationItem.rightBarButtonItem == self.shareButton) {
+        [self.navigationItem setRightBarButtonItem:nil animated:YES];
+    }
 }
 
 - (void) webViewDidFinishLoad:(UIWebView *)webView
@@ -997,7 +1017,18 @@
     if (!webView.isLoading) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
     }
+    
+    // document sharing
+    if (!webView.isLoading) {
+        if ([LEANDocumentSharer isSharableRequest:webView.request]) {
+            if (!self.shareButton) {
+                self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePressed:)];
+                [self.navigationItem setRightBarButtonItem:self.shareButton animated:YES];
+            }
+        }
+    }
 }
+
 
 - (void)checkReadyStatus
 {

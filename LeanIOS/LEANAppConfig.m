@@ -277,6 +277,8 @@
         self.iosSidebarFont = [UIFont fontWithName:fontName size:[fontSize floatValue]];
     }
     
+    self.iosSidebarTextColor = [LEANUtilities colorFromHexString:styling[@"iosSidebarTextColor"]];
+    
     ////////////////////////////////////////////////////////////
     // Services
     ////////////////////////////////////////////////////////////

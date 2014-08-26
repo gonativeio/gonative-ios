@@ -260,7 +260,12 @@
     }
     
     // configure text color
-    if ([LEANAppConfig sharedAppConfig].tintColor) {
+    if ([LEANAppConfig sharedAppConfig].iosSidebarTextColor) {
+        label.textColor = [LEANAppConfig sharedAppConfig].iosSidebarTextColor;
+        icon.textColor = [LEANAppConfig sharedAppConfig].iosSidebarTextColor;
+        cell.tintColor = [LEANAppConfig sharedAppConfig].iosSidebarTextColor;
+    }
+    else if ([LEANAppConfig sharedAppConfig].tintColor) {
         label.textColor = [LEANAppConfig sharedAppConfig].tintColor;
         icon.textColor = [LEANAppConfig sharedAppConfig].tintColor;
         cell.tintColor = [LEANAppConfig sharedAppConfig].tintColor;
