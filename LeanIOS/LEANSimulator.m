@@ -21,6 +21,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 @property NSURLSessionDownloadTask *downloadTask;
 @property NSString *simulatePublicKey;
 @property UIWindow *simulatorBarWindow;
+@property UINavigationBar *simulatorBarBackground;
 @property UIButton *simulatorBarButton;
 @property UIAlertView *progressAlert;
 @property NSTimer *showBarTimer;
@@ -151,7 +152,9 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
     [LEANSimulator moveFileFrom:[LEANSimulator tempConfigUrl] to:[LEANAppConfig urlForSimulatorConfig]];
     [LEANSimulator moveFileFrom:[LEANSimulator tempIconUrl] to:[LEANAppConfig urlForSimulatorIcon]];
     [LEANSimulator reloadApplication];
-    [LEANConfigUpdater registerEvent:@"simulate" data:@{@"publicKey": self.simulatePublicKey}];
+    NSString *simulatePublicKey = self.simulatePublicKey;
+    if (!simulatePublicKey) simulatePublicKey = @"";
+    [LEANConfigUpdater registerEvent:@"simulate" data:@{@"publicKey": simulatePublicKey}];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"is_simulating"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -217,14 +220,28 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
         [self.simulatorBarWindow setRootViewController:[UIViewController alloc]];
     }
     
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     BOOL wasHidden = self.simulatorBarWindow.hidden;
     if (wasHidden) {
-        self.simulatorBarWindow.alpha = 0;
+        // move the bar slightly off-frame so it can be animated into place
+        if (orientation == UIInterfaceOrientationPortrait) {
+            self.simulatorBarWindow.center = CGPointMake(frame.origin.x + (frame.size.width / 2),
+                                                         frame.origin.y - (frame.size.height / 2));
+        } else if (orientation == UIInterfaceOrientationLandscapeLeft) {
+            self.simulatorBarWindow.center = CGPointMake(frame.origin.x - (frame.size.width / 2),
+                                                         frame.origin.y + (frame.size.height / 2));
+        } else if (orientation == UIInterfaceOrientationLandscapeRight) {
+            self.simulatorBarWindow.center = CGPointMake(frame.origin.x + 3*(frame.size.width / 2),
+                                                         frame.origin.y + (frame.size.height / 2));
+        } else if (orientation == UIInterfaceOrientationPortraitUpsideDown) {
+            self.simulatorBarWindow.center = CGPointMake(frame.origin.x + (frame.size.width / 2),
+                                                         frame.origin.y + 3*(frame.size.height / 2));
+        }
     }
     
     self.simulatorBarWindow.hidden = [UIApplication sharedApplication].statusBarHidden;
     
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    
     if (orientation == UIInterfaceOrientationPortrait) {
         self.simulatorBarWindow.transform = CGAffineTransformIdentity;
     } else if (orientation == UIInterfaceOrientationLandscapeLeft) {
@@ -237,31 +254,37 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
         self.simulatorBarWindow.transform = CGAffineTransformIdentity;
     }
     
-    self.simulatorBarWindow.center = CGPointMake(frame.origin.x + (frame.size.width / 2),
-                                     frame.origin.y + (frame.size.height / 2));
     CGRect windowBounds = self.simulatorBarWindow.bounds;
     windowBounds.size = statusBarSize;
     self.simulatorBarWindow.bounds = windowBounds;
     
+    if (!self.simulatorBarBackground) {
+        self.simulatorBarBackground = [[UINavigationBar alloc] init];
+        self.simulatorBarBackground.opaque = NO;
+        [self.simulatorBarWindow addSubview:self.simulatorBarBackground];
+    }
+    self.simulatorBarBackground.frame = self.simulatorBarWindow.bounds;
+    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+        self.simulatorBarBackground.barStyle = UIBarStyleBlack;
+    } else {
+        self.simulatorBarBackground.barStyle = UIBarStyleDefault;
+    }
+
     if (!self.simulatorBarButton) {
         self.simulatorBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.simulatorBarButton.backgroundColor = [UIColor colorWithRed:76.0/255 green:174.0/255 blue:76.0/255 alpha:1.0];
-        self.simulatorBarButton.opaque = YES;
-        self.simulatorBarButton.titleLabel.textColor = [UIColor whiteColor];
+        self.simulatorBarButton.opaque = NO;
+        [self.simulatorBarButton setTitleColor:[LEANAppConfig sharedAppConfig].tintColor forState:UIControlStateNormal];
         self.simulatorBarButton.titleLabel.font = [UIFont systemFontOfSize:16.0];
         [self.simulatorBarButton setTitle:@"Tap to end GoNative.io simulator" forState:UIControlStateNormal];
         [self.simulatorBarButton addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        [self.simulatorBarWindow addSubview:self.simulatorBarButton];
+        [self.simulatorBarBackground addSubview:self.simulatorBarButton];
     }
-    self.simulatorBarButton.center = [self.simulatorBarWindow convertPoint:self.simulatorBarWindow.center fromWindow:nil];
-    
-    CGRect buttonBounds = self.simulatorBarButton.bounds;
-    buttonBounds.size = statusBarSize;
-    self.simulatorBarButton.bounds = buttonBounds;
+    self.simulatorBarButton.frame = self.simulatorBarBackground.bounds;
     
     if (wasHidden) {
         [UIView animateWithDuration:0.6 animations:^{
-            self.simulatorBarWindow.alpha = 1.0;
+            self.simulatorBarWindow.center = CGPointMake(frame.origin.x + (frame.size.width / 2),
+                                                         frame.origin.y + (frame.size.height / 2));
         }];
     }
 }

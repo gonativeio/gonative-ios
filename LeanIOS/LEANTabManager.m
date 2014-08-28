@@ -90,7 +90,11 @@
         NSString *javascript = self.menu[idx][@"javascript"];
         
         if ([url length] > 0) {
-            if ([javascript length] > 0) {
+            if ([url hasPrefix:@"javascript:"]) {
+                NSString *js = [url substringFromIndex: [@"javascript:" length]];
+                [self.wvc runJavascript:js];
+            }
+            else if ([javascript length] > 0) {
                 [self.wvc loadUrl:[NSURL URLWithString:url] andJavascript:javascript];
             } else {
                 [self.wvc loadUrl:[NSURL URLWithString:url]];
