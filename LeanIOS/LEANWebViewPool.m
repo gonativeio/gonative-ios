@@ -123,6 +123,7 @@
 
 - (void)didReceiveNotification:(NSNotification*)notification
 {
+    NSLog(@"noti %@", [notification name]);
     if ([[notification name] isEqualToString:kLEANWebViewControllerUserStartedLoading]) {
         self.isViewControllerLoading = YES;
         [self.currentLoadingWebview stopLoading];
@@ -139,6 +140,10 @@
 - (void)resumeLoading
 {
     if (self.isViewControllerLoading) {
+        return;
+    }
+    
+    if (self.currentLoadingWebview && [self.currentLoadingWebview isLoading]) {
         return;
     }
     
@@ -167,6 +172,8 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     if (!webView.isLoading) {
+        NSLog(@"finished %@", self.currentLoadingUrl);
+        webView.delegate = nil;
         self.urlToWebview[self.currentLoadingUrl] = webView;
         self.currentLoadingUrl = nil;
         self.currentLoadingRequest = nil;

@@ -647,7 +647,7 @@
     // log out by clearing cookies
     if (urlString && [urlString caseInsensitiveCompare:@"file://gonative_logout"] == NSOrderedSame) {
         [self logout];
-        return false;
+        return NO;
     }
     
     // checkLoginSignup might be NO when returning from login screen with loginIsFirstPage
@@ -895,6 +895,8 @@
     
     [self setNavigationButtonStatus];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
+    
     return YES;
 }
 
@@ -935,8 +937,6 @@
 
 - (void) webViewDidStartLoad:(UIWebView *)webView
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
-    
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [self.customActionButton setEnabled:NO];
     

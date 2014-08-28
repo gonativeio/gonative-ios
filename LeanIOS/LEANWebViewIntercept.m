@@ -31,7 +31,7 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 
 +(void)initialize
 {
-    webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self MATCHES '^Mozilla.*Mac OS X.*'"];
+    webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self == %@", [LEANAppConfig sharedAppConfig].userAgent];
     schemeHttpTest = [NSPredicate predicateWithFormat:@"scheme in {'http', 'https'}"];
     queue = [[NSOperationQueue alloc] init];
     [queue setMaxConcurrentOperationCount:5];
@@ -86,6 +86,16 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 - (NSData *)modifyHtml:(NSData *)htmlBuffer
 {
     NSString *origString = [[NSString alloc] initWithData:htmlBuffer encoding:self.htmlEncoding];
+    // if decoding fails, try other encodings
+    if ([htmlBuffer length] > 0 && [origString length] == 0) {
+        origString = [[NSString alloc] initWithData:htmlBuffer encoding:NSWindowsCP1252StringEncoding];
+    }
+    if ([htmlBuffer length] > 0 && [origString length] == 0) {
+        origString = [[NSString alloc] initWithData:htmlBuffer encoding:NSISOLatin1StringEncoding];
+    }
+    if ([htmlBuffer length] > 0 && [origString length] == 0) {
+        origString = [[NSString alloc] initWithData:htmlBuffer encoding:NSASCIIStringEncoding];
+    }
     
     // find closing </head> tag
     NSRange insertPoint = [origString rangeOfString:@"</head>" options:NSCaseInsensitiveSearch];
