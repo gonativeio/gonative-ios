@@ -246,19 +246,24 @@
     
     // icon
     UILabel *icon;
-    if (menuItem[@"icon"] && menuItem[@"icon"] != [NSNull null] && [menuItem[@"icon"] hasPrefix:@"fa-"]) {
-        // add icon to imageView
-        icon = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageView.bounds.size.width, imageView.bounds.size.height)];
-        icon.textAlignment = NSTextAlignmentCenter;
-        icon.font = [UIFont fontAwesomeFontOfSize:[UIFont systemFontSize]];
-        icon.text = [NSString fontAwesomeIconStringForIconIdentifier:menuItem[@"icon"]];
-        [imageView addSubview:icon];
+    if (menuItem[@"icon"] && [menuItem[@"icon"] isKindOfClass:[NSString class]]) {
+        if ([menuItem[@"icon"] hasPrefix:@"fa-"]) {
+            // add fontawesome icon to imageView
+            icon = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageView.bounds.size.width, imageView.bounds.size.height)];
+            icon.textAlignment = NSTextAlignmentCenter;
+            icon.font = [UIFont fontAwesomeFontOfSize:[UIFont systemFontSize]];
+            icon.text = [NSString fontAwesomeIconStringForIconIdentifier:menuItem[@"icon"]];
+            [imageView addSubview:icon];
+        } else {
+            UIImage *image = [UIImage imageNamed:menuItem[@"icon"]];
+            imageView.image = image;
+        }
     } else {
         imageView.image = nil;
         [[imageView subviews]
          makeObjectsPerformSelector:@selector(removeFromSuperview)];
     }
-    
+                              
     // configure text color
     if ([LEANAppConfig sharedAppConfig].iosSidebarTextColor) {
         label.textColor = [LEANAppConfig sharedAppConfig].iosSidebarTextColor;
