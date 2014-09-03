@@ -50,7 +50,6 @@
 @property NSTimer *timer;
 @property BOOL startedLoading; // for transitions
 @property LEANTabManager *tabManager;
-@property LEANDocumentSharer *documentSharer;
 @property BOOL isPoolWebview;
 @property UIView *defaultTitleView;
 
@@ -418,8 +417,7 @@
 
 - (void) sharePressed:(UIBarButtonItem*)sender
 {
-    self.documentSharer = [[LEANDocumentSharer alloc] init];
-    [self.documentSharer shareRequest:self.webview.request fromButton:sender];
+    [[LEANDocumentSharer sharedSharer] shareRequest:self.webview.request fromButton:sender];
 }
 
 - (void) showNavigationItemButtonsAnimated:(BOOL)animated
@@ -427,7 +425,7 @@
     //left
     [self.navigationItem setLeftBarButtonItems:self.defaultLeftNavBarItems animated:animated];
     
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:3];
     
     // right: search button
     if (self.searchButton) {
@@ -439,6 +437,12 @@
     if (appDelegate.castController.castButton && !appDelegate.castController.castButton.customView.hidden) {
         [buttons addObject:appDelegate.castController.castButton];
     }
+    
+    // right: document share button
+    if (self.shareButton) {
+        [buttons addObject:self.shareButton];
+    }
+    
     
     [self.navigationItem setRightBarButtonItems:buttons animated:animated];
 }
@@ -946,8 +950,9 @@
     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
     
     // remove share button
-    if (self.shareButton && self.navigationItem.rightBarButtonItem == self.shareButton) {
-        [self.navigationItem setRightBarButtonItem:nil animated:YES];
+    if (self.shareButton) {
+        self.shareButton = nil;
+        [self showNavigationItemButtonsAnimated:YES];
     }
 }
 
@@ -1020,10 +1025,10 @@
     
     // document sharing
     if (!webView.isLoading) {
-        if ([LEANDocumentSharer isSharableRequest:webView.request]) {
+        if ([[LEANDocumentSharer sharedSharer] isSharableRequest:webView.request]) {
             if (!self.shareButton) {
                 self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePressed:)];
-                [self.navigationItem setRightBarButtonItem:self.shareButton animated:YES];
+                [self showNavigationItemButtonsAnimated:YES];
             }
         }
     }

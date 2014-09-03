@@ -9,6 +9,12 @@
 #import <Foundation/Foundation.h>
 
 @interface LEANDocumentSharer : NSObject
-+ (BOOL)isSharableRequest:(NSURLRequest*)req;
++ (LEANDocumentSharer*)sharedSharer;
+- (BOOL)isSharableRequest:(NSURLRequest*)req;
 - (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button;
+- (void)receivedRequest:(NSURLRequest*)request;
+- (void)receivedResponse:(NSURLResponse*)response;
+- (void)receivedData:(NSData*)data;
+- (void)cancel;
+- (void)finish;
 @end

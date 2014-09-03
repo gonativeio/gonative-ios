@@ -11,6 +11,7 @@
 #import "LEANAppConfig.h"
 #import "GTMNSString+HTML.h"
 #import "LEANWebViewPool.h"
+#import "LEANDocumentSharer.h"
 
 static NSPredicate* webViewUserAgentTest;
 static NSPredicate* schemeHttpTest;
@@ -70,6 +71,7 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
         [[self class] setProperty:[NSNumber numberWithBool:YES] forKey:kOurRequestProperty inRequest:self.modifiedRequest];
     }
     self.isHtml = NO;
+    [[LEANDocumentSharer sharedSharer] receivedRequest:request];
     return self;
 }
 
@@ -166,6 +168,8 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
     
+    [[LEANDocumentSharer sharedSharer] receivedResponse:response];
+    
     if ([[response MIMEType] hasPrefix:@"text/html"]) {
         self.isHtml = YES;
         self.htmlBuffer = [[NSMutableData alloc] init];
@@ -189,6 +193,8 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
         [self.htmlBuffer appendData:data];
     else
         [self.client URLProtocol:self didLoadData:data];
+    
+    [[LEANDocumentSharer sharedSharer] receivedData:data];
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
@@ -215,10 +221,12 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
     }
     
     [self.client URLProtocolDidFinishLoading:self];
+    [[LEANDocumentSharer sharedSharer] finish];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [self.client URLProtocol:self didFailWithError:error];
+    [[LEANDocumentSharer sharedSharer] cancel];
 }
 
 //- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
