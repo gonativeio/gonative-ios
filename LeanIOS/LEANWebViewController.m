@@ -82,7 +82,12 @@
     
     // show logo in navigation bar
     if (appConfig.navigationTitleImage) {
-        UIImage *im = [UIImage imageNamed:@"navbar_logo"];
+        UIImage *im = nil;
+        if (appConfig.navigationTitleIcon) {
+            im = appConfig.navigationTitleIcon;
+        } else {
+            im = [UIImage imageNamed:@"navbar_logo"];
+        }
         if (im) {
             CGRect bounds = CGRectMake(0, 0, 30 * im.size.width / im.size.height, 30);
             UIView *backView = [[UIView alloc] initWithFrame:bounds];
@@ -479,6 +484,20 @@
     [self.frostedViewController presentMenuViewController];
 }
 
+- (void) loadUrlString:(NSString*)url
+{
+    if ([url length] == 0) {
+        return;
+    }
+    
+    if ([url hasPrefix:@"javascript:"]) {
+        NSString *js = [url substringFromIndex: [@"javascript:" length]];
+        [self runJavascript:js];
+    } else {
+        [self loadUrl:[NSURL URLWithString:url]];
+    }
+}
+
 - (void) loadUrl:(NSURL *)url
 {
     [self.webview loadRequest:[NSURLRequest requestWithURL:url]];
@@ -630,8 +649,13 @@
     
 //    NSLog(@"should start load %d %@", navigationType, url);
     
+    // simulator
+    if ([url.scheme isEqualToString:@"gonative.io"]) {
+        return YES;
+    }
+    
     // always allow iframes to load
-    if (![[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]) {
+    if (![urlString isEqualToString:[[request mainDocumentURL] absoluteString]]) {
         return YES;
     }
     

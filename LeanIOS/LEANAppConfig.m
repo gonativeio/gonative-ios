@@ -84,7 +84,13 @@
     self.initialHost = [self.initialURL host];
     self.appName = general[@"appName"];
     self.publicKey = general[@"publicKey"];
-    self.deviceRegKey = general[@"deviceRegKey"];
+    
+    self.deviceRegKey = [[NSUserDefaults standardUserDefaults] stringForKey:@"deviceRegKey"];
+    if (!self.deviceRegKey && [general[@"deviceRegKey"] isKindOfClass:[NSString class]]) {
+        self.deviceRegKey = general[@"deviceRegKey"];
+        [[NSUserDefaults standardUserDefaults] setObject:self.deviceRegKey forKey:@"deviceRegKey"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     
     if ([self.initialHost hasPrefix:@"www."]) {
         self.initialHost = [self.initialHost stringByReplacingCharactersInRange:NSMakeRange(0, [@"www." length]) withString:@""];
@@ -342,8 +348,12 @@
     
     if (self.isSimulating) {
         self.appIcon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[LEANAppConfig urlForSimulatorIcon]]];
+        self.sidebarIcon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[LEANAppConfig urlForSimulatorSidebarIcon]]];
+        self.navigationTitleIcon = [UIImage imageWithData:[NSData dataWithContentsOfURL:[LEANAppConfig urlForSimulatorNavTitleIcon]]];
     } else {
         self.appIcon = nil;
+        self.sidebarIcon = nil;
+        self.navigationTitleIcon = nil;
     }
 }
 
@@ -357,24 +367,43 @@
     return url;
 }
 
-+ (NSURL*)urlForSimulatorConfig
++ (NSURL*)urlForSimulatorFile:(NSString*)name
 {
+    if (!name) {
+        return nil;
+    }
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *applicationSupport = [[fileManager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] firstObject];
-    NSURL *url = [applicationSupport URLByAppendingPathComponent:@"simulatorAppConfig.json"];
+
+    NSURL *directory = [applicationSupport URLByAppendingPathComponent:@"simulatorFiles" isDirectory:YES];
+    [directory setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:nil];
+    [fileManager createDirectoryAtURL:directory withIntermediateDirectories:NO attributes:nil error:nil];
+    
+    NSURL *url = [directory URLByAppendingPathComponent:name];
     // exclude from backup
     [url setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:nil];
     return url;
 }
 
++ (NSURL*)urlForSimulatorConfig
+{
+    return [LEANAppConfig urlForSimulatorFile:@"appConfig.json"];
+}
+
 + (NSURL*)urlForSimulatorIcon
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *applicationSupport = [[fileManager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] firstObject];
-    NSURL *url = [applicationSupport URLByAppendingPathComponent:@"simulatorAppIcon.image"];
-    // exclude from backup
-    [url setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:nil];
-    return url;
+    return [LEANAppConfig urlForSimulatorFile:@"appIcon.image"];
+}
+
++ (NSURL*)urlForSimulatorSidebarIcon
+{
+    return [LEANAppConfig urlForSimulatorFile:@"sidebarIcon.image"];
+}
+
++ (NSURL*)urlForSimulatorNavTitleIcon
+{
+    return [LEANAppConfig urlForSimulatorFile:@"navigationTitleIcon.image"];
 }
 
 - (void)processDynamicUpdate:(NSString *)json

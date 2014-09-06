@@ -13,7 +13,6 @@
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"
 
-static NSPredicate* webViewUserAgentTest;
 static NSPredicate* schemeHttpTest;
 static NSOperationQueue* queue;
 
@@ -32,7 +31,6 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 
 +(void)initialize
 {
-    webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self == %@", [LEANAppConfig sharedAppConfig].userAgent];
     schemeHttpTest = [NSPredicate predicateWithFormat:@"scheme in {'http', 'https'}"];
     queue = [[NSOperationQueue alloc] init];
     [queue setMaxConcurrentOperationCount:5];
@@ -42,7 +40,7 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
     NSString* userAgent = [request valueForHTTPHeaderField:@"User-Agent"];
-    if (userAgent && ![webViewUserAgentTest evaluateWithObject:userAgent]) return NO;
+    if (userAgent && ![userAgent isEqualToString:[LEANAppConfig sharedAppConfig].userAgent]) return NO;
     if (![schemeHttpTest evaluateWithObject:request.URL]) return NO;
     if ([self propertyForKey:kOurRequestProperty inRequest:request]) return NO;
     

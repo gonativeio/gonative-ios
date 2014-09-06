@@ -17,8 +17,24 @@
 
 static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simulator/appConfig/%@";
 
+@interface FileToDownload : NSObject
+@property NSURL *url;
+@property NSURL *destination;
+@end
+@implementation FileToDownload
++(instancetype)fileToDownloadWithUrl:(NSURL*)url destination:(NSURL*)destination
+{
+    FileToDownload *instance = [[FileToDownload alloc] init];
+    instance.url = url;
+    instance.destination = destination;
+    return instance;
+}
+@end
+
+
 @interface LEANSimulator () <UIAlertViewDelegate>
 @property NSURLSessionDownloadTask *downloadTask;
+@property NSMutableArray *filesToDownload;
 @property NSString *simulatePublicKey;
 @property UIWindow *simulatorBarWindow;
 @property UINavigationBar *simulatorBarBackground;
@@ -52,6 +68,10 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 
 -(BOOL)openURL:(NSURL*)url
 {
+    if (![LEANAppConfig sharedAppConfig].isSimulator) {
+        return NO;
+    }
+    
     if (![[url scheme] isEqualToString:@"gonative.io"] || ![[url host] isEqualToString:@"gonative.io"]) {
         return NO;
     }
@@ -105,7 +125,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
             [inputStream open];
             NSError *jsonError;
             id json = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:&jsonError];
-            if (jsonError) {
+            if (jsonError || ![json isKindOfClass:[NSDictionary class]]) {
                 NSLog(@"Invalid appConfig.json downloaded");
                 [inputStream close];
                 return;
@@ -114,16 +134,25 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
             
             [LEANSimulator moveFileFrom:location to:[LEANSimulator tempConfigUrl]];
             
-            NSURL *iconUrl = nil;
-            if ([json isKindOfClass:[NSDictionary class]] && [json[@"styling"][@"icon"] isKindOfClass:[NSString class]]) {
-                iconUrl = [NSURL URLWithString:json[@"styling"][@"icon"] relativeToURL:[NSURL URLWithString:@"https://gonative.io/"]];
+            self.filesToDownload = [NSMutableArray array];
+            
+            if ([json[@"styling"][@"icon"] isKindOfClass:[NSString class]]) {
+                NSURL *url = [NSURL URLWithString:json[@"styling"][@"icon"] relativeToURL:[NSURL URLWithString:@"https://gonative.io/"]];
+                [self.filesToDownload addObject:[FileToDownload fileToDownloadWithUrl:url destination:[LEANSimulator tempIconUrl]]];
             }
             
-            if (iconUrl) {
-                [self downloadAppIconFromUrl:iconUrl];
-            } else {
-                [self startspin];
+            if ([json[@"styling"][@"iosHeaderImage"] isKindOfClass:[NSString class]]) {
+                NSURL *iconUrl = [NSURL URLWithString:json[@"styling"][@"iosHeaderImage"] relativeToURL:[NSURL URLWithString:@"https://gonative.io/"]];
+                [self.filesToDownload addObject:[FileToDownload fileToDownloadWithUrl:iconUrl destination:[LEANSimulator tempSidebarIconUrl]]];
             }
+            
+            if ([json[@"styling"][@"navigationTitleImageLocation"] isKindOfClass:[NSString class]]) {
+                NSURL *iconUrl = [NSURL URLWithString:json[@"styling"][@"navigationTitleImageLocation"] relativeToURL:[NSURL URLWithString:@"https://gonative.io/"]];
+                [self.filesToDownload addObject:[FileToDownload fileToDownloadWithUrl:iconUrl destination:[LEANSimulator tempNavigationTitleIconUrl]]];
+            }
+            
+            
+            [self downloadNextFile];
         }
     }];
     [self.downloadTask resume];
@@ -131,26 +160,36 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
     return YES;
 }
 
-- (void)downloadAppIconFromUrl:(NSURL*)url
+- (void)downloadNextFile
 {
-    self.downloadTask = [[NSURLSession sharedSession] downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
-        if (error || [httpResponse statusCode] != 200 || !location) {
-            NSLog(@"Error downloading app icon (status code %d) %@", [httpResponse statusCode],  error);
-            [self startspin];
-        } else {
-            [LEANSimulator moveFileFrom:location to:[LEANSimulator tempIconUrl]];
-            [self startspin];
-        }
-    }];
-    
-    [self.downloadTask resume];
+    if ([self.filesToDownload count] > 0) {
+        FileToDownload *entry = [self.filesToDownload lastObject];
+        [self.filesToDownload removeLastObject];
+        
+        self.downloadTask = [[NSURLSession sharedSession] downloadTaskWithURL:entry.url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
+            if (error || [httpResponse statusCode] != 200 || !location) {
+                NSLog(@"Error downloading %@ (status code %d) %@", entry.url, [httpResponse statusCode],  error);
+            } else {
+                [LEANSimulator moveFileFrom:location to:entry.destination];
+            }
+            
+            [self downloadNextFile];
+        }];
+        
+        [self.downloadTask resume];
+    } else {
+        [self startspin];
+    }
 }
 
 - (void)startSimulation
 {
     [LEANSimulator moveFileFrom:[LEANSimulator tempConfigUrl] to:[LEANAppConfig urlForSimulatorConfig]];
     [LEANSimulator moveFileFrom:[LEANSimulator tempIconUrl] to:[LEANAppConfig urlForSimulatorIcon]];
+    [LEANSimulator moveFileFrom:[LEANSimulator tempSidebarIconUrl] to:[LEANAppConfig urlForSimulatorSidebarIcon]];
+    [LEANSimulator moveFileFrom:[LEANSimulator tempNavigationTitleIconUrl] to:[LEANAppConfig urlForSimulatorNavTitleIcon]];
+    
     [LEANSimulator reloadApplication];
     NSString *simulatePublicKey = self.simulatePublicKey;
     if (!simulatePublicKey) simulatePublicKey = @"";
@@ -166,22 +205,40 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
     [fileManager moveItemAtURL:source toURL:destination error:nil];
 }
 
-+ (NSURL*)tempConfigUrl
++ (NSURL*)tempUrlForFile:(NSString*)name
 {
+    if(!name) return nil;
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *dir = [[fileManager URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject];
-    NSURL *url = [dir URLByAppendingPathComponent:@"appConfig.json"];
+    NSURL *cacheDir = [[fileManager URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject];
+    
+    NSURL *directory = [cacheDir URLByAppendingPathComponent:@"simulatorFiles" isDirectory:YES];
+    [directory setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:nil];
+    [fileManager createDirectoryAtURL:directory withIntermediateDirectories:NO attributes:nil error:nil];
+    
+    NSURL *url = [directory URLByAppendingPathComponent:name];
     [url setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:nil];
     return url;
 }
 
++ (NSURL*)tempConfigUrl
+{
+    return [LEANSimulator tempUrlForFile:@"appConfig.json"];
+}
+
 + (NSURL*)tempIconUrl
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *dir = [[fileManager URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] firstObject];
-    NSURL *url = [dir URLByAppendingPathComponent:@"appIcon.image"];
-    [url setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:nil];
-    return url;
+    return [LEANSimulator tempUrlForFile:@"appIcon.image"];
+}
+
++ (NSURL*)tempSidebarIconUrl
+{
+    return [LEANSimulator tempUrlForFile:@"sidebarIcon.image"];
+}
+
++ (NSURL*)tempNavigationTitleIconUrl
+{
+    return [LEANSimulator tempUrlForFile:@"navTitleIcon.image"];
 }
 
 + (void)checkStatus
@@ -269,17 +326,17 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
     } else {
         self.simulatorBarBackground.barStyle = UIBarStyleDefault;
     }
-
+    
     if (!self.simulatorBarButton) {
         self.simulatorBarButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.simulatorBarButton.opaque = NO;
-        [self.simulatorBarButton setTitleColor:[LEANAppConfig sharedAppConfig].tintColor forState:UIControlStateNormal];
         self.simulatorBarButton.titleLabel.font = [UIFont systemFontOfSize:16.0];
         [self.simulatorBarButton setTitle:@"Tap to end GoNative.io simulator" forState:UIControlStateNormal];
         [self.simulatorBarButton addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
         [self.simulatorBarBackground addSubview:self.simulatorBarButton];
     }
     self.simulatorBarButton.frame = self.simulatorBarBackground.bounds;
+    [self.simulatorBarButton setTitleColor:[LEANAppConfig sharedAppConfig].tintColor forState:UIControlStateNormal];
     
     if (wasHidden) {
         [UIView animateWithDuration:0.6 animations:^{
@@ -396,8 +453,16 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 {
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *simulatorConfig = [LEANAppConfig urlForSimulatorConfig];
-    [fileManager removeItemAtURL:simulatorConfig error:nil];
+    [fileManager removeItemAtURL:[LEANAppConfig urlForSimulatorConfig] error:nil];
+    [fileManager removeItemAtURL:[LEANAppConfig urlForSimulatorIcon] error:nil];
+    [fileManager removeItemAtURL:[LEANAppConfig urlForSimulatorSidebarIcon] error:nil];
+    [fileManager removeItemAtURL:[LEANAppConfig urlForSimulatorNavTitleIcon] error:nil];
+    
+    [fileManager removeItemAtURL:[LEANSimulator tempConfigUrl] error:nil];
+    [fileManager removeItemAtURL:[LEANSimulator tempIconUrl] error:nil];
+    [fileManager removeItemAtURL:[LEANSimulator tempSidebarIconUrl] error:nil];
+    [fileManager removeItemAtURL:[LEANSimulator tempNavigationTitleIconUrl] error:nil];
+    
     [LEANSimulator reloadApplication];
     [LEANSimulator checkStatus];
 }

@@ -82,15 +82,13 @@
     [self.tableView reloadData];
     
     if (indexPath.row < [self.profilePicker.links count]) {
-        NSURL *url = [NSURL URLWithString:self.profilePicker.links[indexPath.row]];
-        [self.wvc loadUrl:url];
+        [self.wvc loadUrlString:self.profilePicker.links[indexPath.row]];
     }
     [self dismiss];
 }
 
 - (void)dismiss
 {
-    NSLog(@"presenting vc %@", self.presentingViewController);
     [self.navigationController popViewControllerAnimated:YES];
     [self.popover dismissPopoverAnimated:YES];
     

@@ -91,6 +91,8 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property BOOL isSimulator;
 @property BOOL isSimulating;
 @property UIImage *appIcon;
+@property UIImage *sidebarIcon;
+@property UIImage *navigationTitleIcon;
 
 @property NSArray *webviewPools;
 
@@ -99,6 +101,8 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 + (NSURL*)urlForOtaConfig;
 + (NSURL*)urlForSimulatorConfig;
 + (NSURL*)urlForSimulatorIcon;
++ (NSURL*)urlForSimulatorSidebarIcon;
++ (NSURL*)urlForSimulatorNavTitleIcon;
 - (void)setupFromJsonFiles;
 - (void)processDynamicUpdate:(NSString*)json;
 

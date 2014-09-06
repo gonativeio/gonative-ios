@@ -23,6 +23,10 @@
         return;
     }
     
+    if ([LEANAppConfig sharedAppConfig].isSimulator) {
+        publicKey = @"simulator";
+    }
+    
     NSString *urlString = [NSString stringWithFormat:@"https://gonative.io/static/appConfig/%@.json", publicKey];
     NSURL *url = [NSURL URLWithString:urlString];
     NSURLSession *session = [NSURLSession sharedSession];

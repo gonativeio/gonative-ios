@@ -21,6 +21,7 @@ static NSString *kLEANWebViewControllerUserFinishedLoading = @"io.gonative.ios.W
 @property NSURL *initialUrl;
 
 - (IBAction) showMenu;
+- (void) loadUrlString:(NSString*)url;
 - (void) loadUrl:(NSURL*) url;
 - (void) loadRequest:(NSURLRequest*) request;
 - (void) loadUrl:(NSURL *)url andJavascript:(NSString*)js;
