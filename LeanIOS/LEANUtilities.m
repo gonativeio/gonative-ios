@@ -109,7 +109,7 @@
 
 // injects jquery into webviews using packaged jquery file
 + (void)addJqueryToWebView:(UIWebView*)webView {
-    NSString *loaded = [webView stringByEvaluatingJavaScriptFromString:@"window.jQuery"];
+    NSString *loaded = [webView stringByEvaluatingJavaScriptFromString:@"window.jQuery.fn.jquery"];
     
     if (!loaded || [loaded length] == 0) {
         NSURL *jquery = [[NSBundle mainBundle] URLForResource:@"jquery-2.1.0.min" withExtension:@"js"];
