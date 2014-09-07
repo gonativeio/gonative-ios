@@ -876,6 +876,7 @@
     if (success) {
         [LEANPushManager sharedManager].userID = self.tempUserID;
         
+        [self.hiddenWebView stopLoading];
         [self dismiss];
         
         // load url in main view
