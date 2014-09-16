@@ -57,7 +57,7 @@
 @end
 
 /**
- * The listener interface for GCKDeviceManager notifications.
+ * The listener interface for GCKDeviceScanner notifications.
  *
  * @ingroup Discovery
  */

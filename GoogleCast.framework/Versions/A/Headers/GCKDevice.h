@@ -2,6 +2,16 @@
 
 #import <Foundation/Foundation.h>
 
+/** Enum defining the device status at the time the device was scanned. */
+typedef NS_ENUM(NSInteger, GCKDeviceStatus) {
+  /** Unknown status. */
+  GCKDeviceStatusUnknown = -1,
+  /** Idle device status. */
+  GCKDeviceStatusIdle = 0,
+  /** Busy/join device status. */
+  GCKDeviceStatusBusy = 1,
+};
+
 /**
  * An object representing a first-screen device.
  *
@@ -31,6 +41,9 @@
 
 /** An array of GCKImage objects containing icons for the device. */
 @property(nonatomic, copy) NSArray *icons;
+
+/** The device's status at the time that it was most recently scanned. */
+@property(nonatomic, readonly) GCKDeviceStatus status;
 
 /** Designated initializer. Constructs a new GCKDevice with the given IP address.
  *

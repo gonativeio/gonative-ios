@@ -14,8 +14,7 @@
 		2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4A418A9991300495B3D /* InfoPlist.strings */; };
 		2002B4A818A9991300495B3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4A718A9991300495B3D /* main.m */; };
 		2002B4AC18A9991300495B3D /* LEANAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4AB18A9991300495B3D /* LEANAppDelegate.m */; };
-		2002B4AF18A9991300495B3D /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4AD18A9991300495B3D /* Main_iPhone.storyboard */; };
-		2002B4B218A9991300495B3D /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4B018A9991300495B3D /* Main_iPad.storyboard */; };
+		2002B4AF18A9991300495B3D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4AD18A9991300495B3D /* Main.storyboard */; };
 		2002B4B518A9991300495B3D /* LEANWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4B418A9991300495B3D /* LEANWebViewController.m */; };
 		2002B4B718A9991300495B3D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4B618A9991300495B3D /* Images.xcassets */; };
 		2002B4BE18A9991300495B3D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B4BD18A9991300495B3D /* XCTest.framework */; };
@@ -37,7 +36,6 @@
 		2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */; };
 		2004820518B080DD005FDD9A /* HeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2004820418B080DD005FDD9A /* HeaderView.xib */; };
 		2004AF7B18F8F936001E01E9 /* LEANWebViewIntercept.m in Sources */ = {isa = PBXBuildFile; fileRef = 2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */; };
-		20054BD318B6891E00A422F9 /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20054BD218B6891E00A422F9 /* GoogleCast.framework */; };
 		20054BD618B68D1E00A422F9 /* LEANCastController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20054BD518B68D1E00A422F9 /* LEANCastController.m */; };
 		200A392519070B1500EFDDD6 /* CheckingLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 200A392419070B1500EFDDD6 /* CheckingLoginView.xib */; };
 		2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE941907671A00EC4311 /* LEANUrlInspector.m */; };
@@ -48,6 +46,7 @@
 		202B4D56195122FD0099821E /* DateCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D55195122FD0099821E /* DateCellView.xib */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
+		205EF30319BF84AF002AE261 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205EF30219BF84AF002AE261 /* WebKit.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
 		207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C218C2E8B3002EBDD0 /* TextCellView.xib */; };
@@ -76,6 +75,9 @@
 		20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20DE147F18F103850083F46A /* ForgotPasswordView.xib */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20EA5523194FE7900039735B /* LEANPushManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20EA5522194FE7900039735B /* LEANPushManager.m */; };
+		20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2219C7BE8200B46C5A /* GoogleCast.framework */; };
+		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
+		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
 /* End PBXBuildFile section */
 
@@ -101,8 +103,7 @@
 		2002B4A918A9991300495B3D /* GoNativeIOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GoNativeIOS-Prefix.pch"; sourceTree = "<group>"; };
 		2002B4AA18A9991300495B3D /* LEANAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LEANAppDelegate.h; sourceTree = "<group>"; };
 		2002B4AB18A9991300495B3D /* LEANAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LEANAppDelegate.m; sourceTree = "<group>"; };
-		2002B4AE18A9991300495B3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
-		2002B4B118A9991300495B3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
+		2002B4AE18A9991300495B3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2002B4B318A9991300495B3D /* LEANWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LEANWebViewController.h; sourceTree = "<group>"; };
 		2002B4B418A9991300495B3D /* LEANWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewController.m; sourceTree = "<group>"; };
 		2002B4B618A9991300495B3D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -137,7 +138,6 @@
 		2004820418B080DD005FDD9A /* HeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeaderView.xib; sourceTree = "<group>"; };
 		2004AF7918F8F936001E01E9 /* LEANWebViewIntercept.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewIntercept.h; sourceTree = "<group>"; };
 		2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewIntercept.m; sourceTree = "<group>"; };
-		20054BD218B6891E00A422F9 /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleCast.framework; sourceTree = SOURCE_ROOT; };
 		20054BD418B68D1E00A422F9 /* LEANCastController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANCastController.h; sourceTree = "<group>"; };
 		20054BD518B68D1E00A422F9 /* LEANCastController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANCastController.m; sourceTree = "<group>"; };
 		200A392419070B1500EFDDD6 /* CheckingLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckingLoginView.xib; sourceTree = "<group>"; };
@@ -155,6 +155,7 @@
 		204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+LEANUtilities.m"; sourceTree = "<group>"; };
 		204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
 		207170BE18C2E47A002EBDD0 /* LEANWebFormController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebFormController.h; sourceTree = "<group>"; };
 		207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebFormController.m; sourceTree = "<group>"; };
@@ -200,6 +201,9 @@
 		20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewPool.m; sourceTree = "<group>"; };
 		20EA5521194FE7900039735B /* LEANPushManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANPushManager.h; sourceTree = "<group>"; };
 		20EA5522194FE7900039735B /* LEANPushManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANPushManager.m; sourceTree = "<group>"; };
+		20F49C2219C7BE8200B46C5A /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleCast.framework; sourceTree = "<group>"; };
+		20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaAccessibility.framework; path = System/Library/Frameworks/MediaAccessibility.framework; sourceTree = SDKROOT; };
+		20F49C2619C7BE9100B46C5A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANTabManager.h; sourceTree = "<group>"; };
 		20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANTabManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -209,9 +213,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */,
+				20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */,
+				20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */,
+				205EF30319BF84AF002AE261 /* WebKit.framework in Frameworks */,
 				209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */,
 				209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */,
-				20054BD318B6891E00A422F9 /* GoogleCast.framework in Frameworks */,
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
 				2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */,
 				2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */,
@@ -254,8 +261,11 @@
 		2002B49A18A9991300495B3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				20F49C2619C7BE9100B46C5A /* CoreText.framework */,
+				20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */,
+				20F49C2219C7BE8200B46C5A /* GoogleCast.framework */,
+				205EF30219BF84AF002AE261 /* WebKit.framework */,
 				209B330A193FC5BD0052A7C6 /* libz.dylib */,
-				20054BD218B6891E00A422F9 /* GoogleCast.framework */,
 				2002B49B18A9991300495B3D /* Foundation.framework */,
 				2002B49D18A9991300495B3D /* CoreGraphics.framework */,
 				2002B49F18A9991300495B3D /* UIKit.framework */,
@@ -318,8 +328,7 @@
 				20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */,
 				20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */,
 				20A13A9719058AA200B997DD /* LoginHeaderView.xib */,
-				2002B4B018A9991300495B3D /* Main_iPad.storyboard */,
-				2002B4AD18A9991300495B3D /* Main_iPhone.storyboard */,
+				2002B4AD18A9991300495B3D /* Main.storyboard */,
 				204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */,
 				204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */,
 				2002B4D818A99A9900495B3D /* REFrostedViewController */,
@@ -546,13 +555,12 @@
 				200A392519070B1500EFDDD6 /* CheckingLoginView.xib in Resources */,
 				202B4D56195122FD0099821E /* DateCellView.xib in Resources */,
 				20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */,
-				2002B4B218A9991300495B3D /* Main_iPad.storyboard in Resources */,
 				200103B318E38AED004EAC71 /* CheckboxView.xib in Resources */,
 				2002B4B718A9991300495B3D /* Images.xcassets in Resources */,
 				20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */,
 				209B321D193FB11A0052A7C6 /* localCache.zip in Resources */,
 				208A9F42191AEBAD0049E664 /* appConfig.json in Resources */,
-				2002B4AF18A9991300495B3D /* Main_iPhone.storyboard in Resources */,
+				2002B4AF18A9991300495B3D /* Main.storyboard in Resources */,
 				207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */,
 				2004820518B080DD005FDD9A /* HeaderView.xib in Resources */,
 				2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */,
@@ -645,20 +653,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		2002B4AD18A9991300495B3D /* Main_iPhone.storyboard */ = {
+		2002B4AD18A9991300495B3D /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2002B4AE18A9991300495B3D /* Base */,
 			);
-			name = Main_iPhone.storyboard;
-			sourceTree = "<group>";
-		};
-		2002B4B018A9991300495B3D /* Main_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2002B4B118A9991300495B3D /* Base */,
-			);
-			name = Main_iPad.storyboard;
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 		2002B4C618A9991300495B3D /* InfoPlist.strings */ = {
@@ -713,7 +713,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
 		};
@@ -752,7 +752,7 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv7 armv7s i386";
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
 		};
@@ -765,6 +765,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LeanIOS/GoNativeIOS-Prefix.pch";
@@ -792,6 +793,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LeanIOS/GoNativeIOS-Prefix.pch";

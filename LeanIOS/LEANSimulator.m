@@ -33,7 +33,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 
 
 @interface LEANSimulator () <UIAlertViewDelegate>
-@property NSURLSessionDownloadTask *downloadTask;
+@property NSURLSessionTask *downloadTask;
 @property NSMutableArray *filesToDownload;
 @property NSString *simulatePublicKey;
 @property UIWindow *simulatorBarWindow;
@@ -99,40 +99,39 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
     NSURL *configUrl = [NSURL URLWithString:[NSString stringWithFormat:simulatorConfigTemplate, self.simulatePublicKey]];
     [self showProgress];
     
-    self.downloadTask = [[NSURLSession sharedSession] downloadTaskWithURL:configUrl completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+    self.downloadTask = [[NSURLSession sharedSession] dataTaskWithURL:configUrl completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
         
-        if (error || [httpResponse statusCode] != 200 || !location) {
-            NSLog(@"Error downloading config (status code %d) %@", [httpResponse statusCode],  error);
+        if (error || [httpResponse statusCode] != 200 || [data length] == 0) {
+            NSLog(@"Error downloading simulator config (status code %ld) %@", (long)[httpResponse statusCode],  error);
             
-            NSString *message;
-            if ([httpResponse statusCode] == 404) {
-                message = @"Could not find application.";
-            } else {
-                message = @"Unable to load app. Check your internet connection and try again.";
+            if ([error code] != NSURLErrorCancelled) {
+                NSString *message;
+                if ([httpResponse statusCode] == 404) {
+                    message = @"Could not find application.";
+                } else {
+                    message = @"Unable to load app. Check your internet connection and try again.";
+                }
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [alert show];
+                });
             }
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [alert show];
-            });
+
             [self cancel];
         }
         else {
             // parse json to make sure it's valid
-            NSInputStream *inputStream = [NSInputStream inputStreamWithURL:location];
-            [inputStream open];
             NSError *jsonError;
-            id json = [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:&jsonError];
+            id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
             if (jsonError || ![json isKindOfClass:[NSDictionary class]]) {
                 NSLog(@"Invalid appConfig.json downloaded");
-                [inputStream close];
                 return;
             }
-            [inputStream close];
             
-            [LEANSimulator moveFileFrom:location to:[LEANSimulator tempConfigUrl]];
+            [data writeToURL:[LEANSimulator tempConfigUrl] atomically:YES];
             
             self.filesToDownload = [NSMutableArray array];
             
@@ -169,7 +168,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
         self.downloadTask = [[NSURLSession sharedSession] downloadTaskWithURL:entry.url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
             if (error || [httpResponse statusCode] != 200 || !location) {
-                NSLog(@"Error downloading %@ (status code %d) %@", entry.url, [httpResponse statusCode],  error);
+                NSLog(@"Error downloading %@ (status code %ld) %@", entry.url, (long)[httpResponse statusCode],  error);
             } else {
                 [LEANSimulator moveFileFrom:location to:entry.destination];
             }
@@ -420,7 +419,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
             self.progressAlert.message = @"Launch!";
         } else if (self.state >= 4) {
             [self hideProgress];
-            [self startSimulation];
+            [self performSelector:@selector(startSimulation) withObject:nil afterDelay:0.5];
             return;
         }
         
@@ -478,12 +477,16 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
     if (self.progressAlert) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.progressAlert dismissWithClickedButtonIndex:0 animated:NO];
+            self.progressAlert.delegate = nil;
+            self.progressAlert = nil;
         });
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
+    self.progressAlert.delegate = nil;
+    self.progressAlert = nil;
     [self cancel];
 }
 

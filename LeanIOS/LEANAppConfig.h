@@ -25,6 +25,7 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property NSString *userAgentAdd;
 @property NSString *forceUserAgent;
 @property NSString *userAgent;
+@property BOOL useWKWebView;
 
 // navigation
 @property NSMutableDictionary *menus;

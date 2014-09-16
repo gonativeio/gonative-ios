@@ -12,7 +12,7 @@
 
 @property NSMutableArray *names;
 @property NSMutableArray *links;
-@property int selectedIndex;
+@property NSInteger selectedIndex;
 
 - (void)parseJson:(NSString*)json;
 - (BOOL)hasProfiles;

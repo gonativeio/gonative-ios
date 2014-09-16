@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <WebKit/WebKit.h>
 
 @interface LEANUtilities : NSObject
 + (NSDictionary*) dictionaryFromQueryString: (NSString*) string;
@@ -16,9 +17,10 @@
 +(BOOL)isValidEmail:(NSString*)email;
 +(NSString *)stripHTML:(NSString*)x replaceWith:(NSString*) replacement;
 + (UIColor *)colorFromHexString:(NSString *)hexString;
-+ (void)addJqueryToWebView:(UIWebView*)webView;
++ (void)addJqueryToWebView:(UIView*)webView;
 +(NSString*)jsWrapString:(NSString*)string;
 +(NSString*)capitalizeWords:(NSString*)string;
 +(NSString*)getLaunchImageName;
-+(void)configureWebView:(UIWebView*)webview;
++(void)configureWebView:(UIView*)webview;
++ (WKProcessPool *)wkProcessPool;
 @end

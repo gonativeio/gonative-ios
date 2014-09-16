@@ -3,7 +3,7 @@
 /**
  * A class that represents an image that is located on a web server.
  */
-@interface GCKImage : NSObject
+@interface GCKImage : NSObject <NSCopying, NSCoding>
 
 /**
  * The image URL.

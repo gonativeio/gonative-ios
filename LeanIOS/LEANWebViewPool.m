@@ -11,12 +11,12 @@
 #import "LEANWebViewController.h"
 #import "LEANUtilities.h"
 
-@interface LEANWebViewPool () <UIWebViewDelegate>
+@interface LEANWebViewPool () <UIWebViewDelegate, WKNavigationDelegate>
 @property NSMutableDictionary *urlToWebview;
 @property NSMutableDictionary *urlToDisownPolicy;
 @property NSMutableArray *urlSets;
 @property NSMutableSet *urlsToLoad;
-@property UIWebView *currentLoadingWebview;
+@property UIView *currentLoadingWebview;
 @property NSString *currentLoadingUrl;
 @property NSURL *lastUrlRequested;
 @property BOOL isViewControllerLoading;
@@ -114,7 +114,7 @@
     [self resumeLoading];
 }
 
-- (void)disownWebview:(UIWebView *)webview
+- (void)disownWebview:(UIView *)webview
 {
     NSArray *keys = [self.urlToWebview allKeysForObject:webview];
     [self.urlToWebview removeObjectsForKeys:keys];
@@ -125,7 +125,11 @@
 {
     if ([[notification name] isEqualToString:kLEANWebViewControllerUserStartedLoading]) {
         self.isViewControllerLoading = YES;
-        [self.currentLoadingWebview stopLoading];
+        if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
+            [(UIWebView*)self.currentLoadingWebview stopLoading];
+        } else if ([self.currentLoadingWebview isKindOfClass:[WKWebView class]]) {
+            [(WKWebView*)self.currentLoadingWebview stopLoading];
+        }
     }
     else if ([[notification name] isEqualToString:kLEANWebViewControllerUserFinishedLoading]) {
         self.isViewControllerLoading = NO;
@@ -142,12 +146,22 @@
         return;
     }
     
-    if (self.currentLoadingWebview && [self.currentLoadingWebview isLoading]) {
+    if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]] &&
+        [(UIWebView*)self.currentLoadingWebview isLoading]) {
+        return;
+    }
+    
+    if ([self.currentLoadingWebview isKindOfClass:[WKWebView class]] &&
+        [(WKWebView*)self.currentLoadingWebview isLoading]) {
         return;
     }
     
     if (self.currentLoadingWebview && self.currentLoadingRequest) {
-        [self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
+        if ([self.currentLoadingWebview isKindOfClass:[WKWebView class]]) {
+            [(WKWebView*)self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
+        } else if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
+            [(UIWebView*)self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
+        }
         return;
     }
     
@@ -156,29 +170,57 @@
         self.currentLoadingUrl = urlString;
         
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-        UIWebView *webview = [[UIWebView alloc] init];
-        [LEANUtilities configureWebView:webview];
-        
-        webview.delegate = self;
-        self.currentLoadingWebview = webview;
         self.currentLoadingRequest = request;
-        
         [self.urlsToLoad removeObject:urlString];
-        [self.currentLoadingWebview loadRequest:request];
+        
+        if ([LEANAppConfig sharedAppConfig].useWKWebView) {
+            WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+            config.processPool = [LEANUtilities wkProcessPool];
+            WKWebView *webview = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
+            [LEANUtilities configureWebView:webview];
+            webview.navigationDelegate = self;
+            self.currentLoadingWebview = webview;
+            [webview loadRequest:request];
+        } else {
+            UIWebView *webview = [[UIWebView alloc] init];
+            [LEANUtilities configureWebView:webview];
+            webview.delegate = self;
+            self.currentLoadingWebview = webview;
+            [webview loadRequest:request];
+        }
+        
     }
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     if (!webView.isLoading) {
-        webView.delegate = nil;
-        self.urlToWebview[self.currentLoadingUrl] = webView;
+        [self didFinishLoad];
+    }
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    [self didFinishLoad];
+}
+
+- (void)didFinishLoad
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
+            ((UIWebView*)self.currentLoadingWebview).delegate = nil;
+            self.urlToWebview[self.currentLoadingUrl] = self.currentLoadingWebview;
+        } else if ([self.currentLoadingWebview isKindOfClass:[WKWebView class]]) {
+            ((WKWebView*)self.currentLoadingWebview).navigationDelegate = nil;
+            self.urlToWebview[self.currentLoadingUrl] = self.currentLoadingWebview;
+        }
+        
         self.currentLoadingUrl = nil;
         self.currentLoadingRequest = nil;
         self.currentLoadingWebview = nil;
         
         [self resumeLoading];
-    }
+    });
 }
 
 - (UIWebView*)webviewForUrl:(NSURL *)url policy:(LEANWebViewPoolDisownPolicy*)policy

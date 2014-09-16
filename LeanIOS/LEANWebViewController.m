@@ -6,6 +6,7 @@
 // Copyright (c) 2014 GoNative.io LLC. All rights reserved.
 //
 
+#import <WebKit/WebKit.h>
 
 #import "LEANWebViewController.h"
 #import "LEANAppDelegate.h"
@@ -24,7 +25,10 @@
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"
 
-@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate>
+@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate>
+
+@property IBOutlet UIWebView* webview;
+@property WKWebView *wkWebview;
 
 @property IBOutlet UIBarButtonItem* backButton;
 @property IBOutlet UIBarButtonItem* forwardButton;
@@ -154,8 +158,18 @@
     
     self.visitedLoginOrSignup = NO;
     
-	// set self as webview delegate to handle start/end load events
-    self.webview.delegate = self;
+    // switch to wkwebview if on ios8
+    if (appConfig.useWKWebView) {
+        WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+        config.processPool = [LEANUtilities wkProcessPool];
+        WKWebView *wv = [[WKWebView alloc] initWithFrame:self.webview.frame configuration:config];
+        [LEANUtilities configureWebView:wv];
+        [self switchToWebView:wv];
+    } else {
+        // set self as webview delegate to handle start/end load events
+        self.webview.delegate = self;
+        self.webview.scrollView.bounces = NO;
+    }
     
     // load initial url
     self.urlLevel = -1;
@@ -164,12 +178,13 @@
     }
     [self loadUrl:self.initialUrl];
     
-    
-    self.webview.scrollView.bounces = NO;
-    
     // hidden nav bar
     if (!appConfig.showNavigationBar && [self isRootWebView]) {
-        self.statusBarBackground = [[UINavigationBar alloc] init];
+        UINavigationBar *bar = [[UINavigationBar alloc] init];
+        if ([appConfig.iosTheme isEqualToString:@"dark"]) {
+            bar.barStyle = UIBarStyleBlack;
+        }
+        self.statusBarBackground = bar;
         [self.view addSubview:self.statusBarBackground];
     }
     
@@ -190,7 +205,7 @@
 - (void)didReceiveNotification:(NSNotification*)notification
 {
     if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedTabNavigation]) {
-        [self checkTabsForUrl:[self.webview.request URL]];
+        [self checkTabsForUrl:self.currentRequest.URL];
     }
 }
 
@@ -367,6 +382,9 @@
     self.webview.scrollView.contentInset = UIEdgeInsetsMake(top, 0, -top + bottom, 0);
     self.webview.scrollView.contentInset = UIEdgeInsetsMake(top, 0, bottom, 0);
     self.webview.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(top, 0, bottom, 0);
+    
+    self.wkWebview.scrollView.contentInset = UIEdgeInsetsMake(top, 0, bottom, 0);
+    self.wkWebview.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(top, 0, bottom, 0);
 }
 
 - (IBAction) buttonPressed:(id)sender
@@ -422,7 +440,7 @@
 
 - (void) sharePressed:(UIBarButtonItem*)sender
 {
-    [[LEANDocumentSharer sharedSharer] shareRequest:self.webview.request fromButton:sender];
+    [[LEANDocumentSharer sharedSharer] shareRequest:self.currentRequest fromButton:sender];
 }
 
 - (void) showNavigationItemButtonsAnimated:(BOOL)animated
@@ -455,7 +473,7 @@
 - (void) sharePage
 {
     UIActivityViewController * avc = [[UIActivityViewController alloc]
-                                      initWithActivityItems:@[[self.webview.request URL]] applicationActivities:nil];
+                                      initWithActivityItems:@[[self.currentRequest URL]] applicationActivities:nil];
     [self presentViewController:avc animated:YES completion:nil];
     
 }
@@ -500,20 +518,28 @@
 
 - (void) loadUrl:(NSURL *)url
 {
-    [self.webview loadRequest:[NSURLRequest requestWithURL:url]];
+    [self loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
 
 - (void) loadRequest:(NSURLRequest*) request
 {
     [self.webview loadRequest:request];
+    [self.wkWebview loadRequest:request];
 }
 
 - (void) loadUrl:(NSURL *)url andJavascript:(NSString *)js
 {
-    if ([[[self.webview.request URL] absoluteString] isEqualToString:[url absoluteString]]) {
+    NSURL *currentUrl = nil;
+    if (self.webview) {
+        currentUrl = self.webview.request.URL;
+    } else if (self.wkWebview) {
+        currentUrl = self.wkWebview.URL;
+    }
+    
+    if ([[currentUrl absoluteString] isEqualToString:[url absoluteString]]) {
         [self hideWebview];
-        [self.webview stringByEvaluatingJavaScriptFromString:js];
+        [self runJavascript:js];
         [self showWebview];
     } else {
         self.postLoadJavascript = js;
@@ -524,12 +550,13 @@
 - (void) loadRequest:(NSURLRequest *)request andJavascript:(NSString*)js
 {
     self.postLoadJavascript = js;
-    [self.webview loadRequest:request];
+    [self loadRequest:request];
 }
 
 - (void) runJavascript:(NSString *) script
 {
     [self.webview stringByEvaluatingJavaScriptFromString:script];
+    [self.wkWebview evaluateJavaScript:script completionHandler:nil];
 }
 
 // is this is the first LEANWebViewController in the navigation stack?
@@ -642,12 +669,27 @@
 #pragma mark - UIWebViewDelegate
 - (BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    BOOL isMainFrame = [[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]];
+    BOOL isUserAction = navigationType == UIWebViewNavigationTypeLinkClicked || navigationType ==UIWebViewNavigationTypeFormSubmitted;
+    return [self shouldLoadRequest:request isMainFrame:isMainFrame isUserAction:isUserAction];
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+{
+    BOOL isUserAction = navigationAction.navigationType == WKNavigationTypeLinkActivated || navigationAction.navigationType == WKNavigationTypeFormSubmitted;
+    BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:navigationAction.targetFrame.isMainFrame isUserAction:isUserAction];
+    if (shouldLoad) decisionHandler(WKNavigationActionPolicyAllow);
+    else decisionHandler(WKNavigationActionPolicyCancel);
+}
+
+- (BOOL)shouldLoadRequest:(NSURLRequest*)request isMainFrame:(BOOL)isMainFrame isUserAction:(BOOL)isUserAction
+{
     LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
     NSURL *url = [request URL];
     NSString *urlString = [url absoluteString];
     NSString* hostname = [url host];
     
-//    NSLog(@"should start load %d %@", navigationType, url);
+//    NSLog(@"should start load %@ main %d action %d", url, isMainFrame, isUserAction);
     
     // simulator
     if ([url.scheme isEqualToString:@"gonative.io"]) {
@@ -667,14 +709,16 @@
         if (to) {
             url = [NSURL URLWithString:to];
             
-//            [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:to]]];
-//            return false;
+            //            [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:to]]];
+            //            return false;
         }
     }
     
     // log out by clearing cookies
     if (urlString && [urlString caseInsensitiveCompare:@"file://gonative_logout"] == NSOrderedSame) {
-        [self logout];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self logout];
+        });
         return NO;
     }
     
@@ -685,19 +729,23 @@
     // log in
     if (checkLoginSignup && appConfig.loginConfig &&
         [url matchesPathOf:appConfig.loginURL]) {
-        [self showWebview];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showWebview];
+        });
         
         if (appConfig.loginIsFirstPage) {
-            if (self.webview.request) {
+            if (self.currentRequest) {
                 // this is not the first page loaded, so was probably called via Logout.
                 
                 // recheck status as it has probably changed
                 [[LEANLoginManager sharedManager] checkLogin];
                 
                 LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.loginConfig title:appConfig.appName isLogin:YES];
-
+                
                 wfc.originatingViewController = self;
-                [self.navigationController pushViewController:wfc animated:YES];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.navigationController pushViewController:wfc animated:YES];
+                });
             } else {
                 // this is the first page loaded, which means that the form controller has already been pushed in viewDidLoad. Do nothing.
             }
@@ -710,9 +758,13 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
             formSheet.modalPresentationStyle = UIModalPresentationFormSheet;
-            [self presentViewController:formSheet animated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:formSheet animated:YES completion:nil];
+            });
         } else {
-            [self.navigationController pushViewController:wfc animated:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.navigationController pushViewController:wfc animated:YES];
+            });
         }
         return NO;
     }
@@ -720,18 +772,24 @@
     // sign up
     if (checkLoginSignup && appConfig.signupURL &&
         [url matchesPathOf:appConfig.signupURL]) {
-        [self showWebview];
-
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showWebview];
+        });
+        
         LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.signupConfig title:@"Sign Up" isLogin:NO];
         wfc.originatingViewController = self;
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
             formSheet.modalPresentationStyle = UIModalPresentationFormSheet;
-            [self presentViewController:formSheet animated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:formSheet animated:YES completion:nil];
+            });
         }
         else {
-            [self.navigationController pushViewController:wfc animated:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.navigationController pushViewController:wfc animated:YES];
+            });
         }
         return NO;
     }
@@ -747,10 +805,15 @@
                 if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                     UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
                     formSheet.modalPresentationStyle = UIModalPresentationFormSheet;
-                    [self presentViewController:formSheet animated:YES completion:nil];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self presentViewController:formSheet animated:YES completion:nil];
+                        
+                    });
                 }
                 else {
-                    [self.navigationController pushViewController:wfc animated:YES];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.navigationController pushViewController:wfc animated:YES];
+                    });
                 }
                 
                 return NO;
@@ -771,18 +834,18 @@
                                                                               dict[@"url"],
                                                                               dict[@"via"]]}]];
         
-        if ([[UIApplication sharedApplication] canOpenURL:url])
-            [[UIApplication sharedApplication] openURL:url];
-        else
-            [[UIApplication sharedApplication] openURL:[request URL]];
-        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([[UIApplication sharedApplication] canOpenURL:url])
+                [[UIApplication sharedApplication] openURL:url];
+            else
+                [[UIApplication sharedApplication] openURL:[request URL]];
+        });
         
         return NO;
     }
     
     // external sites: don't launch if in iframe.
-    if ([[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]]
-        && ![[request URL] matchesPathOf:[[webView request] URL]]) {
+    if (isUserAction || (isMainFrame && ![[request URL] matchesPathOf:[self.currentRequest URL]])) {
         // first check regexInternalExternal
         bool matchedRegex = NO;
         for (NSUInteger i = 0; i < [appConfig.regexInternalEternal count]; i++) {
@@ -791,7 +854,9 @@
                 matchedRegex = YES;
                 if (![appConfig.regexIsInternal[i] boolValue]) {
                     // external
-                    [[UIApplication sharedApplication] openURL:[request URL]];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[UIApplication sharedApplication] openURL:[request URL]];
+                    });
                     return NO;
                 }
                 break;
@@ -802,7 +867,9 @@
             if (![hostname isEqualToString:appConfig.initialHost] &&
                 ![hostname hasSuffix:[@"." stringByAppendingString:appConfig.initialHost]]) {
                 // open in external web browser
-                [[UIApplication sharedApplication] openURL:[request URL]];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication] openURL:[request URL]];
+                });
                 return NO;
             }
         }
@@ -823,7 +890,9 @@
                 [controllers removeLastObject];
             }
             [controllers addObject:newvc];
-            [self.navigationController setViewControllers:controllers animated:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.navigationController setViewControllers:controllers animated:YES];
+            });
             
             return NO;
         }
@@ -845,12 +914,18 @@
             if (wvc != self) {
                 wvc.urlLevel = newLevel;
                 if (self.postLoadJavascript) {
-                    [wvc loadRequest:request andJavascript:self.postLoadJavascript];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [wvc loadRequest:request andJavascript:self.postLoadJavascript];
+                    });
                     self.postLoadJavascript = nil;
                 } else {
-                    [wvc loadRequest:request];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [wvc loadRequest:request];
+                    });
                 }
-                [self.navigationController popToViewController:wvc animated:YES];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.navigationController popToViewController:wvc animated:YES];
+                });
                 return NO;
             }
         }
@@ -866,7 +941,9 @@
         changedControllerStack = YES;
     }
     if (changedControllerStack) {
-        [self.navigationController setViewControllers:controllers animated:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController setViewControllers:controllers animated:YES];
+        });
     }
     
     if (newLevel >= 0) {
@@ -878,21 +955,24 @@
         self.navigationItem.title = newTitle;
     }
     
-    // save for reload
+    
+    // save request for various functions that require the current request
+    NSURLRequest *previousRequest = self.currentRequest;
     self.currentRequest = request;
     // save for html interception
     ((LEANAppDelegate*)[[UIApplication sharedApplication] delegate]).currentRequest = request;
     
-    
     // check to see if the webview exists in pool. Swap it in if it's not the same url.
-    UIWebView *poolWebview = nil;
+    UIView *poolWebview = nil;
     LEANWebViewPoolDisownPolicy poolDisownPolicy;
     poolWebview = [[LEANWebViewPool sharedPool] webviewForUrl:url policy:&poolDisownPolicy];
     
     if (poolWebview && poolDisownPolicy == LEANWebViewPoolDisownPolicyAlways) {
         self.isPoolWebview = NO;
-        [self switchToWebView:poolWebview];
-        [self checkTabsForUrl:url];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self switchToWebView:poolWebview];
+            [self checkTabsForUrl:url];
+        });
         [[LEANWebViewPool sharedPool] disownWebview:poolWebview];
         [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
         return NO;
@@ -900,63 +980,94 @@
     
     if (poolWebview && poolDisownPolicy == LEANWebViewPoolDisownPolicyNever) {
         self.isPoolWebview = YES;
-        [self switchToWebView:poolWebview];
-        [self checkTabsForUrl:url];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self switchToWebView:poolWebview];
+            [self checkTabsForUrl:url];
+        });
         return NO;
     }
     
     if (poolWebview && poolDisownPolicy == LEANWebViewPoolDisownPolicyReload &&
-        ![[request URL] matchesPathOf:[[webView request] URL]]) {
+        ![[request URL] matchesPathOf:[previousRequest URL]]) {
         self.isPoolWebview = YES;
-        [self switchToWebView:poolWebview];
-        [self checkTabsForUrl:url];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self switchToWebView:poolWebview];
+            [self checkTabsForUrl:url];
+        });
         return NO;
     }
     
     if (self.isPoolWebview) {
         // if we are here, either the policy is reload and we are reloading the page, or policy is never but we are going to a different page. So take ownership of the webview.
         [[LEANWebViewPool sharedPool] disownWebview:self.webview];
+        [[LEANWebViewPool sharedPool] disownWebview:self.wkWebview];
         self.isPoolWebview = NO;
     }
     
-    [self hideWebview];
-    
-    [self setNavigationButtonStatus];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self hideWebview];
+        [self setNavigationButtonStatus];
+    });
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
     
     return YES;
 }
 
-- (void)switchToWebView:(UIWebView*)newView
+- (void)switchToWebView:(UIView*)newView
 {
-    UIWebView *oldView = self.webview;
-    self.webview = newView;
-
-    oldView.delegate = nil;
-    newView.delegate = self;
-    [newView.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    UIView *oldView;
+    if (self.webview) {
+        oldView = self.webview;
+        ((UIWebView*)oldView).delegate = nil;
+    }
+    if (self.wkWebview) {
+        oldView = self.wkWebview;
+    }
     
     [self hideWebview];
+    
+    UIScrollView *scrollView;
+    if ([newView isKindOfClass:[UIWebView class]]) {
+        self.webview = (UIWebView*)newView;
+        self.wkWebview = nil;
+        self.webview.delegate = self;
+        scrollView = self.webview.scrollView;
+    } else if ([newView isKindOfClass:[WKWebView class]]) {
+        self.wkWebview = (WKWebView*)newView;
+        self.webview = nil;
+        self.wkWebview.navigationDelegate = self;
+        self.wkWebview.UIDelegate = self;
+        scrollView = self.wkWebview.scrollView;
+    } else {
+        return;
+    }
+    
+    // scroll before swapping to help reduce jank
+    [scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    
     if (oldView != newView) {
+        newView.frame = oldView.frame;
         [self.view insertSubview:newView aboveSubview:oldView];
         [oldView removeFromSuperview];
     }
     [self adjustInsets];
-   
+    // re-scroll after adjusting insets
+    [scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    
     // add layout constraints
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.webview attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
     
     if (self.postLoadJavascript) {
-        [self.webview stringByEvaluatingJavaScriptFromString:self.postLoadJavascript];
+        [self runJavascript:self.postLoadJavascript];
         self.postLoadJavascript = nil;
     }
     
     // fix for black boxes
-    for (UIView *view in newView.scrollView.subviews) {
+    for (UIView *view in scrollView.subviews) {
         [view setNeedsDisplayInRect:newView.bounds];
     }
     
@@ -965,99 +1076,161 @@
 
 - (void) webViewDidStartLoad:(UIWebView *)webView
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [self.customActionButton setEnabled:NO];
-    
-    [self.timer invalidate];
-    self.timer = [NSTimer timerWithTimeInterval:0.05 target:self selector:@selector(checkReadyStatus) userInfo:nil repeats:YES];
-    [self.timer setTolerance:0.02];
-    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
-    
-    // remove share button
-    if (self.shareButton) {
-        self.shareButton = nil;
-        [self showNavigationItemButtonsAnimated:YES];
-    }
+    [self didStartLoad];
+}
+
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
+{
+    [self didStartLoad];
+}
+
+- (void)didStartLoad
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        [self.customActionButton setEnabled:NO];
+        
+        [self.timer invalidate];
+        self.timer = [NSTimer timerWithTimeInterval:0.05 target:self selector:@selector(checkReadyStatus) userInfo:nil repeats:YES];
+        [self.timer setTolerance:0.02];
+        [[NSRunLoop mainRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
+        
+        // remove share button
+        if (self.shareButton) {
+            self.shareButton = nil;
+            [self showNavigationItemButtonsAnimated:YES];
+        }
+    });
 }
 
 - (void) webViewDidFinishLoad:(UIWebView *)webView
 {
-    // show the webview
-    [self showWebview];
-    
-    NSURL *url = [webView.request URL];
-    [[LEANUrlInspector sharedInspector] inspectUrl:url];
-    
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    [self setNavigationButtonStatus];
-    
-    [LEANUtilities addJqueryToWebView:webView];
-    
-    // update navigation title
-    if ([LEANAppConfig sharedAppConfig].useWebpageTitle) {
-        NSString *theTitle=[self.webview stringByEvaluatingJavaScriptFromString:@"document.title"];
-        self.nav.title = theTitle;
-    }
-    
-    // update menu
-    if ([LEANAppConfig sharedAppConfig].loginDetectionURL && !webView.isLoading) {
-        [[LEANLoginManager sharedManager] checkLogin];
-        
-        self.visitedLoginOrSignup = [url matchesPathOf:[LEANAppConfig sharedAppConfig].loginURL] ||
-        [url matchesPathOf:[LEANAppConfig sharedAppConfig].signupURL];
-    }
-    
-    // dynamic config updater
-    if ([LEANAppConfig sharedAppConfig].updateConfigJS && !webView.isLoading) {
-        NSString *result = [webView stringByEvaluatingJavaScriptFromString:[LEANAppConfig sharedAppConfig].updateConfigJS];
-        [[LEANAppConfig sharedAppConfig] processDynamicUpdate:result];
-    }
-    
-    // profile picker
-    if (self.profilePickerJs) {
-        NSString *json = [webView stringByEvaluatingJavaScriptFromString:self.profilePickerJs];
-        [self.profilePicker parseJson:json];
-        [(LEANMenuViewController*)self.frostedViewController.menuViewController showSettings:[self.profilePicker hasProfiles]];
-    }
-    
-    // analytics
-    if (self.analyticsJs && !webView.isLoading) {
-        [webView stringByEvaluatingJavaScriptFromString:self.analyticsJs];
-    }
-    
-    if ([LEANAppConfig sharedAppConfig].enableChromecast) {
-        [self detectVideo];
-        // [self performSelector:@selector(detectVideo) withObject:nil afterDelay:1];
-    }
-    
-    [self updateCustomActions];
-    
-    // tabs
-    [self checkTabsForUrl: url];
-    
-    // post-load js
-    if (self.postLoadJavascript && !webView.isLoading) {
-        NSString *js = self.postLoadJavascript;
-        self.postLoadJavascript = nil;
-        [self runJavascript:js];
-    }
-    
-    // post notification
-    if (!webView.isLoading) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
-    }
-    
-    // document sharing
-    if (!webView.isLoading) {
-        if ([[LEANDocumentSharer sharedSharer] isSharableRequest:webView.request]) {
-            if (!self.shareButton) {
-                self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePressed:)];
-                [self showNavigationItemButtonsAnimated:YES];
-            }
-        }
-    }
+    [self didFinishLoad];
 }
 
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    [self didFinishLoad];
+}
+
+- (void)didFinishLoad
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showWebview];
+        
+        NSURL *url = nil;
+        if (self.webview) {
+            url = self.webview.request.URL;
+        } else if (self.wkWebview) {
+            url = self.wkWebview.URL;
+        }
+        [[LEANUrlInspector sharedInspector] inspectUrl:url];
+        
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [self setNavigationButtonStatus];
+        
+        [LEANUtilities addJqueryToWebView:self.webview];
+        [LEANUtilities addJqueryToWebView:self.wkWebview];
+        
+        // update navigation title
+        if ([LEANAppConfig sharedAppConfig].useWebpageTitle) {
+            if (self.webview) {
+                NSString *theTitle=[self.webview stringByEvaluatingJavaScriptFromString:@"document.title"];
+                self.nav.title = theTitle;
+            }
+            else if (self.wkWebview) {
+                self.nav.title = self.wkWebview.title;
+            }
+        }
+        
+        // update menu
+        if ([LEANAppConfig sharedAppConfig].loginDetectionURL && (!self.webview || !self.webview.isLoading)) {
+            [[LEANLoginManager sharedManager] checkLogin];
+            
+            self.visitedLoginOrSignup = [url matchesPathOf:[LEANAppConfig sharedAppConfig].loginURL] ||
+            [url matchesPathOf:[LEANAppConfig sharedAppConfig].signupURL];
+        }
+        
+        // dynamic config updater
+        if ([LEANAppConfig sharedAppConfig].updateConfigJS && (!self.webview || !self.webview.isLoading)) {
+            if (self.webview) {
+                NSString *result = [self.webview stringByEvaluatingJavaScriptFromString:[LEANAppConfig sharedAppConfig].updateConfigJS];
+                [[LEANAppConfig sharedAppConfig] processDynamicUpdate:result];
+            }
+            if (self.wkWebview) {
+                [self.wkWebview evaluateJavaScript:[LEANAppConfig sharedAppConfig].updateConfigJS completionHandler:^(id response, NSError *error) {
+                    if ([response isKindOfClass:[NSString class]]) {
+                        [[LEANAppConfig sharedAppConfig] processDynamicUpdate:response];
+                    }
+                }];
+            }
+        }
+        
+        // profile picker
+        if (self.profilePickerJs) {
+            if (self.webview) {
+                NSString *json = [self.webview stringByEvaluatingJavaScriptFromString:self.profilePickerJs];
+                [self.profilePicker parseJson:json];
+                
+            }
+            if (self.wkWebview) {
+                [self.wkWebview evaluateJavaScript:self.profilePickerJs completionHandler:^(id response, NSError *error) {
+                    if ([response isKindOfClass:[NSString class]]) {
+                        [self.profilePicker parseJson:response];
+                    }
+                }];
+            }
+            
+            [(LEANMenuViewController*)self.frostedViewController.menuViewController showSettings:[self.profilePicker hasProfiles]];
+        }
+        
+        // analytics
+        if (self.analyticsJs && (!self.webview || !self.webview.isLoading)) {
+            [self runJavascript:self.analyticsJs];
+        }
+        
+        if ([LEANAppConfig sharedAppConfig].enableChromecast) {
+            [self detectVideo];
+            // [self performSelector:@selector(detectVideo) withObject:nil afterDelay:1];
+        }
+        
+        [self updateCustomActions];
+        
+        // tabs
+        [self checkTabsForUrl: url];
+        
+        // post-load js
+        if (self.postLoadJavascript && (!self.webview || !self.webview.isLoading)) {
+            NSString *js = self.postLoadJavascript;
+            self.postLoadJavascript = nil;
+            [self runJavascript:js];
+        }
+        
+        // post notification
+        if (!self.webview || !self.webview.isLoading) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
+        }
+        
+        // document sharing
+        if (!self.webview || !self.webview.isLoading) {
+            if ([[LEANDocumentSharer sharedSharer] isSharableRequest:self.currentRequest]) {
+                if (!self.shareButton) {
+                    self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePressed:)];
+                    [self showNavigationItemButtonsAnimated:YES];
+                }
+            }
+        }
+    });
+}
+
+- (WKWebView*)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
+{
+    WKWebView *wv = [[WKWebView alloc] initWithFrame:self.webview.frame configuration:configuration];
+    [LEANUtilities configureWebView:wv];
+    [self switchToWebView:wv];
+    return wv;
+}
 
 - (void)checkReadyStatus
 {
@@ -1089,6 +1262,10 @@
 {
     self.webview.alpha = 0.0;
     self.webview.userInteractionEnabled = NO;
+    
+    self.wkWebview.alpha = 0.0;
+    self.wkWebview.userInteractionEnabled = NO;
+    
     self.activityIndicator.alpha = 1.0;
     [self.activityIndicator startAnimating];
 }
@@ -1099,9 +1276,11 @@
     [self.timer invalidate];
     self.timer = nil;
     self.webview.userInteractionEnabled = YES;
+    self.wkWebview.userInteractionEnabled = YES;
     
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^(void){
         self.webview.alpha = 1.0;
+        self.wkWebview.alpha = 1.0;
         self.activityIndicator.alpha = 0.0;
     } completion:^(BOOL finished){
         [self.activityIndicator stopAnimating];
@@ -1115,8 +1294,18 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [self didFailLoadWithError:error];
+}
 
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [self didFailLoadWithError:error];
+}
+
+- (void)didFailLoadWithError:(NSError*)error
+{
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    
     [self showWebview];
     
     if ([[error domain] isEqualToString:NSURLErrorDomain] && [error code] == NSURLErrorNotConnectedToInternet) {
@@ -1126,19 +1315,42 @@
 
 - (void)detectVideo
 {
-    NSString *dataurl = [self.webview stringByEvaluatingJavaScriptFromString:
-                         @"jwplayer().config.fallbackDiv.getAttribute('data-url_alt');"];
-    NSURL *url;
-    NSString *title;
-    if (dataurl && ![dataurl isEqualToString:@""]) {
-        url = [NSURL URLWithString:dataurl relativeToURL:[self.webview.request URL]];
-        title = [self.webview stringByEvaluatingJavaScriptFromString:
-                 @"jwplayer().config.fallbackDiv.getAttribute('data-title');"];
-    }
+    NSString *dataUrlJs = @"jwplayer().config.fallbackDiv.getAttribute('data-url_alt');";
+    NSString *titleJs = @"jwplayer().config.fallbackDiv.getAttribute('data-title');";
     
     LEANAppDelegate *appDelegate = (LEANAppDelegate*)[[UIApplication sharedApplication] delegate];
-    appDelegate.castController.urlToPlay = url;
-    appDelegate.castController.titleToPlay = title;
+    LEANCastController *castController = appDelegate.castController;
+    
+    if (self.webview) {
+        NSURL *url = nil;
+        NSString *title = nil;
+        NSString *dataurl = [self.webview stringByEvaluatingJavaScriptFromString:dataUrlJs];
+        
+        if (dataurl && [dataurl length] > 0) {
+            url = [NSURL URLWithString:dataurl relativeToURL:self.currentRequest.URL];
+            title = [self.webview stringByEvaluatingJavaScriptFromString:titleJs];
+        }
+        
+        castController.urlToPlay = url;
+        castController.titleToPlay = title;
+
+    }
+    else if (self.wkWebview) {
+        [self.wkWebview evaluateJavaScript:dataUrlJs completionHandler:^(id result, NSError *error) {
+            if ([result isKindOfClass:[NSString class]] && [result length] > 0) {
+                NSURL *url = [NSURL URLWithString:result relativeToURL:self.currentRequest.URL];
+                
+                [self.wkWebview evaluateJavaScript:titleJs completionHandler:^(id result2, NSError *error2) {
+                    castController.urlToPlay = url;
+                    castController.titleToPlay = result2;
+                }];
+                
+            } else {
+                castController.urlToPlay = nil;
+                castController.titleToPlay = nil;
+            }
+        }];
+    }
 }
 
 - (void) setNavigationButtonStatus
@@ -1192,6 +1404,15 @@
         return NO;
     } else {
         return self.willBeLandscape;
+    }
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+        return UIStatusBarStyleLightContent;
+    } else {
+        return UIStatusBarStyleDefault;
     }
 }
 

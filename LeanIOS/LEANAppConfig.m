@@ -8,7 +8,7 @@
 
 #import "LEANAppConfig.h"
 #import "LEANUtilities.h"
-#import <CommonCrypto/CommonCrypto.h>
+#import <WebKit/WebKit.h>
 
 @interface LEANAppConfig ()
 @property id json;
@@ -43,7 +43,8 @@
     NSURL *packageJson = [[NSBundle mainBundle] URLForResource:@"appConfig" withExtension:@"json"];
     
     for (NSURL *url in @[simulatorJson, otaJson, packageJson]) {
-        if (![[NSFileManager defaultManager] fileExistsAtPath:[url path] isDirectory:NO]) {
+        BOOL isDir = NO;
+        if (![[NSFileManager defaultManager] fileExistsAtPath:[url path] isDirectory:&isDir]) {
             continue;
         }
         
@@ -84,6 +85,17 @@
     self.initialHost = [self.initialURL host];
     self.appName = general[@"appName"];
     self.publicKey = general[@"publicKey"];
+    
+    if (general[@"useWKWebView"]) {
+        self.useWKWebView = [general[@"useWKWebView"] boolValue];
+    } else {
+        self.useWKWebView = YES;
+    }
+    
+    // ios7 vs ios8 check
+    if (![WKWebView class]) {
+        self.useWKWebView = NO;
+    }
     
     self.deviceRegKey = [[NSUserDefaults standardUserDefaults] stringForKey:@"deviceRegKey"];
     if (!self.deviceRegKey && [general[@"deviceRegKey"] isKindOfClass:[NSString class]]) {

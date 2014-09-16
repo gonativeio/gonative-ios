@@ -15,8 +15,11 @@
 #import "LEANAppConfig.h"
 #import "LEANLoginManager.h"
 #import "LEANPushManager.h"
+#import <WebKit/WebKit.h>
 
-@interface LEANWebFormController () <UIWebViewDelegate>
+static NSString *kGenericErrorMessage = @"Problem with form submission. Please check your inputs and try again";
+
+@interface LEANWebFormController () <UIWebViewDelegate, WKNavigationDelegate>
 
 @property id json;
 @property NSArray *sections;
@@ -31,6 +34,12 @@
 @property BOOL isLogin;
 @property BOOL checkingLogin;
 @property UIWebView *hiddenWebView;
+
+// wkwebview stuff
+@property WKWebView *hiddenWkWebview;
+@property NSMutableArray *javascriptQueue;
+@property BOOL isRunningJavacript;
+
 @property BOOL submitted;
 @property NSString *tempUserID;
 @property UIColor *backgroundColor;
@@ -56,13 +65,21 @@
         
         self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
         
-        self.hiddenWebView = [[UIWebView alloc] init];
-        self.hiddenWebView.delegate = self;
+        if ([LEANAppConfig sharedAppConfig].useWKWebView) {
+            WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+            config.processPool = [LEANUtilities wkProcessPool];
+            self.hiddenWkWebview = [[WKWebView alloc] initWithFrame:self.view.frame configuration:config];
+            self.hiddenWkWebview.navigationDelegate = self;
+        } else {
+            self.hiddenWebView = [[UIWebView alloc] init];
+            self.hiddenWebView.delegate = self;
+        }
         
         // if login is first page, wait until after we've checked to load the login url
         // if loaded too early, may break some csrf protected pages.
-        if (!self.isLogin || ![LEANAppConfig sharedAppConfig].loginIsFirstPage)
-            [self.hiddenWebView loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
+        if (!self.isLogin || ![LEANAppConfig sharedAppConfig].loginIsFirstPage){
+            [self loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
+        }
         
         [self loadJsonObject:json];
     }
@@ -85,13 +102,22 @@
         
         self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
         
-        self.hiddenWebView = [[UIWebView alloc] init];
-        self.hiddenWebView.delegate = self;
+        if ([LEANAppConfig sharedAppConfig].useWKWebView) {
+            WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+            config.processPool = [LEANUtilities wkProcessPool];
+            self.hiddenWkWebview = [[WKWebView alloc] initWithFrame:self.view.frame configuration:config];
+            self.hiddenWkWebview.navigationDelegate = self;
+
+        } else {
+            self.hiddenWebView = [[UIWebView alloc] init];
+            self.hiddenWebView.delegate = self;
+        }
         
         // if login is first page, wait until after we've checked to load the login url
         // if loaded too early, may break some csrf protected pages.
-        if (!self.isLogin || ![LEANAppConfig sharedAppConfig].loginIsFirstPage)
-            [self.hiddenWebView loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
+        if (!self.isLogin || ![LEANAppConfig sharedAppConfig].loginIsFirstPage) {
+            [self loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
+        }
         
         [self loadJsonObject:config];
     }
@@ -179,6 +205,13 @@
     }
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    self.hiddenWebView.delegate = nil;
+    self.hiddenWkWebview.navigationDelegate = nil;
+}
+
 - (void)didReceiveNotification:(NSNotification*)notification
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -198,7 +231,7 @@
                 [wv loadUrl:[LEANAppConfig sharedAppConfig].initialURL];
             }
         } else {
-            [self.hiddenWebView loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
+            [self loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
             [self.tableView reloadData];
             self.navigationItem.rightBarButtonItem = self.submitButton;
         }
@@ -257,6 +290,14 @@
     [self.tableView reloadData];
 }
 
+- (void)loadRequest:(NSURLRequest*)request{
+    if (self.hiddenWebView) {
+        [self.hiddenWebView loadRequest:request];
+    }
+    else if(self.hiddenWkWebview) {
+        [self.hiddenWkWebview loadRequest:request];
+    }
+}
 
 - (IBAction)finishedEditingField:(id)sender {
     // try to select next editable field
@@ -294,6 +335,42 @@
         sender.tintColor = [UIColor lightGrayColor];
 }
 
+- (void)runJavascriptSync:(NSString*)js
+{
+    if (self.hiddenWebView) {
+        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:js];
+        return;
+    }
+    
+    // need to manage queue for wkwebview
+    if (!self.javascriptQueue) {
+        self.javascriptQueue = [NSMutableArray array];
+        self.isRunningJavacript = NO;
+    }
+    
+    if ([js isEqualToString:@"execution finished"]) {
+        // callback from javascript execution
+        self.isRunningJavacript = NO;
+        if ([self.javascriptQueue count] > 0) {
+            NSString *next = [self.javascriptQueue objectAtIndex:0];
+            [self.javascriptQueue removeObjectAtIndex:0];
+            [self runJavascriptSync:next];
+        }
+        
+        return;
+    }
+    
+    if (!self.isRunningJavacript) {
+        self.isRunningJavacript = YES;
+        [self.hiddenWkWebview evaluateJavaScript:js completionHandler:^(id result, NSError *error) {
+            [self runJavascriptSync:@"execution finished"];
+        }];
+    } else {
+        [self.javascriptQueue addObject:js];
+    }
+    
+}
+
 - (IBAction)submit:(id)sender {
     if ([self validateFormShowErrors:YES]) {
 //        self.view = self.hiddenWebView;
@@ -319,11 +396,9 @@
                         UIView *innerView = cell.contentView.subviews[0];
                         UITextField *textField = innerView.subviews[1];
                         
-                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                         [NSString stringWithFormat: @"jQuery(%@).val(%@);", [LEANUtilities jsWrapString:field[@"selector"]], [LEANUtilities jsWrapString:textField.text]]];
+                        [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%@);", [LEANUtilities jsWrapString:field[@"selector"]], [LEANUtilities jsWrapString:textField.text]]];
                         if (field[@"selector2"]) {
-                            [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                             [NSString stringWithFormat: @"jQuery(%@).val(%@);", [LEANUtilities jsWrapString:field[@"selector2"]], [LEANUtilities jsWrapString:textField.text]]];
+                            [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%@);", [LEANUtilities jsWrapString:field[@"selector2"]], [LEANUtilities jsWrapString:textField.text]]];
                         }
                         
                         // user id for push notifications
@@ -334,19 +409,15 @@
                     }
                     else if ([field[@"type"] isEqualToString:@"textarea"]){
                         UITextView *textView = (UITextView*)[cell viewWithTag:2];
-                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                         [NSString stringWithFormat: @"jQuery(%@).val(%@);", [LEANUtilities jsWrapString:field[@"selector"]], [LEANUtilities jsWrapString:textView.text]]];
+                        [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%@);", [LEANUtilities jsWrapString:field[@"selector"]], [LEANUtilities jsWrapString:textView.text]]];
                     }
                     else if ([field[@"type"] isEqualToString:@"date"]) {
                         UIDatePicker *datePicker = (UIDatePicker*)[cell viewWithTag:2];
                         NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
                         NSDateComponents *components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit fromDate:datePicker.date];
-                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                         [NSString stringWithFormat: @"jQuery(%@).val(%d);", [LEANUtilities jsWrapString:field[@"yearSelector"]], components.year]];
-                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                         [NSString stringWithFormat: @"jQuery(%@).val(%d);", [LEANUtilities jsWrapString:field[@"monthSelector"]], components.month]];
-                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                         [NSString stringWithFormat: @"jQuery(%@).val(%d);", [LEANUtilities jsWrapString:field[@"daySelector"]], components.day]];
+                        [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%ld);", [LEANUtilities jsWrapString:field[@"yearSelector"]], (long)components.year]];
+                        [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%ld);", [LEANUtilities jsWrapString:field[@"monthSelector"]], (long)components.month]];
+                        [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%ld);", [LEANUtilities jsWrapString:field[@"daySelector"]], (long)components.day]];
                         
                     }
                     else if ([field[@"type"] isEqualToString:@"options"]){
@@ -355,10 +426,8 @@
                         
                         if (seg.selectedSegmentIndex >= 0) {
                             NSString *selector = field[@"choices"][seg.selectedSegmentIndex][@"selector"];
-                            [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                             [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:selector]]];
-                            [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                             [NSString stringWithFormat: @"jQuery(%@).prop('selected', true);", [LEANUtilities jsWrapString:selector]]];
+                            [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:selector]]];
+                            [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).prop('selected', true);", [LEANUtilities jsWrapString:selector]]];
                             
                         }
                     }
@@ -367,10 +436,10 @@
                         UISwitch *theSwitch = innerView.subviews[1];
                         
                         if (theSwitch.on) {
-                            [self.hiddenWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"jQuery(%@).prop('checked', true);", [LEANUtilities jsWrapString:field[@"selector"]]]];
+                            [self runJavascriptSync:[NSString stringWithFormat:@"jQuery(%@).prop('checked', true);", [LEANUtilities jsWrapString:field[@"selector"]]]];
                         }
                         else {
-                            [self.hiddenWebView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"jQuery(%@).prop('checked', false);", [LEANUtilities jsWrapString:field[@"selector"]]]];
+                            [self runJavascriptSync:[NSString stringWithFormat:@"jQuery(%@).prop('checked', false);", [LEANUtilities jsWrapString:field[@"selector"]]]];
                         }
                     }
                     
@@ -385,10 +454,8 @@
                     UITableViewCell *cell = [self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:sectNum]];
                     if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
                         NSString *selector = field[@"choices"][i][@"selector"];
-                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                         [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:selector]]];
-                        [self.hiddenWebView stringByEvaluatingJavaScriptFromString:
-                         [NSString stringWithFormat: @"jQuery(%@).prop('selected', true);", [LEANUtilities jsWrapString:selector]]];
+                        [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:selector]]];
+                        [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).prop('selected', true);", [LEANUtilities jsWrapString:selector]]];
                     }
                 }
                 
@@ -398,9 +465,9 @@
         
         // submit the form
         if ([self.json[@"submitButtonSelector"] length] > 0) {
-            [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:self.json[@"submitButtonSelector"]]]];
+            [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).click();", [LEANUtilities jsWrapString:self.json[@"submitButtonSelector"]]]];
         } else {
-            [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat: @"jQuery(%@).submit();", [LEANUtilities jsWrapString:self.json[@"formSelector"]]]];
+            [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).submit();", [LEANUtilities jsWrapString:self.json[@"formSelector"]]]];
         }
         
         // for ajax login forms
@@ -469,7 +536,7 @@
         
         if (field[@"minLength"] && [text length] < [field[@"minLength"] integerValue]) {
             if (showErrors) {
-                [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ must be at least %d characters", field[@"label"], [field[@"minLength"] integerValue]] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil] show];
+                [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ must be at least %ld characters", field[@"label"], (long)[field[@"minLength"] integerValue]] delegate:nil cancelButtonTitle:@"OK"otherButtonTitles:nil] show];
                 [responder becomeFirstResponder];
                 [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionNone animated:YES];
             }
@@ -822,25 +889,19 @@
     return nil;
 }
 
-#pragma mark - Web View Delegate
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+- (void)webviewFailedWithError:(NSError*)error
 {
-//    NSLog(@"should start load %@", [request URL]);
-    return YES;
+    NSLog(@"Form failed to load with error: %@", error);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[[UIAlertView alloc] initWithTitle:@"Error with form" message:@"Please check your internet connection and try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+    });
 }
 
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+- (void)webviewFinishedOnUrl:(NSURL*)url
 {
-//    NSLog(@"Finished with error %@", error);
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    NSURL *url = [webView.request URL];
-//    NSLog(@"form finished url %@", url);
-    
     // detect and add jquery if necessary
-    [LEANUtilities addJqueryToWebView:webView];
+    [LEANUtilities addJqueryToWebView:self.hiddenWebView];
+    [LEANUtilities addJqueryToWebView:self.hiddenWkWebview];
     
     BOOL success = NO;
     
@@ -851,21 +912,52 @@
     
     if (self.submitted){
         if ([url matchesPathOf:self.errorUrl]) {
-            NSString *message;
-            if (self.json[@"errorSelector"]) {
-                message = [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"jQuery(%@).html();", [LEANUtilities jsWrapString:self.json[@"errorSelector"]]]];
-                message = [LEANUtilities stripHTML:message replaceWith:@" "];
-                message = [message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if (self.hiddenWebView) {
+                NSString *message;
+                if (self.json[@"errorSelector"]) {
+                    message = [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"jQuery(%@).html();", [LEANUtilities jsWrapString:self.json[@"errorSelector"]]]];
+                    message = [LEANUtilities stripHTML:message replaceWith:@" "];
+                    message = [message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                }
+                
+                if (!message || [message length] == 0) {
+                    message = kGenericErrorMessage;
+                }
+                
+                // show error
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[[UIAlertView alloc] initWithTitle:self.title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                });
+                self.submitted = NO;
+                self.submitButton.enabled = YES;
+            } else if (self.hiddenWkWebview) {
+                if (self.json[@"errorSelector"]) {
+                    [self.hiddenWkWebview evaluateJavaScript:[NSString stringWithFormat:@"jQuery(%@).html();", [LEANUtilities jsWrapString:self.json[@"errorSelector"]]] completionHandler:^(id result, NSError *error) {
+                        
+                        self.submitted = NO;
+                        self.submitButton.enabled = YES;
+                        
+                        if (result && [result isKindOfClass:[NSString class]]) {
+                            NSString *message = result;
+                            message = [LEANUtilities stripHTML:message replaceWith:@" "];
+                            message = [message stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[[UIAlertView alloc] initWithTitle:self.title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                            });
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [[[UIAlertView alloc] initWithTitle:self.title message:kGenericErrorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                            });
+                        }
+                    }];
+                } else {
+                    self.submitted = NO;
+                    self.submitButton.enabled = YES;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[[UIAlertView alloc] initWithTitle:self.title message:kGenericErrorMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                    });
+                }
             }
-            
-            if (!message || [message length] == 0) {
-                message = [NSString stringWithFormat:@"Problem with %@", self.title];
-            }
-            
-            // error signing up
-            [[[UIAlertView alloc] initWithTitle:self.title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-            self.submitted = NO;
-            self.submitButton.enabled = YES;
         }
         else {
             // success
@@ -874,25 +966,55 @@
     }
     
     if (success) {
-        [LEANPushManager sharedManager].userID = self.tempUserID;
-        
-        [self.hiddenWebView stopLoading];
-        [self dismiss];
-        
-        // load url in main view
-        if ([self.originatingViewController isKindOfClass:[LEANWebViewController class]]) {
-            LEANWebViewController *wv = (LEANWebViewController*)self.originatingViewController;
-            if (self.json[@"successUrl"] && self.json[@"successUrl"] != [NSNull null]) {
-                [wv loadUrl:[NSURL URLWithString:self.json[@"successUrl"]]];
-            } else {
-                [wv loadUrl:url];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [LEANPushManager sharedManager].userID = self.tempUserID;
+            
+            [self.hiddenWebView stopLoading];
+            [self.hiddenWkWebview stopLoading];
+            [self dismiss];
+            
+            // load url in main view
+            if ([self.originatingViewController isKindOfClass:[LEANWebViewController class]]) {
+                LEANWebViewController *wv = (LEANWebViewController*)self.originatingViewController;
+                if (self.json[@"successUrl"] && self.json[@"successUrl"] != [NSNull null]) {
+                    [wv loadUrl:[NSURL URLWithString:self.json[@"successUrl"]]];
+                } else {
+                    [wv loadUrl:url];
+                }
             }
-        }
-
-        // update menu
-        [[LEANLoginManager sharedManager] checkIfNotAlreadyChecking];
+            
+            // update menu
+            [[LEANLoginManager sharedManager] checkIfNotAlreadyChecking];
+        });
     }
-    
+
+}
+
+#pragma mark - Web View Delegate
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+    return YES;
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    [self webviewFailedWithError:error];
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    [self webviewFinishedOnUrl:webView.request.URL];
+}
+
+#pragma mark wkwebview delegate
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+{
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    [self webviewFinishedOnUrl:webView.URL];
 }
 
 @end

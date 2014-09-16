@@ -1,5 +1,9 @@
 // Copyright 2013 Google Inc.
 
+
+/**
+ * Filter criteria for applications.
+ */
 @interface GCKFilterCriteria : NSObject
 
 /**

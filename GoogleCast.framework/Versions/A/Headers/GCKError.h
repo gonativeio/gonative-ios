@@ -2,6 +2,14 @@
 
 #import <Foundation/Foundation.h>
 
+/** @file GCKError.h
+ *  @brief Error codes
+ */
+
+/**
+ * @enum GCKErrorCode
+ * @brief Description of error codes
+ */
 typedef NS_ENUM(NSInteger, GCKErrorCode) {
 
   /**
@@ -70,6 +78,11 @@ typedef NS_ENUM(NSInteger, GCKErrorCode) {
    * Error code indicating that a media media command failed because of the media player state.
    */
   GCKErrorCodeInvalidMediaPlayerState = 95,
+
+  /**
+   * Error code indicating that the application session ID was not valid.
+   */
+  GCKErrorCodeInvalidApplicationSessionID = 96,
 
   /**
    * Error code indicating that an unknown, unexpected error has occurred.

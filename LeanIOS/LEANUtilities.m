@@ -83,6 +83,10 @@
 }
 
 +(NSString *)stripHTML:(NSString*)x replaceWith:(NSString*) replacement {
+    if (!x) {
+        return nil;
+    }
+    
     if (replacement == nil) {
         replacement = @"";
     }
@@ -108,14 +112,30 @@
 }
 
 // injects jquery into webviews using packaged jquery file
-+ (void)addJqueryToWebView:(UIWebView*)webView {
-    NSString *loaded = [webView stringByEvaluatingJavaScriptFromString:@"window.jQuery.fn.jquery"];
++ (void)addJqueryToWebView:(UIView*)wv {
+    NSString *jqueryTest = @"window.jQuery.fn.jquery";
     
-    if (!loaded || [loaded length] == 0) {
-        NSURL *jquery = [[NSBundle mainBundle] URLForResource:@"jquery-2.1.0.min" withExtension:@"js"];
-        NSString *contents = [NSString stringWithContentsOfURL:jquery encoding:NSUTF8StringEncoding error:nil];
-        [webView stringByEvaluatingJavaScriptFromString:contents];
-        [webView stringByEvaluatingJavaScriptFromString:@"jQuery.noConflict()"];
+    if ([wv isKindOfClass:[UIWebView class]]) {
+        UIWebView *webView = (UIWebView*)wv;
+        NSString *loaded = [webView stringByEvaluatingJavaScriptFromString:jqueryTest];
+        if (!loaded || [loaded length] == 0) {
+            NSURL *jquery = [[NSBundle mainBundle] URLForResource:@"jquery-2.1.0.min" withExtension:@"js"];
+            NSString *contents = [NSString stringWithContentsOfURL:jquery encoding:NSUTF8StringEncoding error:nil];
+            [webView stringByEvaluatingJavaScriptFromString:contents];
+            [webView stringByEvaluatingJavaScriptFromString:@"jQuery.noConflict()"];
+        }
+
+    } else if ([wv isKindOfClass:[WKWebView class]]) {
+        WKWebView *webview = (WKWebView*)wv;
+        [webview evaluateJavaScript:jqueryTest completionHandler:^(id result, NSError *error) {
+            if (![result isKindOfClass:[NSString class]] || [result length] == 0) {
+                NSURL *jquery = [[NSBundle mainBundle] URLForResource:@"jquery-2.1.0.min" withExtension:@"js"];
+                NSString *contents = [NSString stringWithContentsOfURL:jquery encoding:NSUTF8StringEncoding error:nil];
+                [webview evaluateJavaScript:contents completionHandler:^(id result2, NSError *error2) {
+                    [webview evaluateJavaScript:@"jQuery.noConflict()" completionHandler:nil];
+                }];
+            }
+        }];
     }
 }
 
@@ -251,17 +271,69 @@
     return FALSE;
 }
 
-+(void)configureWebView:(UIWebView*)webview
++(void)configureWebView:(UIView*)wv
 {
-    webview.frame = [[UIScreen mainScreen] bounds];
-    webview.scalesPageToFit = YES;
-    webview.backgroundColor = [UIColor whiteColor];
-    webview.scrollView.bounces = NO;
-    // we are using autolayout, to disable autoresizingmask stuff
-    [webview setTranslatesAutoresizingMaskIntoConstraints:NO];
+    wv.frame = [[UIScreen mainScreen] bounds];
+    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+        wv.backgroundColor = [UIColor blackColor];
+    } else {
+        wv.backgroundColor = [UIColor whiteColor];
+    }
+    wv.opaque = YES;
     
-    webview.opaque = NO;
-    webview.backgroundColor = [UIColor clearColor];
+    // we are using autolayout, so disable autoresizingmask stuff
+    [wv setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    if ([wv isKindOfClass:[UIWebView class]]) {
+        UIWebView *webview = (UIWebView*)wv;
+        webview.scalesPageToFit = YES;
+        webview.scrollView.bounces = NO;
+    } else if([wv isKindOfClass:[WKWebView class]]) {
+        WKWebView *webview = (WKWebView*)wv;
+        webview.scrollView.bounces = NO;
+        
+        // user script for customCSS
+        NSString *customCss = [LEANAppConfig sharedAppConfig].customCss;
+        if ([customCss length] > 0) {
+            NSString *scriptSource = [NSString stringWithFormat:@"var gonative_styleElement = document.createElement('style'); document.documentElement.appendChild(gonative_styleElement); gonative_styleElement.textContent = %@;", [LEANUtilities jsWrapString:customCss]];
+            
+            WKUserScript *userScript = [[WKUserScript alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+            [webview.configuration.userContentController addUserScript:userScript];
+        }
+        
+        // user script for viewport
+        {
+            NSString *stringViewport = [LEANAppConfig sharedAppConfig].stringViewport;
+            NSNumber *viewportWidth = [LEANAppConfig sharedAppConfig].forceViewportWidth;
+            
+            if (viewportWidth) {
+                stringViewport = [NSString stringWithFormat:@"width=%@',user-scalable=no", viewportWidth];
+            }
+            
+            if (!stringViewport) {
+                stringViewport = @"";
+            }
+            
+            NSString *scriptSource = [NSString stringWithFormat:@"var gonative_setViewport = %@; var gonative_viewportElement = document.querySelector('meta[name=viewport]'); if (gonative_viewportElement) {   if (gonative_setViewport) {         gonative_viewportElement.content = gonative_setViewport;     } else {         gonative_viewportElement.content = gonative_viewportElement.content + ',user-scalable=no';     } } else if (gonative_setViewport) {     gonative_viewportElement = document.createElement('meta');     gonative_viewportElement.name = 'viewport';     gonative_viewportElement.content = gonative_setViewport; }", [LEANUtilities jsWrapString:stringViewport]];
+            
+            WKUserScript *userScript = [[WKUserScript alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
+            [webview.configuration.userContentController addUserScript:userScript];
+        }
+    }
+}
+
++ (WKProcessPool *)wkProcessPool
+{
+    static WKProcessPool *processPool;
+    
+    @synchronized(self)
+    {
+        if (!processPool){
+            processPool = [[WKProcessPool alloc] init];
+        }
+        
+        return processPool;
+    }
 }
 
 @end

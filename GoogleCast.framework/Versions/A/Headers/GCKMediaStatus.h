@@ -106,6 +106,12 @@ typedef NS_ENUM(NSInteger, GCKMediaPlayerIdleReason) {
 @property(nonatomic, readonly) BOOL isMuted;
 
 /**
+ * The list of active track IDs. Each element of the array is an NSNumber containing an integer
+ * track ID.
+ */
+@property(nonatomic, readonly) NSArray *activeTrackIDs;
+
+/**
  * Any custom data that is associated with the media item.
  */
 @property(nonatomic, strong, readonly) id customData;

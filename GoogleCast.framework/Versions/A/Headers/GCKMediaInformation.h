@@ -1,6 +1,7 @@
 // Copyright 2013 Google Inc.
 
 @class GCKMediaMetadata;
+@class GCKMediaTextTrackStyle;
 
 typedef NS_ENUM(NSInteger, GCKMediaStreamType) {
   /** A stream type of "none". */
@@ -17,6 +18,11 @@ typedef NS_ENUM(NSInteger, GCKMediaStreamType) {
  * A class that aggregates information about a media item.
  */
 @interface GCKMediaInformation : NSObject
+
+/**
+ * The content ID for this stream.
+ */
+@property(nonatomic, copy, readonly) NSString *contentID;
 
 /**
  * The stream type.
@@ -39,6 +45,16 @@ typedef NS_ENUM(NSInteger, GCKMediaStreamType) {
 @property(nonatomic, readonly) NSTimeInterval streamDuration;
 
 /**
+ * The media tracks for this stream.
+ */
+@property(nonatomic, copy, readonly) NSArray *mediaTracks;
+
+/**
+ * The text track style for this stream.
+ */
+@property(nonatomic, copy, readonly) GCKMediaTextTrackStyle *textTrackStyle;
+
+/**
  * The custom data, if any.
  */
 @property(nonatomic, strong, readonly) id customData;
@@ -58,17 +74,26 @@ typedef NS_ENUM(NSInteger, GCKMediaStreamType) {
             contentType:(NSString *)contentType
                metadata:(GCKMediaMetadata *)metadata
          streamDuration:(NSTimeInterval)streamDuration
+            mediaTracks:(NSArray *)mediaTracks
+         textTrackStyle:(GCKMediaTextTrackStyle *)textTrackStyle
              customData:(id)customData;
 
-/** @cond INTERNAL */
-
-- (id)initWithJSONObject:(id)JSONObject;
-
 /**
- * Create a JSON object which can serialized with NSJSONSerialization to pass to the receiver.
+ * Legacy initializer; does not include media tracks or text track style.
+ *
+ * @param contentID The content ID.
+ * @param streamType The stream type.
+ * @param contentType The content (MIME) type.
+ * @param metadata The media item metadata.
+ * @param streamDuration The stream duration.
+ * @param customData Custom application-specific data. Must either be an object that can be
+ * serialized to JSON using NSJSONSerialization, or nil.
  */
-- (id)JSONObject;
-
-/** @endcond */
+- (id)initWithContentID:(NSString *)contentID
+             streamType:(GCKMediaStreamType)streamType
+            contentType:(NSString *)contentType
+               metadata:(GCKMediaMetadata *)metadata
+         streamDuration:(NSTimeInterval)streamDuration
+             customData:(id)customData;
 
 @end

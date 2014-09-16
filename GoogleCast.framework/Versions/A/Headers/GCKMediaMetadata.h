@@ -253,6 +253,13 @@ extern NSString *const kGCKMetadataKeyLocationLongitude;
 - (NSArray *)allKeys;
 
 /**
+ * Reads the value of a field.
+ *
+ * @return The value of the field, or {@code nil} if the field has not been set.
+ */
+- (id)objectForKey:(NSString *)key;
+
+/**
  * Stores a value in a string field. Asserts if the key refers to a predefined field which is not a
  * {@code NSString} field.
  *

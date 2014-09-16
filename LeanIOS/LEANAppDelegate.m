@@ -38,7 +38,13 @@
     
     // Register for remote push notifications
     if (appConfig.pushNotifications) {
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound) categories:nil];
+            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+            [[UIApplication sharedApplication] registerForRemoteNotifications];
+        } else {
+            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
+        }
     }
     
     // If launched from push notification and it contains a url, set the initialUrl.
@@ -80,8 +86,18 @@
     }
     
     // clear notifications
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 1;
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    if (appConfig.pushNotifications) {
+        if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]) {
+            UIUserNotificationSettings *settings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+            if (settings.types & UIUserNotificationTypeBadge) {
+                [UIApplication sharedApplication].applicationIconBadgeNumber = 1;
+                [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+            }
+        } else {
+            [UIApplication sharedApplication].applicationIconBadgeNumber = 1;
+            [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+        }
+    }
     
     [LEANSimulator checkStatus];
 }

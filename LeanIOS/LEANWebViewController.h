@@ -14,8 +14,6 @@ static NSString *kLEANWebViewControllerUserStartedLoading = @"io.gonative.ios.We
 static NSString *kLEANWebViewControllerUserFinishedLoading = @"io.gonative.ios.WebViewController.finished";
 
 @interface LEANWebViewController : UIViewController <UIWebViewDelegate>
-
-@property IBOutlet UIWebView* webview;
 @property BOOL checkLoginSignup;
 @property LEANProfilePicker *profilePicker;
 @property NSURL *initialUrl;

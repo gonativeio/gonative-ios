@@ -11,11 +11,13 @@
 #import "LEANAppConfig.h"
 #import "NSURL+LEANUtilities.h"
 #import "LEANUrlInspector.h"
+#import <WebKit/WebKit.h>
 
-@interface LEANLoginManager () <NSURLConnectionDataDelegate>
+@interface LEANLoginManager () <NSURLConnectionDataDelegate, WKNavigationDelegate>
 @property BOOL isChecking;
 @property NSURLConnection *connection;
 @property NSURL *currentUrl;
+@property WKWebView *wkWebview;
 @end
 
 
@@ -46,7 +48,7 @@
 -(void) checkLogin
 {
     [self.connection cancel];
-    self.isChecking = YES;
+    [self.wkWebview stopLoading];
     
     NSURL *url = [LEANAppConfig sharedAppConfig].loginDetectionURL;
     if (!url) {
@@ -56,13 +58,25 @@
         return;
     }
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    NSString *userAgent = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserAgent"];
-    [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
-    [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
-    [request setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
-
-    self.connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    self.isChecking = YES;
+    
+    if ([LEANAppConfig sharedAppConfig].useWKWebView) {
+        if (!self.wkWebview) {
+            WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+            config.processPool = [LEANUtilities wkProcessPool];
+            self.wkWebview = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
+            self.wkWebview.navigationDelegate = self;
+        }
+        [self.wkWebview loadRequest:[NSURLRequest requestWithURL:url]];
+    } else {
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+        NSString *userAgent = [[NSUserDefaults standardUserDefaults] stringForKey:@"UserAgent"];
+        [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+        [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
+        [request setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
+        
+        self.connection = [NSURLConnection connectionWithRequest:request delegate:self];
+    }
 }
 
 -(void) checkIfNotAlreadyChecking
@@ -72,28 +86,42 @@
     }
 }
 
+- (void)finishedOnUrl:(NSURL*)url
+{
+    NSString *urlString = [url absoluteString];
+    
+    // iterate through loginDetectionRegexes
+    NSArray *regexes = [LEANAppConfig sharedAppConfig].loginDetectRegexes;
+    for (NSUInteger i = 0; i < [regexes count]; i++) {
+        NSPredicate *predicate = regexes[i];
+        if ([predicate evaluateWithObject:urlString]) {
+            id entry = [LEANAppConfig sharedAppConfig].loginDetectLocations[i];
+            self.loggedIn = [entry[@"loggedIn"] boolValue];
+            self.loginStatus = entry[@"status"];
+            if (!self.loginStatus) self.loginStatus = self.loggedIn ? @"loggedIn" : @"default";
+            
+            [self statusUpdated];
+            return;
+        }
+    }
+}
+
+- (void)failedWithError:(NSError*)error
+{
+    self.isChecking = NO;
+    self.loginStatus = @"default";
+    self.loggedIn = NO;
+    [self statusUpdated];
+}
+
 #pragma mark URL Connection Data Delegate
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
-    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+    if ([response isKindOfClass:[NSURLResponse class]]) {
         self.isChecking = NO;
         [connection cancel];
         
-        // iterate through loginDetectionRegexes
-        NSArray *regexes = [LEANAppConfig sharedAppConfig].loginDetectRegexes;
-        NSString *urlString = [self.currentUrl absoluteString];
-        for (NSUInteger i = 0; i < [regexes count]; i++) {
-            NSPredicate *predicate = regexes[i];
-            if ([predicate evaluateWithObject:urlString]) {
-                id entry = [LEANAppConfig sharedAppConfig].loginDetectLocations[i];
-                self.loggedIn = [entry[@"loggedIn"] boolValue];
-                self.loginStatus = entry[@"status"];
-                if (!self.loginStatus) self.loginStatus = self.loggedIn ? @"loggedIn" : @"default";
-                
-                [self statusUpdated];
-                return;
-            }
-        }
+        [self finishedOnUrl:self.currentUrl];
     }
 }
 
@@ -106,10 +134,7 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    self.isChecking = NO;
-    self.loginStatus = @"default";
-    self.loggedIn = NO;
-    [self statusUpdated];
+    [self failedWithError:error];
 }
 
 - (void)stopChecking
@@ -118,7 +143,30 @@
         [self.connection cancel];
         self.connection = nil;
     }
+    
+    if (self.wkWebview) {
+        [self.wkWebview stopLoading];
+    }
     self.currentUrl = nil;
     self.isChecking = NO;
 }
+
+# pragma mark WebView navigation delegate
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+{
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    self.isChecking = NO;
+    [self finishedOnUrl:webView.URL];
+}
+
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [self failedWithError:error];
+}
+
+
 @end

@@ -4,4 +4,4 @@
 
 BASEDIR=$(dirname $0)
 
-sips --resampleHeight 60 -s format png --out $BASEDIR/navbar_logo.png $BASEDIR/navigationTitleImageLocation 2>&1
+sips --resampleHeight 90 -s format png --out $BASEDIR/navbar_logo.png $BASEDIR/navigationTitleImageLocation 2>&1
