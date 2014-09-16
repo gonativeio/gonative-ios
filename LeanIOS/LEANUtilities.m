@@ -83,7 +83,7 @@
 }
 
 +(NSString *)stripHTML:(NSString*)x replaceWith:(NSString*) replacement {
-    if (!x) {
+    if (![x isKindOfClass:[NSString class]]) {
         return nil;
     }
     

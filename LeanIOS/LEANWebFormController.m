@@ -34,6 +34,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
 @property BOOL isLogin;
 @property BOOL checkingLogin;
 @property UIWebView *hiddenWebView;
+@property NSTimer *checkSubmissionTimer;
 
 // wkwebview stuff
 @property WKWebView *hiddenWkWebview;
@@ -608,29 +609,81 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
 
 - (void)scheduleSubmissionCheckTimer
 {
+    
     NSTimer *timer = [NSTimer timerWithTimeInterval:1.0 target:self selector:@selector(checkSubmissionStatus) userInfo:nil repeats:NO];
     [timer setTolerance:0.5];
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+    self.checkSubmissionTimer = timer;
 }
 
 - (void)checkSubmissionStatus
 {
     if (self.submitted) {
-        NSString *message = [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"jQuery(%@).html();", [LEANUtilities jsWrapString:self.json[@"errorSelector"]]]];
-        NSString *message2 = nil;
-        if (self.json[@"errorSelector2"] && self.json[@"errorSelector2"] != [NSNull null]) {
-            message2 = [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"jQuery(%@).html();", [LEANUtilities jsWrapString:self.json[@"errorSelector2"]]]];
-        }
+        NSString *messageJs = [NSString stringWithFormat:@"jQuery(%@).html();", [LEANUtilities jsWrapString:self.json[@"errorSelector"]]];
         
-        if ((!message || [message isEqualToString:@""]) &&
-            (!message2 || [message2 isEqualToString:@""])) {
-            // no error. Continue checking.
-            [self scheduleSubmissionCheckTimer];
-        } else {
-            // error with submission
-            [[[UIAlertView alloc] initWithTitle:self.title message:[NSString stringWithFormat:@"%@ %@", message, message2] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
-            self.submitted = NO;
-            self.submitButton.enabled = YES;
+        if (self.hiddenWebView) {
+            NSString *message = [self.hiddenWebView stringByEvaluatingJavaScriptFromString: messageJs];
+            if (![message isKindOfClass:[NSString class]]) {
+                message = @"";
+            } else {
+                message = [LEANUtilities stripHTML:message replaceWith:@" "];
+            }
+            
+            NSString *message2 = nil;
+            if ([self.json[@"errorSelector2"] isKindOfClass:[NSString class]]) {
+                message2 = [self.hiddenWebView stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"jQuery(%@).html();", [LEANUtilities jsWrapString:self.json[@"errorSelector2"]]]];
+                if (![message2 isKindOfClass:[NSString class]]) {
+                    message2 = @"";
+                } else {
+                    message2 = [LEANUtilities stripHTML:message2 replaceWith:@" "];
+                }
+            }
+            
+            if ([message isEqualToString:@""] && [message2 isEqualToString:@""]) {
+                // no error. Continue checking.
+                [self scheduleSubmissionCheckTimer];
+            } else {
+                // error with submission
+                [[[UIAlertView alloc] initWithTitle:self.title message:[NSString stringWithFormat:@"%@ %@", message, message2] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                self.submitted = NO;
+                self.submitButton.enabled = YES;
+            }
+        } else if (self.hiddenWkWebview) {
+            [self.hiddenWkWebview evaluateJavaScript:messageJs completionHandler:^(id message, NSError *error) {
+                
+                if (![message isKindOfClass:[NSString class]]) {
+                    message = @"";
+                } else {
+                    message = [LEANUtilities stripHTML:message replaceWith:@" "];
+                }
+
+                void (^message2block)(id, NSError*) = ^(id message2, NSError *error2) {
+                    if (![message2 isKindOfClass:[NSString class]]) {
+                        message2 = @"";
+                    } else {
+                        message2 = [LEANUtilities stripHTML:message2 replaceWith:@" "];
+                    }
+                    
+                    if ([message isEqualToString:@""] && [message2 isEqualToString:@""]) {
+                        // no error. Continue checking.
+                        [self scheduleSubmissionCheckTimer];
+                    } else {
+                        // error with submission
+                        [[[UIAlertView alloc] initWithTitle:self.title message:[NSString stringWithFormat:@"%@ %@", message, message2] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+                        self.submitted = NO;
+                        self.submitButton.enabled = YES;
+                    }
+                };
+                
+                if ([self.json[@"errorSelector2"] isKindOfClass:[NSString class]]) {
+                    NSString *message2js = [NSString stringWithFormat:@"jQuery(%@).html();", [LEANUtilities jsWrapString:self.json[@"errorSelector2"]]];
+                    [self.hiddenWkWebview evaluateJavaScript:message2js completionHandler:message2block];
+
+                } else {
+                    message2block(nil, nil);
+                }
+
+            }];
         }
     }
 }
@@ -969,6 +1022,8 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
         dispatch_async(dispatch_get_main_queue(), ^{
             [LEANPushManager sharedManager].userID = self.tempUserID;
             
+            [self.checkSubmissionTimer invalidate];
+            self.checkSubmissionTimer = nil;
             [self.hiddenWebView stopLoading];
             [self.hiddenWkWebview stopLoading];
             [self dismiss];
