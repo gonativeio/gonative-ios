@@ -92,9 +92,15 @@
         self.useWKWebView = YES;
     }
     
-    // ios7 vs ios8 check
-    if (![WKWebView class]) {
+    // check for presence of WKWebView
+    if (self.useWKWebView && !NSClassFromString(@"WKWebView")) {
         self.useWKWebView = NO;
+    }
+    
+    if (self.useWKWebView) {
+        NSLog(@"Using WKWebView");
+    } else {
+        NSLog(@"Using UIWebView");
     }
     
     self.deviceRegKey = [[NSUserDefaults standardUserDefaults] stringForKey:@"deviceRegKey"];

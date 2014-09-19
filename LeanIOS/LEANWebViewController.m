@@ -160,9 +160,9 @@
     
     // switch to wkwebview if on ios8
     if (appConfig.useWKWebView) {
-        WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+        WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
         config.processPool = [LEANUtilities wkProcessPool];
-        WKWebView *wv = [[WKWebView alloc] initWithFrame:self.webview.frame configuration:config];
+        WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:config];
         [LEANUtilities configureWebView:wv];
         [self switchToWebView:wv];
     } else {
@@ -1033,7 +1033,7 @@
         self.wkWebview = nil;
         self.webview.delegate = self;
         scrollView = self.webview.scrollView;
-    } else if ([newView isKindOfClass:[WKWebView class]]) {
+    } else if ([newView isKindOfClass:[NSClassFromString(@"WKWebView") class]]) {
         self.wkWebview = (WKWebView*)newView;
         self.webview = nil;
         self.wkWebview.navigationDelegate = self;
@@ -1226,7 +1226,7 @@
 
 - (WKWebView*)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
-    WKWebView *wv = [[WKWebView alloc] initWithFrame:self.webview.frame configuration:configuration];
+    WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:configuration];
     [LEANUtilities configureWebView:wv];
     [self switchToWebView:wv];
     return wv;

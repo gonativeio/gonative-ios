@@ -127,7 +127,7 @@
         self.isViewControllerLoading = YES;
         if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
             [(UIWebView*)self.currentLoadingWebview stopLoading];
-        } else if ([self.currentLoadingWebview isKindOfClass:[WKWebView class]]) {
+        } else if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
             [(WKWebView*)self.currentLoadingWebview stopLoading];
         }
     }
@@ -151,13 +151,13 @@
         return;
     }
     
-    if ([self.currentLoadingWebview isKindOfClass:[WKWebView class]] &&
+    if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")] &&
         [(WKWebView*)self.currentLoadingWebview isLoading]) {
         return;
     }
     
     if (self.currentLoadingWebview && self.currentLoadingRequest) {
-        if ([self.currentLoadingWebview isKindOfClass:[WKWebView class]]) {
+        if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
             [(WKWebView*)self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
         } else if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
             [(UIWebView*)self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
@@ -174,9 +174,9 @@
         [self.urlsToLoad removeObject:urlString];
         
         if ([LEANAppConfig sharedAppConfig].useWKWebView) {
-            WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+            WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
-            WKWebView *webview = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
+            WKWebView *webview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:CGRectZero configuration:config];
             [LEANUtilities configureWebView:webview];
             webview.navigationDelegate = self;
             self.currentLoadingWebview = webview;
@@ -210,7 +210,7 @@
         if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
             ((UIWebView*)self.currentLoadingWebview).delegate = nil;
             self.urlToWebview[self.currentLoadingUrl] = self.currentLoadingWebview;
-        } else if ([self.currentLoadingWebview isKindOfClass:[WKWebView class]]) {
+        } else if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
             ((WKWebView*)self.currentLoadingWebview).navigationDelegate = nil;
             self.urlToWebview[self.currentLoadingUrl] = self.currentLoadingWebview;
         }

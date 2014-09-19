@@ -46,7 +46,6 @@
 		202B4D56195122FD0099821E /* DateCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D55195122FD0099821E /* DateCellView.xib */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
-		205EF30319BF84AF002AE261 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205EF30219BF84AF002AE261 /* WebKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
 		207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C218C2E8B3002EBDD0 /* TextCellView.xib */; };
@@ -216,7 +215,6 @@
 				20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */,
 				20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */,
 				20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */,
-				205EF30319BF84AF002AE261 /* WebKit.framework in Frameworks */,
 				209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */,
 				209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */,
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
@@ -776,7 +774,13 @@
 					"$(PROJECT_DIR)/lib",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-Wl,-U,_OBJC_CLASS_$_WKUserScript",
+					"-Wl,-U,_OBJC_CLASS_$_WKProcessPool",
+					"-Wl,-U,_OBJC_CLASS_$_WKWebViewConfiguration",
+					"-Wl,-U,_OBJC_CLASS_$_WKWebView",
+				);
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -804,7 +808,13 @@
 					"$(PROJECT_DIR)/lib",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-Wl,-U,_OBJC_CLASS_$_WKUserScript",
+					"-Wl,-U,_OBJC_CLASS_$_WKProcessPool",
+					"-Wl,-U,_OBJC_CLASS_$_WKWebViewConfiguration",
+					"-Wl,-U,_OBJC_CLASS_$_WKWebView",
+				);
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -67,9 +67,9 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
         self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
         
         if ([LEANAppConfig sharedAppConfig].useWKWebView) {
-            WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+            WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
-            self.hiddenWkWebview = [[WKWebView alloc] initWithFrame:self.view.frame configuration:config];
+            self.hiddenWkWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.view.frame configuration:config];
             self.hiddenWkWebview.navigationDelegate = self;
         } else {
             self.hiddenWebView = [[UIWebView alloc] init];
@@ -104,9 +104,9 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
         self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
         
         if ([LEANAppConfig sharedAppConfig].useWKWebView) {
-            WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+            WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
-            self.hiddenWkWebview = [[WKWebView alloc] initWithFrame:self.view.frame configuration:config];
+            self.hiddenWkWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.view.frame configuration:config];
             self.hiddenWkWebview.navigationDelegate = self;
 
         } else {

@@ -62,9 +62,9 @@
     
     if ([LEANAppConfig sharedAppConfig].useWKWebView) {
         if (!self.wkWebview) {
-            WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+            WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
-            self.wkWebview = [[WKWebView alloc] initWithFrame:CGRectZero configuration:config];
+            self.wkWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:CGRectZero configuration:config];
             self.wkWebview.navigationDelegate = self;
         }
         [self.wkWebview loadRequest:[NSURLRequest requestWithURL:url]];

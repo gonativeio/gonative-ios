@@ -125,7 +125,7 @@
             [webView stringByEvaluatingJavaScriptFromString:@"jQuery.noConflict()"];
         }
 
-    } else if ([wv isKindOfClass:[WKWebView class]]) {
+    } else if ([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
         [webview evaluateJavaScript:jqueryTest completionHandler:^(id result, NSError *error) {
             if (![result isKindOfClass:[NSString class]] || [result length] == 0) {
@@ -288,7 +288,7 @@
         UIWebView *webview = (UIWebView*)wv;
         webview.scalesPageToFit = YES;
         webview.scrollView.bounces = NO;
-    } else if([wv isKindOfClass:[WKWebView class]]) {
+    } else if([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
         webview.scrollView.bounces = NO;
         
@@ -297,7 +297,7 @@
         if ([customCss length] > 0) {
             NSString *scriptSource = [NSString stringWithFormat:@"var gonative_styleElement = document.createElement('style'); document.documentElement.appendChild(gonative_styleElement); gonative_styleElement.textContent = %@;", [LEANUtilities jsWrapString:customCss]];
             
-            WKUserScript *userScript = [[WKUserScript alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+            WKUserScript *userScript = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
             [webview.configuration.userContentController addUserScript:userScript];
         }
         
@@ -316,7 +316,7 @@
             
             NSString *scriptSource = [NSString stringWithFormat:@"var gonative_setViewport = %@; var gonative_viewportElement = document.querySelector('meta[name=viewport]'); if (gonative_viewportElement) {   if (gonative_setViewport) {         gonative_viewportElement.content = gonative_setViewport;     } else {         gonative_viewportElement.content = gonative_viewportElement.content + ',user-scalable=no';     } } else if (gonative_setViewport) {     gonative_viewportElement = document.createElement('meta');     gonative_viewportElement.name = 'viewport';     gonative_viewportElement.content = gonative_setViewport; }", [LEANUtilities jsWrapString:stringViewport]];
             
-            WKUserScript *userScript = [[WKUserScript alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
+            WKUserScript *userScript = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
             [webview.configuration.userContentController addUserScript:userScript];
         }
     }
@@ -329,7 +329,7 @@
     @synchronized(self)
     {
         if (!processPool){
-            processPool = [[WKProcessPool alloc] init];
+            processPool = [[NSClassFromString(@"WKProcessPool") alloc] init];
         }
         
         return processPool;
