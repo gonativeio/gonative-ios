@@ -164,7 +164,7 @@
         config.processPool = [LEANUtilities wkProcessPool];
         WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:config];
         [LEANUtilities configureWebView:wv];
-        [self switchToWebView:wv];
+        [self switchToWebView:wv showImmediately:NO];
     } else {
         // set self as webview delegate to handle start/end load events
         self.webview.delegate = self;
@@ -970,7 +970,7 @@
     if (poolWebview && poolDisownPolicy == LEANWebViewPoolDisownPolicyAlways) {
         self.isPoolWebview = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self switchToWebView:poolWebview];
+            [self switchToWebView:poolWebview showImmediately:YES];
             [self checkTabsForUrl:url];
         });
         [[LEANWebViewPool sharedPool] disownWebview:poolWebview];
@@ -981,7 +981,7 @@
     if (poolWebview && poolDisownPolicy == LEANWebViewPoolDisownPolicyNever) {
         self.isPoolWebview = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self switchToWebView:poolWebview];
+            [self switchToWebView:poolWebview showImmediately:YES];
             [self checkTabsForUrl:url];
         });
         return NO;
@@ -991,7 +991,7 @@
         ![[request URL] matchesPathOf:[previousRequest URL]]) {
         self.isPoolWebview = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self switchToWebView:poolWebview];
+            [self switchToWebView:poolWebview showImmediately:YES];
             [self checkTabsForUrl:url];
         });
         return NO;
@@ -1014,7 +1014,7 @@
     return YES;
 }
 
-- (void)switchToWebView:(UIView*)newView
+- (void)switchToWebView:(UIView*)newView showImmediately:(BOOL)showImmediately
 {
     UIView *oldView;
     if (self.webview) {
@@ -1071,7 +1071,9 @@
         [view setNeedsDisplayInRect:newView.bounds];
     }
     
-    [self showWebview];
+    if (showImmediately) {
+        [self showWebview];
+    }
 }
 
 - (void) webViewDidStartLoad:(UIWebView *)webView
@@ -1228,7 +1230,7 @@
 {
     WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:configuration];
     [LEANUtilities configureWebView:wv];
-    [self switchToWebView:wv];
+    [self switchToWebView:wv showImmediately:NO];
     return wv;
 }
 
@@ -1238,23 +1240,36 @@
     // with a delay. If not specified, wait for readyState=complete.
     NSNumber *interactiveDelay = [LEANAppConfig sharedAppConfig].interactiveDelay;
     
-    NSString *status = [self.webview stringByEvaluatingJavaScriptFromString:@"document.readyState"];
-    // we keep track of startedLoading because loading is only really finished when we have gone to
-    // "loading" or "interactive" before going to complete. When the web page first starts loading,
-    // it will be in "complete", then "loading", "interactive", and finally "complete".
-    if ([status isEqualToString:@"loading"] || (!interactiveDelay && [status isEqualToString:@"interactive"])){
-        self.startedLoading = YES;
-    }
-    else if ((interactiveDelay && [status isEqualToString:@"interactive"])
-             || (self.startedLoading && [status isEqualToString:@"complete"])) {
+    void (^readyStateBlock)(id, NSError*) = ^(id status, NSError *error) {
+        // we keep track of startedLoading because loading is only really finished when we have gone to
+        // "loading" or "interactive" before going to complete. When the web page first starts loading,
+        // it will be in "complete", then "loading", "interactive", and finally "complete".
         
-        if ([status isEqualToString:@"interactive"]){
-            // note: doubleValue will be 0 if interactiveDelay is null
-            [self showWebviewWithDelay:[interactiveDelay doubleValue]];
+        if (![status isKindOfClass:[NSString class]]) {
+            return;
         }
-        else {
-            [self showWebview];
+        
+        if ([status isEqualToString:@"loading"] || (!interactiveDelay && [status isEqualToString:@"interactive"])){
+            self.startedLoading = YES;
         }
+        else if ((interactiveDelay && [status isEqualToString:@"interactive"])
+                 || (self.startedLoading && [status isEqualToString:@"complete"])) {
+            
+            if ([status isEqualToString:@"interactive"]){
+                // note: doubleValue will be 0 if interactiveDelay is null
+                [self showWebviewWithDelay:[interactiveDelay doubleValue]];
+            }
+            else {
+                [self showWebview];
+            }
+        }
+    };
+    
+    if (self.webview) {
+        NSString *readyState = [self.webview stringByEvaluatingJavaScriptFromString:@"document.readyState"];
+        readyStateBlock(readyState, nil);
+    } else if (self.wkWebview) {
+        [self.wkWebview evaluateJavaScript:@"document.readyState" completionHandler:readyStateBlock];
     }
 }
 
