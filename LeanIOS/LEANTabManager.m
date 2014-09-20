@@ -9,6 +9,7 @@
 #import "LEANTabManager.h"
 #import "LEANWebViewController.h"
 #import "LEANAppConfig.h"
+#import "LEANIcons.h"
 
 @interface LEANTabManager() <UITabBarDelegate>
 @property UITabBar *tabBar;
@@ -68,7 +69,7 @@
     for (NSUInteger i = 0; i < [menu count]; i++) {
         NSString *label = menu[i][@"label"];
         NSString *iconName = menu[i][@"icon"];
-        UIImage *iconImage = [UIImage imageNamed:[NSString stringWithFormat:@"tabbar-%@", iconName]];
+        UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:26];
         [items addObject:[[UITabBarItem alloc] initWithTitle:label image:iconImage tag:i]];
     }
     

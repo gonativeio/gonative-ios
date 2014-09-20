@@ -52,7 +52,6 @@
     
     NSURL *url = [LEANAppConfig sharedAppConfig].loginDetectionURL;
     if (!url) {
-        NSLog(@"Warning: trying to check login without a loginDetectionURL");
         self.loggedIn = NO;
         [self performSelector:@selector(statusUpdated) withObject:self afterDelay:1.0];
         return;

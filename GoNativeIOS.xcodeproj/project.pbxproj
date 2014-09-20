@@ -70,6 +70,7 @@
 		20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */; };
 		20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */; };
 		20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */; };
+		20C8505019CD143100DB208A /* LEANIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C8504F19CD143100DB208A /* LEANIcons.m */; };
 		20D7B68319A6BF0100993236 /* LEANSimulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7B68219A6BF0100993236 /* LEANSimulator.m */; };
 		20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20DE147F18F103850083F46A /* ForgotPasswordView.xib */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
@@ -193,6 +194,8 @@
 		20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANConfigUpdater.m; sourceTree = "<group>"; };
 		20B6B55319AC4C2E004019C4 /* LEANDocumentSharer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANDocumentSharer.h; sourceTree = "<group>"; };
 		20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANDocumentSharer.m; sourceTree = "<group>"; };
+		20C8504E19CD143100DB208A /* LEANIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANIcons.h; sourceTree = "<group>"; };
+		20C8504F19CD143100DB208A /* LEANIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIcons.m; sourceTree = "<group>"; };
 		20D7B68119A6BF0100993236 /* LEANSimulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANSimulator.h; sourceTree = "<group>"; };
 		20D7B68219A6BF0100993236 /* LEANSimulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANSimulator.m; sourceTree = "<group>"; };
 		20DE147F18F103850083F46A /* ForgotPasswordView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgotPasswordView.xib; sourceTree = "<group>"; };
@@ -297,6 +300,8 @@
 				20A13A9519058A5600B997DD /* LEANCustomAction.m */,
 				20B6B55319AC4C2E004019C4 /* LEANDocumentSharer.h */,
 				20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */,
+				20C8504E19CD143100DB208A /* LEANIcons.h */,
+				20C8504F19CD143100DB208A /* LEANIcons.m */,
 				201AB2D41996AD66008C31BF /* LEANInstallation.h */,
 				201AB2D51996AD66008C31BF /* LEANInstallation.m */,
 				2089662518AC6753007FC34F /* LEANLoginManager.h */,
@@ -604,6 +609,7 @@
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
 				20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
+				20C8505019CD143100DB208A /* LEANIcons.m in Sources */,
 				2002B4E518A99A9900495B3D /* RECommonFunctions.m in Sources */,
 				2002B4D718A99A0A00495B3D /* LEANAppConfig.m in Sources */,
 				201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */,

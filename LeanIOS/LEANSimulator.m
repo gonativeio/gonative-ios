@@ -267,16 +267,23 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 - (void)showSimulatorBar
 {
     CGRect frame = [[UIApplication sharedApplication] statusBarFrame];
+    
+    // all work is done in fixed coordinate space, which is what iOS7 provides. iOS8 gives us orientation-dependent coordinates, so convert back to fixed.
+    UIScreen *screen = [UIScreen mainScreen];
+    if ([screen respondsToSelector:@selector(fixedCoordinateSpace)]) {
+        frame = [screen.coordinateSpace convertRect:frame toCoordinateSpace:screen.fixedCoordinateSpace];
+    }
+
     CGSize statusBarSize = CGSizeMake(MAX(frame.size.height, frame.size.width),
                                       MIN(frame.size.height, frame.size.width));
     
     if (!self.simulatorBarWindow) {
         self.simulatorBarWindow = [[UIWindow alloc] initWithFrame:frame];
         self.simulatorBarWindow.windowLevel = UIWindowLevelStatusBar + 1;
-        [self.simulatorBarWindow setRootViewController:[UIViewController alloc]];
     }
     
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    
     BOOL wasHidden = self.simulatorBarWindow.hidden;
     if (wasHidden) {
         // move the bar slightly off-frame so it can be animated into place
