@@ -701,6 +701,17 @@
         return YES;
     }
     
+    // if same page with anchor tag, then allow to load (skip transition)
+    NSURL *currentUrl = self.currentRequest.URL;
+    if (url.fragment
+        && [request.HTTPMethod isEqualToString:@"GET"]
+        && [self.currentRequest.HTTPMethod isEqualToString:@"GET"]
+        && [url.scheme isEqualToString:currentUrl.scheme]
+        && [url.host isEqualToString:currentUrl.host]
+        && [url.pathComponents isEqualToArray:currentUrl.pathComponents]) {
+        return YES;
+    }
+    
     [[LEANUrlInspector sharedInspector] inspectUrl:url];
     
     // check redirects
