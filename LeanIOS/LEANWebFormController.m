@@ -176,7 +176,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
             if ([LEANAppConfig sharedAppConfig].appIcon) {
                 UIButton *button = (UIButton*)[headerView viewWithTag:1];
                 if ([button isKindOfClass:[UIButton class]]) {
-                    button.imageView.image = [LEANAppConfig sharedAppConfig].appIcon;
+                    [button setImage:[LEANAppConfig sharedAppConfig].appIcon forState:UIControlStateNormal];
                 }
             }
             

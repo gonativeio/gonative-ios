@@ -245,7 +245,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
     [[LEANSimulator sharedSimulator].showBarTimer invalidate];
     [LEANSimulator sharedSimulator].showBarTimer = nil;
     if ([LEANAppConfig sharedAppConfig].isSimulating) {
-        [LEANSimulator sharedSimulator].showBarTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:[LEANSimulator sharedSimulator] selector:@selector(showSimulatorBar) userInfo:nil repeats:NO];
+        [LEANSimulator sharedSimulator].showBarTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:[LEANSimulator sharedSimulator] selector:@selector(showSimulatorBar) userInfo:nil repeats:NO];
     } else {
         [[LEANSimulator sharedSimulator] hideSimulatorBar];
     }

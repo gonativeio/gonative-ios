@@ -299,6 +299,8 @@
             fontSize = [NSNumber numberWithFloat:[UIFont systemFontSize]];
         }
         self.iosSidebarFont = [UIFont fontWithName:fontName size:[fontSize floatValue]];
+    } else {
+        self.iosSidebarFont = nil;
     }
     
     self.iosSidebarTextColor = [LEANUtilities colorFromHexString:styling[@"iosSidebarTextColor"]];
@@ -452,6 +454,7 @@
 
 - (void)processSidebarNav:(NSDictionary*)sidebarNav
 {
+    self.showNavigationMenu = NO;
     self.numActiveMenus = 0;
     self.menus = nil;
     self.loginDetectionURL = nil;

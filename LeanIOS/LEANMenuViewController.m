@@ -58,10 +58,10 @@
     UIButton *headerButton = (UIButton*)[headerView viewWithTag:1];
     [headerButton addTarget:self action:@selector(picturePressed:) forControlEvents:UIControlEventTouchUpInside];
     if ([LEANAppConfig sharedAppConfig].sidebarIcon) {
-        headerButton.imageView.image = [LEANAppConfig sharedAppConfig].sidebarIcon;
+        [headerButton setImage:[LEANAppConfig sharedAppConfig].sidebarIcon forState:UIControlStateNormal];
     }
     else if ([LEANAppConfig sharedAppConfig].appIcon) {
-        headerButton.imageView.image = [LEANAppConfig sharedAppConfig].appIcon;
+        [headerButton setImage:[LEANAppConfig sharedAppConfig].appIcon forState:UIControlStateNormal];
     }
     
     self.settingsButton = (UIButton*)[headerView viewWithTag:2];
