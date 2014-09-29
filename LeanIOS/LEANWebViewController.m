@@ -708,7 +708,9 @@
         && [self.currentRequest.HTTPMethod isEqualToString:@"GET"]
         && [url.scheme isEqualToString:currentUrl.scheme]
         && [url.host isEqualToString:currentUrl.host]
-        && [url.pathComponents isEqualToArray:currentUrl.pathComponents]) {
+        && [url.pathComponents isEqualToArray:currentUrl.pathComponents]
+        && (url.parameterString == currentUrl.parameterString || [url.parameterString isEqualToString:currentUrl.parameterString])
+        && (url.query == currentUrl.query || [url.query isEqualToString:currentUrl.query])) {
         return YES;
     }
     

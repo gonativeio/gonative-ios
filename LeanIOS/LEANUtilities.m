@@ -171,20 +171,32 @@
         {
             splashImage = [UIImage imageNamed:images[1]];
             if (splashImage.size.width!=0)
-            return images[1];
+                return images[1];
             else
-            return images[2];
+                return images[2];
         }
         else if ([self isDeviceiPhone5])
         {
             splashImage = [UIImage imageNamed:images[1]];
             if (splashImage.size.width!=0)
-            return images[3];
+                return images[3];
             else
-            return images[4];
+                return images[4];
+        }
+        else if ([self isDeviceiPhone6])
+        {
+            return @"LaunchImage-800-667h@2x.png";
+        }
+        else if ([self isDeviceiPhone6Plus])
+        {
+            if (UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation)) {
+                return @"LaunchImage-800-Portrait-736h@3x.png";
+            } else {
+                return @"LaunchImage-800-Landscape-736h@3x.png";
+            }
         }
         else
-        return images[0]; //Non-retina iPhone
+            return images[0]; //Non-retina iPhone
     }
     else if (UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation))//iPad Portrait
     {
@@ -192,17 +204,17 @@
         {
             splashImage = [UIImage imageNamed:images[5]];
             if (splashImage.size.width!=0)
-            return images[5];
+                return images[5];
             else
-            return images[6];
+                return images[6];
         }
         else
         {
             splashImage = [UIImage imageNamed:images[7]];
             if (splashImage.size.width!=0)
-            return images[7];
+                return images[7];
             else
-            return images[8];
+                return images[8];
         }
         
     }
@@ -212,17 +224,17 @@
         {
             splashImage = [UIImage imageNamed:images[9]];
             if (splashImage.size.width!=0)
-            return images[9];
+                return images[9];
             else
-            return images[10];
+                return images[10];
         }
         else
         {
             splashImage = [UIImage imageNamed:images[11]];
             if (splashImage.size.width!=0)
-            return images[11];
+                return images[11];
             else
-            return images[12];
+                return images[12];
         }
     }
 }
@@ -242,7 +254,7 @@
 +(BOOL)isDeviceiPhone4
 {
     if ([[UIScreen mainScreen] bounds].size.height==480)
-    return TRUE;
+        return TRUE;
     
     return FALSE;
 }
@@ -264,11 +276,22 @@
 
 +(BOOL)isDeviceiPhone5
 {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && [[UIScreen mainScreen] bounds].size.height>480)
-    {
-        return TRUE;
-    }
-    return FALSE;
+    CGSize size = [UIScreen mainScreen].bounds.size;
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && size.width == 320 && size.height == 568;
+}
+
++(BOOL)isDeviceiPhone6
+{
+    CGSize size = [UIScreen mainScreen].bounds.size;
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone && size.width == 375 && size.height == 667;
+}
+
++(BOOL)isDeviceiPhone6Plus
+{
+    CGSize size = [UIScreen mainScreen].bounds.size;
+    return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone &&
+    ((size.width == 414 && size.height == 736) ||
+     (size.width == 736 && size.height == 414));
 }
 
 +(void)configureWebView:(UIView*)wv
