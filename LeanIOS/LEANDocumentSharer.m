@@ -42,11 +42,26 @@
         NSURL *cacheDir = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject]];
         self.dataFile = [cacheDir URLByAppendingPathComponent:@"io.gonative.documentsharer.cachedfile"];
         self.allowableMimeTypes = @[@"application/pdf", // pdf
-                                    @"application/msword", // word
-                                    @"application/vnd.ms-excel", // excel
-                                    @"application/vnd.ms-powerpoint", // powerpoint
-                                    @"application/zip"]; // many MS office documents
-        self.sharableRequests = [NSMutableArray array];
+                                    
+                                    // word
+                                    @"application/msword",
+                                    @"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                    @"application/vnd.ms-word.document.macroEnabled.12",
+                                    @"application/vnd.ms-excel",
+                                    
+                                    // excel
+                                    @"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                    @"application/vnd.ms-excel.sheet.macroEnabled.12",
+                                    @"application/vnd.ms-excel.sheet.binary.macroEnabled.12",
+                                    @"application/vnd.ms-powerpoint",
+                                    
+                                    // powerpoint
+                                    @"application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                                    @"application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+                                    @"application/vnd.ms-powerpoint.presentation.macroEnabled.12",
+                                    @"application/vnd.ms-powerpoint.slideshow.macroEnabled.12",
+                                    
+                                    @"application/zip"]; // many MS office documents may be auto-detect as zip files        self.sharableRequests = [NSMutableArray array];
     }
     return self;
 }

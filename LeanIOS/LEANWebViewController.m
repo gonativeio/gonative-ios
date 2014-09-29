@@ -1228,13 +1228,14 @@
         }
         
         // document sharing
-        if (!self.webview || !self.webview.isLoading) {
-            if ([[LEANDocumentSharer sharedSharer] isSharableRequest:self.currentRequest]) {
-                if (!self.shareButton) {
-                    self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePressed:)];
-                    [self showNavigationItemButtonsAnimated:YES];
-                }
+        if ([[LEANDocumentSharer sharedSharer] isSharableRequest:self.currentRequest]) {
+            if (!self.shareButton) {
+                self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePressed:)];
+                [self showNavigationItemButtonsAnimated:YES];
             }
+        } else {
+            self.shareButton = nil;
+            [self showNavigationItemButtonsAnimated:YES];
         }
     });
 }
