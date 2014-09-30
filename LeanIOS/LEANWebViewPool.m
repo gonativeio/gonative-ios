@@ -10,6 +10,7 @@
 #import "LEANAppConfig.h"
 #import "LEANWebViewController.h"
 #import "LEANUtilities.h"
+#import "LEANLoginManager.h"
 
 @interface LEANWebViewPool () <UIWebViewDelegate, WKNavigationDelegate>
 @property NSMutableDictionary *urlToWebview;
@@ -58,6 +59,9 @@
     
     // subscribe to dynamic config change notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedWebViewPools object:nil];
+    
+    // login status changing
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANLoginManagerStatusChangedNotification object:nil];
     
     [self processConfig];
 }
@@ -125,11 +129,7 @@
 {
     if ([[notification name] isEqualToString:kLEANWebViewControllerUserStartedLoading]) {
         self.isViewControllerLoading = YES;
-        if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
-            [(UIWebView*)self.currentLoadingWebview stopLoading];
-        } else if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
-            [(WKWebView*)self.currentLoadingWebview stopLoading];
-        }
+        [self stopLoading];
     }
     else if ([[notification name] isEqualToString:kLEANWebViewControllerUserFinishedLoading]) {
         self.isViewControllerLoading = NO;
@@ -137,6 +137,17 @@
     }
     else if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedWebViewPools]) {
         [self processConfig];
+    } else if ([[notification name] isEqualToString:kLEANLoginManagerStatusChangedNotification]) {
+        [self flushAll];
+    }
+}
+
+- (void)stopLoading
+{
+    if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
+        [(UIWebView*)self.currentLoadingWebview stopLoading];
+    } else if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
+        [(WKWebView*)self.currentLoadingWebview stopLoading];
     }
 }
 
@@ -268,6 +279,18 @@
         }
     }
     return result;
+}
+
+- (void)flushAll
+{
+    [self stopLoading];
+    
+    self.currentLoadingWebview = nil;
+    self.currentLoadingUrl = nil;
+    self.currentLoadingRequest = nil;
+    
+    self.lastUrlRequested = nil;
+    [self.urlToWebview removeAllObjects];
 }
 
 @end

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 static NSString *kLEANLoginManagerNotificationName = @"io.gonative.ios.LoginManagerNotification";
+static NSString *kLEANLoginManagerStatusChangedNotification = @"io.gonative.ios.LoginManager.statusChanged";
 
 @interface LEANLoginManager : NSObject
 @property BOOL loggedIn;

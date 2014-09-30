@@ -45,6 +45,27 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:kLEANLoginManagerNotificationName object:self];
 }
 
+- (void)setStatus:(NSString *)newStatus loggedIn:(BOOL)loggedIn
+{
+    if (!newStatus) {
+        newStatus = loggedIn ? @"loggedIn" : @"default";
+    }
+    
+    BOOL changed = NO;
+    if (loggedIn != self.loggedIn || ![newStatus isEqualToString:self.loginStatus]) {
+        changed = YES;
+    }
+    
+    self.loggedIn = loggedIn;
+    self.loginStatus = newStatus;
+    [self statusUpdated];
+    
+    if (changed) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANLoginManagerStatusChangedNotification object:self];
+    }
+    
+}
+
 -(void) checkLogin
 {
     [self.connection cancel];
@@ -95,11 +116,7 @@
         NSPredicate *predicate = regexes[i];
         if ([predicate evaluateWithObject:urlString]) {
             id entry = [LEANAppConfig sharedAppConfig].loginDetectLocations[i];
-            self.loggedIn = [entry[@"loggedIn"] boolValue];
-            self.loginStatus = entry[@"status"];
-            if (!self.loginStatus) self.loginStatus = self.loggedIn ? @"loggedIn" : @"default";
-            
-            [self statusUpdated];
+            [self setStatus:entry[@"status"] loggedIn:[entry[@"loggedIn"] boolValue]];
             return;
         }
     }
@@ -108,9 +125,7 @@
 - (void)failedWithError:(NSError*)error
 {
     self.isChecking = NO;
-    self.loginStatus = @"default";
-    self.loggedIn = NO;
-    [self statusUpdated];
+    [self setStatus:@"default" loggedIn:NO];
 }
 
 #pragma mark URL Connection Data Delegate

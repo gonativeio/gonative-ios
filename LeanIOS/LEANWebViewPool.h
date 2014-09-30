@@ -24,5 +24,6 @@ static LEANWebViewPoolDisownPolicy kLEANWebViewPoolDisownPolicyDefault = LEANWeb
 - (void)setup;
 - (UIView*)webviewForUrl:(NSURL *)url policy:(LEANWebViewPoolDisownPolicy*)policy;
 - (void)disownWebview:(UIView*)webview;
+- (void)flushAll;
 
 @end
