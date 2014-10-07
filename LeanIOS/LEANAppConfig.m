@@ -114,6 +114,13 @@
         self.initialHost = [self.initialHost stringByReplacingCharactersInRange:NSMakeRange(0, [@"www." length]) withString:@""];
     }
     
+    NSNumber *forceSessionCookieExpiry = general[@"forceSessionCookieExpiry"];
+    if ([forceSessionCookieExpiry isKindOfClass:[NSNumber class]]) {
+        self.forceSessionCookieExpiry = [forceSessionCookieExpiry unsignedIntegerValue];
+    } else {
+        self.forceSessionCookieExpiry = 0;
+    }
+    
     // modify user agent app-wide
     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     NSString *newAgent;

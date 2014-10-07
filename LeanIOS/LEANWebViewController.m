@@ -1237,6 +1237,23 @@
             self.shareButton = nil;
             [self showNavigationItemButtonsAnimated:YES];
         }
+
+        // save session cookies as persistent
+        NSUInteger forceSessionCookieExpiry = [LEANAppConfig sharedAppConfig].forceSessionCookieExpiry;
+        if (forceSessionCookieExpiry > 0) {
+            NSHTTPCookieStorage *cookieStore = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+            for (NSHTTPCookie *cookie in [cookieStore cookiesForURL:url]) {
+                if (cookie.expiresDate == nil || cookie.sessionOnly) {
+                    NSMutableDictionary *cookieProperties = [cookie.properties mutableCopy];
+                    cookieProperties[NSHTTPCookieExpires] = [[NSDate date] dateByAddingTimeInterval:forceSessionCookieExpiry];
+                    cookieProperties[NSHTTPCookieMaximumAge] = [NSString stringWithFormat:@"%lu", (unsigned long)forceSessionCookieExpiry];
+                    [cookieProperties removeObjectForKey:@"Created"];
+                    [cookieProperties removeObjectForKey:NSHTTPCookieDiscard];
+                    NSHTTPCookie *newCookie = [NSHTTPCookie cookieWithProperties:cookieProperties];
+                    [cookieStore setCookie:newCookie];
+                }
+            }
+        }
     });
 }
 
