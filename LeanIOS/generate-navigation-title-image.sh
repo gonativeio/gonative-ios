@@ -5,3 +5,5 @@
 BASEDIR=$(dirname $0)
 
 sips --resampleHeight 90 -s format png --out $BASEDIR/navbar_logo.png $BASEDIR/navigationTitleImageLocation 2>&1
+
+pngcrush -q -rem allb -brute -reduce -ow $BASEDIR/navbar_logo.png
