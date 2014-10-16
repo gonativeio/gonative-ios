@@ -18,7 +18,6 @@
 @interface LEANAppDelegate() <UIAlertViewDelegate>
 @property UIAlertView *alertView;
 @property NSURL *url;
-
 @end
 
 @implementation LEANAppDelegate
@@ -63,6 +62,10 @@
     [[[LEANConfigUpdater alloc] init] updateConfig];
     
     [self configureApplication];
+    
+    // listen for reachability
+    self.internetReachability = [Reachability reachabilityForInternetConnection];
+    [self.internetReachability startNotifier];
     
     return YES;
 }

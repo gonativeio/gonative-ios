@@ -24,6 +24,7 @@
 #import "LEANTabManager.h"
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"
+#import "Reachability.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate>
 
@@ -52,7 +53,8 @@
 @property NSString *profilePickerJs;
 @property NSString *analyticsJs;
 @property NSTimer *timer;
-@property BOOL startedLoading; // for transitions
+@property BOOL startedLoading; // for transitions, keeps track of whether document.readystate has switched to "loading"
+@property BOOL didLoadPage; // keep track of whether any page has loaded. If network reconnects, then will attempt reload if there is no page loaded
 @property LEANTabManager *tabManager;
 @property BOOL isPoolWebview;
 @property UIView *defaultTitleView;
@@ -200,12 +202,37 @@
     [self adjustInsets];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedTabNavigation object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kReachabilityChangedNotification object:nil];
 }
 
 - (void)didReceiveNotification:(NSNotification*)notification
 {
     if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedTabNavigation]) {
         [self checkTabsForUrl:self.currentRequest.URL];
+    }
+    else if ([[notification name] isEqualToString:UIApplicationDidBecomeActiveNotification]) {
+        [self retryFailedPage];
+    }
+    else if ([[notification name] isEqualToString:kReachabilityChangedNotification]) {
+        [self retryFailedPage];
+    }
+}
+
+- (void)retryFailedPage
+{
+    // if there is a page loaded, user can just retry navigation
+    if (self.didLoadPage) return;
+    
+    // return if currently loading a page
+    if (self.webview && self.webview.loading) return;
+    if (self.wkWebview && self.wkWebview.isLoading) return;
+    
+    NetworkStatus status = [((LEANAppDelegate*)[UIApplication sharedApplication].delegate).internetReachability currentReachabilityStatus];
+    
+    if (status != NotReachable && self.currentRequest) {
+        NSLog(@"Networking reconnect. Retrying previous failed request.");
+        [self loadRequest:self.currentRequest];
     }
 }
 
@@ -984,6 +1011,7 @@
         self.isPoolWebview = NO;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self switchToWebView:poolWebview showImmediately:YES];
+            self.didLoadPage = YES;
             [self checkTabsForUrl:url];
         });
         [[LEANWebViewPool sharedPool] disownWebview:poolWebview];
@@ -995,6 +1023,7 @@
         self.isPoolWebview = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self switchToWebView:poolWebview showImmediately:YES];
+            self.didLoadPage = YES;
             [self checkTabsForUrl:url];
         });
         return NO;
@@ -1005,6 +1034,7 @@
         self.isPoolWebview = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self switchToWebView:poolWebview showImmediately:YES];
+            self.didLoadPage = YES;
             [self checkTabsForUrl:url];
         });
         return NO;
@@ -1132,6 +1162,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showWebview];
+        self.didLoadPage = YES;
         
         NSURL *url = nil;
         if (self.webview) {
@@ -1296,6 +1327,8 @@
         else if ((interactiveDelay && [status isEqualToString:@"interactive"])
                  || (self.startedLoading && [status isEqualToString:@"complete"])) {
             
+            self.didLoadPage = YES;
+            
             if ([status isEqualToString:@"interactive"]){
                 // note: doubleValue will be 0 if interactiveDelay is null
                 [self showWebviewWithDelay:[interactiveDelay doubleValue]];
@@ -1354,6 +1387,11 @@
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
+{
+    [self didFailLoadWithError:error];
+}
+
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
     [self didFailLoadWithError:error];
 }
