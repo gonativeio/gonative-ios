@@ -397,8 +397,8 @@
         top = MIN(self.navigationController.navigationBar.bounds.size.height,
                   self.navigationController.navigationBar.bounds.size.width);
     }
-    top += MIN([UIApplication sharedApplication].statusBarFrame.size.height,
-               [UIApplication sharedApplication].statusBarFrame.size.width);
+    
+    top += [self.navigationController.topLayoutGuide length];
     
     CGFloat bottom = 0;
     if (self.tabBar && !self.tabBar.hidden) {
