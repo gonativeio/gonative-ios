@@ -392,14 +392,8 @@
 
 - (void)adjustInsets
 {
-    CGFloat top = 0;
-    if (!self.navigationController.navigationBarHidden && self.navigationController.navigationBar) {
-        top = MIN(self.navigationController.navigationBar.bounds.size.height,
-                  self.navigationController.navigationBar.bounds.size.width);
-    }
-    
-    top += [self.navigationController.topLayoutGuide length];
-    
+    CGFloat top = [self.topLayoutGuide length];
+
     CGFloat bottom = 0;
     if (self.tabBar && !self.tabBar.hidden) {
         bottom = MIN(self.tabBar.bounds.size.height, self.tabBar.bounds.size.width);
@@ -1525,10 +1519,11 @@
     if (self.statusBarBackground) {
         // fix sizing (usually because of rotation) when navigation bar is hidden
         CGSize statusSize = [UIApplication sharedApplication].statusBarFrame.size;
-        CGFloat height = MIN(statusSize.height, statusSize.width);
+        CGFloat height = 20;
         CGFloat width = MAX(statusSize.height, statusSize.width);
         self.statusBarBackground.frame = CGRectMake(0, 0, width, height);
     }
+    [self adjustInsets];
 }
 
 
