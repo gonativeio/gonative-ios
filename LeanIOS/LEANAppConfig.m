@@ -312,6 +312,10 @@
     
     self.iosSidebarTextColor = [LEANUtilities colorFromHexString:styling[@"iosSidebarTextColor"]];
     
+    if ([styling[@"iosShowRefreshButton"] isKindOfClass:[NSNumber class]]) {
+        self.showRefreshButton = [styling[@"iosShowRefreshButton"] boolValue];
+    } else self.showRefreshButton = NO;
+    
     ////////////////////////////////////////////////////////////
     // Services
     ////////////////////////////////////////////////////////////

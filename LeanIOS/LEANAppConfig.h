@@ -62,6 +62,7 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property NSNumber *interactiveDelay;
 @property UIFont *iosSidebarFont;
 @property UIColor *iosSidebarTextColor;
+@property BOOL showRefreshButton;
 
 
 // forms

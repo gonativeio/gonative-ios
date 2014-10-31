@@ -45,6 +45,7 @@
 @property UIView *statusBarBackground;
 @property UITabBar *tabBar;
 @property UIBarButtonItem *shareButton;
+@property UIBarButtonItem *refreshButton;
 
 @property BOOL willBeLandscape;
 
@@ -60,6 +61,7 @@
 @property UIView *defaultTitleView;
 
 @property NSString *postLoadJavascript;
+@property NSString *postLoadJavascriptForRefresh;
 
 @property BOOL visitedLoginOrSignup;
 
@@ -195,6 +197,10 @@
         self.searchBar = [[UISearchBar alloc] init];
         self.searchBar.showsCancelButton = NO;
         self.searchBar.delegate = self;
+    }
+    
+    if (appConfig.showRefreshButton) {
+        self.refreshButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"refresh"] style:UIBarButtonItemStylePlain target:self action:@selector(refreshPressed:)];
     }
     
     [self showNavigationItemButtonsAnimated:NO];
@@ -469,11 +475,16 @@
     //left
     [self.navigationItem setLeftBarButtonItems:self.defaultLeftNavBarItems animated:animated];
     
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:3];
+    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:4];
     
     // right: search button
     if (self.searchButton) {
         [buttons addObject:self.searchButton];
+    }
+    
+    // right: refresh button
+    if (self.refreshButton) {
+        [buttons addObject:self.refreshButton];
     }
     
     // right: chromecast button
@@ -497,6 +508,11 @@
                                       initWithActivityItems:@[[self.currentRequest URL]] applicationActivities:nil];
     [self presentViewController:avc animated:YES completion:nil];
     
+}
+
+- (void)refreshPressed:(id)sender
+{
+    [self loadRequest:self.currentRequest andJavascript:self.postLoadJavascriptForRefresh];
 }
 
 - (void) logout
@@ -547,6 +563,8 @@
 {
     [self.webview loadRequest:request];
     [self.wkWebview loadRequest:request];
+    self.postLoadJavascript = nil;
+    self.postLoadJavascriptForRefresh = nil;
 }
 
 - (void) loadUrl:(NSURL *)url andJavascript:(NSString *)js
@@ -561,9 +579,11 @@
     if ([[currentUrl absoluteString] isEqualToString:[url absoluteString]]) {
         [self hideWebview];
         [self runJavascript:js];
+        self.postLoadJavascriptForRefresh = js;
         [self showWebview];
     } else {
         self.postLoadJavascript = js;
+        self.postLoadJavascriptForRefresh = js;
         [self loadUrl:url];
     }
 }
@@ -571,6 +591,7 @@
 - (void) loadRequest:(NSURLRequest *)request andJavascript:(NSString*)js
 {
     self.postLoadJavascript = js;
+    self.postLoadJavascriptForRefresh = js;
     [self loadRequest:request];
 }
 
@@ -918,6 +939,7 @@
             newvc.initialUrl = url;
             newvc.postLoadJavascript = self.postLoadJavascript;
             self.postLoadJavascript = nil;
+            self.postLoadJavascriptForRefresh = nil;
             
             NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
             while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
@@ -952,6 +974,7 @@
                         [wvc loadRequest:request andJavascript:self.postLoadJavascript];
                     });
                     self.postLoadJavascript = nil;
+                    self.postLoadJavascriptForRefresh = nil;
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [wvc loadRequest:request];
