@@ -59,6 +59,7 @@
 @property LEANTabManager *tabManager;
 @property BOOL isPoolWebview;
 @property UIView *defaultTitleView;
+@property UIView *navigationTitleImageView;
 
 @property NSString *postLoadJavascript;
 @property NSString *postLoadJavascriptForRefresh;
@@ -86,26 +87,6 @@
     // set title to application title
     if ([appConfig.navTitles count] == 0) {
         self.navigationItem.title = appConfig.appName;
-    }
-    
-    // show logo in navigation bar
-    if (appConfig.navigationTitleImage) {
-        UIImage *im = nil;
-        if (appConfig.navigationTitleIcon) {
-            im = appConfig.navigationTitleIcon;
-        } else {
-            im = [UIImage imageNamed:@"navbar_logo"];
-        }
-        if (im) {
-            CGRect bounds = CGRectMake(0, 0, 30 * im.size.width / im.size.height, 30);
-            UIView *backView = [[UIView alloc] initWithFrame:bounds];
-            UIImageView *iv = [[UIImageView alloc] initWithImage:im];
-            iv.bounds = bounds;
-            [backView addSubview:iv];
-            iv.center = backView.center;
-            self.defaultTitleView = backView;
-            self.navigationItem.titleView = backView;
-        }
     }
     
     // dark theme
@@ -181,6 +162,9 @@
         self.initialUrl = appConfig.initialURL;
     }
     [self loadUrl:self.initialUrl];
+    
+    // nav title image
+    [self checkNavigationTitleImageForUrl:self.initialUrl];
     
     // hidden nav bar
     if (!appConfig.showNavigationBar && [self isRootWebView]) {
@@ -361,6 +345,35 @@
     }
     
     [self.tabManager didLoadUrl:url];
+}
+
+- (void)checkNavigationTitleImageForUrl:(NSURL*)url
+{
+    // show logo in navigation bar
+    if ([[LEANAppConfig sharedAppConfig] shouldShowNavigationTitleImageForUrl:[url absoluteString]]) {
+        // create the view if necesary
+        if (!self.navigationTitleImageView) {
+            UIImage *im = [LEANAppConfig sharedAppConfig].navigationTitleIcon;
+            if (!im) im = [UIImage imageNamed:@"navbar_logo"];
+            
+            if (im) {
+                CGRect bounds = CGRectMake(0, 0, 30 * im.size.width / im.size.height, 30);
+                UIView *backView = [[UIView alloc] initWithFrame:bounds];
+                UIImageView *iv = [[UIImageView alloc] initWithImage:im];
+                iv.bounds = bounds;
+                [backView addSubview:iv];
+                iv.center = backView.center;
+                self.navigationTitleImageView = backView;
+            }
+        }
+        
+        // set the view
+        self.defaultTitleView = self.navigationTitleImageView;
+        self.navigationItem.titleView = self.navigationTitleImageView;
+    } else {
+        self.defaultTitleView = nil;
+        self.navigationItem.titleView = nil;
+    }
 }
 
 - (void)hideTabBar
@@ -1018,6 +1031,9 @@
     self.currentRequest = request;
     // save for html interception
     ((LEANAppDelegate*)[[UIApplication sharedApplication] delegate]).currentRequest = request;
+    
+    // update title image
+    [self checkNavigationTitleImageForUrl:request.URL];
     
     // check to see if the webview exists in pool. Swap it in if it's not the same url.
     UIView *poolWebview = nil;

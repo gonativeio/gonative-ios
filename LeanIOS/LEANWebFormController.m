@@ -130,8 +130,10 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
     [super viewDidLoad];
     
     // show logo in navigation bar
-    if ([LEANAppConfig sharedAppConfig].navigationTitleImage) {
-        UIImage *im = [UIImage imageNamed:@"navbar_logo"];
+    if ([LEANAppConfig sharedAppConfig].navigationTitleImageRegexes) {
+        UIImage *im = [LEANAppConfig sharedAppConfig].navigationTitleIcon;
+        if (!im) im = [UIImage imageNamed:@"navbar_logo"];
+        
         if (im) {
             CGRect bounds = CGRectMake(0, 0, 30 * im.size.width / im.size.height, 30);
             UIView *backView = [[UIView alloc] initWithFrame:bounds];

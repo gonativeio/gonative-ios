@@ -66,6 +66,14 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 - (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
     if (self = [super initWithRequest:request cachedResponse:cachedResponse client:client]) {
         self.modifiedRequest = request.mutableCopy;
+        
+        // custom user agent
+        NSString *customUserAgent = [[LEANAppConfig sharedAppConfig] userAgentForUrl:request.URL];
+        if (customUserAgent) {
+            [self.modifiedRequest setValue:customUserAgent forHTTPHeaderField:@"User-Agent"];
+        }
+        
+        // this prevents us from re-intercepting the subsequent request. kOurRequestProperty is checked for in canInitWithRequest
         [[self class] setProperty:[NSNumber numberWithBool:YES] forKey:kOurRequestProperty inRequest:self.modifiedRequest];
     }
     self.isHtml = NO;

@@ -25,6 +25,8 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property NSString *userAgentAdd;
 @property NSString *forceUserAgent;
 @property NSString *userAgent;
+@property NSMutableArray *userAgentRegexes;
+@property NSMutableArray *userAgentStrings;
 @property BOOL useWKWebView;
 @property NSUInteger forceSessionCookieExpiry;
 
@@ -57,7 +59,7 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property UIColor *titleTextColor;
 @property BOOL showToolbar;
 @property BOOL showNavigationBar;
-@property BOOL navigationTitleImage;
+@property NSMutableArray *navigationTitleImageRegexes;
 @property NSNumber *menuAnimationDuration;
 @property NSNumber *interactiveDelay;
 @property UIFont *iosSidebarFont;
@@ -108,5 +110,8 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 + (NSURL*)urlForSimulatorNavTitleIcon;
 - (void)setupFromJsonFiles;
 - (void)processDynamicUpdate:(NSString*)json;
+
+- (BOOL)shouldShowNavigationTitleImageForUrl:(NSString*)url;
+-(NSString*)userAgentForUrl:(NSURL*)url;
 
 @end

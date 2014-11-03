@@ -121,6 +121,9 @@
         self.forceSessionCookieExpiry = 0;
     }
     
+    // process custom user agent by regex
+    [self processUserAgentRegexes:general[@"userAgentRegexes"]];
+    
     // modify user agent app-wide
     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     NSString *newAgent;
@@ -276,7 +279,7 @@
     self.tintColor = [LEANUtilities colorFromHexString:styling[@"iosTintColor"]];
     self.titleTextColor = [LEANUtilities colorFromHexString:styling[@"iosTitleColor"]];
     
-    self.navigationTitleImage = [styling[@"navigationTitleImage"] boolValue];
+    [self processNavigationTitleImage:styling[@"navigationTitleImage"]];
     
     if ([styling[@"menuAnimationDuration"] isKindOfClass:[NSNumber class]]) {
         self.menuAnimationDuration = styling[@"menuAnimationDuration"];
@@ -461,6 +464,7 @@
     [self processNavigationLevels:parsedJson[@"navigationLevels"]];
     [self processNavigationTitles:parsedJson[@"navigationTitles"]];
     [self processWebViewPools:parsedJson[@"webviewPools"]];
+    [self processNavigationTitleImage:parsedJson[@"navigationTitleImage"]];
 }
 
 - (void)processSidebarNav:(NSDictionary*)sidebarNav
@@ -646,6 +650,80 @@
     self.webviewPools = webviewPools;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationProcessedWebViewPools object:self];
+}
+
+- (void)processNavigationTitleImage:(id)navTitleImage
+{
+    if (!navTitleImage) return;
+    
+    self.navigationTitleImageRegexes = [NSMutableArray array];
+    
+    if ([navTitleImage isKindOfClass:[NSNumber class]]) {
+        // create regex that matches everything
+        NSPredicate *predicate;
+        if ([navTitleImage boolValue]) {
+            predicate = [NSPredicate predicateWithFormat:@"TRUEPREDICATE"];
+        } else {
+            predicate = [NSPredicate predicateWithFormat:@"FALSEPREDICATE"];
+        }
+        
+        [self.navigationTitleImageRegexes addObject:predicate];
+        return;
+    }
+    
+    if ([navTitleImage isKindOfClass:[NSArray class]]) {
+        for (id entry in navTitleImage) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry];
+            if (predicate) {
+                [self.navigationTitleImageRegexes addObject:predicate];
+            }
+        }
+    }
+}
+
+- (BOOL)shouldShowNavigationTitleImageForUrl:(NSString*)url
+{
+    for (NSPredicate *predicate in self.navigationTitleImageRegexes) {
+        if ([predicate evaluateWithObject:url]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+- (void)processUserAgentRegexes:(NSArray*)config
+{
+    if (![config isKindOfClass:[NSArray class]]) return;
+    
+    self.userAgentRegexes = [NSMutableArray array];
+    self.userAgentStrings = [NSMutableArray array];
+    
+    for (NSDictionary *entry in config) {
+        if ([entry isKindOfClass:[NSDictionary class]]) {
+            NSString *regex = entry[@"regex"];
+            NSString *userAgent = entry[@"userAgent"];
+            if ([regex isKindOfClass:[NSString class]] && [userAgent isKindOfClass:[NSString class]]) {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+                if (predicate) {
+                    [self.userAgentRegexes addObject:predicate];
+                    [self.userAgentStrings addObject:userAgent];
+                }
+            }
+        }
+    }
+}
+
+-(NSString*)userAgentForUrl:(NSURL*)url
+{
+    NSString *urlString = [url absoluteString];
+    for (NSUInteger i = 0; i < [self.userAgentRegexes count]; i++) {
+        if ([self.userAgentRegexes[i] evaluateWithObject:urlString]) {
+            return self.userAgentStrings[i];
+        }
+    }
+
+    return self.userAgent;
 }
 
 @end
