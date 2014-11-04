@@ -104,4 +104,21 @@
     }
 }
 
+- (void)selectTabWithUrl:(NSString*)url javascript:(NSString*)javascript
+{
+    for (NSUInteger i = 0; i < [self.menu count]; i++) {
+        NSString *entryUrl = self.menu[i][@"url"];
+        NSString *entryJs = self.menu[i][@"javascript"];
+        
+        if ([url isEqualToString:entryUrl] &&
+            ((javascript == nil && entryJs == nil) || [javascript isEqualToString:entryJs])) {
+            UITabBarItem *item = self.tabBar.items[i];
+            if (item) {
+                self.tabBar.selectedItem = item;
+                return;
+            }
+        }
+    }
+}
+
 @end

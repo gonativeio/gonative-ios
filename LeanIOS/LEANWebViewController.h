@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "REFrostedViewController.h"
 #import "LEANProfilePicker.h"
+@class LEANTabManager;
 
 static NSString *kLEANWebViewControllerUserStartedLoading = @"io.gonative.ios.WebViewController.started";
 static NSString *kLEANWebViewControllerUserFinishedLoading = @"io.gonative.ios.WebViewController.finished";
@@ -16,6 +17,7 @@ static NSString *kLEANWebViewControllerUserFinishedLoading = @"io.gonative.ios.W
 @interface LEANWebViewController : UIViewController <UIWebViewDelegate>
 @property BOOL checkLoginSignup;
 @property LEANProfilePicker *profilePicker;
+@property LEANTabManager *tabManager;
 @property NSURL *initialUrl;
 
 - (IBAction) showMenu;

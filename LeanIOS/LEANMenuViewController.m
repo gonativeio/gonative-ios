@@ -16,6 +16,7 @@
 #import "FontAwesome/UIFont+FontAwesome.h"
 #import "LEANUrlInspector.h"
 #import "LEANSettingsController.h"
+#import "LEANTabManager.h"
 
 @interface LEANMenuViewController ()
 
@@ -320,6 +321,11 @@
             NSString *js = [url substringFromIndex: [@"javascript:" length]];
             [self.wvc runJavascript:js];
         } else {
+            // try selecting the corresponding tab (if exists);
+            if (self.wvc.tabManager) {
+                [self.wvc.tabManager selectTabWithUrl:url javascript:javascript];
+            }
+            
             if ([javascript length] > 0) {
                 [self.wvc loadUrl:[NSURL URLWithString:url] andJavascript:javascript];
             } else {

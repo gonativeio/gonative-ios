@@ -12,4 +12,5 @@
 @interface LEANTabManager : NSObject
 - (instancetype)initWithTabBar:(UITabBar*)tabBar webviewController:(LEANWebViewController*)wvc;
 - (void)didLoadUrl:(NSURL*)url;
+- (void)selectTabWithUrl:(NSString*)url javascript:(NSString*)javascript;
 @end

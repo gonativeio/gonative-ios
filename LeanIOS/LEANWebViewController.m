@@ -56,7 +56,6 @@
 @property NSTimer *timer;
 @property BOOL startedLoading; // for transitions, keeps track of whether document.readystate has switched to "loading"
 @property BOOL didLoadPage; // keep track of whether any page has loaded. If network reconnects, then will attempt reload if there is no page loaded
-@property LEANTabManager *tabManager;
 @property BOOL isPoolWebview;
 @property UIView *defaultTitleView;
 @property UIView *navigationTitleImageView;
@@ -597,7 +596,9 @@
     } else {
         self.postLoadJavascript = js;
         self.postLoadJavascriptForRefresh = js;
-        [self loadUrl:url];
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        [self.webview loadRequest:request];
+        [self.wkWebview loadRequest:request];
     }
 }
 
@@ -605,7 +606,8 @@
 {
     self.postLoadJavascript = js;
     self.postLoadJavascriptForRefresh = js;
-    [self loadRequest:request];
+    [self.webview loadRequest:request];
+    [self.wkWebview loadRequest:request];
 }
 
 - (void) runJavascript:(NSString *) script
@@ -1149,6 +1151,7 @@
     
     if (showImmediately) {
         [self showWebview];
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
 }
 
@@ -1433,7 +1436,10 @@
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
-    [self showWebview];
+    // show webview unless navigation was canceled, which is most likely due to a different page being requested
+    if (![error.domain isEqualToString:NSURLErrorDomain] || error.code != NSURLErrorCancelled) {
+        [self showWebview];
+    }
     
     if ([[error domain] isEqualToString:NSURLErrorDomain] && [error code] == NSURLErrorNotConnectedToInternet) {
         [[[UIAlertView alloc] initWithTitle:@"No connection" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
