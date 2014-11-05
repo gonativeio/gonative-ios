@@ -579,6 +579,7 @@
 
 - (void) loadRequest:(NSURLRequest*) request
 {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
     [self.webview loadRequest:request];
     [self.wkWebview loadRequest:request];
     self.postLoadJavascript = nil;
@@ -603,6 +604,7 @@
         self.postLoadJavascript = js;
         self.postLoadJavascriptForRefresh = js;
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
         [self.webview loadRequest:request];
         [self.wkWebview loadRequest:request];
     }
@@ -612,6 +614,7 @@
 {
     self.postLoadJavascript = js;
     self.postLoadJavascriptForRefresh = js;
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
     [self.webview loadRequest:request];
     [self.wkWebview loadRequest:request];
 }

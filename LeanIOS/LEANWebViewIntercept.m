@@ -112,26 +112,42 @@ static LEANUrlCache *urlCache;
 
 - (NSData *)modifyHtml:(NSData *)htmlBuffer
 {
-    NSString *origString = [[NSString alloc] initWithData:htmlBuffer encoding:self.htmlEncoding];
+    NSString *htmlString = [[NSString alloc] initWithData:htmlBuffer encoding:self.htmlEncoding];
     // if decoding fails, try other encodings
-    if ([htmlBuffer length] > 0 && [origString length] == 0) {
-        origString = [[NSString alloc] initWithData:htmlBuffer encoding:NSWindowsCP1252StringEncoding];
+    if ([htmlBuffer length] > 0 && [htmlString length] == 0) {
+        htmlString = [[NSString alloc] initWithData:htmlBuffer encoding:NSWindowsCP1252StringEncoding];
     }
-    if ([htmlBuffer length] > 0 && [origString length] == 0) {
-        origString = [[NSString alloc] initWithData:htmlBuffer encoding:NSISOLatin1StringEncoding];
+    if ([htmlBuffer length] > 0 && [htmlString length] == 0) {
+        htmlString = [[NSString alloc] initWithData:htmlBuffer encoding:NSISOLatin1StringEncoding];
     }
-    if ([htmlBuffer length] > 0 && [origString length] == 0) {
-        origString = [[NSString alloc] initWithData:htmlBuffer encoding:NSASCIIStringEncoding];
+    if ([htmlBuffer length] > 0 && [htmlString length] == 0) {
+        htmlString = [[NSString alloc] initWithData:htmlBuffer encoding:NSASCIIStringEncoding];
+    }
+    
+    // bail out if we still cannot decode the string
+    if ([htmlString length] == 0) {
+        return htmlBuffer;
+    }
+    
+    // string replacements
+    for (NSDictionary *entry in [LEANAppConfig sharedAppConfig].replaceStrings) {
+        if ([entry isKindOfClass:[NSDictionary class]]) {
+            NSString *old = entry[@"old"];
+            NSString *new = entry[@"new"];
+            if ([old isKindOfClass:[NSString class]] && [new isKindOfClass:[NSString class]]) {
+                htmlString = [htmlString stringByReplacingOccurrencesOfString:old withString:new];
+            }
+        }
     }
     
     // find closing </head> tag
-    NSRange insertPoint = [origString rangeOfString:@"</head>" options:NSCaseInsensitiveSearch];
+    NSRange insertPoint = [htmlString rangeOfString:@"</head>" options:NSCaseInsensitiveSearch];
     if (insertPoint.location != NSNotFound) {
         NSString *customCss = [LEANAppConfig sharedAppConfig].customCss;
         NSString *stringViewport = [LEANAppConfig sharedAppConfig].stringViewport;
         NSNumber *viewportWidth = [LEANAppConfig sharedAppConfig].forceViewportWidth;
         
-        NSMutableString *newString = [[origString substringToIndex:insertPoint.location] mutableCopy];
+        NSMutableString *newString = [[htmlString substringToIndex:insertPoint.location] mutableCopy];
         if (customCss) {
             [newString appendString:@"<style>"];
             [newString appendString:customCss];
@@ -150,7 +166,7 @@ static LEANUrlCache *urlCache;
         
         if (!stringViewport && !viewportWidth) {
             // find original viewport
-            NSString *origViewport = [LEANWebViewIntercept extractViewport:origString];
+            NSString *origViewport = [LEANWebViewIntercept extractViewport:htmlString];
             
             if ([origViewport length] > 0) {
                 [newString appendFormat:@"<meta name=\"viewport\" content=\"%@,user-scalable=no\"/>", origViewport];
@@ -160,10 +176,10 @@ static LEANUrlCache *urlCache;
             }
         }
         
-        [newString appendString:[origString substringFromIndex:insertPoint.location]];
+        [newString appendString:[htmlString substringFromIndex:insertPoint.location]];
         return [newString dataUsingEncoding:self.htmlEncoding];
     } else {
-        return htmlBuffer;
+        return [htmlString dataUsingEncoding:self.htmlEncoding];
     }
 
 }

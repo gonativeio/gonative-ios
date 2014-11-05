@@ -16,6 +16,7 @@
 @property NSArray *menu;
 @property (weak, nonatomic) LEANWebViewController* wvc;
 @property NSString *currentMenuID;
+@property BOOL showTabBar;
 @end
 
 @implementation LEANTabManager
@@ -27,6 +28,7 @@
         self.tabBar = tabBar;
         self.tabBar.delegate = self;
         self.wvc = wvc;
+        self.showTabBar = NO;
     }
     return self;
 }
@@ -49,10 +51,18 @@
     }
     
     if (showTabBar) {
+        if (!self.showTabBar) {
+            // select first item
+            if ([self.tabBar.items count] > 0) {
+                self.tabBar.selectedItem = self.tabBar.items[0];
+            }
+        }
         [self.wvc showTabBar];
     } else {
         [self.wvc hideTabBar];
     }
+    
+    self.showTabBar = showTabBar;
 }
 
 - (void)loadTabBarMenu:(NSString*)menuID
@@ -75,11 +85,6 @@
     
     self.menu = menu;
     [self.tabBar setItems:items animated:NO];
-    
-    // select first item
-    if ([items count] > 0) {
-        self.tabBar.selectedItem = items[0];
-    }
 }
 
 

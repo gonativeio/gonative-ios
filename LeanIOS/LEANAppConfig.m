@@ -124,6 +124,13 @@
     // process custom user agent by regex
     [self processUserAgentRegexes:general[@"userAgentRegexes"]];
     
+    // html string replacements (requires UIWebView)
+    // replaceStrings should be an array of JSON objects with fields "old" and "new"
+    id replaceStrings = general[@"replaceStrings"];
+    if ([replaceStrings isKindOfClass:[NSArray class]]) {
+        self.replaceStrings = replaceStrings;
+    }
+    
     // modify user agent app-wide
     UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
     NSString *newAgent;
