@@ -530,6 +530,12 @@
 - (void) logout
 {
     [self.webview stopLoading];
+    [self.wkWebview stopLoading];
+    // stop webview pools
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
+    [[LEANWebViewPool sharedPool] flushAll];
+    // stop login detection
+    [[LEANLoginManager sharedManager] stopChecking];
     
     // clear cookies
     NSHTTPCookie *cookie;

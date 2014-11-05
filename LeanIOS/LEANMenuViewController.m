@@ -297,6 +297,7 @@
     
     NSString *url = nil;
     NSString *javascript = nil;
+    BOOL isLogout;
     
     // if is first row, then check if it is grouped.
     if (indexPath.row == 0) {
@@ -304,13 +305,17 @@
             self.groupExpanded[indexPath.section] = [NSNumber numberWithBool:![self.groupExpanded[indexPath.section] boolValue]];
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
         } else {
-            url = self.menuItems[indexPath.section][@"url"];
-            javascript = self.menuItems[indexPath.section][@"javascript"];
+            NSDictionary *item = self.menuItems[indexPath.section];
+            url = item[@"url"];
+            javascript = item[@"javascript"];
+            isLogout = [item[@"isLogout"] boolValue];
         }
     } else {
         // regular child
-        url = self.menuItems[indexPath.section][@"subLinks"][indexPath.row - 1][@"url"];
-        javascript = self.menuItems[indexPath.section][@"subLinks"][indexPath.row - 1][@"javascript"];
+        NSDictionary *item = self.menuItems[indexPath.section][@"subLinks"][indexPath.row - 1];
+        url = item[@"url"];
+        javascript = item[@"javascript"];
+        isLogout = [item[@"isLogout"] boolValue];
     }
     
     if (url != nil) {
@@ -333,6 +338,12 @@
             }
         }
         [self.frostedViewController hideMenuViewController];
+        
+        if (isLogout) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self.wvc logout];
+            });
+        }
     }
 }
 
