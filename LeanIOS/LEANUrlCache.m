@@ -18,9 +18,9 @@
 
 @implementation LEANUrlCache
 
-- (id)initWithMemoryCapacity:(NSUInteger)memoryCapacity diskCapacity:(NSUInteger)diskCapacity diskPath:(NSString *)path
+- (instancetype)init
 {
-    self = [super initWithMemoryCapacity:memoryCapacity diskCapacity:diskCapacity diskPath:path];
+    self = [super init];
     if (self) {
         NSURL *path = [[NSBundle mainBundle] URLForResource:@"localCache" withExtension:@"zip"];
         
@@ -51,6 +51,17 @@
     return self;
 }
 
+- (BOOL)hasCacheForRequest:(NSURLRequest*)request
+{
+    NSString *urlString = [LEANUrlCache urlWithoutProtocol:[[request URL] absoluteString]];
+    id cached = self.urlsToManifest[urlString];
+    if (cached) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 - (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request
 {
     NSString *urlString = [LEANUrlCache urlWithoutProtocol:[[request URL] absoluteString]];
@@ -73,7 +84,7 @@
 
     }
     
-    return [super cachedResponseForRequest:request];
+    return nil;
 }
 
 + (NSString*)urlWithoutProtocol:(NSString*)url

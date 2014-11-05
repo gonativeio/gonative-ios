@@ -12,12 +12,13 @@
 #import "GTMNSString+HTML.h"
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"
+#import "LEANUrlCache.h"
 
 static NSPredicate* schemeHttpTest;
 static NSOperationQueue* queue;
 
 static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
-
+static LEANUrlCache *urlCache;
 
 @interface LEANWebViewIntercept () <NSURLConnectionDataDelegate>
 @property NSMutableURLRequest *modifiedRequest;
@@ -25,6 +26,7 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 @property BOOL isHtml;
 @property NSStringEncoding htmlEncoding;
 @property NSMutableData *htmlBuffer;
+@property NSCachedURLResponse *localCachedResponse;
 @end
 
 @implementation LEANWebViewIntercept
@@ -36,6 +38,8 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
     [queue setMaxConcurrentOperationCount:5];
     
     [NSURLProtocol registerClass:[LEANWebViewIntercept class]];
+    
+    urlCache = [[LEANUrlCache alloc] init];
 }
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
@@ -43,6 +47,11 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
     if (userAgent && ![userAgent isEqualToString:[LEANAppConfig sharedAppConfig].userAgent]) return NO;
     if (![schemeHttpTest evaluateWithObject:request.URL]) return NO;
     if ([self propertyForKey:kOurRequestProperty inRequest:request]) return NO;
+    
+    // yes if it is in localCache.zip
+    if ([urlCache hasCacheForRequest:request]) {
+        return YES;
+    }
     
     // if is equal to current url being loaded, then intercept
     NSURLRequest *currentRequest = ((LEANAppDelegate*)[UIApplication sharedApplication].delegate).currentRequest;
@@ -75,6 +84,9 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
         
         // this prevents us from re-intercepting the subsequent request. kOurRequestProperty is checked for in canInitWithRequest
         [[self class] setProperty:[NSNumber numberWithBool:YES] forKey:kOurRequestProperty inRequest:self.modifiedRequest];
+        
+        // try to get from localCache.zip
+        self.localCachedResponse = [urlCache cachedResponseForRequest:request];
     }
     self.isHtml = NO;
     [[LEANDocumentSharer sharedSharer] receivedRequest:request];
@@ -82,7 +94,14 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 }
 
 - (void)startLoading {
-    self.conn = [NSURLConnection connectionWithRequest:self.modifiedRequest delegate:self];
+    if (self.localCachedResponse) {
+        [self.client URLProtocol:self didReceiveResponse:self.localCachedResponse.response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+        [self.client URLProtocol:self didLoadData:self.localCachedResponse.data];
+        [self.client URLProtocolDidFinishLoading:self];
+    }
+    else {
+        self.conn = [NSURLConnection connectionWithRequest:self.modifiedRequest delegate:self];
+    }
 }
 
 - (void)stopLoading {

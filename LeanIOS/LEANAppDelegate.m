@@ -26,9 +26,6 @@
 {
     LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
     
-    // local cache
-    [NSURLCache setSharedURLCache:[[LEANUrlCache alloc] init]];
-    
     // Register launch
     [LEANConfigUpdater registerEvent:@"launch" data:nil];
     

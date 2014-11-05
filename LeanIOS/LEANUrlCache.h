@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LEANUrlCache : NSURLCache
-
+@interface LEANUrlCache : NSObject
+- (BOOL)hasCacheForRequest:(NSURLRequest*)request;
+- (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request;
 @end
