@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "ios7-refresh-30.png"
+      "filename" : "ios7-refresh-36.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "ios7-refresh-60.png"
+      "filename" : "ios7-refresh-72.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "ios7-refresh-90.png"
+      "filename" : "ios7-refresh-108.png"
     }
   ],
   "info" : {
