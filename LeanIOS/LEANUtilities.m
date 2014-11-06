@@ -307,6 +307,9 @@
     // we are using autolayout, so disable autoresizingmask stuff
     [wv setTranslatesAutoresizingMaskIntoConstraints:NO];
     
+    // disable double-tap that causes page to shift
+    [self removeDoubleTapFromView:wv];
+    
     if ([wv isKindOfClass:[UIWebView class]]) {
         UIWebView *webview = (UIWebView*)wv;
         webview.scalesPageToFit = YES;
@@ -341,6 +344,22 @@
             
             WKUserScript *userScript = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
             [webview.configuration.userContentController addUserScript:userScript];
+        }
+    }
+}
+
++(void)removeDoubleTapFromView:(UIView *)view {
+    for (UIView *v in view.subviews) {
+        if (v != view) [self removeDoubleTapFromView:v];
+    }
+    
+    for (UIGestureRecognizer *gestureRecognizer in view.gestureRecognizers) {
+        if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+            UITapGestureRecognizer *tapRecognizer = (UITapGestureRecognizer*)gestureRecognizer;
+            if (tapRecognizer.numberOfTouchesRequired == 1 && tapRecognizer.numberOfTapsRequired == 2)
+            {
+                [view removeGestureRecognizer:gestureRecognizer];
+            }
         }
     }
 }

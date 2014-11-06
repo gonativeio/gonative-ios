@@ -153,6 +153,7 @@
         // set self as webview delegate to handle start/end load events
         self.webview.delegate = self;
         self.webview.scrollView.bounces = NO;
+        [LEANUtilities configureWebView:self.webview];
     }
     
     // load initial url
