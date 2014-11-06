@@ -762,6 +762,21 @@
         return YES;
     }
     
+    // tel links
+    if ([url.scheme isEqualToString:@"tel"]) {
+        NSString *telNumber = url.resourceSpecifier;
+        if ([telNumber length] > 0) {
+            NSURL *telPromptUrl = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt:%@", telNumber]];
+            if ([[UIApplication sharedApplication] canOpenURL:telPromptUrl]) {
+                [[UIApplication sharedApplication] openURL:telPromptUrl];
+            } else if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                [[UIApplication sharedApplication] openURL:url];
+            }
+        }
+        
+        return NO;
+    }
+    
     // always allow iframes to load
     if (![urlString isEqualToString:[[request mainDocumentURL] absoluteString]]) {
         return YES;
