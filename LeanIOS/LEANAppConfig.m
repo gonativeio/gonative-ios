@@ -256,6 +256,11 @@
     id tabNavigation = navigation[@"tabNavigation"];
     [self processTabNavigation:tabNavigation];
     
+    // refresh button
+    if ([navigation[@"iosShowRefreshButton"] isKindOfClass:[NSNumber class]]) {
+        self.showRefreshButton = [navigation[@"iosShowRefreshButton"] boolValue];
+    } else self.showRefreshButton = NO;
+    
     ////////////////////////////////////////////////////////////
     // Styling
     ////////////////////////////////////////////////////////////
@@ -321,10 +326,6 @@
     }
     
     self.iosSidebarTextColor = [LEANUtilities colorFromHexString:styling[@"iosSidebarTextColor"]];
-    
-    if ([styling[@"iosShowRefreshButton"] isKindOfClass:[NSNumber class]]) {
-        self.showRefreshButton = [styling[@"iosShowRefreshButton"] boolValue];
-    } else self.showRefreshButton = NO;
     
     ////////////////////////////////////////////////////////////
     // Services
