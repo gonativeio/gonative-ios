@@ -256,6 +256,10 @@
     id tabNavigation = navigation[@"tabNavigation"];
     [self processTabNavigation:tabNavigation];
     
+    // custom actions
+    id actionConfig = navigation[@"actionConfig"];
+    [self processActions:actionConfig];
+    
     // refresh button
     if ([navigation[@"iosShowRefreshButton"] isKindOfClass:[NSNumber class]]) {
         self.showRefreshButton = [navigation[@"iosShowRefreshButton"] boolValue];
@@ -572,7 +576,7 @@
     }
     
     id tabSelection = tabNavigation[@"tabSelectionConfig"];
-    if (tabSelection && [tabSelection isKindOfClass:[NSArray class]]) {
+    if ([tabSelection isKindOfClass:[NSArray class]]) {
         self.tabMenuRegexes = [NSMutableArray array];
         self.tabMenuIDs = [NSMutableArray array];
         
@@ -589,6 +593,50 @@
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationProcessedTabNavigation object:self];
+}
+
+- (void)processActions:(NSDictionary*)actionConfig
+{
+    self.actions = nil;
+    self.actionIDs = nil;
+    self.actionRegexes = nil;
+    
+    if (![actionConfig isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    
+    if (![actionConfig[@"active"] boolValue]) {
+        return;
+    }
+
+    id actions = actionConfig[@"actions"];
+    if ([actions isKindOfClass:[NSArray class]]) {
+        self.actions = [NSMutableDictionary dictionary];
+        for (id menu in actions) {
+            NSString *identifier = menu[@"id"];
+            if ([identifier isKindOfClass:[NSString class]] && [menu[@"items"] isKindOfClass:[NSArray class]]) {
+                self.actions[identifier] = menu[@"items"];
+            }
+        }
+    }
+    
+    id actionSelection = actionConfig[@"actionSelection"];
+    if ([actionSelection isKindOfClass:[NSArray class]]) {
+        self.actionRegexes = [NSMutableArray array];
+        self.actionIDs = [NSMutableArray array];
+        
+        for (id entry in actionSelection) {
+            if ([entry isKindOfClass:[NSDictionary class]] &&
+                entry[@"regex"] && entry[@"id"]) {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                NSString *identifier = entry[@"id"];
+                
+                [self.actionRegexes addObject:predicate];
+                [self.actionIDs addObject:identifier];
+            }
+        }
+    }
+    
 }
 
 - (void)processNavigationLevels:(NSDictionary*)navigationLevels

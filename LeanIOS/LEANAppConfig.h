@@ -50,6 +50,10 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property NSMutableArray *tabMenuRegexes;
 @property NSMutableArray *tabMenuIDs;
 
+@property NSMutableDictionary *actions;
+@property NSMutableArray *actionRegexes;
+@property NSMutableArray *actionIDs;
+
 
 // styling
 @property NSString *iosTheme;

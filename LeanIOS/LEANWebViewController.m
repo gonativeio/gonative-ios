@@ -25,6 +25,7 @@
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"
 #import "Reachability.h"
+#import "LEANActionManager.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate>
 
@@ -64,6 +65,8 @@
 @property NSString *postLoadJavascriptForRefresh;
 
 @property BOOL visitedLoginOrSignup;
+
+@property LEANActionManager *actionManager;
 
 @end
 
@@ -347,6 +350,15 @@
     [self.tabManager didLoadUrl:url];
 }
 
+- (void)checkActionsForUrl:(NSURL*) url;
+{
+    if (!self.actionManager) {
+        self.actionManager = [[LEANActionManager alloc] initWithWebviewController:self];
+    }
+    
+    [self.actionManager didLoadUrl:url];
+}
+
 - (void)checkNavigationTitleImageForUrl:(NSURL*)url
 {
     // show logo in navigation bar
@@ -489,6 +501,11 @@
     [self.navigationItem setLeftBarButtonItems:self.defaultLeftNavBarItems animated:animated];
     
     NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:4];
+    
+    // right: actions
+    if (self.actionManager) {
+        [buttons addObjectsFromArray:self.actionManager.items];
+    }
     
     // right: search button
     if (self.searchButton) {
@@ -1307,6 +1324,9 @@
         // tabs
         [self checkTabsForUrl: url];
         
+        // actions
+        [self checkActionsForUrl: url];
+        
         // post-load js
         if (self.postLoadJavascript && (!self.webview || !self.webview.isLoading)) {
             NSString *js = self.postLoadJavascript;
@@ -1323,13 +1343,13 @@
         if ([[LEANDocumentSharer sharedSharer] isSharableRequest:self.currentRequest]) {
             if (!self.shareButton) {
                 self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePressed:)];
-                [self showNavigationItemButtonsAnimated:YES];
             }
         } else {
             self.shareButton = nil;
-            [self showNavigationItemButtonsAnimated:YES];
         }
-
+        
+        [self showNavigationItemButtonsAnimated:YES];
+        
         // save session cookies as persistent
         NSUInteger forceSessionCookieExpiry = [LEANAppConfig sharedAppConfig].forceSessionCookieExpiry;
         if (forceSessionCookieExpiry > 0) {

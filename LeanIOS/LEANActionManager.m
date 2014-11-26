@@ -1,0 +1,103 @@
+//
+//  LEANActionManager.m
+//  GoNativeIOS
+//
+//  Created by Weiyin He on 11/25/14.
+//  Copyright (c) 2014 GoNative.io LLC. All rights reserved.
+//
+
+#import "LEANActionManager.h"
+#import "LEANAppConfig.h"
+#import "LEANIcons.h"
+
+@interface LEANActionManager ()
+@property (weak, nonatomic) LEANWebViewController *wvc;
+@property NSString *currentMenuID;
+@property NSMutableArray *urls;
+@end
+
+@implementation LEANActionManager
+
+- (instancetype)initWithWebviewController:(LEANWebViewController *)wvc
+{
+    self = [super init];
+    if (self) {
+        self.wvc = wvc;
+    }
+    return self;
+}
+
+- (void)didLoadUrl:(NSURL *)url
+{
+    NSArray *actionRegexes = [LEANAppConfig sharedAppConfig].actionRegexes;
+    if (!actionRegexes || !url) return;
+    
+    NSString *urlString = [url absoluteString];
+    
+    for (NSUInteger i = 0; i < [actionRegexes count]; i++) {
+        NSPredicate *predicate = actionRegexes[i];
+        if ([predicate evaluateWithObject:urlString]) {
+            [self setMenuID:[LEANAppConfig sharedAppConfig].actionIDs[i]];
+            return;
+        }
+    }
+    
+    [self setMenuID:nil];
+}
+
+- (void)setMenuID:(NSString*)menuID
+{
+    BOOL changed;
+    if (self.currentMenuID == nil && menuID == nil) {
+        changed = NO;
+    } else {
+        changed = ![self.currentMenuID isEqualToString:menuID];
+    }
+    
+    if (changed) {
+        self.currentMenuID = menuID;
+        [self createButtonItems];
+    }
+}
+
+- (void)createButtonItems
+{
+    if (!self.currentMenuID) {
+        self.items = nil;
+        return;
+    }
+    
+    NSMutableArray *newButtonItems = [NSMutableArray array];
+    self.urls = [NSMutableArray array];
+    
+    NSArray *menu = [LEANAppConfig sharedAppConfig].actions[self.currentMenuID];
+    for (NSDictionary *entry in menu) {
+        NSString *label = entry[@"label"];
+        NSString *iconName = entry[@"icon"];
+        NSString *url = entry[@"url"];
+        UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:21];
+        
+        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(itemWasSelected:)];
+        button.accessibilityLabel = label;
+        
+        [newButtonItems addObject:button];
+        if (!url) {
+            url = @"";
+        }
+        [self.urls addObject:url];
+    }
+    
+    self.items = newButtonItems;
+}
+
+- (void)itemWasSelected:(id)sender
+{
+    NSUInteger index = [self.items indexOfObject:sender];
+    if (index != NSNotFound && index < [self.urls count]) {
+        NSString *url = self.urls[index];
+        [self.wvc loadUrlString:url];
+    }
+}
+
+
+@end
