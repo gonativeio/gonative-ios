@@ -79,7 +79,12 @@
     for (NSUInteger i = 0; i < [menu count]; i++) {
         NSString *label = menu[i][@"label"];
         NSString *iconName = menu[i][@"icon"];
-        UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:26];
+        UIImage *iconImage;
+        if ([iconName hasPrefix:@"gonative-"]) {
+            iconImage = [UIImage imageNamed:iconName];
+        } else {
+            iconImage = [LEANIcons imageForIconIdentifier:iconName size:26];
+        }
         [items addObject:[[UITabBarItem alloc] initWithTitle:label image:iconImage tag:i]];
     }
     
