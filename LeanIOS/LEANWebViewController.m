@@ -49,6 +49,8 @@
 @property UIBarButtonItem *refreshButton;
 
 @property BOOL willBeLandscape;
+@property BOOL keyboardVisible;
+@property CGRect keyboardRect; // in window coordinates
 
 @property NSURLRequest *currentRequest;
 @property NSInteger urlLevel; // -1 for unknown
@@ -192,11 +194,22 @@
     
     [self showNavigationItemButtonsAnimated:NO];
     [self buildDefaultToobar];
+    self.keyboardVisible = NO;
+    self.keyboardRect = CGRectZero;
     [self adjustInsets];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedTabNavigation object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kReachabilityChangedNotification object:nil];
+    
+    // keyboard change notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShown:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHidden:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveNotification:(NSNotification*)notification
@@ -210,6 +223,21 @@
     else if ([[notification name] isEqualToString:kReachabilityChangedNotification]) {
         [self retryFailedPage];
     }
+}
+
+- (void)keyboardShown:(NSNotification*)notification
+{
+    NSDictionary* info = [notification userInfo];
+    CGRect kbRect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    self.keyboardRect = kbRect;
+    self.keyboardVisible = YES;
+    [self adjustInsets];
+}
+
+- (void)keyboardHidden:(NSNotification*)notification
+{
+    self.keyboardVisible = NO;
+    [self adjustInsets];
 }
 
 - (void)retryFailedPage
@@ -429,6 +457,19 @@
     if (self.tabBar && !self.tabBar.hidden) {
         bottom = MIN(self.tabBar.bounds.size.height, self.tabBar.bounds.size.width);
     }
+    
+    // software keyboard
+    CGFloat keyboardHeight = 0;
+    if (self.keyboardVisible) {
+        if (self.webview) {
+            CGRect kbRect = [self.webview convertRect:self.keyboardRect fromView:nil];
+            keyboardHeight = self.webview.bounds.size.height - kbRect.origin.y;
+        } else if (self.wkWebview) {
+            CGRect kbRect = [self.wkWebview convertRect:self.keyboardRect fromView:nil];
+            keyboardHeight = self.wkWebview.bounds.size.height - kbRect.origin.y;
+        }
+    }
+    bottom = MAX(bottom, keyboardHeight);
     
     // the following line should not be necessary, but adding it helps prevent a black bar from flashing at the bottom of the screen for a fraction of a second.
     self.webview.scrollView.contentInset = UIEdgeInsetsMake(top, 0, -top + bottom, 0);

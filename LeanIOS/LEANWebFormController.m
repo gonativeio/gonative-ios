@@ -195,6 +195,11 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
     
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];

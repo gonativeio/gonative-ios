@@ -66,6 +66,11 @@
     [self processConfig];
 }
 
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)processConfig
 {
     NSArray *config = [LEANAppConfig sharedAppConfig].webviewPools;
