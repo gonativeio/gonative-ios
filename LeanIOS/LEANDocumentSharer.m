@@ -12,6 +12,7 @@
 @interface LEANDocumentSharer ()
 @property UIDocumentInteractionController *interactionController;
 @property NSArray *allowableMimeTypes;
+@property NSString *imageMimePrefix;
 @property NSURLRequest *lastRequest;
 @property NSURLResponse *lastResponse;
 @property NSURL *dataFile;
@@ -43,6 +44,8 @@
         self.dataFile = [cacheDir URLByAppendingPathComponent:@"io.gonative.documentsharer.cachedfile"];
         self.allowableMimeTypes = @[@"application/pdf", // pdf
                                     
+                                    @"application/octet-stream",
+                                    
                                     // word
                                     @"application/msword",
                                     @"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -61,7 +64,9 @@
                                     @"application/vnd.ms-powerpoint.presentation.macroEnabled.12",
                                     @"application/vnd.ms-powerpoint.slideshow.macroEnabled.12",
                                     
-                                    @"application/zip"]; // many MS office documents may be auto-detect as zip files        self.sharableRequests = [NSMutableArray array];
+                                    @"application/zip"]; // many MS office documents may be auto-detect as zip files
+        self.imageMimePrefix = @"image/";
+        self.sharableRequests = [NSMutableArray array];
     }
     return self;
 }
@@ -81,7 +86,7 @@
     self.isFinished = NO;
     
     // check mime types
-    if ([self.allowableMimeTypes containsObject:[response MIMEType]]) {
+    if ([self.allowableMimeTypes containsObject:response.MIMEType] || [response.MIMEType hasPrefix:self.imageMimePrefix]) {
         self.isSharableFile = YES;
         [self.sharableRequests addObject:self.lastRequest];
     }
