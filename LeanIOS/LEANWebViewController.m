@@ -7,6 +7,7 @@
 //
 
 #import <WebKit/WebKit.h>
+#import <MessageUI/MessageUI.h>
 
 #import "LEANWebViewController.h"
 #import "LEANAppDelegate.h"
@@ -27,7 +28,7 @@
 #import "Reachability.h"
 #import "LEANActionManager.h"
 
-@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate>
+@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate>
 
 @property IBOutlet UIWebView* webview;
 @property WKWebView *wkWebview;
@@ -832,7 +833,63 @@
                 [[UIApplication sharedApplication] openURL:url];
             }
         }
-        
+        return NO;
+    }
+    
+    // mailto links
+    if ([url.scheme isEqualToString:@"mailto"]) {
+        if ([MFMailComposeViewController canSendMail]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // parse the mailto link
+                NSArray *rawURLparts = [url.resourceSpecifier componentsSeparatedByString:@"?"];
+                if (rawURLparts.count > 2) {
+                    NSLog(@"error parsing mailto %@", url);
+                    return;
+                }
+                
+                NSMutableArray *toRecipients = [NSMutableArray array];
+                NSArray *recipients = [rawURLparts[0] componentsSeparatedByString:@","];
+                for (NSString *recipient in recipients) {
+                    if (recipient.length > 0) {
+                        [toRecipients addObject:recipient];
+                    }
+                }
+                
+                MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
+                mc.mailComposeDelegate = self;
+                
+                if (rawURLparts.count == 2) {
+                    NSString *queryString = rawURLparts[1];
+                    NSArray *queryParams = [queryString componentsSeparatedByString:@"&"];
+                    for (NSString *param in queryParams) {
+                        NSArray *keyValue = [param componentsSeparatedByString:@"="];
+                        if (keyValue.count != 2) {
+                            continue;
+                        }
+                        
+                        NSString *key = [keyValue[0] lowercaseString];
+                        NSString *value = [keyValue[1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                        
+                        if ([key isEqualToString:@"subject"]) {
+                            [mc setSubject:value];
+                        } else if ([key isEqualToString:@"body"]) {
+                            [mc setMessageBody:value isHTML:NO];
+                        } else if ([key isEqualToString:@"to"]) {
+                            [toRecipients addObjectsFromArray:[value componentsSeparatedByString:@","]];
+                        } else if ([key isEqualToString:@"cc"]) {
+                            [mc setCcRecipients:[value componentsSeparatedByString:@","]];
+                        } else if ([key isEqualToString:@"bcc"]) {
+                            [mc setBccRecipients:[value componentsSeparatedByString:@","]];
+                        }
+                    }
+                }
+                
+                [mc setToRecipients:toRecipients];
+                [self presentViewController:mc animated:YES completion:nil];
+            });
+        } else {
+            NSLog(@"MFMailComposeViewController cannot send mail. Ignoring mailto link");
+        }
         return NO;
     }
     
@@ -1583,6 +1640,12 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Action Sheet Delegate

@@ -59,6 +59,7 @@
 		209B321D193FB11A0052A7C6 /* localCache.zip in Resources */ = {isa = PBXBuildFile; fileRef = 209B321C193FB11A0052A7C6 /* localCache.zip */; };
 		209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B3307193FC4CE0052A7C6 /* libzipzap.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B330A193FC5BD0052A7C6 /* libz.dylib */; };
+		20A0B6ED1A363EFB00D9C3F2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */; };
 		20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A13A9519058A5600B997DD /* LEANCustomAction.m */; };
 		20A13A9819058AA200B997DD /* LoginHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13A9719058AA200B997DD /* LoginHeaderView.xib */; };
 		20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AA71905A43C00B997DD /* MenuGroupIcon.xib */; };
@@ -180,6 +181,7 @@
 		209B3306193FC4CE0052A7C6 /* ZZError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZError.h; sourceTree = "<group>"; };
 		209B3307193FC4CE0052A7C6 /* libzipzap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzipzap.a; sourceTree = "<group>"; };
 		209B330A193FC5BD0052A7C6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		20A13A9419058A5500B997DD /* LEANCustomAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANCustomAction.h; sourceTree = "<group>"; };
 		20A13A9519058A5600B997DD /* LEANCustomAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANCustomAction.m; sourceTree = "<group>"; };
 		20A13A9719058AA200B997DD /* LoginHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginHeaderView.xib; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20A0B6ED1A363EFB00D9C3F2 /* MessageUI.framework in Frameworks */,
 				20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */,
 				20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */,
 				20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */,
@@ -268,6 +271,7 @@
 		2002B49A18A9991300495B3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */,
 				20F49C2619C7BE9100B46C5A /* CoreText.framework */,
 				20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */,
 				20F49C2219C7BE8200B46C5A /* GoogleCast.framework */,
