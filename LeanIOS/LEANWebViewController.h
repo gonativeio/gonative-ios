@@ -29,5 +29,6 @@ static NSString *kLEANWebViewControllerUserFinishedLoading = @"io.gonative.ios.W
 - (void) logout;
 - (void) showTabBar;
 - (void) hideTabBar;
+- (void) sharePage;
 
 @end

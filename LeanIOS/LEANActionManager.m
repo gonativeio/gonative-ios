@@ -72,19 +72,25 @@
     
     NSArray *menu = [LEANAppConfig sharedAppConfig].actions[self.currentMenuID];
     for (NSDictionary *entry in menu) {
-        NSString *label = entry[@"label"];
-        NSString *iconName = entry[@"icon"];
-        NSString *url = entry[@"url"];
-        UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:21];
-        
-        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(itemWasSelected:)];
-        button.accessibilityLabel = label;
-        
-        [newButtonItems addObject:button];
-        if (!url) {
-            url = @"";
+        NSString *system = entry[@"system"];
+        if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"share"]) {
+            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self.wvc action:@selector(sharePage)];
+            [newButtonItems addObject:button];
+            [self.urls addObject:@""];
+        } else {
+            NSString *label = entry[@"label"];
+            NSString *iconName = entry[@"icon"];
+            NSString *url = entry[@"url"];
+            UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:21];
+            
+            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(itemWasSelected:)];
+            button.accessibilityLabel = label;
+            [newButtonItems addObject:button];
+            if (!url) {
+                url = @"";
+            }
+            [self.urls addObject:url];
         }
-        [self.urls addObject:url];
     }
     
     self.items = newButtonItems;
