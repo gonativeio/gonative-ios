@@ -481,6 +481,10 @@
 
 - (void)processSidebarNav:(NSDictionary*)sidebarNav
 {
+    if (![sidebarNav isKindOfClass:[NSDictionary class]]) {
+        return;
+    }
+    
     self.showNavigationMenu = NO;
     self.numActiveMenus = 0;
     self.menus = nil;
@@ -488,10 +492,6 @@
     self.loginDetectRegexes = nil;
     self.loginDetectLocations = nil;
     self.userIdRegex = nil;
-    
-    if (![sidebarNav isKindOfClass:[NSDictionary class]]) {
-        return;
-    }
     
     // menus
     id menus = sidebarNav[@"menus"];
@@ -529,6 +529,9 @@
 
 - (void)processMenus:(NSArray*)menus
 {
+    if (![menus isKindOfClass:[NSArray class]]) {
+        return;
+    }
     
     self.menus = [NSMutableDictionary dictionary];
     for (id menu in menus) {
@@ -555,14 +558,14 @@
 
 - (void)processTabNavigation:(NSDictionary*)tabNavigation
 {
-    self.tabMenus = nil;
-    self.tabMenuIDs = nil;
-    self.tabMenuRegexes = nil;
-    
     if (![tabNavigation isKindOfClass:[NSDictionary class]]) {
         return;
     }
     
+    self.tabMenus = nil;
+    self.tabMenuIDs = nil;
+    self.tabMenuRegexes = nil;
+
     // tab menus
     id tabMenus = tabNavigation[@"tabMenus"];
     if ([tabMenus isKindOfClass:[NSArray class]]) {
@@ -597,13 +600,13 @@
 
 - (void)processActions:(NSDictionary*)actionConfig
 {
-    self.actions = nil;
-    self.actionIDs = nil;
-    self.actionRegexes = nil;
-    
     if (![actionConfig isKindOfClass:[NSDictionary class]]) {
         return;
     }
+    
+    self.actions = nil;
+    self.actionIDs = nil;
+    self.actionRegexes = nil;
     
     if (![actionConfig[@"active"] boolValue]) {
         return;
@@ -641,11 +644,11 @@
 
 - (void)processNavigationLevels:(NSDictionary*)navigationLevels
 {
-    self.navStructureLevels = nil;
-    
     if (![navigationLevels isKindOfClass:[NSDictionary class]]) {
         return;
     }
+    
+    self.navStructureLevels = nil;
     
     // navigation levels
     if ([navigationLevels[@"active"] boolValue]) {
@@ -663,11 +666,11 @@
 
 - (void)processNavigationTitles:(NSDictionary*)navigationTitles
 {
-    self.navTitles = nil;
-    
     if (![navigationTitles isKindOfClass:[NSDictionary class]]) {
         return;
     }
+    
+    self.navTitles = nil;
     
     // navigation titles
     if ([navigationTitles[@"active"] boolValue]) {
@@ -698,11 +701,12 @@
 
 - (void)processWebViewPools:(NSArray*)webviewPools
 {
-    self.webviewPools = nil;
     if (![webviewPools isKindOfClass:[NSArray class]]) {
         return;
     }
     
+    self.webviewPools = nil;
+
     self.webviewPools = webviewPools;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationProcessedWebViewPools object:self];
