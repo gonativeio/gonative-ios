@@ -70,6 +70,7 @@
 		20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AB51905DED100B997DD /* MenuChildIcon.xib */; };
 		20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AB71905DFFC00B997DD /* MenuGroupNoIcon.xib */; };
 		20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */; };
+		20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 20A525ED1A7D94EE00936DC5 /* Settings.bundle */; };
 		20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */; };
 		20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */; };
 		20C8505019CD143100DB208A /* LEANIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C8504F19CD143100DB208A /* LEANIcons.m */; };
@@ -196,6 +197,7 @@
 		20A13AB51905DED100B997DD /* MenuChildIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuChildIcon.xib; sourceTree = "<group>"; };
 		20A13AB71905DFFC00B997DD /* MenuGroupNoIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuGroupNoIcon.xib; sourceTree = "<group>"; };
 		20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuChildNoIcon.xib; sourceTree = "<group>"; };
+		20A525ED1A7D94EE00936DC5 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANConfigUpdater.h; sourceTree = "<group>"; };
 		20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANConfigUpdater.m; sourceTree = "<group>"; };
 		20B6B55319AC4C2E004019C4 /* LEANDocumentSharer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANDocumentSharer.h; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 				204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */,
 				2004820418B080DD005FDD9A /* HeaderView.xib */,
 				2002B4B618A9991300495B3D /* Images.xcassets */,
+				20A525ED1A7D94EE00936DC5 /* Settings.bundle */,
 				2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */,
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				2002B4D518A99A0A00495B3D /* LEANAppConfig.h */,
@@ -580,6 +583,7 @@
 				2002B4AF18A9991300495B3D /* Main.storyboard in Resources */,
 				207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */,
 				2004820518B080DD005FDD9A /* HeaderView.xib in Resources */,
+				20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */,
 				2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */,
 				207170C518C2F0CF002EBDD0 /* PasswordCellView.xib in Resources */,
 				20A13AB21905CB6C00B997DD /* FontAwesome.ttf in Resources */,

@@ -22,8 +22,9 @@
 {
     self = [super init];
     if (self) {
-        NSURL *path = [[NSBundle mainBundle] URLForResource:@"localCache" withExtension:@"zip"];
+        self.urlsToManifest = [[NSMutableDictionary alloc] init];
         
+        NSURL *path = [[NSBundle mainBundle] URLForResource:@"localCache" withExtension:@"zip"];
         self.cacheFile = [ZZArchive archiveWithContentsOfURL:path];
         self.filesToEntries = [[NSMutableDictionary alloc] init];
         
@@ -40,7 +41,6 @@
         
         // process
         if (self.manifest) {
-            self.urlsToManifest = [[NSMutableDictionary alloc] init];
             for (id file in self.manifest[@"files"]) {
                 NSString *temp = [LEANUrlCache urlWithoutProtocol:file[@"url"]];
                 [self.urlsToManifest setObject:file forKey:temp];
@@ -53,6 +53,8 @@
 
 - (BOOL)hasCacheForRequest:(NSURLRequest*)request
 {
+    if (!self.urlsToManifest) return NO;
+    
     NSString *urlString = [LEANUrlCache urlWithoutProtocol:[[request URL] absoluteString]];
     id cached = self.urlsToManifest[urlString];
     if (cached) {
@@ -64,6 +66,8 @@
 
 - (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request
 {
+    if (!self.urlsToManifest) return nil;
+    
     NSString *urlString = [LEANUrlCache urlWithoutProtocol:[[request URL] absoluteString]];
     id cached = self.urlsToManifest[urlString];
     if (cached) {
