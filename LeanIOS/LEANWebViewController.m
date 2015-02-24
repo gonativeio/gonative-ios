@@ -578,8 +578,10 @@
 {
     UIActivityViewController * avc = [[UIActivityViewController alloc]
                                       initWithActivityItems:@[[self.currentRequest URL]] applicationActivities:nil];
+    // The activity view inherits tint color, but always has a light background, making the buttons
+    // impossible to read if we have light tint color. Force the tint to be the ios default.
+    [avc.view setTintColor:[UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0]];
     [self presentViewController:avc animated:YES completion:nil];
-    
 }
 
 - (void)refreshPressed:(id)sender
