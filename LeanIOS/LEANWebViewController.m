@@ -1396,17 +1396,16 @@
             if (self.webview) {
                 NSString *json = [self.webview stringByEvaluatingJavaScriptFromString:self.profilePickerJs];
                 [self.profilePicker parseJson:json];
-                
+                [(LEANMenuViewController*)self.frostedViewController.menuViewController showSettings:[self.profilePicker hasProfiles]];
             }
             if (self.wkWebview) {
                 [self.wkWebview evaluateJavaScript:self.profilePickerJs completionHandler:^(id response, NSError *error) {
                     if ([response isKindOfClass:[NSString class]]) {
                         [self.profilePicker parseJson:response];
+                        [(LEANMenuViewController*)self.frostedViewController.menuViewController showSettings:[self.profilePicker hasProfiles]];
                     }
                 }];
             }
-            
-            [(LEANMenuViewController*)self.frostedViewController.menuViewController showSettings:[self.profilePicker hasProfiles]];
         }
         
         // analytics

@@ -9,9 +9,6 @@
 #import "LEANProfilePicker.h"
 
 @interface LEANProfilePicker ()
-
-@property id json;
-
 @end
 
 @implementation LEANProfilePicker
@@ -30,14 +27,20 @@
 
 - (void)parseJson:(NSString*)json;
 {
+    id parsed = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+    if (![parsed isKindOfClass:[NSArray class]]) {
+        // don't do anything if not array
+        return;
+    }
+    
     [self.names removeAllObjects];
     [self.links removeAllObjects];
     
-    self.json = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-    
-    
-    for (int i = 0; i < [self.json count]; i++) {
-        id profile = self.json[i];
+    for (int i = 0; i < [parsed count]; i++) {
+        id profile = parsed[i];
+        if (![profile isKindOfClass:[NSDictionary class]]) {
+            continue;
+        }
         
         [self.names addObject:profile[@"name"]];
         [self.links addObject:profile[@"link"]];
