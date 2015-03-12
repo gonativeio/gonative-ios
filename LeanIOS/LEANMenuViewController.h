@@ -12,5 +12,5 @@
 
 @interface LEANMenuViewController : UITableViewController
 - (void)updateMenuWithStatus:(NSString*)status;
-- (void)showSettings:(BOOL)showSettings;
+- (void)parseProfilePickerJSON:(NSString*)json;
 @end

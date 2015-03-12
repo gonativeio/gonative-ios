@@ -17,6 +17,7 @@
 #import "LEANUrlInspector.h"
 #import "LEANSettingsController.h"
 #import "LEANTabManager.h"
+#import "LEANProfilePicker.h"
 
 @interface LEANMenuViewController ()
 
@@ -24,6 +25,7 @@
 @property NSMutableArray *groupExpanded;
 
 @property LEANWebViewController *wvc;
+@property LEANProfilePicker *profilePicker;
 
 @property UIImage *collapsedIndicator;
 @property UIImage *expandedIndicator;
@@ -37,8 +39,6 @@
 @end
 
 @implementation LEANMenuViewController
-
-
 
 - (void)viewDidLoad
 {
@@ -84,6 +84,9 @@
     self.expandedIndicator = [[UIImage imageNamed:@"chevronUp"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedMenu object:nil];
+
+    // profile picker
+    self.profilePicker = [[LEANProfilePicker alloc] init];
 }
 
 -(void)dealloc
@@ -171,7 +174,7 @@
 - (IBAction)settingsPressed:(id)sender
 {
     LEANSettingsController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsController"];
-    controller.profilePicker = self.wvc.profilePicker;
+    controller.profilePicker = self.profilePicker;
     controller.wvc = self.wvc;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -185,6 +188,11 @@
     }
 }
 
+- (void)parseProfilePickerJSON:(NSString *)json
+{
+    [self.profilePicker parseJson:json];
+    [self showSettings:self.profilePicker.hasProfiles];
+}
 
 #pragma mark - Table view data source
 
