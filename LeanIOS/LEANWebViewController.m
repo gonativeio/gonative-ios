@@ -1392,19 +1392,21 @@
         
         // profile picker
         if (self.profilePickerJs) {
-            if (self.webview) {
-                NSString *json = [self.webview stringByEvaluatingJavaScriptFromString:self.profilePickerJs];
-                [(LEANMenuViewController*)self.frostedViewController.menuViewController parseProfilePickerJSON:json];
-            }
-            if (self.wkWebview) {
-                [self.wkWebview evaluateJavaScript:self.profilePickerJs completionHandler:^(id response, NSError *error) {
-                    if ([response isKindOfClass:[NSString class]]) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [(LEANMenuViewController*)self.frostedViewController.menuViewController parseProfilePickerJSON:response];
-                        });
-                    }
-                }];
-            }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (self.webview) {
+                    NSString *json = [self.webview stringByEvaluatingJavaScriptFromString:self.profilePickerJs];
+                    [(LEANMenuViewController*)self.frostedViewController.menuViewController parseProfilePickerJSON:json];
+                }
+                if (self.wkWebview) {
+                    [self.wkWebview evaluateJavaScript:self.profilePickerJs completionHandler:^(id response, NSError *error) {
+                        if ([response isKindOfClass:[NSString class]]) {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [(LEANMenuViewController*)self.frostedViewController.menuViewController parseProfilePickerJSON:response];
+                            });
+                        }
+                    }];
+                }
+            });
         }
         
         // analytics
