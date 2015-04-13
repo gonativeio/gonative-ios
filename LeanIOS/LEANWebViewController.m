@@ -1471,10 +1471,13 @@
 
 - (WKWebView*)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
-    WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:configuration];
-    [LEANUtilities configureWebView:wv];
-    [self switchToWebView:wv showImmediately:NO];
-    return wv;
+    // This gets called when a link has target=blank.
+    // If we open an external link in a new webview, the app will be stuck on a blank page.
+    // Therefore, load in the same webview instead of creating a new webview.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self loadRequest:navigationAction.request];
+    });
+    return nil;
 }
 
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)())completionHandler
