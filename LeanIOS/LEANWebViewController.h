@@ -13,6 +13,7 @@
 
 static NSString *kLEANWebViewControllerUserStartedLoading = @"io.gonative.ios.WebViewController.started";
 static NSString *kLEANWebViewControllerUserFinishedLoading = @"io.gonative.ios.WebViewController.finished";
+static NSString *kLEANWebViewControllerClearPools = @"io.gonative.ios.WebViewController.clearPools";
 
 @interface LEANWebViewController : UIViewController <UIWebViewDelegate>
 @property BOOL checkLoginSignup;

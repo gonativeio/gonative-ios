@@ -823,6 +823,42 @@
         return YES;
     }
     
+    // gonative commands
+    if ([url.scheme isEqualToString:@"gonative-bridge"]) {
+        NSString *queryString = url.query;
+        if (!queryString) return NO;
+        
+        NSArray *queryComponents = [queryString componentsSeparatedByString:@"&"];
+        for (NSString *keyValue in queryComponents) {
+            NSArray *pairComponents = [keyValue componentsSeparatedByString:@"="];
+            NSString *key = [[pairComponents firstObject] stringByRemovingPercentEncoding];
+            if ([key isEqualToString:@"json"] && [pairComponents count] == 2) {
+                NSString *json = [[pairComponents lastObject] stringByRemovingPercentEncoding];
+                
+                NSArray *parsedJson = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                if (![parsedJson isKindOfClass:[NSArray class]]) return NO;
+                
+                for (NSDictionary *entry in parsedJson) {
+                    if (![entry isKindOfClass:[NSDictionary class]]) continue;
+                    
+                    NSString *command = entry[@"command"];
+                    if (![command isKindOfClass:[NSString class]]) continue;
+                    
+                    if ([command isEqualToString:@"pop"]) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            // it's safe to call popViewControllerAnimated even if we are only one on the stack
+                            [self.navigationController popViewControllerAnimated:YES];
+                        });
+                    } else if ([command isEqualToString:@"clearPools"]) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerClearPools object:self];
+                    }
+                }
+            }
+        }
+        
+        return NO;
+    }
+    
     // tel links
     if ([url.scheme isEqualToString:@"tel"]) {
         NSString *telNumber = url.resourceSpecifier;

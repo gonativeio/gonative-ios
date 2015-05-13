@@ -56,6 +56,8 @@
     // subscribe to notification about webview loading
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerUserStartedLoading object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerUserFinishedLoading object:nil];
+    // explicit message to clear pools
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANWebViewControllerClearPools object:nil];
     
     // subscribe to dynamic config change notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedWebViewPools object:nil];
@@ -142,7 +144,8 @@
     }
     else if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedWebViewPools]) {
         [self processConfig];
-    } else if ([[notification name] isEqualToString:kLEANLoginManagerStatusChangedNotification]) {
+    } else if ([[notification name] isEqualToString:kLEANLoginManagerStatusChangedNotification] ||
+               [[notification name] isEqualToString:kLEANWebViewControllerClearPools]) {
         [self flushAll];
     }
 }
