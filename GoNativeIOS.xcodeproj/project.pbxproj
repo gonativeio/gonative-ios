@@ -79,6 +79,7 @@
 		20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20DE147F18F103850083F46A /* ForgotPasswordView.xib */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20EA5523194FE7900039735B /* LEANPushManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20EA5522194FE7900039735B /* LEANPushManager.m */; };
+		20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */; };
 		20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2219C7BE8200B46C5A /* GoogleCast.framework */; };
 		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
@@ -213,6 +214,8 @@
 		20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewPool.m; sourceTree = "<group>"; };
 		20EA5521194FE7900039735B /* LEANPushManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANPushManager.h; sourceTree = "<group>"; };
 		20EA5522194FE7900039735B /* LEANPushManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANPushManager.m; sourceTree = "<group>"; };
+		20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANToolbarManager.h; sourceTree = "<group>"; };
+		20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANToolbarManager.m; sourceTree = "<group>"; };
 		20F49C2219C7BE8200B46C5A /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleCast.framework; sourceTree = "<group>"; };
 		20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaAccessibility.framework; path = System/Library/Frameworks/MediaAccessibility.framework; sourceTree = SDKROOT; };
 		20F49C2619C7BE9100B46C5A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -485,6 +488,8 @@
 			isa = PBXGroup;
 			children = (
 				208A9F41191AEBAD0049E664 /* appConfig.json */,
+				20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */,
+				20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */,
 				209B321C193FB11A0052A7C6 /* localCache.zip */,
 			);
 			name = Config;
@@ -622,6 +627,7 @@
 				2002B4FC18A99C4100495B3D /* LEANUtilities.m in Sources */,
 				20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */,
 				20A13AB41905CB6C00B997DD /* UIFont+FontAwesome.m in Sources */,
+				20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */,
 				204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */,
 				207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */,
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,

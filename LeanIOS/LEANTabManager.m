@@ -57,9 +57,9 @@
                 self.tabBar.selectedItem = self.tabBar.items[0];
             }
         }
-        [self.wvc showTabBar];
+        [self.wvc showTabBarAnimated:YES];
     } else {
-        [self.wvc hideTabBar];
+        [self.wvc hideTabBarAnimated:YES];
     }
     
     self.showTabBar = showTabBar;

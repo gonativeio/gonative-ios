@@ -260,6 +260,23 @@
     id actionConfig = navigation[@"actionConfig"];
     [self processActions:actionConfig];
     
+    // toolbar
+    self.toolbarVisibility = LEANToolbarVisibilityAnyItemEnabled;
+    id toolbarNav = navigation[@"toolbarNavigation"];
+    if ([toolbarNav isKindOfClass:[NSDictionary class]]) {
+        NSString *toolbarVisibility = toolbarNav[@"visibility"];
+        if ([toolbarVisibility isKindOfClass:[NSString class]]) {
+            if ([toolbarVisibility isEqualToString:@"always"]) {
+                self.toolbarVisibility = LEANToolbarVisibilityAlways;
+            }
+        }
+        
+        NSArray *items = toolbarNav[@"items"];
+        if ([items isKindOfClass:[NSArray class]]) {
+            self.toolbarItems = items;
+        }
+    }
+    
     // refresh button
     if ([navigation[@"iosShowRefreshButton"] isKindOfClass:[NSNumber class]]) {
         self.showRefreshButton = [navigation[@"iosShowRefreshButton"] boolValue];

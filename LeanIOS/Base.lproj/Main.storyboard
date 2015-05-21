@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Bg2-kp-iGG">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Bg2-kp-iGG">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -114,15 +115,33 @@
                                 <rect key="frame" x="282" y="282" width="37" height="37"/>
                                 <color key="color" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                             </activityIndicatorView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U7w-yv-4mp">
+                                <rect key="frame" x="0.0" y="507" width="600" height="44"/>
+                                <items/>
+                            </toolbar>
+                            <tabBar opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d6i-vM-zFn">
+                                <rect key="frame" x="0.0" y="551" width="600" height="49"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <items/>
+                                <connections>
+                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="yYL-xc-I9N"/>
+                                </connections>
+                            </tabBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="21Z-2V-MUj" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="B8o-z9-9Ir"/>
+                            <constraint firstItem="U7w-yv-4mp" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="BNH-59-vhV"/>
+                            <constraint firstAttribute="trailing" secondItem="U7w-yv-4mp" secondAttribute="trailing" id="Fp8-P1-Qn4"/>
                             <constraint firstAttribute="trailing" secondItem="21Z-2V-MUj" secondAttribute="trailing" id="IHu-Ll-0kV"/>
                             <constraint firstItem="21Z-2V-MUj" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="Lrw-C4-Y6u"/>
+                            <constraint firstItem="d6i-vM-zFn" firstAttribute="top" secondItem="U7w-yv-4mp" secondAttribute="bottom" id="LtD-ts-ptw"/>
                             <constraint firstAttribute="bottom" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="OAZ-4i-z9z"/>
                             <constraint firstAttribute="centerX" secondItem="vcS-3e-fYP" secondAttribute="centerX" id="VrM-Hx-sWZ"/>
+                            <constraint firstAttribute="trailing" secondItem="d6i-vM-zFn" secondAttribute="trailing" id="XII-eu-6QS"/>
                             <constraint firstAttribute="centerY" secondItem="vcS-3e-fYP" secondAttribute="centerY" id="f2R-cs-BzY"/>
+                            <constraint firstItem="h3e-Xf-rQK" firstAttribute="top" secondItem="d6i-vM-zFn" secondAttribute="bottom" id="kRQ-0d-WHK"/>
+                            <constraint firstItem="d6i-vM-zFn" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="lJu-bT-CBi"/>
                         </constraints>
                     </view>
                     <toolbarItems>
@@ -145,12 +164,15 @@
                         </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" id="3CK-Lb-JmW"/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="activityIndicator" destination="vcS-3e-fYP" id="auE-gF-hzy"/>
                         <outlet property="backButton" destination="0CQ-TP-1mv" id="7sm-nK-79X"/>
                         <outlet property="forwardButton" destination="k9E-fy-iJ1" id="Sqc-EU-jlZ"/>
                         <outlet property="nav" destination="3CK-Lb-JmW" id="Fo1-9P-tsj"/>
+                        <outlet property="tabBar" destination="d6i-vM-zFn" id="KEs-Jo-xGg"/>
+                        <outlet property="tabBarBottomConstraint" destination="kRQ-0d-WHK" id="WpI-F2-Bzs"/>
+                        <outlet property="toolbar" destination="U7w-yv-4mp" id="Tqf-29-h2S"/>
+                        <outlet property="toolbarBottomConstraint" destination="LtD-ts-ptw" id="1Bx-Yf-GMZ"/>
                         <outlet property="webview" destination="21Z-2V-MUj" id="EXY-SC-jQg"/>
                         <segue destination="eZY-8R-8cf" kind="show" identifier="settings" id="onY-CN-A8a"/>
                     </connections>

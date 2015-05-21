@@ -23,6 +23,7 @@
 #import "LEANProfilePicker.h"
 #import "LEANInstallation.h"
 #import "LEANTabManager.h"
+#import "LEANToolbarManager.h"
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"
 #import "Reachability.h"
@@ -38,6 +39,10 @@
 @property IBOutlet UINavigationItem* nav;
 @property IBOutlet UIBarButtonItem* navButton;
 @property IBOutlet UIActivityIndicatorView *activityIndicator;
+@property IBOutlet UITabBar *tabBar;
+@property IBOutlet UIToolbar *toolbar;
+@property IBOutlet NSLayoutConstraint *tabBarBottomConstraint;
+@property IBOutlet NSLayoutConstraint *toolbarBottomConstraint;
 @property NSArray *defaultLeftNavBarItems;
 @property NSArray *defaultToolbarItems;
 @property UIBarButtonItem *customActionButton;
@@ -45,7 +50,6 @@
 @property UIBarButtonItem *searchButton;
 @property UISearchBar *searchBar;
 @property UIView *statusBarBackground;
-@property UITabBar *tabBar;
 @property UIBarButtonItem *shareButton;
 @property UIBarButtonItem *refreshButton;
 
@@ -70,6 +74,7 @@
 @property BOOL visitedLoginOrSignup;
 
 @property LEANActionManager *actionManager;
+@property LEANToolbarManager *toolbarManager;
 
 @end
 
@@ -89,6 +94,10 @@
         [self.navigationController pushViewController:wfc animated:NO];
     }
     
+    // hide toolbar and tab bar on initial launch
+    [self hideTabBarAnimated:NO];
+    [self hideToolbarAnimated:NO];
+    
     // set title to application title
     if ([appConfig.navTitles count] == 0) {
         self.navigationItem.title = appConfig.appName;
@@ -97,8 +106,12 @@
     // dark theme
     if ([appConfig.iosTheme isEqualToString:@"dark"]) {
         self.view.backgroundColor = [UIColor blackColor];
+        self.tabBar.barStyle = UIBarStyleBlack;
+        self.toolbar.barStyle = UIBarStyleBlack;
     } else {
         self.view.backgroundColor = [UIColor whiteColor];
+        self.tabBar.barStyle = UIBarStyleDefault;
+        self.toolbar.barStyle = UIBarStyleDefault;
     }
     
     // configure zoomability
@@ -215,7 +228,7 @@
 - (void)didReceiveNotification:(NSNotification*)notification
 {
     if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedTabNavigation]) {
-        [self checkTabsForUrl:self.currentRequest.URL];
+        [self checkNavigationForUrl:self.currentRequest.URL];
     }
     else if ([[notification name] isEqualToString:UIApplicationDidBecomeActiveNotification]) {
         [self retryFailedPage];
@@ -345,37 +358,26 @@
     [actionSheet showFromBarButtonItem:self.customActionButton animated:YES];
 }
 
-- (void)checkTabsForUrl:(NSURL*) url;
+- (void)checkNavigationForUrl:(NSURL*) url;
 {
     if (![LEANAppConfig sharedAppConfig].tabMenus) {
-        [self hideTabBar];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideTabBarAnimated:YES];
+        });
         return;
     }
     
-    if (!self.tabBar) {
-        self.tabBar = [[UITabBar alloc] init];
-        
-        if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
-            self.tabBar.barStyle = UIBarStyleBlack;
-        } else {
-            self.tabBar.barStyle = UIBarStyleDefault;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!self.tabManager) {
+            self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
         }
+        [self.tabManager didLoadUrl:url];
         
-        self.tabBar.delegate = self;
-        self.tabBar.hidden = YES;
-        self.tabBar.alpha = 0.0;
-    }
-    
-    if (![self.tabBar isDescendantOfView:self.view]) {
-        [self.view addSubview:self.tabBar];
-
-    }
-    
-    if (!self.tabManager) {
-        self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
-    }
-    
-    [self.tabManager didLoadUrl:url];
+        if (!self.toolbarManager) {
+            self.toolbarManager = [[LEANToolbarManager alloc] initWithToolbar:self.toolbar webviewController:self];
+        }
+        [self.toolbarManager didLoadUrl:url];
+    });
 }
 
 - (void)checkActionsForUrl:(NSURL*) url;
@@ -416,36 +418,63 @@
     }
 }
 
-- (void)hideTabBar
+- (void)hideTabBarAnimated:(BOOL)animated
 {
-    if (!self.tabBar) {
-        return;
-    }
-    
-    if (!self.tabBar.hidden) {
-        [UIView animateWithDuration:0.3 animations:^(void){
-            self.tabBar.alpha = 0.0;
-        }completion:^(BOOL finished){
-            self.tabBar.hidden = YES;
-            self.tabBar.frame = CGRectZero;
-            [self adjustInsets];
-        }];
-    }
+    [self hideBottomBar:self.tabBar constraint:self.tabBarBottomConstraint animated:animated];
 }
 
-- (void)showTabBar
+- (void)hideToolbarAnimated:(BOOL)animated
 {
-    [self.navigationController setToolbarHidden:YES animated:NO];
+    [self hideBottomBar:self.toolbar constraint:self.toolbarBottomConstraint animated:animated];
+}
+
+- (void)showTabBarAnimated:(BOOL)animated
+{
+    [self showBottomBar:self.tabBar constraint:self.tabBarBottomConstraint animated:animated];
+}
+
+- (void)showToolbarAnimated:(BOOL)animated
+{
+    [self showBottomBar:self.toolbar constraint:self.toolbarBottomConstraint animated:animated];
+}
+
+- (void)showBottomBar:(UIView*)bar constraint:(NSLayoutConstraint*)constraint animated:(BOOL)animated
+{
+    if (!bar.hidden) return;
     
-    if (self.tabBar.hidden) {
-        self.tabBar.alpha = 0;
-        self.tabBar.hidden = NO;
-        self.tabBar.frame = CGRectMake(0, self.view.bounds.size.height - 49, self.view.bounds.size.width, 49);
+    [self.view layoutIfNeeded];
+    bar.hidden = NO;
+    constraint.constant = 0;
+    if (animated) {
         [UIView animateWithDuration:0.3 animations:^(void){
-            self.tabBar.alpha = 1.0;
+            [self.view layoutIfNeeded];
         } completion:^(BOOL finished){
             [self adjustInsets];
         }];
+    } else {
+        [self.view layoutIfNeeded];
+        [self adjustInsets];
+    }
+}
+
+- (void)hideBottomBar:(UIView*)bar constraint:(NSLayoutConstraint*)constraint animated:(BOOL)animated
+{
+    if (bar.hidden) return;
+    
+    [self.view layoutIfNeeded];
+    CGFloat barHeight = MIN(bar.bounds.size.width, bar.bounds.size.height);
+    constraint.constant = -barHeight;
+    if (animated) {
+        [UIView animateWithDuration:0.3 animations:^(void){
+            [self.view layoutIfNeeded];
+        } completion:^(BOOL finished){
+            bar.hidden = YES;
+            [self adjustInsets];
+        }];
+    } else {
+        [self.view layoutIfNeeded];
+        bar.hidden = YES;
+        [self adjustInsets];
     }
 }
 
@@ -456,6 +485,10 @@
     CGFloat bottom = 0;
     if (self.tabBar && !self.tabBar.hidden) {
         bottom = MIN(self.tabBar.bounds.size.height, self.tabBar.bounds.size.width);
+    }
+    
+    if (self.toolbar && !self.toolbar.hidden) {
+        bottom += MIN(self.toolbar.bounds.size.height, self.toolbar.bounds.size.width);
     }
     
     // software keyboard
@@ -616,6 +649,26 @@
 - (IBAction) showMenu
 {
     [self.frostedViewController presentMenuViewController];
+}
+
+- (BOOL)canGoBack
+{
+    if (self.webview) {
+        return [self.webview canGoBack];
+    } else if (self.wkWebview) {
+        return [self.wkWebview canGoBack];
+    } else {
+        return NO;
+    }
+}
+
+- (void)goBack
+{
+    if (self.webview && [self.webview canGoBack]) {
+        [self.webview goBack];
+    } else if (self.wkWebview && [self.wkWebview canGoBack]) {
+        [self.wkWebview goBack];
+    }
 }
 
 - (void) loadUrlString:(NSString*)url
@@ -1224,7 +1277,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self switchToWebView:poolWebview showImmediately:YES];
             self.didLoadPage = YES;
-            [self checkTabsForUrl:url];
+            [self checkNavigationForUrl:url];
         });
         [[LEANWebViewPool sharedPool] disownWebview:poolWebview];
         [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
@@ -1236,7 +1289,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self switchToWebView:poolWebview showImmediately:YES];
             self.didLoadPage = YES;
-            [self checkTabsForUrl:url];
+            [self checkNavigationForUrl:url];
         });
         return NO;
     }
@@ -1247,7 +1300,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self switchToWebView:poolWebview showImmediately:YES];
             self.didLoadPage = YES;
-            [self checkTabsForUrl:url];
+            [self checkNavigationForUrl:url];
         });
         return NO;
     }
@@ -1458,7 +1511,7 @@
         [self updateCustomActions];
         
         // tabs
-        [self checkTabsForUrl: url];
+        [self checkNavigationForUrl: url];
         
         // actions
         [self checkActionsForUrl: url];

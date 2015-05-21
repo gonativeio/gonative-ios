@@ -12,7 +12,10 @@ static NSString *kLEANAppConfigNotificationProcessedMenu = @"io.gonative.ios.LEA
 static NSString *kLEANAppConfigNotificationProcessedTabNavigation = @"io.gonative.ios.LEANAppConfig.processedTabNavigation";
 static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative.ios.LEANAppConfig.processedWebViewPools";
 
-
+typedef enum : NSUInteger {
+    LEANToolbarVisibilityAlways,
+    LEANToolbarVisibilityAnyItemEnabled
+} LEANToolbarVisibility;
 
 @interface LEANAppConfig : NSObject
 
@@ -54,6 +57,8 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 @property NSMutableArray *actionRegexes;
 @property NSMutableArray *actionIDs;
 
+@property LEANToolbarVisibility toolbarVisibility;
+@property NSArray *toolbarItems;
 
 // styling
 @property NSString *iosTheme;
