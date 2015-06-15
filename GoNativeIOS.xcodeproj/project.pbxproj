@@ -47,6 +47,7 @@
 		202E989519EF30C8009C28AD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 202E989419EF30C8009C28AD /* Reachability.m */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
+		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
 		207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C218C2E8B3002EBDD0 /* TextCellView.xib */; };
@@ -162,6 +163,7 @@
 		204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+LEANUtilities.m"; sourceTree = "<group>"; };
 		204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
 		207170BE18C2E47A002EBDD0 /* LEANWebFormController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebFormController.h; sourceTree = "<group>"; };
@@ -491,6 +493,7 @@
 				20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */,
 				20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */,
 				209B321C193FB11A0052A7C6 /* localCache.zip */,
+				20580E021B2E53730061943C /* offline.html */,
 			);
 			name = Config;
 			sourceTree = "<group>";
@@ -575,6 +578,7 @@
 				207170CB18C3A376002EBDD0 /* ListCellView.xib in Resources */,
 				2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */,
 				20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */,
+				20580E031B2E53730061943C /* offline.html in Resources */,
 				20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */,
 				2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */,
 				200A392519070B1500EFDDD6 /* CheckingLoginView.xib in Resources */,

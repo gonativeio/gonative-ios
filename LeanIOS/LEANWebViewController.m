@@ -52,6 +52,7 @@
 @property UIView *statusBarBackground;
 @property UIBarButtonItem *shareButton;
 @property UIBarButtonItem *refreshButton;
+@property UIRefreshControl *pullRefreshControl;
 
 @property BOOL willBeLandscape;
 @property BOOL keyboardVisible;
@@ -67,6 +68,7 @@
 @property BOOL isPoolWebview;
 @property UIView *defaultTitleView;
 @property UIView *navigationTitleImageView;
+@property CGFloat hideWebviewAlpha;
 
 @property NSString *postLoadJavascript;
 @property NSString *postLoadJavascriptForRefresh;
@@ -86,6 +88,8 @@
     self.checkLoginSignup = YES;
     
     LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    
+    self.hideWebviewAlpha = [appConfig.hideWebviewAlpha floatValue];
     
     // push login controller if it should be the first thing shown
     if (appConfig.loginIsFirstPage && [self isRootWebView]) {
@@ -170,7 +174,6 @@
     } else {
         // set self as webview delegate to handle start/end load events
         self.webview.delegate = self;
-        self.webview.scrollView.bounces = NO;
         [LEANUtilities configureWebView:self.webview];
     }
     
@@ -270,9 +273,24 @@
     }
 }
 
+- (void)addPullToRefresh
+{
+    if (![LEANAppConfig sharedAppConfig].pullToRefresh) return;
+    
+    if (!self.pullRefreshControl) {
+        self.pullRefreshControl = [[UIRefreshControl alloc] init];
+        [self.pullRefreshControl addTarget:self action:@selector(pullToRefresh:) forControlEvents:UIControlEventValueChanged];
+        self.pullRefreshControl.tintColor = [UIColor colorWithRed:0.8 green:0.8 blue:0.8 alpha:1];
+    }
+    
+    [self.wkWebview.scrollView addSubview:self.pullRefreshControl];
+    [self.webview.scrollView addSubview:self.pullRefreshControl];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self addPullToRefresh];
     
     if ([self isRootWebView]) {
         [self.navigationController setNavigationBarHidden:![LEANAppConfig sharedAppConfig].showNavigationBar animated:YES];
@@ -285,6 +303,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self.pullRefreshControl removeFromSuperview];
+    
     if (self.isMovingFromParentViewController) {
         self.webview.delegate = nil;
         [self.webview stopLoading];
@@ -618,6 +638,17 @@
 
 - (void)refreshPressed:(id)sender
 {
+    [self refreshPage];
+}
+
+-(void)pullToRefresh:(UIRefreshControl*) refresh
+{
+    [self refreshPage];
+    [refresh endRefreshing];
+}
+
+- (void)refreshPage
+{
     [self loadRequest:self.currentRequest andJavascript:self.postLoadJavascriptForRefresh];
 }
 
@@ -873,6 +904,11 @@
     
     // simulator
     if ([url.scheme isEqualToString:@"gonative.io"]) {
+        return YES;
+    }
+    
+    // local
+    if ([url.host isEqualToString:@"offline"]) {
         return YES;
     }
     
@@ -1335,6 +1371,9 @@
     
     [self hideWebview];
     
+    // remove pull to refresh
+    [self.pullRefreshControl removeFromSuperview];
+    
     UIScrollView *scrollView;
     if ([newView isKindOfClass:[UIWebView class]]) {
         self.webview = (UIWebView*)newView;
@@ -1383,6 +1422,8 @@
         [self showWebview];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
+    
+    [self addPullToRefresh];
 }
 
 - (void) webViewDidStartLoad:(UIWebView *)webView
@@ -1428,7 +1469,6 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showWebview];
-        self.didLoadPage = YES;
         
         NSURL *url = nil;
         if (self.webview) {
@@ -1436,6 +1476,12 @@
         } else if (self.wkWebview) {
             url = self.wkWebview.URL;
         }
+        
+        // don't do any more processing or set didloadpage if we are showing an offline page
+        if (!url || [url.host isEqualToString:@"offline"]) return;
+        
+        self.didLoadPage = YES;
+        
         [[LEANUrlInspector sharedInspector] inspectUrl:url];
         
         
@@ -1622,10 +1668,12 @@
 
 - (void)hideWebview
 {
-    self.webview.alpha = 0.0;
+    if ([LEANAppConfig sharedAppConfig].disableAnimations) return;
+    
+    self.webview.alpha = self.hideWebviewAlpha;
     self.webview.userInteractionEnabled = NO;
     
-    self.wkWebview.alpha = 0.0;
+    self.wkWebview.alpha = self.hideWebviewAlpha;
     self.wkWebview.userInteractionEnabled = NO;
     
     self.activityIndicator.alpha = 1.0;
@@ -1679,7 +1727,10 @@
     }
     
     if ([[error domain] isEqualToString:NSURLErrorDomain] && [error code] == NSURLErrorNotConnectedToInternet) {
-        [[[UIAlertView alloc] initWithTitle:@"No connection" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil] show];
+        NSURL *offlineFile = [[NSBundle mainBundle] URLForResource:@"offline" withExtension:@"html"];
+        NSString *html = [NSString stringWithContentsOfURL:offlineFile encoding:NSUTF8StringEncoding error:nil];
+        [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:@"http://offline/"]];
+        [self.webview loadHTMLString:html baseURL:[NSURL URLWithString:@"http://offline/"]];
     }
 }
 

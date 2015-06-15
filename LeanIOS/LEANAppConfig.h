@@ -33,6 +33,8 @@ typedef enum : NSUInteger {
 @property BOOL useWKWebView;
 @property NSUInteger forceSessionCookieExpiry;
 @property NSArray *replaceStrings;
+@property BOOL disableConfigUpdater;
+@property BOOL disableEventRecorder;
 
 // navigation
 @property NSMutableDictionary *menus;
@@ -60,6 +62,8 @@ typedef enum : NSUInteger {
 @property LEANToolbarVisibility toolbarVisibility;
 @property NSArray *toolbarItems;
 
+@property BOOL pullToRefresh;
+
 // styling
 @property NSString *iosTheme;
 @property NSString *customCss;
@@ -75,6 +79,8 @@ typedef enum : NSUInteger {
 @property UIFont *iosSidebarFont;
 @property UIColor *iosSidebarTextColor;
 @property BOOL showRefreshButton;
+@property NSNumber *hideWebviewAlpha;
+@property BOOL disableAnimations;
 
 
 // forms

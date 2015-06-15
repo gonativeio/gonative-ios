@@ -150,6 +150,13 @@
     NSDictionary *dictionary = @{@"UserAgent": self.userAgent};
     [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
     
+    if ([general[@"disableConfigUpdater"] isKindOfClass:[NSNumber class]]) {
+        self.disableConfigUpdater = [general[@"disableConfigUpdater"] boolValue];
+    }
+    if ([general[@"disableEventRecorder"] isKindOfClass:[NSNumber class]]) {
+        self.disableEventRecorder = [general[@"disableEventRecorder"] boolValue];
+    }
+    
     
     ////////////////////////////////////////////////////////////
     // Forms
@@ -204,11 +211,22 @@
     // Navigation
     ////////////////////////////////////////////////////////////
     NSDictionary *navigation = self.json[@"navigation"];
+    
+    if ([navigation[@"iosPullToRefresh"] isKindOfClass:[NSNumber class]]) {
+        self.pullToRefresh = [navigation[@"iosPullToRefresh"] boolValue];
+    } else {
+        self.pullToRefresh = NO;
+    }
+    
     NSDictionary *sidebarNav = navigation[@"sidebarNavigation"];
     
     [self processSidebarNav:sidebarNav];
     
-    [self processNavigationLevels:navigation[@"navigationLevels"]];
+    if ([navigation[@"iosNavigationLevels"] isKindOfClass:[NSDictionary class]]) {
+        [self processNavigationLevels:navigation[@"iosNavigationLevels"]];
+    } else {
+        [self processNavigationLevels:navigation[@"navigationLevels"]];
+    }
     
     [self processNavigationTitles:navigation[@"navigationTitles"]];
     
@@ -347,6 +365,16 @@
     }
     
     self.iosSidebarTextColor = [LEANUtilities colorFromHexString:styling[@"iosSidebarTextColor"]];
+    
+    if ([styling[@"hideWebviewAlpha"] isKindOfClass:[NSNumber class]]) {
+        self.hideWebviewAlpha = styling[@"hideWebviewAlpha"];
+    } else {
+        self.hideWebviewAlpha = @0.0;
+    }
+    
+    if ([styling[@"disableAnimations"] isKindOfClass:[NSNumber class]]) {
+        self.disableAnimations = [styling[@"disableAnimations"] boolValue];;
+    }
     
     ////////////////////////////////////////////////////////////
     // Services
@@ -490,7 +518,11 @@
     
     [self processTabNavigation:parsedJson[@"tabNavigation"]];
     [self processSidebarNav:parsedJson[@"sidebarNavigation"]];
-    [self processNavigationLevels:parsedJson[@"navigationLevels"]];
+    if ([parsedJson[@"iosNavigationLevels"] isKindOfClass:[NSDictionary class]]) {
+        [self processNavigationLevels:parsedJson[@"iosNavigationLevels"]];
+    } else {
+        [self processNavigationLevels:parsedJson[@"navigationLevels"]];
+    }
     [self processNavigationTitles:parsedJson[@"navigationTitles"]];
     [self processWebViewPools:parsedJson[@"webviewPools"]];
     [self processNavigationTitleImage:parsedJson[@"navigationTitleImage"]];

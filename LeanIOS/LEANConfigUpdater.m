@@ -19,7 +19,7 @@
 - (void)updateConfig
 {
     NSString *publicKey = [LEANAppConfig sharedAppConfig].publicKey;
-    if (!publicKey) {
+    if (!publicKey || [LEANAppConfig sharedAppConfig].disableConfigUpdater) {
         return;
     }
     
@@ -60,7 +60,7 @@
 
 + (void)registerEvent:(NSString*)event data:(NSDictionary *)data
 {
-    if (!event) {
+    if (!event || [LEANAppConfig sharedAppConfig].disableEventRecorder) {
         return;
     }
     

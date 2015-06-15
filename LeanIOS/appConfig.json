@@ -2,9 +2,11 @@
   "general": {
     "userAgentAdd": "gonative",
     "initialUrl": "https://gonative.io",
-    "appName": "GoNative.io"
+    "appName": "GoNative.io",
+    "useWKWebView": true
   },
   "navigation": {
+    "iosPullToRefresh": false,
     "sidebarNavigation": {
       "menus": [{
         "name": "default",
@@ -97,12 +99,14 @@
   "styling": {
     "showActionBar": true,
     "showNavigationBar": true,
+    "iosTheme": "light",
     "iosTitleColor": "#333333",
     "iosTintColor": "#0091fe",
     "androidTheme": "Light.DarkActionBar",
     "androidSidebarBackgroundColor": "#111111",
     "androidSidebarForegroundColor": "#d0d0d0",
     "androidHideTitleInActionBar": false,
+    "disableAnimations": false,
     "menuAnimationDuration": 0.15,
     "transitionInteractiveDelayMax": 0.2
   }

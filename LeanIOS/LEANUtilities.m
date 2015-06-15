@@ -313,10 +313,10 @@
     if ([wv isKindOfClass:[UIWebView class]]) {
         UIWebView *webview = (UIWebView*)wv;
         webview.scalesPageToFit = YES;
-        webview.scrollView.bounces = NO;
+        webview.scrollView.bounces = [LEANAppConfig sharedAppConfig].pullToRefresh;
     } else if([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
-        webview.scrollView.bounces = NO;
+        webview.scrollView.bounces = [LEANAppConfig sharedAppConfig].pullToRefresh;
         
         // user script for customCSS
         NSString *customCss = [LEANAppConfig sharedAppConfig].customCss;
