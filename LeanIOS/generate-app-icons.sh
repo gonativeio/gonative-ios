@@ -15,7 +15,7 @@ sips -z 120 120 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/
 sips -z 152 152 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-152.png $BASEDIR/AppIconFlat.png 2>&1
 sips -z 180 180 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-180.png $BASEDIR/AppIconFlat.png 2>&1
 
-#rm $BASEDIR/AppIconFlat.png
+rm $BASEDIR/AppIconFlat.png
 
 sips -z 80 80 -s format png --out $BASEDIR/Images.xcassets/HeaderImage.imageset/header.png $BASEDIR/AppIcon 2>&1
 sips -z 160 160 -s format png --out $BASEDIR/Images.xcassets/HeaderImage.imageset/header@2x.png $BASEDIR/AppIcon 2>&1
