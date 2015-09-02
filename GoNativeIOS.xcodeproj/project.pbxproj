@@ -347,15 +347,15 @@
 				2002B4B318A9991300495B3D /* LEANWebViewController.h */,
 				2002B4B418A9991300495B3D /* LEANWebViewController.m */,
 				2004AF7918F8F936001E01E9 /* LEANWebViewIntercept.h */,
-				202E989319EF30C8009C28AD /* Reachability.h */,
-				202E989419EF30C8009C28AD /* Reachability.m */,
 				2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */,
 				20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */,
 				20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */,
-				20A13A9719058AA200B997DD /* LoginHeaderView.xib */,
-				2002B4AD18A9991300495B3D /* Main.storyboard */,
 				204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */,
 				204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */,
+				202E989319EF30C8009C28AD /* Reachability.h */,
+				202E989419EF30C8009C28AD /* Reachability.m */,
+				20A13A9719058AA200B997DD /* LoginHeaderView.xib */,
+				2002B4AD18A9991300495B3D /* Main.storyboard */,
 				2002B4D818A99A9900495B3D /* REFrostedViewController */,
 				2002B4A218A9991300495B3D /* Supporting Files */,
 			);
@@ -543,7 +543,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = LEAN;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "GoNative.io LLC";
 				TargetAttributes = {
 					2002B4BB18A9991300495B3D = {
@@ -724,6 +724,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -796,6 +797,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
@@ -810,13 +812,8 @@
 					"$(PROJECT_DIR)/lib",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-Wl,-U,_OBJC_CLASS_$_WKUserScript",
-					"-Wl,-U,_OBJC_CLASS_$_WKProcessPool",
-					"-Wl,-U,_OBJC_CLASS_$_WKWebViewConfiguration",
-					"-Wl,-U,_OBJC_CLASS_$_WKWebView",
-				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -831,6 +828,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
@@ -845,13 +843,8 @@
 					"$(PROJECT_DIR)/lib",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-Wl,-U,_OBJC_CLASS_$_WKUserScript",
-					"-Wl,-U,_OBJC_CLASS_$_WKProcessPool",
-					"-Wl,-U,_OBJC_CLASS_$_WKWebViewConfiguration",
-					"-Wl,-U,_OBJC_CLASS_$_WKWebView",
-				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -863,19 +856,20 @@
 		2002B4D118A9991300495B3D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/LeanIOS.app/LeanIOS";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GonativeIO.app/GonativeIO";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "LeanIOS/LeanIOS-Prefix.pch";
+				GCC_PREFIX_HEADER = "LeanIOS/GonativeIOS-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "LeanIOSTests/GoNativeIOSTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.gonative.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = GoNativeIOSTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -885,15 +879,16 @@
 		2002B4D218A9991300495B3D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/LeanIOS.app/LeanIOS";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GonativeIO.app/GonativeIO";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "LeanIOS/LeanIOS-Prefix.pch";
+				GCC_PREFIX_HEADER = "LeanIOS/GonativeIOS-Prefix.pch";
 				INFOPLIST_FILE = "LeanIOSTests/GoNativeIOSTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.gonative.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = GoNativeIOSTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;

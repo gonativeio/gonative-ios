@@ -27,7 +27,6 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
 @property UIBarButtonItem *submitButton;
 @property UIBarButtonItem *cancelButton;
 
-@property NSString *title;
 @property NSURL *formUrl;
 @property NSURL *errorUrl;
 @property NSURL *passwordResetUrl;

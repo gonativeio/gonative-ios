@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface LEANWebViewIntercept : NSURLProtocol
-+(void)initialize;
++(void)register;
 @end
 

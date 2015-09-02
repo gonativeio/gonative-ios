@@ -33,6 +33,16 @@ static LEANUrlCache *urlCache;
 
 +(void)initialize
 {
+    [self register];
+}
+
++(void)register
+{
+    // run only once
+    static BOOL isRegistered = NO;
+    if (isRegistered) return;
+    isRegistered = YES;
+    
     schemeHttpTest = [NSPredicate predicateWithFormat:@"scheme in {'http', 'https'}"];
     queue = [[NSOperationQueue alloc] init];
     [queue setMaxConcurrentOperationCount:5];

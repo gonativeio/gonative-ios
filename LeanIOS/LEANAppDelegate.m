@@ -30,7 +30,7 @@
     [LEANConfigUpdater registerEvent:@"launch" data:nil];
     
     // proxy handler to intercept HTML for custom CSS and viewport
-    [LEANWebViewIntercept initialize];
+    [LEANWebViewIntercept register];
     
     // Register for remote push notifications
     if (appConfig.pushNotifications) {
