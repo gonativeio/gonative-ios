@@ -41,11 +41,24 @@
         for (NSDictionary *entry in [LEANAppConfig sharedAppConfig].toolbarItems) {
             if (![entry isKindOfClass:[NSDictionary class]]) continue;
             NSString *system = entry[@"system"];
+            NSString *title = entry[@"title"];
+            NSString *icon = entry[@"icon"];
+            
+            UIImage *iconImage;
+            if ([icon isEqualToString:@"left"]) {
+                iconImage = [UIImage imageNamed:@"leftImage"];
+            }
             
             // process items
             UIBarButtonItem *item = nil;
             if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"back"]) {
-                item = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStyleBordered target:self action:@selector(backPressed:)];
+                if (iconImage) {
+                    item = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStyleBordered target:self action:@selector(backPressed:)];
+                } else {
+                    if (!title) title = @"Back";
+                    item = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleBordered target:self action:@selector(backPressed:)];
+                }
+                
                 item.enabled = NO;
                 [backButtons addObject:item];
             }
