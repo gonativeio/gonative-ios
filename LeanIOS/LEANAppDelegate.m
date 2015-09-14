@@ -6,6 +6,7 @@
 // Copyright (c) 2014 GoNative.io LLC. All rights reserved.
 //
 
+#import <Parse/Parse.h>
 #import "LEANAppDelegate.h"
 #import "LEANAppConfig.h"
 #import "LEANWebViewIntercept.h"
@@ -32,8 +33,13 @@
     // proxy handler to intercept HTML for custom CSS and viewport
     [LEANWebViewIntercept register];
     
+    // set up Parse SDK
+    if (appConfig.parseEnabled) {
+        [Parse setApplicationId:appConfig.parseApplicationId clientKey:appConfig.parseClientKey];
+    }
+    
     // Register for remote push notifications
-    if (appConfig.pushNotifications) {
+    if (appConfig.pushNotifications || appConfig.parsePushEnabled) {
         if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
             UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound) categories:nil];
             [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
@@ -43,14 +49,26 @@
         }
     }
     
+    // Parse analytics
+    if (appConfig.parseAnalyticsEnabled) {
+        [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    }
+    
     // If launched from push notification and it contains a url, set the initialUrl.
     id notification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
-    if (notification && notification[@"u"]) {
-        NSURL *url = [NSURL URLWithString:notification[@"u"]];
-        if (url) {
-            UIViewController *rvc = self.window.rootViewController;
-            if ([rvc isKindOfClass:[LEANRootViewController class]]) {
-                [(LEANRootViewController*)rvc setInitialUrl:url];
+    if ([notification isKindOfClass:[NSDictionary class]]) {
+        NSString *targetUrl = notification[@"u"];
+        if (![targetUrl isKindOfClass:[NSString class]]) {
+            targetUrl = notification[@"targetUrl"];
+        }
+        
+        if ([targetUrl isKindOfClass:[NSString class]]) {
+            NSURL *url = [NSURL URLWithString:targetUrl];
+            if (url) {
+                UIViewController *rvc = self.window.rootViewController;
+                if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+                    [(LEANRootViewController*)rvc setInitialUrl:url];
+                }
             }
         }
     }
@@ -104,7 +122,17 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    [LEANPushManager sharedManager].token = deviceToken;
+    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    if (appConfig.pushNotifications) {
+        // Gonative push service
+        [LEANPushManager sharedManager].token = deviceToken;
+    }
+    if (appConfig.parsePushEnabled) {
+        // Parse push service
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        [currentInstallation setDeviceTokenFromData:deviceToken];
+        [currentInstallation saveInBackground];
+    }
 }
 
 
@@ -114,8 +142,15 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
+    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    if (!appConfig.pushNotifications && !appConfig.parsePushEnabled) return;
+    
     NSString *urlString = userInfo[@"u"];
-    NSURL *url = [NSURL URLWithString:urlString];
+    if (![urlString isKindOfClass:[NSString class]]) urlString = userInfo[@"targetUrl"];
+    NSURL *url = nil;
+    if ([urlString isKindOfClass:[NSString class]]) {
+        url = [NSURL URLWithString:urlString];
+    }
     NSString *message = userInfo[@"aps"][@"alert"];
     
     UIViewController *rvc = self.window.rootViewController;

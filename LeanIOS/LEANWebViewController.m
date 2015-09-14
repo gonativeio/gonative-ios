@@ -28,6 +28,7 @@
 #import "LEANDocumentSharer.h"
 #import "Reachability.h"
 #import "LEANActionManager.h"
+#import "LEANIdentityService.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate>
 
@@ -1584,6 +1585,9 @@
         }
         
         [self showNavigationItemButtonsAnimated:YES];
+        
+        // identity service
+        [[LEANIdentityService sharedService] checkUrl:url];
         
         // save session cookies as persistent
         NSUInteger forceSessionCookieExpiry = [LEANAppConfig sharedAppConfig].forceSessionCookieExpiry;

@@ -409,6 +409,61 @@
         self.analytics = NO;
     }
     
+    NSDictionary *parse = services[@"parse"];
+    if ([parse isKindOfClass:[NSDictionary class]] &&
+        [parse[@"active"] boolValue] &&
+        [parse[@"applicationId"] isKindOfClass:[NSString class]] &&
+        [parse[@"clientKey"] isKindOfClass:[NSString class]]) {
+        
+        NSString *applicationId = parse[@"applicationId"];
+        NSString *clientKey = parse[@"clientKey"];
+        if ([applicationId isKindOfClass:[NSString class]] && [applicationId length] > 0 &&
+            [clientKey isKindOfClass:[NSString class]] && [clientKey length] > 0) {
+            
+            self.parseEnabled = true;
+            self.parseApplicationId = applicationId;
+            self.parseClientKey = clientKey;
+            self.parsePushEnabled = [parse[@"pushEnabled"] boolValue];
+            self.parseAnalyticsEnabled = [parse[@"analyticsEnabled"] boolValue];
+        } else {
+            NSLog(@"Config is missing Parse applicationId or clientKey");
+            self.parseEnabled = false;
+        }
+    } else {
+        self.parseEnabled = false;
+    }
+    
+    NSDictionary *identityService = services[@"identity"];
+    if ([identityService isKindOfClass:[NSDictionary class]] &&
+        [identityService[@"active"] boolValue]) {
+        
+        // string or array of strings
+        NSMutableArray *regexes = [NSMutableArray array];
+        self.checkIdentityUrlRegexes = regexes;
+        id identityUrls = identityService[@"checkIdentityUrl"];
+        if ([identityUrls isKindOfClass:[NSString class]]) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", identityUrls];
+            [regexes addObject:predicate];
+        }
+        else if ([identityUrls isKindOfClass:[NSArray class]]) {
+            for (NSString *regex in identityUrls) {
+                if (![regex isKindOfClass:[NSString class]]) continue;
+                
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+                [regexes addObject:predicate];
+            }
+        }
+        
+        // identityEndpointUrl
+        NSString *endpoint = identityService[@"identityEndpointUrl"];
+        if ([endpoint isKindOfClass:[NSString class]]) {
+            self.identityEndpointUrl = [NSURL URLWithString:endpoint];
+        }
+    } else {
+        self.checkIdentityUrlRegexes = nil;
+        self.identityEndpointUrl = nil;
+    }
+    
     ////////////////////////////////////////////////////////////
     // Performance
     ////////////////////////////////////////////////////////////

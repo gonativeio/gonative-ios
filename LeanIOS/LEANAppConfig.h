@@ -101,6 +101,17 @@ typedef enum : NSUInteger {
 @property NSInteger idsite_test;
 @property NSInteger idsite_prod;
 
+// parse integration
+@property BOOL parseEnabled;
+@property NSString *parseApplicationId;
+@property NSString *parseClientKey;
+@property BOOL parsePushEnabled;
+@property BOOL parseAnalyticsEnabled;
+
+// identity service
+@property NSArray *checkIdentityUrlRegexes;
+@property NSURL *identityEndpointUrl;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;

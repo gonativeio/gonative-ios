@@ -44,9 +44,22 @@
 		201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201AB2D51996AD66008C31BF /* LEANInstallation.m */; };
 		202B4D5219510F640099821E /* TextAreaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D5119510F640099821E /* TextAreaView.xib */; };
 		202B4D56195122FD0099821E /* DateCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D55195122FD0099821E /* DateCellView.xib */; };
+		202BE56F1B9756E80064D928 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE56E1B9756E80064D928 /* Parse.framework */; };
+		202BE5711B9757070064D928 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5701B9757070064D928 /* AudioToolbox.framework */; };
+		202BE5731B97570D0064D928 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5721B97570D0064D928 /* CFNetwork.framework */; };
+		202BE5751B97571B0064D928 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5741B97571B0064D928 /* CoreLocation.framework */; };
+		202BE5771B9757240064D928 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5761B9757240064D928 /* QuartzCore.framework */; };
+		202BE5791B97572C0064D928 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5781B97572C0064D928 /* Security.framework */; };
+		202BE57B1B9757310064D928 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57A1B9757310064D928 /* StoreKit.framework */; };
+		202BE57D1B9757390064D928 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57C1B9757390064D928 /* SystemConfiguration.framework */; };
+		202BE57F1B9757450064D928 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57E1B9757450064D928 /* libsqlite3.dylib */; };
+		202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5801B97574E0064D928 /* Accounts.framework */; };
+		202BE5831B9757530064D928 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5821B9757530064D928 /* Social.framework */; };
+		202BE5851B9757AD0064D928 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5841B9757AD0064D928 /* Bolts.framework */; };
 		202E989519EF30C8009C28AD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 202E989419EF30C8009C28AD /* Reachability.m */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
+		20504CF51B9E62EF00D1E5D7 /* LEANIdentityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */; settings = {ASSET_TAGS = (); }; };
 		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
@@ -157,12 +170,26 @@
 		201AB2D51996AD66008C31BF /* LEANInstallation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANInstallation.m; sourceTree = "<group>"; };
 		202B4D5119510F640099821E /* TextAreaView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextAreaView.xib; sourceTree = "<group>"; };
 		202B4D55195122FD0099821E /* DateCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DateCellView.xib; sourceTree = "<group>"; };
+		202BE56E1B9756E80064D928 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		202BE5701B9757070064D928 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		202BE5721B97570D0064D928 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		202BE5741B97571B0064D928 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		202BE5761B9757240064D928 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		202BE5781B97572C0064D928 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		202BE57A1B9757310064D928 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		202BE57C1B9757390064D928 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		202BE57E1B9757450064D928 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		202BE5801B97574E0064D928 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		202BE5821B9757530064D928 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		202BE5841B9757AD0064D928 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		202E989319EF30C8009C28AD /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		202E989419EF30C8009C28AD /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+LEANUtilities.h"; sourceTree = "<group>"; };
 		204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+LEANUtilities.m"; sourceTree = "<group>"; };
 		204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
+		20504CF31B9E62EF00D1E5D7 /* LEANIdentityService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANIdentityService.h; sourceTree = "<group>"; };
+		20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIdentityService.m; sourceTree = "<group>"; };
 		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
@@ -230,10 +257,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				202BE5831B9757530064D928 /* Social.framework in Frameworks */,
+				202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */,
+				202BE57F1B9757450064D928 /* libsqlite3.dylib in Frameworks */,
+				202BE57D1B9757390064D928 /* SystemConfiguration.framework in Frameworks */,
+				202BE57B1B9757310064D928 /* StoreKit.framework in Frameworks */,
+				202BE5791B97572C0064D928 /* Security.framework in Frameworks */,
+				202BE5851B9757AD0064D928 /* Bolts.framework in Frameworks */,
+				202BE5771B9757240064D928 /* QuartzCore.framework in Frameworks */,
+				202BE5751B97571B0064D928 /* CoreLocation.framework in Frameworks */,
+				202BE5731B97570D0064D928 /* CFNetwork.framework in Frameworks */,
+				202BE5711B9757070064D928 /* AudioToolbox.framework in Frameworks */,
 				20A0B6ED1A363EFB00D9C3F2 /* MessageUI.framework in Frameworks */,
 				20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */,
 				20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */,
 				20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */,
+				202BE56F1B9756E80064D928 /* Parse.framework in Frameworks */,
 				209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */,
 				209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */,
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
@@ -278,12 +317,24 @@
 		2002B49A18A9991300495B3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				202BE5821B9757530064D928 /* Social.framework */,
+				202BE5801B97574E0064D928 /* Accounts.framework */,
+				202BE57E1B9757450064D928 /* libsqlite3.dylib */,
+				202BE57C1B9757390064D928 /* SystemConfiguration.framework */,
+				202BE57A1B9757310064D928 /* StoreKit.framework */,
+				202BE5781B97572C0064D928 /* Security.framework */,
+				202BE5761B9757240064D928 /* QuartzCore.framework */,
+				202BE5741B97571B0064D928 /* CoreLocation.framework */,
+				202BE5721B97570D0064D928 /* CFNetwork.framework */,
+				202BE5701B9757070064D928 /* AudioToolbox.framework */,
 				20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */,
 				20F49C2619C7BE9100B46C5A /* CoreText.framework */,
 				20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */,
 				20F49C2219C7BE8200B46C5A /* GoogleCast.framework */,
 				205EF30219BF84AF002AE261 /* WebKit.framework */,
 				209B330A193FC5BD0052A7C6 /* libz.dylib */,
+				202BE5841B9757AD0064D928 /* Bolts.framework */,
+				202BE56E1B9756E80064D928 /* Parse.framework */,
 				2002B49B18A9991300495B3D /* Foundation.framework */,
 				2002B49D18A9991300495B3D /* CoreGraphics.framework */,
 				2002B49F18A9991300495B3D /* UIKit.framework */,
@@ -320,6 +371,8 @@
 				20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */,
 				20C8504E19CD143100DB208A /* LEANIcons.h */,
 				20C8504F19CD143100DB208A /* LEANIcons.m */,
+				20504CF31B9E62EF00D1E5D7 /* LEANIdentityService.h */,
+				20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */,
 				201AB2D41996AD66008C31BF /* LEANInstallation.h */,
 				201AB2D51996AD66008C31BF /* LEANInstallation.m */,
 				2089662518AC6753007FC34F /* LEANLoginManager.h */,
@@ -637,6 +690,7 @@
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,
 				20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */,
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
+				20504CF51B9E62EF00D1E5D7 /* LEANIdentityService.m in Sources */,
 				20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
 				20C8505019CD143100DB208A /* LEANIcons.m in Sources */,
