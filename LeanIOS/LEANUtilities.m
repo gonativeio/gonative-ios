@@ -378,4 +378,36 @@
     }
 }
 
++(NSArray<NSPredicate*>*)createRegexArrayFromStrings:(id)input
+{
+    if ([input isKindOfClass:[NSArray class]]) {
+        NSMutableArray<NSPredicate*> *array = [NSMutableArray arrayWithCapacity:[input count]];
+        for (NSString *entry in input) {
+            if (![entry isKindOfClass:[NSString class]]) continue;
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry];
+            if (predicate) {
+                [array addObject:predicate];
+            } else {
+                NSLog(@"Invalid regex: %@", entry);
+            }
+        }
+        return array;
+    } else if ([input isKindOfClass:[NSString class]]) {
+        return [LEANUtilities createRegexArrayFromStrings:@[input]];
+    } else {
+        return [NSArray array];
+    }
+}
+
++(BOOL)string:(NSString*)string matchesAnyRegex:(NSArray<NSPredicate*>*)regexes
+{
+    if (!regexes) return NO;
+    
+    for (NSPredicate *regex in regexes) {
+        if ([regex evaluateWithObject:string]) return YES;
+    }
+    
+    return NO;
+}
+
 @end

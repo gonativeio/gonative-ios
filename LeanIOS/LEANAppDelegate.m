@@ -15,6 +15,7 @@
 #import "LEANRootViewController.h"
 #import "LEANConfigUpdater.h"
 #import "LEANSimulator.h"
+#import "GNRegistrationManager.h"
 
 @interface LEANAppDelegate() <UIAlertViewDelegate>
 @property UIAlertView *alertView;
@@ -34,12 +35,21 @@
     [LEANWebViewIntercept register];
     
     // set up Parse SDK
+    NSString *parseInstallationId;
     if (appConfig.parseEnabled) {
         [Parse setApplicationId:appConfig.parseApplicationId clientKey:appConfig.parseClientKey];
+        parseInstallationId = [[PFInstallation currentInstallation] installationId];
+    }
+    
+    // registration service
+    GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
+    [registration processConfig:appConfig.registrationEndpoints];
+    if (parseInstallationId) {
+        [registration setParseInstallationId:parseInstallationId];
     }
     
     // Register for remote push notifications
-    if (appConfig.pushNotifications || appConfig.parsePushEnabled) {
+    if (appConfig.pushNotifications || appConfig.parsePushEnabled || registration.pushEnabled) {
         if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
             UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound) categories:nil];
             [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
@@ -133,6 +143,8 @@
         [currentInstallation setDeviceTokenFromData:deviceToken];
         [currentInstallation saveInBackground];
     }
+    
+    [[GNRegistrationManager sharedManager] setPushRegistrationToken:deviceToken];
 }
 
 

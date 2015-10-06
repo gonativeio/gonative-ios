@@ -29,6 +29,7 @@
 #import "Reachability.h"
 #import "LEANActionManager.h"
 #import "LEANIdentityService.h"
+#import "GNRegistrationManager.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate>
 
@@ -1588,6 +1589,9 @@
         
         // identity service
         [[LEANIdentityService sharedService] checkUrl:url];
+        
+        // registration service
+        [[GNRegistrationManager sharedManager] checkUrl:url];
         
         // save session cookies as persistent
         NSUInteger forceSessionCookieExpiry = [LEANAppConfig sharedAppConfig].forceSessionCookieExpiry;

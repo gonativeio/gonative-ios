@@ -464,6 +464,13 @@
         self.identityEndpointUrl = nil;
     }
     
+    NSDictionary *registrationService = services[@"registration"];
+    if ([registrationService isKindOfClass:[NSDictionary class]] &&
+        [registrationService[@"active"] boolValue]) {
+        
+        self.registrationEndpoints = registrationService[@"endpoints"];
+    }
+    
     ////////////////////////////////////////////////////////////
     // Performance
     ////////////////////////////////////////////////////////////

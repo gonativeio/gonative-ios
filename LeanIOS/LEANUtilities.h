@@ -23,4 +23,6 @@
 +(NSString*)getLaunchImageName;
 +(void)configureWebView:(UIView*)webview;
 + (WKProcessPool *)wkProcessPool;
++(NSArray<NSPredicate*>*)createRegexArrayFromStrings:(id)input;
++(BOOL)string:(NSString*)string matchesAnyRegex:(NSArray<NSPredicate*>*)regexes;
 @end

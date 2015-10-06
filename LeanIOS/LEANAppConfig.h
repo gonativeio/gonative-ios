@@ -112,6 +112,9 @@ typedef enum : NSUInteger {
 @property NSArray *checkIdentityUrlRegexes;
 @property NSURL *identityEndpointUrl;
 
+// registration service
+@property NSArray *registrationEndpoints;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
