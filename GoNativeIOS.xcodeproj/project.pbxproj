@@ -38,6 +38,7 @@
 		2004AF7B18F8F936001E01E9 /* LEANWebViewIntercept.m in Sources */ = {isa = PBXBuildFile; fileRef = 2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */; };
 		20054BD618B68D1E00A422F9 /* LEANCastController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20054BD518B68D1E00A422F9 /* LEANCastController.m */; };
 		200A392519070B1500EFDDD6 /* CheckingLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 200A392419070B1500EFDDD6 /* CheckingLoginView.xib */; };
+		200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */ = {isa = PBXBuildFile; fileRef = 200F75CF1BCDA6B800C08BB5 /* notification.aff */; settings = {ASSET_TAGS = (); }; };
 		2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE941907671A00EC4311 /* LEANUrlInspector.m */; };
 		20191C4419231A0900BF1549 /* LEANSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20191C4319231A0900BF1549 /* LEANSettingsController.m */; };
 		20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 20191C461923DF6400BF1549 /* LEANProfilePicker.m */; };
@@ -161,6 +162,7 @@
 		20054BD418B68D1E00A422F9 /* LEANCastController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANCastController.h; sourceTree = "<group>"; };
 		20054BD518B68D1E00A422F9 /* LEANCastController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANCastController.m; sourceTree = "<group>"; };
 		200A392419070B1500EFDDD6 /* CheckingLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckingLoginView.xib; sourceTree = "<group>"; };
+		200F75CF1BCDA6B800C08BB5 /* notification.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = notification.aff; sourceTree = "<group>"; };
 		2018EE931907671A00EC4311 /* LEANUrlInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANUrlInspector.h; sourceTree = "<group>"; };
 		2018EE941907671A00EC4311 /* LEANUrlInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUrlInspector.m; sourceTree = "<group>"; };
 		20191C4219231A0900BF1549 /* LEANSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANSettingsController.h; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 				2002B4B618A9991300495B3D /* Images.xcassets */,
 				20A525ED1A7D94EE00936DC5 /* Settings.bundle */,
 				2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */,
+				200F75CF1BCDA6B800C08BB5 /* notification.aff */,
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				2046CAF81BC0790800714F66 /* GNRegistrationManager.h */,
 				2046CAF91BC0790800714F66 /* GNRegistrationManager.m */,
@@ -650,6 +653,7 @@
 				2002B4AF18A9991300495B3D /* Main.storyboard in Resources */,
 				207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */,
 				2004820518B080DD005FDD9A /* HeaderView.xib in Resources */,
+				200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */,
 				20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */,
 				2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */,
 				207170C518C2F0CF002EBDD0 /* PasswordCellView.xib in Resources */,
