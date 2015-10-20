@@ -87,6 +87,7 @@
     [[[LEANConfigUpdater alloc] init] updateConfig];
     
     [self configureApplication];
+    [self clearBadge];
     
     // listen for reachability
     self.internetReachability = [Reachability reachabilityForInternetConnection];
@@ -113,8 +114,13 @@
         self.castController = nil;
     }
     
-    // clear notifications
-    if (appConfig.pushNotifications) {
+    [LEANSimulator checkStatus];
+}
+
+- (void)clearBadge {
+    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+
+    if (appConfig.pushNotifications || appConfig.parsePushEnabled) {
         if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]) {
             UIUserNotificationSettings *settings = [[UIApplication sharedApplication] currentUserNotificationSettings];
             if (settings.types & UIUserNotificationTypeBadge) {
@@ -126,8 +132,6 @@
             [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
         }
     }
-    
-    [LEANSimulator checkStatus];
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -237,6 +241,7 @@
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [self clearBadge];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
