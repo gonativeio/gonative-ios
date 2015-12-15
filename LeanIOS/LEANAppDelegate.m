@@ -17,6 +17,8 @@
 #import "LEANSimulator.h"
 #import "GNRegistrationManager.h"
 
+#define LOCAL_NOTIFICATION_FILE @"localNotifications.plist"
+
 @interface LEANAppDelegate() <UIAlertViewDelegate>
 @property UIAlertView *alertView;
 @property NSURL *url;
@@ -66,6 +68,11 @@
     
     // If launched from push notification and it contains a url, set the initialUrl.
     id notification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+    if (!notification) {
+        // also check local notification
+        UILocalNotification *localNotification = launchOptions[UIApplicationLaunchOptionsLocalNotificationKey];
+        if (localNotification) notification = localNotification.userInfo;
+    }
     if ([notification isKindOfClass:[NSDictionary class]]) {
         NSString *targetUrl = notification[@"u"];
         if (![targetUrl isKindOfClass:[NSString class]]) {
@@ -156,7 +163,15 @@
     NSLog(@"Error registering for push notifications: %@", err);
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+// This method gets called when the app is in these states
+//  1) app is foreground. We will create a UIAlertView
+//  2) app is inactive, i.e. app was launched but user switched to another app. This method will get called if
+//     the user taps a push notification. We will load the targetUrl if it is specified.
+//  3) app is background, i.e. app is not foreground, and we got a push notification with aps:{content-available:1}.
+//     We will create a local notification and present it immediately.
+// Note that this method does not get called if an app is loaded from scratch, either because it has been force quit
+// or becaus it has been automatically purged from memory due to not being used for a while.
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
     if (!appConfig.pushNotifications && !appConfig.parsePushEnabled) return;
@@ -167,7 +182,18 @@
     if ([urlString isKindOfClass:[NSString class]]) {
         url = [NSURL URLWithString:urlString];
     }
+    
     NSString *message = userInfo[@"aps"][@"alert"];
+    // we can't call it "alert" here because apple(or maybe parse) will remove it from the JSON
+    if (!message) message = userInfo[@"message"];
+    if (!message) {
+        NSLog(@"No alert message in push notification");
+        completionHandler(UIBackgroundFetchResultNoData);
+        return;
+    }
+    
+    id notificationId = userInfo[@"n_id"];
+    if (!notificationId) notificationId = userInfo[@"notificationId"];
     
     UIViewController *rvc = self.window.rootViewController;
     BOOL webviewOnTop = NO;
@@ -176,26 +202,127 @@
     }
     
     if (application.applicationState == UIApplicationStateActive) {
-        // app was in foreground. Show an alert, and include a "view" button if there is a url and the webview is currently the top view.
+        // App was in foreground.
+        // Show an alert, and include a "view" button if there is a url and the webview is currently the top view.
         if (url && webviewOnTop) {
             self.alertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"View", nil];
             self.url = url;
         } else {
             self.alertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [self.alertView show];
         }
         
         [self.alertView show];
-    } else {
-        // app was in background, and user tapped on notification
+
+        [self clearAllNotificationsForApplication:application];
+    }
+    else if (application.applicationState == UIApplicationStateBackground) {
+        // schedule a local notification if the push notification was not handled by iOS
+        BOOL handledByOS = userInfo[@"aps"][@"alert"] ? YES : NO;
+        if (!handledByOS) {
+            // delete all existing alerts with the same notificationId
+            if (notificationId) [self clearNotificationWithId:notificationId];
+            
+            UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+            localNotification.alertBody = message;
+            localNotification.soundName = UILocalNotificationDefaultSoundName;
+            NSMutableDictionary *localInfo = [NSMutableDictionary dictionary];
+            if (urlString) localInfo[@"targetUrl"] = urlString;
+            if (notificationId) localInfo[@"notificationId"] = notificationId;
+            localNotification.userInfo = localInfo;
+            [application presentLocalNotificationNow:localNotification];
+            
+            // save it so it can be cleared later
+            if (notificationId) [self saveLocalNotification:localNotification];
+        }
+    }
+    else if (application.applicationState == UIApplicationStateInactive && url && webviewOnTop) {
+        // app was in background and user tapped on notification
         if (url && webviewOnTop) {
             [(LEANRootViewController*)rvc loadUrl:url];
         }
+        
+        if (appConfig.parsePushEnabled) {
+            [PFAnalytics trackAppOpenedWithRemoteNotificationPayload:userInfo];
+        }
+
+        [self clearAllNotificationsForApplication:application];
     }
     
-    // clear notifications
+    completionHandler(UIBackgroundFetchResultNewData);
+}
+
+- (void)clearAllNotificationsForApplication:(UIApplication *)application
+{
     application.applicationIconBadgeNumber = 1;
+    // setting badge number to 0 clears all notifications
     application.applicationIconBadgeNumber = 0;
+    [application cancelAllLocalNotifications];
+
+    [[NSFileManager defaultManager] removeItemAtPath:[self notificationFile] error:nil];
+}
+
+- (NSString*)notificationFile
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString *library = [paths objectAtIndex:0];
+    NSString *notificationFile = [library stringByAppendingPathComponent:LOCAL_NOTIFICATION_FILE];
+    return notificationFile;
+}
+
+// We need to save local notifications that have ids to be able to cancel them later
+// iOS lets us cancel local notifications that have been fired, but not get a list of them.
+- (void)saveLocalNotification:(UILocalNotification*)notification
+{
+    // only save notifications with a notificationId that can be used as a dictionary key
+    NSDictionary *userInfo = notification.userInfo;
+    if (!userInfo) return;
+    id notificationId = userInfo[@"notificationId"];
+    if (![notificationId conformsToProtocol:@protocol(NSCopying)]) return;
+    
+    // read from disk
+    NSString *notificationFile = [self notificationFile];
+    NSMutableDictionary *savedNotifications = [NSKeyedUnarchiver unarchiveObjectWithFile:notificationFile];
+    if (!savedNotifications) savedNotifications = [NSMutableDictionary dictionaryWithObject:notification forKey:notificationId];
+    else [savedNotifications setObject:notification forKey:notificationId];
+    
+    // write to disk
+    [NSKeyedArchiver archiveRootObject:savedNotifications toFile:notificationFile];
+}
+
+- (void)clearNotificationWithId:(id)notificationId
+{
+    if (![notificationId conformsToProtocol:@protocol(NSCopying)]) return;
+    
+    // read from disk
+    NSMutableDictionary *savedNotifications = [NSKeyedUnarchiver unarchiveObjectWithFile:[self notificationFile]];
+    if (!savedNotifications) return;
+    
+    UILocalNotification *notification = savedNotifications[notificationId];
+    if (notification) {
+        [[UIApplication sharedApplication] cancelLocalNotification:notification];
+    }
+}
+
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    NSDictionary *userInfo = notification.userInfo;
+    if (!userInfo) return;
+    
+    NSString *urlString = userInfo[@"targetUrl"];
+    if (!urlString) return;
+    NSURL *url = [NSURL URLWithString:urlString];
+    if (!url) return;
+
+    UIViewController *rvc = self.window.rootViewController;
+    BOOL webviewOnTop = NO;
+    if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+        webviewOnTop = [(LEANRootViewController*)rvc webviewOnTop];
+    }
+    
+    if (application.applicationState == UIApplicationStateInactive && url && webviewOnTop) {
+        // app was in background and user tapped on notification
+        [(LEANRootViewController*)rvc loadUrl:url];
+    }
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

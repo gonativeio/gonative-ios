@@ -1046,9 +1046,10 @@
         NSString *to = [appConfig.redirects valueForKey:urlString];
         if (to) {
             url = [NSURL URLWithString:to];
-            
-            //            [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:to]]];
-            //            return false;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self loadUrl:url];
+            });
+            return NO;
         }
     }
     
