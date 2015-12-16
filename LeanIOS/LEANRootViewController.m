@@ -10,6 +10,7 @@
 #import "LEANMenuViewController.h"
 #import "LEANAppConfig.h"
 #import "LEANWebViewController.h"
+#import "LEANUtilities.h"
 
 @interface LEANRootViewController ()
 
@@ -57,6 +58,22 @@
     UIViewController *topController = nav.topViewController;
     if ([topController isKindOfClass:[LEANWebViewController class]]) {
         [((LEANWebViewController*)topController) loadUrl:url];
+    }
+}
+
+- (void)loadUrlUsingJavascript:(NSURL *)url
+{
+    NSString *js = [NSString stringWithFormat:@"window.location.href=%@;",
+                    [LEANUtilities jsWrapString:[url absoluteString]]];
+    [self runJavascript:js];
+}
+
+- (void)runJavascript:(NSString*)js
+{
+    UINavigationController *nav = (UINavigationController*)self.contentViewController;
+    UIViewController *topController = nav.topViewController;
+    if ([topController isKindOfClass:[LEANWebViewController class]]) {
+        [((LEANWebViewController*)topController) runJavascript:js];
     }
 }
 

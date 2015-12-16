@@ -13,7 +13,11 @@
 
 @property LEANWebViewController *webViewController;
 
+// these are run on the top-most webview
 - (void)loadUrl:(NSURL*)url;
+- (void)loadUrlUsingJavascript:(NSURL *)url;
+- (void)runJavascript:(NSString*)js;
+
 - (BOOL)webviewOnTop;
 - (void)setInitialUrl:(NSURL *)url; // for initial launch from push notification
 
