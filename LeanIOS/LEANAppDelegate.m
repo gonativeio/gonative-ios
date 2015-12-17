@@ -376,4 +376,17 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
+{
+    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
+        UIViewController *rvc = self.window.rootViewController;
+        if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+            LEANRootViewController *vc = (LEANRootViewController*)rvc;
+            [vc loadUrl:userActivity.webpageURL];
+            return YES;
+        }
+    }
+    
+    return NO;
+}
 @end
