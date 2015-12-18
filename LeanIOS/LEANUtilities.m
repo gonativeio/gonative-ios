@@ -378,6 +378,7 @@
     }
 }
 
+// input can be string or array of strings. Returns an array of NSPredicates.
 +(NSArray<NSPredicate*>*)createRegexArrayFromStrings:(id)input
 {
     if ([input isKindOfClass:[NSArray class]]) {

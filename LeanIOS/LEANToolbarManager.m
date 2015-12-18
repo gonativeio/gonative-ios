@@ -9,11 +9,13 @@
 #import "LEANToolbarManager.h"
 #import "LEANWebViewController.h"
 #import "LEANAppConfig.h"
+#import "LEANUtilities.h"
 
 @interface LEANToolbarManager()
 @property UIToolbar *toolbar;
 @property NSArray *toolbarItems;
-@property NSArray *backButtons;
+@property NSArray *toolbarItemTypes;
+@property NSArray *toolbarItemUrlRegexes;
 @property LEANWebViewController *wvc;
 @property LEANToolbarVisibility visibility;
 @end
@@ -35,7 +37,8 @@
 {
     self.visibility = [LEANAppConfig sharedAppConfig].toolbarVisibility;
     NSMutableArray *toolbarItems = [NSMutableArray array];
-    NSMutableArray *backButtons = [NSMutableArray array];
+    NSMutableArray *toolbarItemTypes = [NSMutableArray array];
+    NSMutableArray *toolbarItemUrlRegexes = [NSMutableArray array];
     
     if ([LEANAppConfig sharedAppConfig].toolbarItems) {
         for (NSDictionary *entry in [LEANAppConfig sharedAppConfig].toolbarItems) {
@@ -43,6 +46,8 @@
             NSString *system = entry[@"system"];
             NSString *title = entry[@"title"];
             NSString *icon = entry[@"icon"];
+            id urlRegex = entry[@"urlRegex"];
+            
             
             UIImage *iconImage;
             if ([icon isEqualToString:@"left"]) {
@@ -51,6 +56,8 @@
             
             // process items
             UIBarButtonItem *item = nil;
+            NSString *itemType = nil;
+            NSArray *itemRegexes = [LEANUtilities createRegexArrayFromStrings:urlRegex];
             if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"back"]) {
                 if (iconImage) {
                     item = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStyleBordered target:self action:@selector(backPressed:)];
@@ -60,34 +67,54 @@
                 }
                 
                 item.enabled = NO;
-                [backButtons addObject:item];
+                itemType = @"back";
             }
             
-            if (item) {
+            if (item && itemType) {
                 // add item
                 if ([toolbarItems count] > 0) {
                     // add spacer
                     UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
                     spacer.enabled = NO;
                     [toolbarItems addObject:spacer];
+                    [toolbarItemTypes addObject:@"spacer"];
+                    [toolbarItemUrlRegexes addObject:[NSNull null]];
                 }
                 [toolbarItems addObject:item];
+                [toolbarItemTypes addObject:itemType];
+                [toolbarItemUrlRegexes addObject:itemRegexes];
             }
         }
     }
     
     self.toolbarItems = toolbarItems;
-    self.backButtons = backButtons;
+    self.toolbarItemTypes = toolbarItemTypes;
+    self.toolbarItemUrlRegexes = toolbarItemUrlRegexes;
     [self.toolbar setItems:self.toolbarItems animated:YES];
 }
 
 - (void)didLoadUrl:(NSURL*)url
 {
+    NSString *urlString = [url absoluteString];
     // update back buttons
-    if ([self.backButtons count] > 0) {
-        BOOL canGoBack = [self.wvc canGoBack];
-        for (UIBarButtonItem *item in self.backButtons) {
-            item.enabled = canGoBack;
+    for (NSInteger i = 0; i < [self.toolbarItems count]; i++) {
+        if ([self.toolbarItemTypes[i] isEqualToString:@"back"]) {
+            UIBarButtonItem *item = self.toolbarItems[i];
+            item.enabled = [self.wvc canGoBack];
+        
+            // check regex array
+            BOOL regexMatches = YES;
+            NSArray *regexArray = self.toolbarItemUrlRegexes[i];
+            if ([regexArray isKindOfClass:[NSArray class]] && [regexArray count] > 0) {
+                regexMatches = NO;
+                for (NSPredicate *predicate in regexArray) {
+                    if ([predicate evaluateWithObject:urlString]) {
+                        regexMatches = YES;
+                        break;
+                    }
+                }
+            }
+            if (!regexMatches) item.enabled = NO;
         }
     }
     

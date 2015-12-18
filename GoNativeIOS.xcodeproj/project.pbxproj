@@ -400,6 +400,8 @@
 				20D7B68219A6BF0100993236 /* LEANSimulator.m */,
 				20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */,
 				20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */,
+				20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */,
+				20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */,
 				20D77B6E1A2547E5008A938D /* LEANActionManager.h */,
 				20D77B6F1A2547E5008A938D /* LEANActionManager.m */,
 				209B3217193FA36F0052A7C6 /* LEANUrlCache.h */,
@@ -554,8 +556,6 @@
 			isa = PBXGroup;
 			children = (
 				208A9F41191AEBAD0049E664 /* appConfig.json */,
-				20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */,
-				20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */,
 				209B321C193FB11A0052A7C6 /* localCache.zip */,
 				20580E021B2E53730061943C /* offline.html */,
 			);
