@@ -11,6 +11,7 @@
 static NSString *kLEANAppConfigNotificationProcessedMenu = @"io.gonative.ios.LEANAppConfig.processedMenu";
 static NSString *kLEANAppConfigNotificationProcessedTabNavigation = @"io.gonative.ios.LEANAppConfig.processedTabNavigation";
 static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative.ios.LEANAppConfig.processedWebViewPools";
+static NSString *kLEANAppConfigNotificationProcessedSegmented = @"io.gonative.ios.LEANAppConfig.processedSegmented";
 
 typedef enum : NSUInteger {
     LEANToolbarVisibilityAlways,
@@ -50,6 +51,7 @@ typedef enum : NSUInteger {
 @property NSString *profilePickerJS;
 @property NSString *userIdRegex;
 @property BOOL useWebpageTitle;
+@property NSArray *segmentedControlItems;
 
 @property NSMutableDictionary *tabMenus;
 @property NSMutableArray *tabMenuRegexes;

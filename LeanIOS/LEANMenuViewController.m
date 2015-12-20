@@ -32,6 +32,10 @@
 @property UIButton *settingsButton;
 @property UIPopoverController *settingsPopover;
 
+@property UIView *headerView;
+@property UISegmentedControl *segmentedControl;
+@property NSArray *segmentedControlItems;
+
 @property BOOL groupsHaveIcons;
 @property BOOL childrenHaveIcons;
 @property NSString *lastUpdatedStatus;
@@ -55,6 +59,7 @@
     NSArray *arr = [[NSBundle mainBundle] loadNibNamed:@"HeaderView" owner:nil options:nil];
 
     UIView *headerView = arr[0];
+    self.headerView = headerView;
     headerView.autoresizingMask = UIViewAutoresizingNone;
     UIButton *headerButton = (UIButton*)[headerView viewWithTag:1];
     [headerButton addTarget:self action:@selector(picturePressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -68,9 +73,13 @@
     self.settingsButton = (UIButton*)[headerView viewWithTag:2];
     [self.settingsButton addTarget:self action:@selector(settingsPressed:) forControlEvents:UIControlEventTouchUpInside];
     
+    self.segmentedControl = (UISegmentedControl*)[headerView viewWithTag:3];
+    [self setupSegmentedControl];
+    
     self.tableView.tableHeaderView = headerView;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
     
+    // actually update the menus
     [self updateMenuWithStatus:@"default"];
 
     if ([LEANAppConfig sharedAppConfig].loginDetectionURL) {
@@ -84,6 +93,7 @@
     self.expandedIndicator = [[UIImage imageNamed:@"chevronUp"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedMenu object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedSegmented object:nil];
 
     // profile picker
     self.profilePicker = [[LEANProfilePicker alloc] init];
@@ -99,6 +109,9 @@
     // dynamic menu update
     if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedMenu]) {
         [self updateMenuWithStatus:self.lastUpdatedStatus];
+    }
+    else if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedSegmented]) {
+        [self updateSegmentedControl];
     }
 }
 
@@ -360,6 +373,89 @@
     }
 }
 
+#pragma mark - Segmented control
+-(void)setupSegmentedControl
+{
+    [self.segmentedControl addTarget:self action:@selector(segmentedControlChanged:) forControlEvents:UIControlEventValueChanged];
+    [self updateSegmentedControl];
+    
+}
+
+-(void)updateSegmentedControl
+{
+    self.segmentedControlItems = [LEANAppConfig sharedAppConfig].segmentedControlItems;
+    BOOL showSegmentedControl = self.segmentedControlItems && [self.segmentedControlItems count] > 0;
+    if (showSegmentedControl) {
+        if (self.segmentedControl.hidden) {
+            // expand header view
+            self.segmentedControl.hidden = NO;
+            CGRect oldFrame = self.headerView.frame;
+            oldFrame.size.height += 50;
+            self.headerView.frame = oldFrame;
+            [self.tableView setTableHeaderView:self.headerView];
+        }
+        
+        [self.segmentedControl removeAllSegments];
+        for (NSInteger i = 0; i < [self.segmentedControlItems count]; i++) {
+            NSDictionary *item = self.segmentedControlItems[i];
+            
+            NSString *label = nil;
+            BOOL selected = NO;
+            
+            if ([item isKindOfClass:[NSDictionary class]]) {
+                label = item[@"label"];
+                selected = [item[@"selected"] boolValue];
+            }
+            
+            if (![label isKindOfClass:[NSString class]]) {
+                label = @"Invalid";
+            }
+            
+            [self.segmentedControl insertSegmentWithTitle:label atIndex:i animated:NO];
+            if (selected) {
+                self.segmentedControl.selectedSegmentIndex = i;
+            }
+        }
+        
+    }
+    else {
+        if (!self.segmentedControl.hidden) {
+            self.segmentedControl.hidden = YES;
+            
+            // shrink the header view
+            CGRect oldFrame = self.headerView.frame;
+            oldFrame.size.height -= 50;
+            self.headerView.frame = oldFrame;
+            [self.tableView setTableHeaderView:self.headerView];
+        }
+    }
+}
+
+-(IBAction)segmentedControlChanged:(id)sender
+{
+    UISegmentedControl *control = sender;
+    NSInteger selectedIndex = control.selectedSegmentIndex;
+    if (selectedIndex < 0 || selectedIndex >= [self.segmentedControlItems count]) return;
+    
+    NSDictionary *item = self.segmentedControlItems[selectedIndex];
+    if (![item isKindOfClass:[NSDictionary class]]) return;
+
+    NSString *url = item[@"url"];
+    NSString *javascript = item[@"javascript"];
+    
+    if ([url isKindOfClass:[NSString class]]) {
+        if ([url hasPrefix:@"javascript:"]) {
+            NSString *js = [url substringFromIndex: [@"javascript:" length]];
+            [self.wvc runJavascript:js];
+        } else {
+            if ([javascript isKindOfClass:[NSString class]] && [javascript length] > 0) {
+                [self.wvc loadUrl:[NSURL URLWithString:url] andJavascript:javascript];
+            } else {
+                [self.wvc loadUrl:[NSURL URLWithString:url]];
+            }
+        }
+    }
+}
 @end
 
 

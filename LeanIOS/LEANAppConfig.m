@@ -300,6 +300,9 @@
         self.showRefreshButton = [navigation[@"iosShowRefreshButton"] boolValue];
     } else self.showRefreshButton = NO;
     
+    // segmented control
+    [self processSegmentedControl:navigation[@"segmentedControl"]];
+    
     ////////////////////////////////////////////////////////////
     // Styling
     ////////////////////////////////////////////////////////////
@@ -588,6 +591,7 @@
     [self processNavigationTitles:parsedJson[@"navigationTitles"]];
     [self processWebViewPools:parsedJson[@"webviewPools"]];
     [self processNavigationTitleImage:parsedJson[@"navigationTitleImage"]];
+    [self processSegmentedControl:parsedJson[@"segmentedControl"]];
 }
 
 - (void)processSidebarNav:(NSDictionary*)sidebarNav
@@ -636,6 +640,17 @@
         }
     }
 
+}
+
+- (void)processSegmentedControl:(NSDictionary*)segmentedConfig
+{
+    if ([segmentedConfig isKindOfClass:[NSDictionary class]]) {
+        if ([segmentedConfig[@"items"] isKindOfClass:[NSArray class]]) {
+            self.segmentedControlItems = segmentedConfig[@"items"];
+        } else {
+            self.segmentedControlItems = nil;
+        }
+    }
 }
 
 - (void)processMenus:(NSArray*)menus
