@@ -651,6 +651,8 @@
             self.segmentedControlItems = nil;
         }
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationProcessedSegmented object:self];
 }
 
 - (void)processMenus:(NSArray*)menus

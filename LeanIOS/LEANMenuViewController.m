@@ -455,6 +455,8 @@
             }
         }
     }
+    
+    [self.frostedViewController hideMenuViewController];
 }
 @end
 
