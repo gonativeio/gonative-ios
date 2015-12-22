@@ -217,6 +217,7 @@
     [self adjustInsets];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedTabNavigation object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedNavigationTitles object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kReachabilityChangedNotification object:nil];
     
@@ -232,14 +233,27 @@
 
 - (void)didReceiveNotification:(NSNotification*)notification
 {
-    if ([[notification name] isEqualToString:kLEANAppConfigNotificationProcessedTabNavigation]) {
+    NSString *name = [notification name];
+    if ([name isEqualToString:kLEANAppConfigNotificationProcessedTabNavigation]) {
         [self checkNavigationForUrl:self.currentRequest.URL];
     }
-    else if ([[notification name] isEqualToString:UIApplicationDidBecomeActiveNotification]) {
+    else if ([name isEqualToString:UIApplicationDidBecomeActiveNotification]) {
         [self retryFailedPage];
     }
-    else if ([[notification name] isEqualToString:kReachabilityChangedNotification]) {
+    else if ([name isEqualToString:kReachabilityChangedNotification]) {
         [self retryFailedPage];
+    }
+    else if ([name isEqualToString:kLEANAppConfigNotificationProcessedNavigationTitles]) {
+        NSURL *url = nil;
+        if (self.webview) url = self.webview.request.URL;
+        else if (self.wkWebview) url = self.wkWebview.URL;
+        
+        if (url) {
+            NSString *newTitle = [LEANWebViewController titleForUrl:url];
+            if (newTitle) {
+                self.navigationItem.title = newTitle;
+            }
+        }
     }
 }
 

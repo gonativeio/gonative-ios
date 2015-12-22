@@ -825,6 +825,8 @@
             }
         }
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationProcessedNavigationTitles object:self];
 }
 
 - (void)processWebViewPools:(NSArray*)webviewPools
