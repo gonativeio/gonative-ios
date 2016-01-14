@@ -7,7 +7,7 @@
 //
 
 #import "LEANUtilities.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 
 @implementation LEANUtilities
 
@@ -297,7 +297,7 @@
 +(void)configureWebView:(UIView*)wv
 {
     wv.frame = [[UIScreen mainScreen] bounds];
-    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+    if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
         wv.backgroundColor = [UIColor blackColor];
     } else {
         wv.backgroundColor = [UIColor whiteColor];
@@ -313,13 +313,13 @@
     if ([wv isKindOfClass:[UIWebView class]]) {
         UIWebView *webview = (UIWebView*)wv;
         webview.scalesPageToFit = YES;
-        webview.scrollView.bounces = [LEANAppConfig sharedAppConfig].pullToRefresh;
+        webview.scrollView.bounces = [GoNativeAppConfig sharedAppConfig].pullToRefresh;
     } else if([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
-        webview.scrollView.bounces = [LEANAppConfig sharedAppConfig].pullToRefresh;
+        webview.scrollView.bounces = [GoNativeAppConfig sharedAppConfig].pullToRefresh;
         
         // user script for customCSS
-        NSString *customCss = [LEANAppConfig sharedAppConfig].customCss;
+        NSString *customCss = [GoNativeAppConfig sharedAppConfig].customCss;
         if ([customCss length] > 0) {
             NSString *scriptSource = [NSString stringWithFormat:@"var gonative_styleElement = document.createElement('style'); document.documentElement.appendChild(gonative_styleElement); gonative_styleElement.textContent = %@;", [LEANUtilities jsWrapString:customCss]];
             
@@ -329,8 +329,8 @@
         
         // user script for viewport
         {
-            NSString *stringViewport = [LEANAppConfig sharedAppConfig].stringViewport;
-            NSNumber *viewportWidth = [LEANAppConfig sharedAppConfig].forceViewportWidth;
+            NSString *stringViewport = [GoNativeAppConfig sharedAppConfig].stringViewport;
+            NSNumber *viewportWidth = [GoNativeAppConfig sharedAppConfig].forceViewportWidth;
             
             if (viewportWidth) {
                 stringViewport = [NSString stringWithFormat:@"width=%@,user-scalable=no", viewportWidth];

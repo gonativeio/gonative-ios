@@ -7,7 +7,7 @@
 //
 
 #import "LEANPushManager.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANInstallation.h"
 
 @interface LEANPushManager ()
@@ -32,7 +32,7 @@ static NSString * kGonativeRegistrationEndpoint = @"https://push.gonative.io/api
 
 - (void)sendRegistration
 {
-    if (![LEANAppConfig sharedAppConfig].publicKey) {
+    if (![GoNativeAppConfig sharedAppConfig].publicKey) {
         NSLog(@"publicKey is required for push");
         return;
     }

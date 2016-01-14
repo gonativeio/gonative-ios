@@ -7,7 +7,7 @@
 //
 
 #import "LEANUrlInspector.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 
 @interface LEANUrlInspector ()
 @property NSRegularExpression *userIdRegex;
@@ -33,8 +33,8 @@
 - (void)setup
 {
     self.userId = @"";
-    if ([LEANAppConfig sharedAppConfig].userIdRegex) {
-        self.userIdRegex = [NSRegularExpression regularExpressionWithPattern:[LEANAppConfig sharedAppConfig].userIdRegex options:0 error:nil];
+    if ([GoNativeAppConfig sharedAppConfig].userIdRegex) {
+        self.userIdRegex = [NSRegularExpression regularExpressionWithPattern:[GoNativeAppConfig sharedAppConfig].userIdRegex options:0 error:nil];
     } else {
         self.userIdRegex = nil;
     }

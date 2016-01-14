@@ -7,7 +7,7 @@
 //
 
 #import "LEANWebViewPool.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANWebViewController.h"
 #import "LEANUtilities.h"
 #import "LEANLoginManager.h"
@@ -75,7 +75,7 @@
 
 - (void)processConfig
 {
-    NSArray *config = [LEANAppConfig sharedAppConfig].webviewPools;
+    NSArray *config = [GoNativeAppConfig sharedAppConfig].webviewPools;
     if (![config isKindOfClass:[NSArray class]]) {
         return;
     }
@@ -192,7 +192,7 @@
         self.currentLoadingRequest = request;
         [self.urlsToLoad removeObject:urlString];
         
-        if ([LEANAppConfig sharedAppConfig].useWKWebView) {
+        if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
             WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
             WKWebView *webview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:CGRectZero configuration:config];

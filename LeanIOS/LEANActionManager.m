@@ -7,7 +7,7 @@
 //
 
 #import "LEANActionManager.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANIcons.h"
 
 @interface LEANActionManager ()
@@ -29,7 +29,7 @@
 
 - (void)didLoadUrl:(NSURL *)url
 {
-    NSArray *actionRegexes = [LEANAppConfig sharedAppConfig].actionRegexes;
+    NSArray *actionRegexes = [GoNativeAppConfig sharedAppConfig].actionRegexes;
     if (!actionRegexes || !url) return;
     
     NSString *urlString = [url absoluteString];
@@ -37,7 +37,7 @@
     for (NSUInteger i = 0; i < [actionRegexes count]; i++) {
         NSPredicate *predicate = actionRegexes[i];
         if ([predicate evaluateWithObject:urlString]) {
-            [self setMenuID:[LEANAppConfig sharedAppConfig].actionIDs[i]];
+            [self setMenuID:[GoNativeAppConfig sharedAppConfig].actionIDs[i]];
             return;
         }
     }
@@ -70,7 +70,7 @@
     NSMutableArray *newButtonItems = [NSMutableArray array];
     self.urls = [NSMutableArray array];
     
-    NSArray *menu = [LEANAppConfig sharedAppConfig].actions[self.currentMenuID];
+    NSArray *menu = [GoNativeAppConfig sharedAppConfig].actions[self.currentMenuID];
     for (NSDictionary *entry in menu) {
         NSString *system = entry[@"system"];
         if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"share"]) {

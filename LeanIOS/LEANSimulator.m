@@ -8,7 +8,7 @@
 
 #import "LEANSimulator.h"
 #import "LEANAppDelegate.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANLoginManager.h"
 #import "LEANPushManager.h"
 #import "LEANUrlInspector.h"
@@ -68,7 +68,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 
 -(BOOL)openURL:(NSURL*)url
 {
-    if (![LEANAppConfig sharedAppConfig].isSimulator) {
+    if (![GoNativeAppConfig sharedAppConfig].isSimulator) {
         return NO;
     }
     
@@ -184,10 +184,10 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 
 - (void)startSimulation
 {
-    [LEANSimulator moveFileFrom:[LEANSimulator tempConfigUrl] to:[LEANAppConfig urlForSimulatorConfig]];
-    [LEANSimulator moveFileFrom:[LEANSimulator tempIconUrl] to:[LEANAppConfig urlForSimulatorIcon]];
-    [LEANSimulator moveFileFrom:[LEANSimulator tempSidebarIconUrl] to:[LEANAppConfig urlForSimulatorSidebarIcon]];
-    [LEANSimulator moveFileFrom:[LEANSimulator tempNavigationTitleIconUrl] to:[LEANAppConfig urlForSimulatorNavTitleIcon]];
+    [LEANSimulator moveFileFrom:[LEANSimulator tempConfigUrl] to:[GoNativeAppConfig urlForSimulatorConfig]];
+    [LEANSimulator moveFileFrom:[LEANSimulator tempIconUrl] to:[GoNativeAppConfig urlForSimulatorIcon]];
+    [LEANSimulator moveFileFrom:[LEANSimulator tempSidebarIconUrl] to:[GoNativeAppConfig urlForSimulatorSidebarIcon]];
+    [LEANSimulator moveFileFrom:[LEANSimulator tempNavigationTitleIconUrl] to:[GoNativeAppConfig urlForSimulatorNavTitleIcon]];
     
     [LEANSimulator reloadApplication];
     NSString *simulatePublicKey = self.simulatePublicKey;
@@ -244,7 +244,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 {
     [[LEANSimulator sharedSimulator].showBarTimer invalidate];
     [LEANSimulator sharedSimulator].showBarTimer = nil;
-    if ([LEANAppConfig sharedAppConfig].isSimulating) {
+    if ([GoNativeAppConfig sharedAppConfig].isSimulating) {
         [LEANSimulator sharedSimulator].showBarTimer = [NSTimer scheduledTimerWithTimeInterval:3.0 target:[LEANSimulator sharedSimulator] selector:@selector(showSimulatorBar) userInfo:nil repeats:NO];
     } else {
         [[LEANSimulator sharedSimulator] hideSimulatorBar];
@@ -327,7 +327,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
         [self.simulatorBarWindow addSubview:self.simulatorBarBackground];
     }
     self.simulatorBarBackground.frame = self.simulatorBarWindow.bounds;
-    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+    if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
         self.simulatorBarBackground.barStyle = UIBarStyleBlack;
     } else {
         self.simulatorBarBackground.barStyle = UIBarStyleDefault;
@@ -342,7 +342,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
         [self.simulatorBarBackground addSubview:self.simulatorBarButton];
     }
     self.simulatorBarButton.frame = self.simulatorBarBackground.bounds;
-    [self.simulatorBarButton setTitleColor:[LEANAppConfig sharedAppConfig].tintColor forState:UIControlStateNormal];
+    [self.simulatorBarButton setTitleColor:[GoNativeAppConfig sharedAppConfig].tintColor forState:UIControlStateNormal];
     
     if (wasHidden) {
         [UIView animateWithDuration:0.6 animations:^{
@@ -388,7 +388,7 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         // Change out AppConfig.
-        LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+        GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
         [appConfig setupFromJsonFiles];
         
         // Rerun some app delegate stuff
@@ -444,12 +444,12 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 {
     [[NSUserDefaults standardUserDefaults] synchronize];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"is_simulating"]) {
-        if (![LEANAppConfig sharedAppConfig].isSimulating) {
+        if (![GoNativeAppConfig sharedAppConfig].isSimulating) {
             [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is_simulating"];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
     } else {
-        if ([LEANAppConfig sharedAppConfig].isSimulating) {
+        if ([GoNativeAppConfig sharedAppConfig].isSimulating) {
             [[LEANSimulator sharedSimulator] stopSimulation];
         }
     }
@@ -459,10 +459,10 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
 {
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    [fileManager removeItemAtURL:[LEANAppConfig urlForSimulatorConfig] error:nil];
-    [fileManager removeItemAtURL:[LEANAppConfig urlForSimulatorIcon] error:nil];
-    [fileManager removeItemAtURL:[LEANAppConfig urlForSimulatorSidebarIcon] error:nil];
-    [fileManager removeItemAtURL:[LEANAppConfig urlForSimulatorNavTitleIcon] error:nil];
+    [fileManager removeItemAtURL:[GoNativeAppConfig urlForSimulatorConfig] error:nil];
+    [fileManager removeItemAtURL:[GoNativeAppConfig urlForSimulatorIcon] error:nil];
+    [fileManager removeItemAtURL:[GoNativeAppConfig urlForSimulatorSidebarIcon] error:nil];
+    [fileManager removeItemAtURL:[GoNativeAppConfig urlForSimulatorNavTitleIcon] error:nil];
     
     [fileManager removeItemAtURL:[LEANSimulator tempConfigUrl] error:nil];
     [fileManager removeItemAtURL:[LEANSimulator tempIconUrl] error:nil];

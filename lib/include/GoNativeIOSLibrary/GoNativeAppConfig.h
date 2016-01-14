@@ -1,12 +1,13 @@
 //
-//  LEANAppConfig.h
-//  LeanIOS
+//  GoNativeAppConfig.h
+//  GoNativeIOSLibrary
 //
-//  Created by Weiyin He on 2/10/14.
-// Copyright (c) 2014 GoNative.io LLC. All rights reserved.
+//  Created by Weiyin He on 1/7/16.
+//  Copyright © 2016 Gonative.io LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 static NSString *kLEANAppConfigNotificationProcessedMenu = @"io.gonative.ios.LEANAppConfig.processedMenu";
 static NSString *kLEANAppConfigNotificationProcessedTabNavigation = @"io.gonative.ios.LEANAppConfig.processedTabNavigation";
@@ -19,7 +20,7 @@ typedef enum : NSUInteger {
     LEANToolbarVisibilityAnyItemEnabled
 } LEANToolbarVisibility;
 
-@interface LEANAppConfig : NSObject
+@interface GoNativeAppConfig : NSObject
 
 // general
 @property NSURL *initialURL;
@@ -135,7 +136,7 @@ typedef enum : NSUInteger {
 @property NSArray *webviewPools;
 
 
-+ (LEANAppConfig *)sharedAppConfig;
++ (GoNativeAppConfig *)sharedAppConfig;
 + (NSURL*)urlForOtaConfig;
 + (NSURL*)urlForSimulatorConfig;
 + (NSURL*)urlForSimulatorIcon;

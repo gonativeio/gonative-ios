@@ -7,17 +7,17 @@
 //
 
 #import "LEANInstallation.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import <sys/utsname.h>
 
 @implementation LEANInstallation
 
 + (NSDictionary*)info
 {
-    NSString *publicKey = [LEANAppConfig sharedAppConfig].publicKey;
+    NSString *publicKey = [GoNativeAppConfig sharedAppConfig].publicKey;
     if (!publicKey) publicKey = @"";
     
-    NSString *deviceRegKey = [LEANAppConfig sharedAppConfig].deviceRegKey;
+    NSString *deviceRegKey = [GoNativeAppConfig sharedAppConfig].deviceRegKey;
     
     BOOL debug = NO;
 #ifdef DEBUG

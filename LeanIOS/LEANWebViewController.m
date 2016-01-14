@@ -12,7 +12,7 @@
 #import "LEANWebViewController.h"
 #import "LEANAppDelegate.h"
 #import "LEANUtilities.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANMenuViewController.h"
 #import "LEANNavigationController.h"
 #import "LEANRootViewController.h"
@@ -89,7 +89,7 @@
     [super viewDidLoad];
     self.checkLoginSignup = YES;
     
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     
     self.hideWebviewAlpha = [appConfig.hideWebviewAlpha floatValue];
     
@@ -291,7 +291,7 @@
 
 - (void)addPullToRefresh
 {
-    if (![LEANAppConfig sharedAppConfig].pullToRefresh) return;
+    if (![GoNativeAppConfig sharedAppConfig].pullToRefresh) return;
     
     if (!self.pullRefreshControl) {
         self.pullRefreshControl = [[UIRefreshControl alloc] init];
@@ -309,7 +309,7 @@
     [self addPullToRefresh];
     
     if ([self isRootWebView]) {
-        [self.navigationController setNavigationBarHidden:![LEANAppConfig sharedAppConfig].showNavigationBar animated:YES];
+        [self.navigationController setNavigationBarHidden:![GoNativeAppConfig sharedAppConfig].showNavigationBar animated:YES];
     } else {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
@@ -334,7 +334,7 @@
 {
     NSMutableArray *array = [self.toolbarItems mutableCopy];
     
-    if ([LEANAppConfig sharedAppConfig].showShareButton) {
+    if ([GoNativeAppConfig sharedAppConfig].showShareButton) {
         UIBarButtonItem *shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(buttonPressed:)];
         shareButton.tag = 3;
         [array addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
@@ -396,7 +396,7 @@
 
 - (void)checkNavigationForUrl:(NSURL*) url;
 {
-    if (![LEANAppConfig sharedAppConfig].tabMenus) {
+    if (![GoNativeAppConfig sharedAppConfig].tabMenus) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self hideTabBarAnimated:YES];
         });
@@ -428,10 +428,10 @@
 - (void)checkNavigationTitleImageForUrl:(NSURL*)url
 {
     // show logo in navigation bar
-    if ([[LEANAppConfig sharedAppConfig] shouldShowNavigationTitleImageForUrl:[url absoluteString]]) {
+    if ([[GoNativeAppConfig sharedAppConfig] shouldShowNavigationTitleImageForUrl:[url absoluteString]]) {
         // create the view if necesary
         if (!self.navigationTitleImageView) {
-            UIImage *im = [LEANAppConfig sharedAppConfig].navigationTitleIcon;
+            UIImage *im = [GoNativeAppConfig sharedAppConfig].navigationTitleIcon;
             if (!im) im = [UIImage imageNamed:@"navbar_logo"];
             
             if (im) {
@@ -688,7 +688,7 @@
     
     // load initial page in bottom webview
     [self.navigationController popToRootViewControllerAnimated:NO];
-    [self.navigationController.viewControllers[0] loadUrl:[LEANAppConfig sharedAppConfig].initialURL];
+    [self.navigationController.viewControllers[0] loadUrl:[GoNativeAppConfig sharedAppConfig].initialURL];
     
     [(LEANMenuViewController*)self.frostedViewController.menuViewController updateMenuWithStatus:@"default"];
 }
@@ -800,7 +800,7 @@
 
 + (NSInteger) urlLevelForUrl:(NSURL*)url;
 {
-    NSArray *entries = [LEANAppConfig sharedAppConfig].navStructureLevels;
+    NSArray *entries = [GoNativeAppConfig sharedAppConfig].navStructureLevels;
     if (entries) {
         NSString *urlString = [url absoluteString];
         for (NSDictionary *entry in entries) {
@@ -817,7 +817,7 @@
 
 + (NSString*) titleForUrl:(NSURL*)url
 {
-    NSArray *entries = [LEANAppConfig sharedAppConfig].navTitles;
+    NSArray *entries = [GoNativeAppConfig sharedAppConfig].navTitles;
     NSString *title;
     
     if (entries) {
@@ -873,7 +873,7 @@
     // the default url character does not escape '/', so use this function. NSString is toll-free bridged with CFStringRef
     NSString *searchText = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)searchBar.text,NULL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",kCFStringEncodingUTF8 ));
     // the search template can have any allowable url character, but we need to escape unicode characters like '✓' so that the NSURL creation doesn't die.
-    NSString *searchTemplate = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)[LEANAppConfig sharedAppConfig].searchTemplateURL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",NULL,kCFStringEncodingUTF8 ));
+    NSString *searchTemplate = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)[GoNativeAppConfig sharedAppConfig].searchTemplateURL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",NULL,kCFStringEncodingUTF8 ));
     NSURL *url = [NSURL URLWithString:[searchTemplate stringByAppendingString:searchText]];
     [self loadUrl:url];
     
@@ -911,7 +911,7 @@
 
 - (BOOL)shouldLoadRequest:(NSURLRequest*)request isMainFrame:(BOOL)isMainFrame isUserAction:(BOOL)isUserAction
 {
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     NSURL *url = [request URL];
     NSString *urlString = [url absoluteString];
     NSString* hostname = [url host];
@@ -1058,7 +1058,8 @@
     // check redirects
     if (appConfig.redirects != nil) {
         NSString *to = [appConfig.redirects valueForKey:urlString];
-        if (to) {
+        if (!to) to = [appConfig.redirects valueForKey:@"*"];
+        if (to && ![to isEqualToString:urlString]) {
             url = [NSURL URLWithString:to];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self loadUrl:url];
@@ -1509,7 +1510,7 @@
         [LEANUtilities addJqueryToWebView:self.wkWebview];
         
         // update navigation title
-        if ([LEANAppConfig sharedAppConfig].useWebpageTitle) {
+        if ([GoNativeAppConfig sharedAppConfig].useWebpageTitle) {
             if (self.webview) {
                 NSString *theTitle=[self.webview stringByEvaluatingJavaScriptFromString:@"document.title"];
                 self.nav.title = theTitle;
@@ -1520,23 +1521,23 @@
         }
         
         // update menu
-        if ([LEANAppConfig sharedAppConfig].loginDetectionURL && (!self.webview || !self.webview.isLoading)) {
+        if ([GoNativeAppConfig sharedAppConfig].loginDetectionURL && (!self.webview || !self.webview.isLoading)) {
             [[LEANLoginManager sharedManager] checkLogin];
             
-            self.visitedLoginOrSignup = [url matchesPathOf:[LEANAppConfig sharedAppConfig].loginURL] ||
-            [url matchesPathOf:[LEANAppConfig sharedAppConfig].signupURL];
+            self.visitedLoginOrSignup = [url matchesPathOf:[GoNativeAppConfig sharedAppConfig].loginURL] ||
+            [url matchesPathOf:[GoNativeAppConfig sharedAppConfig].signupURL];
         }
         
         // dynamic config updater
-        if ([LEANAppConfig sharedAppConfig].updateConfigJS && (!self.webview || !self.webview.isLoading)) {
+        if ([GoNativeAppConfig sharedAppConfig].updateConfigJS && (!self.webview || !self.webview.isLoading)) {
             if (self.webview) {
-                NSString *result = [self.webview stringByEvaluatingJavaScriptFromString:[LEANAppConfig sharedAppConfig].updateConfigJS];
-                [[LEANAppConfig sharedAppConfig] processDynamicUpdate:result];
+                NSString *result = [self.webview stringByEvaluatingJavaScriptFromString:[GoNativeAppConfig sharedAppConfig].updateConfigJS];
+                [[GoNativeAppConfig sharedAppConfig] processDynamicUpdate:result];
             }
             if (self.wkWebview) {
-                [self.wkWebview evaluateJavaScript:[LEANAppConfig sharedAppConfig].updateConfigJS completionHandler:^(id response, NSError *error) {
+                [self.wkWebview evaluateJavaScript:[GoNativeAppConfig sharedAppConfig].updateConfigJS completionHandler:^(id response, NSError *error) {
                     if ([response isKindOfClass:[NSString class]]) {
-                        [[LEANAppConfig sharedAppConfig] processDynamicUpdate:response];
+                        [[GoNativeAppConfig sharedAppConfig] processDynamicUpdate:response];
                     }
                 }];
             }
@@ -1566,7 +1567,7 @@
             [self runJavascript:self.analyticsJs];
         }
         
-        if ([LEANAppConfig sharedAppConfig].enableChromecast) {
+        if ([GoNativeAppConfig sharedAppConfig].enableChromecast) {
             [self detectVideo];
             // [self performSelector:@selector(detectVideo) withObject:nil afterDelay:1];
         }
@@ -1609,7 +1610,7 @@
         [[GNRegistrationManager sharedManager] checkUrl:url];
         
         // save session cookies as persistent
-        NSUInteger forceSessionCookieExpiry = [LEANAppConfig sharedAppConfig].forceSessionCookieExpiry;
+        NSUInteger forceSessionCookieExpiry = [GoNativeAppConfig sharedAppConfig].forceSessionCookieExpiry;
         if (forceSessionCookieExpiry > 0) {
             NSHTTPCookieStorage *cookieStore = [NSHTTPCookieStorage sharedHTTPCookieStorage];
             for (NSHTTPCookie *cookie in [cookieStore cookiesForURL:url]) {
@@ -1652,7 +1653,7 @@
 {
     // if interactiveDelay is specified, then look for readyState=interactive, and show webview
     // with a delay. If not specified, wait for readyState=complete.
-    NSNumber *interactiveDelay = [LEANAppConfig sharedAppConfig].interactiveDelay;
+    NSNumber *interactiveDelay = [GoNativeAppConfig sharedAppConfig].interactiveDelay;
     
     void (^readyStateBlock)(id, NSError*) = ^(id status, NSError *error) {
         // we keep track of startedLoading because loading is only really finished when we have gone to
@@ -1691,7 +1692,7 @@
 
 - (void)hideWebview
 {
-    if ([LEANAppConfig sharedAppConfig].disableAnimations) return;
+    if ([GoNativeAppConfig sharedAppConfig].disableAnimations) return;
     
     self.webview.alpha = self.hideWebviewAlpha;
     self.webview.userInteractionEnabled = NO;
@@ -1859,7 +1860,7 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-    if ([[LEANAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+    if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
         return UIStatusBarStyleLightContent;
     } else {
         return UIStatusBarStyleDefault;

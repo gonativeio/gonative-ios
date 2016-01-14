@@ -12,7 +12,7 @@
 #import "LEANRootViewController.h"
 #import "LEANMenuViewController.h"
 #import "NSURL+LEANUtilities.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANLoginManager.h"
 #import "LEANPushManager.h"
 #import <WebKit/WebKit.h>
@@ -65,7 +65,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
         
         self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
         
-        if ([LEANAppConfig sharedAppConfig].useWKWebView) {
+        if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
             WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
             self.hiddenWkWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.view.frame configuration:config];
@@ -77,7 +77,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
         
         // if login is first page, wait until after we've checked to load the login url
         // if loaded too early, may break some csrf protected pages.
-        if (!self.isLogin || ![LEANAppConfig sharedAppConfig].loginIsFirstPage){
+        if (!self.isLogin || ![GoNativeAppConfig sharedAppConfig].loginIsFirstPage){
             [self loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
         }
         
@@ -102,7 +102,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
         
         self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
         
-        if ([LEANAppConfig sharedAppConfig].useWKWebView) {
+        if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
             WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
             self.hiddenWkWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.view.frame configuration:config];
@@ -115,7 +115,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
         
         // if login is first page, wait until after we've checked to load the login url
         // if loaded too early, may break some csrf protected pages.
-        if (!self.isLogin || ![LEANAppConfig sharedAppConfig].loginIsFirstPage) {
+        if (!self.isLogin || ![GoNativeAppConfig sharedAppConfig].loginIsFirstPage) {
             [self loadRequest:[NSURLRequest requestWithURL:self.formUrl]];
         }
         
@@ -129,8 +129,8 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
     [super viewDidLoad];
     
     // show logo in navigation bar
-    if ([LEANAppConfig sharedAppConfig].navigationTitleImageRegexes) {
-        UIImage *im = [LEANAppConfig sharedAppConfig].navigationTitleIcon;
+    if ([GoNativeAppConfig sharedAppConfig].navigationTitleImageRegexes) {
+        UIImage *im = [GoNativeAppConfig sharedAppConfig].navigationTitleIcon;
         if (!im) im = [UIImage imageNamed:@"navbar_logo"];
         
         if (im) {
@@ -154,7 +154,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
     self.submitButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(submit:)];
     
     // if login is the first page that loads, hide back button. Hide form until login check is done.
-    if (self.isLogin && [LEANAppConfig sharedAppConfig].loginIsFirstPage) {
+    if (self.isLogin && [GoNativeAppConfig sharedAppConfig].loginIsFirstPage) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANLoginManagerNotificationName object:nil];
         
         [[LEANLoginManager sharedManager] checkIfNotAlreadyChecking];
@@ -163,21 +163,21 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
         self.navigationItem.hidesBackButton = YES;
         
         // background launch image
-        if ([LEANAppConfig sharedAppConfig].loginLaunchBackground) {
+        if ([GoNativeAppConfig sharedAppConfig].loginLaunchBackground) {
             UIImage *image = [UIImage imageNamed:[LEANUtilities getLaunchImageName]];
             UIImageView *background = [[UIImageView alloc] initWithImage:image];
             self.tableView.backgroundView = background;
         }
         
         // add header
-        if ([LEANAppConfig sharedAppConfig].loginIconImage) {
+        if ([GoNativeAppConfig sharedAppConfig].loginIconImage) {
             NSArray *arr = [[NSBundle mainBundle] loadNibNamed:@"LoginHeaderView" owner:nil options:nil];
             UIView *headerView = arr[0];
             
-            if ([LEANAppConfig sharedAppConfig].appIcon) {
+            if ([GoNativeAppConfig sharedAppConfig].appIcon) {
                 UIButton *button = (UIButton*)[headerView viewWithTag:1];
                 if ([button isKindOfClass:[UIButton class]]) {
-                    [button setImage:[LEANAppConfig sharedAppConfig].appIcon forState:UIControlStateNormal];
+                    [button setImage:[GoNativeAppConfig sharedAppConfig].appIcon forState:UIControlStateNormal];
                 }
             }
             
@@ -235,7 +235,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
             } else {
                 // need to skip login interception on this load.
                 wv.checkLoginSignup = NO;
-                [wv loadUrl:[LEANAppConfig sharedAppConfig].initialURL];
+                [wv loadUrl:[GoNativeAppConfig sharedAppConfig].initialURL];
             }
         } else {
             [self loadRequest:[NSURLRequest requestWithURL:self.formUrl]];

@@ -22,7 +22,6 @@
 		2002B4C018A9991300495B3D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
 		2002B4C818A9991300495B3D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4C618A9991300495B3D /* InfoPlist.strings */; };
 		2002B4CA18A9991300495B3D /* LeanIOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4C918A9991300495B3D /* LeanIOSTests.m */; };
-		2002B4D718A99A0A00495B3D /* LEANAppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4D618A99A0A00495B3D /* LEANAppConfig.m */; };
 		2002B4E518A99A9900495B3D /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4DA18A99A9900495B3D /* RECommonFunctions.m */; };
 		2002B4E618A99A9900495B3D /* REFrostedContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4DC18A99A9900495B3D /* REFrostedContainerViewController.m */; };
 		2002B4E718A99A9900495B3D /* REFrostedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4DE18A99A9900495B3D /* REFrostedViewController.m */; };
@@ -63,6 +62,7 @@
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
 		20504CF51B9E62EF00D1E5D7 /* LEANIdentityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */; };
+		205141F51C3F54D40087DEB2 /* libGoNativeIOSLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */; };
 		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
@@ -134,8 +134,6 @@
 		2002B4C518A9991300495B3D /* GoNativeIOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoNativeIOSTests-Info.plist"; sourceTree = "<group>"; };
 		2002B4C718A9991300495B3D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2002B4C918A9991300495B3D /* LeanIOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LeanIOSTests.m; sourceTree = "<group>"; };
-		2002B4D518A99A0A00495B3D /* LEANAppConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANAppConfig.h; sourceTree = "<group>"; };
-		2002B4D618A99A0A00495B3D /* LEANAppConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANAppConfig.m; sourceTree = "<group>"; };
 		2002B4D918A99A9900495B3D /* RECommonFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RECommonFunctions.h; sourceTree = "<group>"; };
 		2002B4DA18A99A9900495B3D /* RECommonFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RECommonFunctions.m; sourceTree = "<group>"; };
 		2002B4DB18A99A9900495B3D /* REFrostedContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = REFrostedContainerViewController.h; sourceTree = "<group>"; };
@@ -197,6 +195,8 @@
 		204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		20504CF31B9E62EF00D1E5D7 /* LEANIdentityService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANIdentityService.h; sourceTree = "<group>"; };
 		20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIdentityService.m; sourceTree = "<group>"; };
+		205141F31C3F54C00087DEB2 /* GoNativeAppConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoNativeAppConfig.h; sourceTree = "<group>"; };
+		205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoNativeIOSLibrary.a; sourceTree = "<group>"; };
 		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
@@ -282,6 +282,7 @@
 				202BE56F1B9756E80064D928 /* Parse.framework in Frameworks */,
 				209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */,
 				209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */,
+				205141F51C3F54D40087DEB2 /* libGoNativeIOSLibrary.a in Frameworks */,
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
 				2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */,
 				2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */,
@@ -368,8 +369,6 @@
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				2046CAF81BC0790800714F66 /* GNRegistrationManager.h */,
 				2046CAF91BC0790800714F66 /* GNRegistrationManager.m */,
-				2002B4D518A99A0A00495B3D /* LEANAppConfig.h */,
-				2002B4D618A99A0A00495B3D /* LEANAppConfig.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
 				2002B4AB18A9991300495B3D /* LEANAppDelegate.m */,
 				20054BD418B68D1E00A422F9 /* LEANCastController.h */,
@@ -476,6 +475,14 @@
 			path = REFrostedViewController;
 			sourceTree = "<group>";
 		};
+		205141F21C3F54C00087DEB2 /* GoNativeIOSLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				205141F31C3F54C00087DEB2 /* GoNativeAppConfig.h */,
+			);
+			path = GoNativeIOSLibrary;
+			sourceTree = "<group>";
+		};
 		207170C118C2E820002EBDD0 /* Forms */ = {
 			isa = PBXGroup;
 			children = (
@@ -497,8 +504,9 @@
 		209B32FF193FC4CE0052A7C6 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				209B3300193FC4CE0052A7C6 /* include */,
 				209B3307193FC4CE0052A7C6 /* libzipzap.a */,
+				205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */,
+				209B3300193FC4CE0052A7C6 /* include */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -506,6 +514,7 @@
 		209B3300193FC4CE0052A7C6 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				205141F21C3F54C00087DEB2 /* GoNativeIOSLibrary */,
 				209B3301193FC4CE0052A7C6 /* zipzap */,
 			);
 			path = include;
@@ -709,7 +718,6 @@
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
 				20C8505019CD143100DB208A /* LEANIcons.m in Sources */,
 				2002B4E518A99A9900495B3D /* RECommonFunctions.m in Sources */,
-				2002B4D718A99A0A00495B3D /* LEANAppConfig.m in Sources */,
 				201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */,
 				2002B4AC18A9991300495B3D /* LEANAppDelegate.m in Sources */,
 				20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */,
@@ -879,6 +887,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/lib/include",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
@@ -911,6 +920,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib",
+					"$(PROJECT_DIR)/lib/include",
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";

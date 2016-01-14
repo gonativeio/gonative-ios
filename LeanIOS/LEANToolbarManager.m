@@ -8,7 +8,7 @@
 
 #import "LEANToolbarManager.h"
 #import "LEANWebViewController.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANUtilities.h"
 
 @interface LEANToolbarManager()
@@ -35,13 +35,13 @@
 
 - (void)processConfig
 {
-    self.visibility = [LEANAppConfig sharedAppConfig].toolbarVisibility;
+    self.visibility = [GoNativeAppConfig sharedAppConfig].toolbarVisibility;
     NSMutableArray *toolbarItems = [NSMutableArray array];
     NSMutableArray *toolbarItemTypes = [NSMutableArray array];
     NSMutableArray *toolbarItemUrlRegexes = [NSMutableArray array];
     
-    if ([LEANAppConfig sharedAppConfig].toolbarItems) {
-        for (NSDictionary *entry in [LEANAppConfig sharedAppConfig].toolbarItems) {
+    if ([GoNativeAppConfig sharedAppConfig].toolbarItems) {
+        for (NSDictionary *entry in [GoNativeAppConfig sharedAppConfig].toolbarItems) {
             if (![entry isKindOfClass:[NSDictionary class]]) continue;
             NSString *system = entry[@"system"];
             NSString *title = entry[@"title"];

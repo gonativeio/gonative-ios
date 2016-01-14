@@ -8,7 +8,7 @@
 
 #import "LEANLoginManager.h"
 #import "LEANUtilities.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "NSURL+LEANUtilities.h"
 #import "LEANUrlInspector.h"
 #import <WebKit/WebKit.h>
@@ -71,7 +71,7 @@
     [self.connection cancel];
     [self.wkWebview stopLoading];
     
-    NSURL *url = [LEANAppConfig sharedAppConfig].loginDetectionURL;
+    NSURL *url = [GoNativeAppConfig sharedAppConfig].loginDetectionURL;
     if (!url) {
         self.loggedIn = NO;
         [self performSelector:@selector(statusUpdated) withObject:self afterDelay:1.0];
@@ -80,7 +80,7 @@
     
     self.isChecking = YES;
     
-    if ([LEANAppConfig sharedAppConfig].useWKWebView) {
+    if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
         if (!self.wkWebview) {
             WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
@@ -111,11 +111,11 @@
     NSString *urlString = [url absoluteString];
     
     // iterate through loginDetectionRegexes
-    NSArray *regexes = [LEANAppConfig sharedAppConfig].loginDetectRegexes;
+    NSArray *regexes = [GoNativeAppConfig sharedAppConfig].loginDetectRegexes;
     for (NSUInteger i = 0; i < [regexes count]; i++) {
         NSPredicate *predicate = regexes[i];
         if ([predicate evaluateWithObject:urlString]) {
-            id entry = [LEANAppConfig sharedAppConfig].loginDetectLocations[i];
+            id entry = [GoNativeAppConfig sharedAppConfig].loginDetectLocations[i];
             [self setStatus:entry[@"status"] loggedIn:[entry[@"loggedIn"] boolValue]];
             return;
         }

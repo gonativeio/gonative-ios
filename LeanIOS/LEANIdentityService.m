@@ -7,7 +7,7 @@
 //
 
 #import "LEANIdentityService.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import <Parse/Parse.h>
 
 @interface LEANIdentityService()
@@ -29,7 +29,7 @@
 
 - (void)checkUrl:(NSURL *)url
 {
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     if (!appConfig.checkIdentityUrlRegexes ||
         [appConfig.checkIdentityUrlRegexes count] <= 0 ||
         !appConfig.identityEndpointUrl ||
@@ -49,7 +49,7 @@
 
 -(void)getIdentity
 {
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     NSURL *endpoint = appConfig.identityEndpointUrl;
     if (!endpoint) return;
     

@@ -8,7 +8,7 @@
 
 #import "LEANTabManager.h"
 #import "LEANWebViewController.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANIcons.h"
 
 @interface LEANTabManager() <UITabBarDelegate>
@@ -35,7 +35,7 @@
 
 - (void)didLoadUrl:(NSURL *)url
 {
-    NSArray *tabMenuRegexes = [LEANAppConfig sharedAppConfig].tabMenuRegexes;
+    NSArray *tabMenuRegexes = [GoNativeAppConfig sharedAppConfig].tabMenuRegexes;
     if (!tabMenuRegexes || !url) return;
     
     NSString *urlString = [url absoluteString];
@@ -44,7 +44,7 @@
     for (NSUInteger i = 0; i < [tabMenuRegexes count]; i++) {
         NSPredicate *predicate = tabMenuRegexes[i];
         if ([predicate evaluateWithObject:urlString]) {
-            [self loadTabBarMenu:[LEANAppConfig sharedAppConfig].tabMenuIDs[i]];
+            [self loadTabBarMenu:[GoNativeAppConfig sharedAppConfig].tabMenuIDs[i]];
             showTabBar = YES;
             break;
         }
@@ -73,7 +73,7 @@
     
     self.currentMenuID = menuID;
     
-    NSArray *menu = [LEANAppConfig sharedAppConfig].tabMenus[menuID];
+    NSArray *menu = [GoNativeAppConfig sharedAppConfig].tabMenus[menuID];
     NSMutableArray *items = [[NSMutableArray alloc] initWithCapacity:[menu count]];
     
     for (NSUInteger i = 0; i < [menu count]; i++) {

@@ -10,7 +10,7 @@
 #import "LEANNavigationController.h"
 #import "LEANWebViewController.h"
 #import "LEANRootViewController.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANLoginManager.h"
 #import "FontAwesome/NSString+FontAwesome.h"
 #import "FontAwesome/UIFont+FontAwesome.h"
@@ -63,11 +63,11 @@
     headerView.autoresizingMask = UIViewAutoresizingNone;
     UIButton *headerButton = (UIButton*)[headerView viewWithTag:1];
     [headerButton addTarget:self action:@selector(picturePressed:) forControlEvents:UIControlEventTouchUpInside];
-    if ([LEANAppConfig sharedAppConfig].sidebarIcon) {
-        [headerButton setImage:[LEANAppConfig sharedAppConfig].sidebarIcon forState:UIControlStateNormal];
+    if ([GoNativeAppConfig sharedAppConfig].sidebarIcon) {
+        [headerButton setImage:[GoNativeAppConfig sharedAppConfig].sidebarIcon forState:UIControlStateNormal];
     }
-    else if ([LEANAppConfig sharedAppConfig].appIcon) {
-        [headerButton setImage:[LEANAppConfig sharedAppConfig].appIcon forState:UIControlStateNormal];
+    else if ([GoNativeAppConfig sharedAppConfig].appIcon) {
+        [headerButton setImage:[GoNativeAppConfig sharedAppConfig].appIcon forState:UIControlStateNormal];
     }
     
     self.settingsButton = (UIButton*)[headerView viewWithTag:2];
@@ -82,7 +82,7 @@
     // actually update the menus
     [self updateMenuWithStatus:@"default"];
 
-    if ([LEANAppConfig sharedAppConfig].loginDetectionURL) {
+    if ([GoNativeAppConfig sharedAppConfig].loginDetectionURL) {
         // subscribe to login notifications
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveLoginNotification:) name:kLEANLoginManagerNotificationName object:nil];
         [[LEANLoginManager sharedManager] checkIfNotAlreadyChecking];
@@ -136,7 +136,7 @@
     
     self.lastUpdatedStatus = status;
     
-    self.menuItems = [LEANAppConfig sharedAppConfig].menus[status];
+    self.menuItems = [GoNativeAppConfig sharedAppConfig].menus[status];
     
     // see if any menu items have icons. Used for layout indentation.
     self.groupsHaveIcons = NO;
@@ -180,7 +180,7 @@
 }
 
 - (IBAction)picturePressed:(id)sender {
-    [self.wvc loadUrl:[LEANAppConfig sharedAppConfig].initialURL];
+    [self.wvc loadUrl:[GoNativeAppConfig sharedAppConfig].initialURL];
     [self.frostedViewController hideMenuViewController];
 }
 
@@ -260,8 +260,8 @@
     
     // text
     label.text = [menuItem[@"label"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    if ([LEANAppConfig sharedAppConfig].iosSidebarFont) {
-        label.font = [LEANAppConfig sharedAppConfig].iosSidebarFont;
+    if ([GoNativeAppConfig sharedAppConfig].iosSidebarFont) {
+        label.font = [GoNativeAppConfig sharedAppConfig].iosSidebarFont;
     }
     
     // expand/collapse indicator
@@ -295,15 +295,15 @@
     }
                               
     // configure text color
-    if ([LEANAppConfig sharedAppConfig].iosSidebarTextColor) {
-        label.textColor = [LEANAppConfig sharedAppConfig].iosSidebarTextColor;
-        icon.textColor = [LEANAppConfig sharedAppConfig].iosSidebarTextColor;
-        cell.tintColor = [LEANAppConfig sharedAppConfig].iosSidebarTextColor;
+    if ([GoNativeAppConfig sharedAppConfig].iosSidebarTextColor) {
+        label.textColor = [GoNativeAppConfig sharedAppConfig].iosSidebarTextColor;
+        icon.textColor = [GoNativeAppConfig sharedAppConfig].iosSidebarTextColor;
+        cell.tintColor = [GoNativeAppConfig sharedAppConfig].iosSidebarTextColor;
     }
-    else if ([LEANAppConfig sharedAppConfig].tintColor) {
-        label.textColor = [LEANAppConfig sharedAppConfig].tintColor;
-        icon.textColor = [LEANAppConfig sharedAppConfig].tintColor;
-        cell.tintColor = [LEANAppConfig sharedAppConfig].tintColor;
+    else if ([GoNativeAppConfig sharedAppConfig].tintColor) {
+        label.textColor = [GoNativeAppConfig sharedAppConfig].tintColor;
+        icon.textColor = [GoNativeAppConfig sharedAppConfig].tintColor;
+        cell.tintColor = [GoNativeAppConfig sharedAppConfig].tintColor;
     }
     
     // hide separator line from first cell
@@ -383,7 +383,7 @@
 
 -(void)updateSegmentedControl
 {
-    self.segmentedControlItems = [LEANAppConfig sharedAppConfig].segmentedControlItems;
+    self.segmentedControlItems = [GoNativeAppConfig sharedAppConfig].segmentedControlItems;
     BOOL showSegmentedControl = self.segmentedControlItems && [self.segmentedControlItems count] > 0;
     if (showSegmentedControl) {
         if (self.segmentedControl.hidden) {

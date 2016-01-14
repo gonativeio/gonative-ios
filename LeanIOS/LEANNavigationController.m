@@ -8,7 +8,7 @@
 
 #import "LEANNavigationController.h"
 #import "LEANWebViewController.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 
 @interface LEANNavigationController () <UINavigationControllerDelegate>
 
@@ -20,7 +20,7 @@
 {
     [super viewDidLoad];
     
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     
     // theme
     if ([appConfig.iosTheme isEqualToString:@"dark"]) {
@@ -31,7 +31,7 @@
     
     // set title text color
     if (appConfig.titleTextColor) {
-        self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [LEANAppConfig sharedAppConfig].titleTextColor};
+        self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [GoNativeAppConfig sharedAppConfig].titleTextColor};
     }
 
     // recognize swipe from left edge
@@ -47,7 +47,7 @@
 #pragma mark - UINavigationControllerDelegate
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    if ([viewController isKindOfClass:[LEANWebViewController class]] && [LEANAppConfig sharedAppConfig].showToolbar) {
+    if ([viewController isKindOfClass:[LEANWebViewController class]] && [GoNativeAppConfig sharedAppConfig].showToolbar) {
         [navigationController setToolbarHidden:NO animated:YES];
     }
     else {

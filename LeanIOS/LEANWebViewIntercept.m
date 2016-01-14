@@ -8,7 +8,7 @@
 
 #import "LEANWebViewIntercept.h"
 #import "LEANAppDelegate.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "GTMNSString+HTML.h"
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"
@@ -54,7 +54,7 @@ static LEANUrlCache *urlCache;
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
     NSString* userAgent = [request valueForHTTPHeaderField:@"User-Agent"];
-    if (userAgent && ![userAgent isEqualToString:[LEANAppConfig sharedAppConfig].userAgent]) return NO;
+    if (userAgent && ![userAgent isEqualToString:[GoNativeAppConfig sharedAppConfig].userAgent]) return NO;
     if (![schemeHttpTest evaluateWithObject:request.URL]) return NO;
     if ([self propertyForKey:kOurRequestProperty inRequest:request]) return NO;
     
@@ -87,7 +87,7 @@ static LEANUrlCache *urlCache;
         self.modifiedRequest = request.mutableCopy;
         
         // custom user agent
-        NSString *customUserAgent = [[LEANAppConfig sharedAppConfig] userAgentForUrl:request.URL];
+        NSString *customUserAgent = [[GoNativeAppConfig sharedAppConfig] userAgentForUrl:request.URL];
         if (customUserAgent) {
             [self.modifiedRequest setValue:customUserAgent forHTTPHeaderField:@"User-Agent"];
         }
@@ -140,7 +140,7 @@ static LEANUrlCache *urlCache;
     }
     
     // string replacements
-    for (NSDictionary *entry in [LEANAppConfig sharedAppConfig].replaceStrings) {
+    for (NSDictionary *entry in [GoNativeAppConfig sharedAppConfig].replaceStrings) {
         if ([entry isKindOfClass:[NSDictionary class]]) {
             NSString *old = entry[@"old"];
             NSString *new = entry[@"new"];
@@ -153,9 +153,9 @@ static LEANUrlCache *urlCache;
     // find closing </head> tag
     NSRange insertPoint = [htmlString rangeOfString:@"</head>" options:NSCaseInsensitiveSearch];
     if (insertPoint.location != NSNotFound) {
-        NSString *customCss = [LEANAppConfig sharedAppConfig].customCss;
-        NSString *stringViewport = [LEANAppConfig sharedAppConfig].stringViewport;
-        NSNumber *viewportWidth = [LEANAppConfig sharedAppConfig].forceViewportWidth;
+        NSString *customCss = [GoNativeAppConfig sharedAppConfig].customCss;
+        NSString *stringViewport = [GoNativeAppConfig sharedAppConfig].stringViewport;
+        NSNumber *viewportWidth = [GoNativeAppConfig sharedAppConfig].forceViewportWidth;
         
         NSMutableString *newString = [[htmlString substringToIndex:insertPoint.location] mutableCopy];
         if (customCss) {

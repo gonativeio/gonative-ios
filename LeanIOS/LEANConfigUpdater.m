@@ -7,7 +7,7 @@
 //
 
 #import "LEANConfigUpdater.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANInstallation.h"
 
 @interface LEANConfigUpdater ()
@@ -18,12 +18,12 @@
 
 - (void)updateConfig
 {
-    NSString *publicKey = [LEANAppConfig sharedAppConfig].publicKey;
-    if (!publicKey || [LEANAppConfig sharedAppConfig].disableConfigUpdater) {
+    NSString *publicKey = [GoNativeAppConfig sharedAppConfig].publicKey;
+    if (!publicKey || [GoNativeAppConfig sharedAppConfig].disableConfigUpdater) {
         return;
     }
     
-    if ([LEANAppConfig sharedAppConfig].isSimulator) {
+    if ([GoNativeAppConfig sharedAppConfig].isSimulator) {
         publicKey = @"simulator";
     }
     
@@ -50,7 +50,7 @@
         [inputStream close];
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSURL *destination = [LEANAppConfig urlForOtaConfig];
+        NSURL *destination = [GoNativeAppConfig urlForOtaConfig];
         [fileManager removeItemAtURL:destination error:nil];
         [fileManager moveItemAtURL:location toURL:destination error:nil];
     }];
@@ -60,7 +60,7 @@
 
 + (void)registerEvent:(NSString*)event data:(NSDictionary *)data
 {
-    if (!event || [LEANAppConfig sharedAppConfig].disableEventRecorder) {
+    if (!event || [GoNativeAppConfig sharedAppConfig].disableEventRecorder) {
         return;
     }
     

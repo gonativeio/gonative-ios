@@ -8,7 +8,7 @@
 
 #import <Parse/Parse.h>
 #import "LEANAppDelegate.h"
-#import "LEANAppConfig.h"
+#import "GoNativeAppConfig.h"
 #import "LEANWebViewIntercept.h"
 #import "LEANUrlCache.h"
 #import "LEANPushManager.h"
@@ -28,7 +28,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     
     // Register launch
     [LEANConfigUpdater registerEvent:@"launch" data:nil];
@@ -105,7 +105,7 @@
 
 - (void)configureApplication
 {
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
 
     // tint color from app config
     if (appConfig.tintColor) {
@@ -125,7 +125,7 @@
 }
 
 - (void)clearBadge {
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
 
     if (appConfig.pushNotifications || appConfig.parsePushEnabled) {
         if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]) {
@@ -143,7 +143,7 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     if (appConfig.pushNotifications) {
         // Gonative push service
         [LEANPushManager sharedManager].token = deviceToken;
@@ -173,7 +173,7 @@
 // or becaus it has been automatically purged from memory due to not being used for a while.
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    LEANAppConfig *appConfig = [LEANAppConfig sharedAppConfig];
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     if (!appConfig.pushNotifications && !appConfig.parsePushEnabled) return;
     
     NSString *urlString = userInfo[@"u"];
@@ -343,7 +343,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    if ([LEANAppConfig sharedAppConfig].isSimulator) {
+    if ([GoNativeAppConfig sharedAppConfig].isSimulator) {
         [LEANSimulator checkSimulatorSetting];
     }
 }
