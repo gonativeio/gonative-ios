@@ -13,6 +13,7 @@ sips -z 76 76 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/ic
 sips -z 80 80 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-80.png $BASEDIR/AppIconFlat.png 2>&1
 sips -z 120 120 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-120.png $BASEDIR/AppIconFlat.png 2>&1
 sips -z 152 152 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-152.png $BASEDIR/AppIconFlat.png 2>&1
+sips -z 167 167 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-167.png $BASEDIR/AppIconFlat.png 2>&1
 sips -z 180 180 -s format png --out $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-180.png $BASEDIR/AppIconFlat.png 2>&1
 
 rm -f $BASEDIR/AppIconFlat.png 2>&1
@@ -28,6 +29,7 @@ optipng $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-76.png 2>&1
 optipng $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-80.png 2>&1
 optipng $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-120.png 2>&1
 optipng $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-152.png 2>&1
+optipng $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-167.png 2>&1
 optipng $BASEDIR/Images.xcassets/AppIcon.appiconset/icon-180.png 2>&1
 optipng $BASEDIR/Images.xcassets/HeaderImage.imageset/header.png 2>&1
 optipng $BASEDIR/Images.xcassets/HeaderImage.imageset/header@2x.png 2>&1
