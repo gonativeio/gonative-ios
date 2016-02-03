@@ -1040,19 +1040,6 @@
         return YES;
     }
     
-    // if same page with anchor tag, then allow to load (skip transition)
-    NSURL *currentUrl = self.currentRequest.URL;
-    if (url.fragment
-        && [request.HTTPMethod isEqualToString:@"GET"]
-        && [self.currentRequest.HTTPMethod isEqualToString:@"GET"]
-        && [url.scheme isEqualToString:currentUrl.scheme]
-        && [url.host isEqualToString:currentUrl.host]
-        && [url.pathComponents isEqualToArray:currentUrl.pathComponents]
-        && (url.parameterString == currentUrl.parameterString || [url.parameterString isEqualToString:currentUrl.parameterString])
-        && (url.query == currentUrl.query || [url.query isEqualToString:currentUrl.query])) {
-        return YES;
-    }
-    
     [[LEANUrlInspector sharedInspector] inspectUrl:url];
     
     // check redirects
@@ -1366,8 +1353,13 @@
         self.isPoolWebview = NO;
     }
     
+    // Do not hide the webview if url.fragment exists. There sometimes is an issue with single-page apps where shouldLoadRequest
+    // is called for SPA page loads if there is a fragment. We will never get an sort of page finished callback, so the page
+    // is always hidden.
+    BOOL hideWebView = !url.fragment;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self hideWebview];
+        if (hideWebView) [self hideWebview];
         [self setNavigationButtonStatus];
     });
     
@@ -1702,10 +1694,17 @@
     
     self.activityIndicator.alpha = 1.0;
     [self.activityIndicator startAnimating];
+    
+    // Show webview after 10 seconds just in case we never get a page finished callback
+    // Otherwise, users may be stuck forever on the loading animation
+    [self showWebviewWithDelay:10.0];
 }
 
 - (void)showWebview
 {
+    // cancel any other pending calls to showWebView
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showWebview) object:nil];
+    
     self.startedLoading = NO;
     [self.timer invalidate];
     self.timer = nil;
