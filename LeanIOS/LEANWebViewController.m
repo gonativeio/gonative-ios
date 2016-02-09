@@ -104,6 +104,9 @@
     [self hideTabBarAnimated:NO];
     [self hideToolbarAnimated:NO];
     
+    self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
+    self.toolbarManager = [[LEANToolbarManager alloc] initWithToolbar:self.toolbar webviewController:self];
+    
     // set title to application title
     if ([appConfig.navTitles count] == 0) {
         self.navigationItem.title = appConfig.appName;
@@ -394,6 +397,37 @@
     [actionSheet showFromBarButtonItem:self.customActionButton animated:YES];
 }
 
+-(void)setSidebarEnabled:(BOOL)enabled
+{
+    if (![self isRootWebView]) return;
+    
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    if (!appConfig.showNavigationMenu) return;
+    
+    LEANNavigationController *navController = (LEANNavigationController*)self.navigationController;
+    [navController setSidebarEnabled:enabled];
+    
+    if (enabled) {
+        self.navButton.customView = nil;
+    } else {
+        self.navButton.customView = [[UIView alloc] init];
+        [navController.frostedViewController hideMenuViewController];
+    }
+}
+
+- (void)checkPreNavigationForUrl:(NSURL*)url
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self checkNavigationTitleImageForUrl:url];
+        [self.tabManager autoSelectTabForUrl:url];
+        
+        GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+        if (appConfig.sidebarEnabledRegex) {
+            [self setSidebarEnabled:[appConfig.sidebarEnabledRegex evaluateWithObject:[url absoluteString]]];
+        }
+    });
+}
+
 - (void)checkNavigationForUrl:(NSURL*) url;
 {
     if (![GoNativeAppConfig sharedAppConfig].tabMenus) {
@@ -404,14 +438,7 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (!self.tabManager) {
-            self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
-        }
         [self.tabManager didLoadUrl:url];
-        
-        if (!self.toolbarManager) {
-            self.toolbarManager = [[LEANToolbarManager alloc] initWithToolbar:self.toolbar webviewController:self];
-        }
         [self.toolbarManager didLoadUrl:url];
     });
 }
@@ -1305,8 +1332,8 @@
     // save for html interception
     ((LEANAppDelegate*)[[UIApplication sharedApplication] delegate]).currentRequest = request;
     
-    // update title image
-    [self checkNavigationTitleImageForUrl:request.URL];
+    // update title image, tabs, etc
+    [self checkPreNavigationForUrl:request.URL];
     
     // check to see if the webview exists in pool. Swap it in if it's not the same url.
     UIView *poolWebview = nil;

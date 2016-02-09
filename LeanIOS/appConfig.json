@@ -8,6 +8,7 @@
   "navigation": {
     "iosPullToRefresh": false,
     "sidebarNavigation": {
+      "sidebarEnabledRegex": null,
       "menus": [{
         "name": "default",
         "items": [{

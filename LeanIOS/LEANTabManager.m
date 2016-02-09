@@ -10,6 +10,7 @@
 #import "LEANWebViewController.h"
 #import "GoNativeAppConfig.h"
 #import "LEANIcons.h"
+#import "LEANUtilities.h"
 
 @interface LEANTabManager() <UITabBarDelegate>
 @property UITabBar *tabBar;
@@ -17,6 +18,7 @@
 @property (weak, nonatomic) LEANWebViewController* wvc;
 @property NSString *currentMenuID;
 @property BOOL showTabBar;
+@property NSMutableDictionary<NSObject*, NSArray<NSPredicate*>*> *tabRegexCache;
 @end
 
 @implementation LEANTabManager
@@ -29,6 +31,7 @@
         self.tabBar.delegate = self;
         self.wvc = wvc;
         self.showTabBar = NO;
+        self.tabRegexCache = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -63,6 +66,8 @@
     }
     
     self.showTabBar = showTabBar;
+    
+    [self autoSelectTabForUrl:url];
 }
 
 - (void)loadTabBarMenu:(NSString*)menuID
@@ -100,6 +105,55 @@
     [self.tabBar setItems:items animated:NO];
 }
 
+- (NSArray<NSPredicate*>*) getRegexForTab:(NSDictionary*) tabConfig
+{
+    if (![tabConfig isKindOfClass:[NSDictionary class]]) return nil;
+    
+    id regex = tabConfig[@"regex"];
+    if (!regex) return nil;
+    
+    return [LEANUtilities createRegexArrayFromStrings:regex];
+}
+
+- (NSArray<NSPredicate*>*) getCachedRegexForTab:(NSInteger) position
+{
+    if (!self.menu || position < 0 || position >= [self.menu count]) return nil;
+    
+    NSDictionary *tabConfig = self.menu[position];
+    if (![tabConfig isKindOfClass:[NSDictionary class]]) return nil;
+    
+    NSArray<NSPredicate*>* cached = self.tabRegexCache[tabConfig];
+    if ([cached isKindOfClass:[NSNumber class]]) return nil;
+    else {
+        NSArray<NSPredicate*>* regex = [self getRegexForTab:tabConfig];
+        if (!regex) {
+            self.tabRegexCache[tabConfig] = (NSArray<NSPredicate*>*)[NSNull null];
+            return nil;
+        } else {
+            self.tabRegexCache[tabConfig] = regex;
+            return regex;
+        }
+    }
+}
+
+- (void)autoSelectTabForUrl:(NSURL*)url
+{
+    if (!self.menu) return;
+    
+    NSString *urlString = [url absoluteString];
+    
+    for (NSInteger i = 0; i < [self.menu count]; i++) {
+        NSArray<NSPredicate*> *regexList = [self getCachedRegexForTab:i];
+        if (!regexList) continue;
+        
+        for (NSPredicate *regex in regexList) {
+            if ([regex evaluateWithObject:urlString]) {
+                self.tabBar.selectedItem = self.tabBar.items[i];
+                return;
+            }
+        }
+    }
+}
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {

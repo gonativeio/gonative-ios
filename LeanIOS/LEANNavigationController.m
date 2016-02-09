@@ -11,7 +11,6 @@
 #import "GoNativeAppConfig.h"
 
 @interface LEANNavigationController () <UINavigationControllerDelegate>
-
 @end
 
 @implementation LEANNavigationController
@@ -36,9 +35,12 @@
 
     // recognize swipe from left edge
     if (appConfig.showNavigationMenu) {
+        self.sidebarEnabled = YES;
         UIScreenEdgePanGestureRecognizer *r = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
         r.edges = UIRectEdgeLeft;
         [self.view addGestureRecognizer:r];
+    } else {
+        self.sidebarEnabled = NO;
     }
     
     self.delegate = self;
@@ -61,7 +63,9 @@
 
 - (void)panGestureRecognized:(UIScreenEdgePanGestureRecognizer *)sender
 {
-    [self.frostedViewController panGestureRecognized:sender];
+    if (self.sidebarEnabled) {
+        [self.frostedViewController panGestureRecognized:sender];
+    }
 }
 
 

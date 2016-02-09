@@ -10,8 +10,6 @@
 #import "REFrostedViewController.h"
 
 @interface LEANNavigationController : UINavigationController
-
+@property BOOL sidebarEnabled;
 - (void)panGestureRecognized:(UIPanGestureRecognizer *)sender;
-
-
 @end

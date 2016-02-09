@@ -45,6 +45,7 @@ typedef enum : NSUInteger {
 @property NSMutableArray *loginDetectRegexes;
 @property NSMutableArray *loginDetectLocations;
 @property BOOL showNavigationMenu;
+@property NSPredicate *sidebarEnabledRegex;
 @property NSMutableArray *navStructureLevels;
 @property NSMutableArray *navTitles;
 @property NSMutableArray *regexInternalEternal;
