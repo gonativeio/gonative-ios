@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <OneSignal/OneSignal.h>
 #import "LEANCastController.h"
 #import "Reachability.h"
 
@@ -16,6 +17,8 @@
 @property LEANCastController *castController;
 @property NSURLRequest *currentRequest;
 @property Reachability *internetReachability;
+@property (strong, nonatomic) OneSignal *oneSignal;
+
 - (void)configureApplication;
 
 @end

@@ -63,6 +63,10 @@
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
 		20504CF51B9E62EF00D1E5D7 /* LEANIdentityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */; };
 		205141F51C3F54D40087DEB2 /* libGoNativeIOSLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */; };
+		2056509E1C6D7D7800F0B663 /* OneSignal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2056509D1C6D7D7800F0B663 /* OneSignal.framework */; };
+		205650A21C6ED77400F0B663 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */; };
+		205650A31C6ED77400F0B663 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */; };
+		205650A41C6ED77400F0B663 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */; };
 		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
@@ -197,6 +201,10 @@
 		20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIdentityService.m; sourceTree = "<group>"; };
 		205141F31C3F54C00087DEB2 /* GoNativeAppConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoNativeAppConfig.h; sourceTree = "<group>"; };
 		205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoNativeIOSLibrary.a; sourceTree = "<group>"; };
+		2056509D1C6D7D7800F0B663 /* OneSignal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OneSignal.framework; sourceTree = "<group>"; };
+		2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
@@ -264,18 +272,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2056509E1C6D7D7800F0B663 /* OneSignal.framework in Frameworks */,
 				202BE5831B9757530064D928 /* Social.framework in Frameworks */,
 				202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */,
 				202BE57F1B9757450064D928 /* libsqlite3.dylib in Frameworks */,
+				205650A41C6ED77400F0B663 /* FBSDKShareKit.framework in Frameworks */,
 				202BE57D1B9757390064D928 /* SystemConfiguration.framework in Frameworks */,
 				202BE57B1B9757310064D928 /* StoreKit.framework in Frameworks */,
 				202BE5791B97572C0064D928 /* Security.framework in Frameworks */,
+				205650A31C6ED77400F0B663 /* FBSDKLoginKit.framework in Frameworks */,
 				202BE5851B9757AD0064D928 /* Bolts.framework in Frameworks */,
 				202BE5771B9757240064D928 /* QuartzCore.framework in Frameworks */,
 				202BE5751B97571B0064D928 /* CoreLocation.framework in Frameworks */,
 				202BE5731B97570D0064D928 /* CFNetwork.framework in Frameworks */,
 				202BE5711B9757070064D928 /* AudioToolbox.framework in Frameworks */,
 				20A0B6ED1A363EFB00D9C3F2 /* MessageUI.framework in Frameworks */,
+				205650A21C6ED77400F0B663 /* FBSDKCoreKit.framework in Frameworks */,
 				20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */,
 				20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */,
 				20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */,
@@ -325,6 +337,10 @@
 		2002B49A18A9991300495B3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */,
+				205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */,
+				205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */,
+				2056509D1C6D7D7800F0B663 /* OneSignal.framework */,
 				202BE5821B9757530064D928 /* Social.framework */,
 				202BE5801B97574E0064D928 /* Accounts.framework */,
 				202BE57E1B9757450064D928 /* libsqlite3.dylib */,

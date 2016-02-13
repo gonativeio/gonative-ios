@@ -113,6 +113,15 @@ typedef enum : NSUInteger {
 @property BOOL parsePushEnabled;
 @property BOOL parseAnalyticsEnabled;
 
+// onesignal integration
+@property BOOL oneSignalEnabled;
+@property NSString *oneSignalAppId;
+
+// Facebook SDK
+@property BOOL facebookEnabled;
+@property NSString *facebookAppId;
+@property NSString *facebookDisplayName;
+
 // identity service
 @property NSArray *checkIdentityUrlRegexes;
 @property NSURL *identityEndpointUrl;

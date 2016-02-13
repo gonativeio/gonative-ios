@@ -15,4 +15,5 @@
 -(BOOL)pushEnabled;
 -(void)setPushRegistrationToken:(NSData*)token;
 -(void)setParseInstallationId:(NSString*)installationId;
+-(void)setOneSignalUserId:(NSString*)userId;
 @end

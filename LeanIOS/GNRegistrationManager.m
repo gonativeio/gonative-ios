@@ -16,11 +16,13 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     RegistrationDataInstallation = 1 << 0,
     RegistrationDataPush = 1 << 1,
     RegistrationDataParse = 1 << 2,
+    RegistrationDataOneSignal = 1 << 3
 };
 
 @interface GNRegistrationInfo : NSObject
 @property NSData *pushRegistrationToken;
 @property NSString *parseInstallationId;
+@property NSString *oneSignalUserId;
 @end
 @implementation GNRegistrationInfo
 @end
@@ -52,12 +54,16 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
         [toSend addEntriesFromDictionary:[LEANInstallation info]];
     }
     
-    if (self.dataTypes & RegistrationDataPush) {
+    if (self.dataTypes & RegistrationDataPush && info.pushRegistrationToken) {
         toSend[@"deviceToken"] = [info.pushRegistrationToken base64EncodedStringWithOptions:0];
     }
     
-    if (self.dataTypes & RegistrationDataParse) {
+    if (self.dataTypes & RegistrationDataParse && info.parseInstallationId) {
         toSend[@"parseInstallationId"] = info.parseInstallationId;
+    }
+    
+    if (self.dataTypes & RegistrationDataOneSignal && info.oneSignalUserId) {
+        toSend[@"oneSignalUserId"] = info.oneSignalUserId;
     }
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:toSend options:0 error:nil];
@@ -134,6 +140,9 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     else if ([string caseInsensitiveCompare:@"parse"] == NSOrderedSame) {
         return RegistrationDataParse | RegistrationDataInstallation;
     }
+    else if ([string caseInsensitiveCompare:@"onesignal"] == NSOrderedSame) {
+        return RegistrationDataOneSignal | RegistrationDataInstallation;
+    }
     
     return 0;
 }
@@ -200,6 +209,12 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 {
     self.registrationInfo.parseInstallationId = installationId;
     [self registrationDataChanged:RegistrationDataParse];
+}
+
+-(void)setOneSignalUserId:(NSString *)userId
+{
+    self.registrationInfo.oneSignalUserId = userId;
+    [self registrationDataChanged:RegistrationDataOneSignal];
 }
 
 -(void)checkUrl:(NSURL *)url

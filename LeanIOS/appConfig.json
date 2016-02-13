@@ -118,6 +118,15 @@
       "clientKey": "",
       "pushEnabled": false
     },
+    "oneSignal": {
+      "active": false,
+      "applicationId": ""
+    },
+    "facebook": {
+      "active": false,
+      "appId": "",
+      "displayName": ""
+    },
     "push": {
       "active": false
     },

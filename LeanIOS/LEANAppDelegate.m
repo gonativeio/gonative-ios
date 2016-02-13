@@ -7,6 +7,7 @@
 //
 
 #import <Parse/Parse.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "LEANAppDelegate.h"
 #import "GoNativeAppConfig.h"
 #import "LEANWebViewIntercept.h"
@@ -43,11 +44,52 @@
         parseInstallationId = [[PFInstallation currentInstallation] installationId];
     }
     
+    // OneSignal
+    if (appConfig.oneSignalEnabled) {
+        self.oneSignal = [[OneSignal alloc] initWithLaunchOptions:launchOptions appId:appConfig.oneSignalAppId handleNotification:^(NSString *message, NSDictionary *additionalData, BOOL isActive) {
+            
+            NSString *urlString = additionalData[@"u"];
+            if (![urlString isKindOfClass:[NSString class]]) urlString = additionalData[@"targetUrl"];
+            NSURL *url = nil;
+            if ([urlString isKindOfClass:[NSString class]]) {
+                url = [NSURL URLWithString:urlString];
+            }
+
+            BOOL webviewOnTop = NO;
+            UIViewController *rvc = self.window.rootViewController;
+            if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+                webviewOnTop = [(LEANRootViewController*)rvc webviewOnTop];
+            }
+
+            if (isActive) {
+                // Show an alert, and include a "view" button if there is a url and the webview is currently the top view.
+                if (url && webviewOnTop) {
+                    self.alertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"View", nil];
+                    self.url = url;
+                } else {
+                    self.alertView = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                }
+                
+                [self.alertView show];
+
+            } else {
+                if (url && webviewOnTop) {
+                    [(LEANRootViewController*)rvc loadUrl:url];
+                }
+            }
+        }];
+    }
+    
     // registration service
     GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
     [registration processConfig:appConfig.registrationEndpoints];
     if (parseInstallationId) {
         [registration setParseInstallationId:parseInstallationId];
+    }
+    if (appConfig.oneSignalEnabled) {
+        [self.oneSignal IdsAvailable:^(NSString *userId, NSString *pushToken) {
+            [registration setOneSignalUserId:userId];
+        }];
     }
     
     // Register for remote push notifications
@@ -99,6 +141,12 @@
     // listen for reachability
     self.internetReachability = [Reachability reachabilityForInternetConnection];
     [self.internetReachability startNotifier];
+    
+    // Facebook SDK
+    if (appConfig.facebookEnabled) {
+        [[FBSDKApplicationDelegate sharedInstance] application:application
+                                 didFinishLaunchingWithOptions:launchOptions];
+    }
     
     return YES;
 }
@@ -170,11 +218,20 @@
 //  3) app is background, i.e. app is not foreground, and we got a push notification with aps:{content-available:1}.
 //     We will create a local notification and present it immediately.
 // Note that this method does not get called if an app is loaded from scratch, either because it has been force quit
-// or becaus it has been automatically purged from memory due to not being used for a while.
+// or because it has been automatically purged from memory due to not being used for a while.
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
+    // Do not handle if from OneSignal, as they provide their own handler via some crazy runtime injection.
+    if ([userInfo[@"custom"] isKindOfClass:[NSDictionary class]]) {
+        completionHandler(UIBackgroundFetchResultNewData);
+        return;
+    }
+    
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-    if (!appConfig.pushNotifications && !appConfig.parsePushEnabled) return;
+    if (!appConfig.pushNotifications && !appConfig.parsePushEnabled) {
+        completionHandler(UIBackgroundFetchResultNoData);
+        return;
+    }
     
     NSString *urlString = userInfo[@"u"];
     if (![urlString isKindOfClass:[NSString class]]) urlString = userInfo[@"targetUrl"];
@@ -338,13 +395,28 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    return [LEANSimulator openURL:url];
+    if ([LEANSimulator openURL:url]) {
+        return YES;
+    }
+    
+    // Facebook SDK
+    if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
+        return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                              openURL:url
+                                                    sourceApplication:sourceApplication
+                                                           annotation:annotation];
+    }
+    return NO;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     if ([GoNativeAppConfig sharedAppConfig].isSimulator) {
         [LEANSimulator checkSimulatorSetting];
+    }
+    
+    if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
+        [FBSDKAppEvents activateApp];
     }
 }
 
