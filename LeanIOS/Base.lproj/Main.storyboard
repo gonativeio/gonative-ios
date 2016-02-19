@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Bg2-kp-iGG">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F1509" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Bg2-kp-iGG">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -45,13 +45,13 @@
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="M1s-dx-l8D">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="temp" id="MMv-Cq-aAD">
-                                <rect key="frame" x="0.0" y="55" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="49.5" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MMv-Cq-aAD" id="CkX-sC-tmm">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -73,13 +73,13 @@
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="aTK-AJ-WVW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingsCell" id="86b-Sh-CAk">
-                                <rect key="frame" x="0.0" y="119" width="320" height="44"/>
+                                <rect key="frame" x="0.0" y="113.5" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="86b-Sh-CAk" id="ZD4-Q8-dh9">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -108,7 +108,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <webView opaque="NO" contentMode="scaleToFill" scalesPageToFit="YES" allowsInlineMediaPlayback="NO" translatesAutoresizingMaskIntoConstraints="NO" id="21Z-2V-MUj">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="443"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </webView>
                             <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="vcS-3e-fYP">
@@ -130,13 +130,15 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="21Z-2V-MUj" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="B8o-z9-9Ir"/>
+                            <constraint firstItem="U7w-yv-4mp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="2Tg-S4-JnX"/>
+                            <constraint firstItem="xzn-yM-UJR" firstAttribute="bottom" secondItem="21Z-2V-MUj" secondAttribute="top" id="6yx-9Z-Wht"/>
                             <constraint firstItem="U7w-yv-4mp" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="BNH-59-vhV"/>
+                            <constraint firstItem="d6i-vM-zFn" firstAttribute="top" relation="greaterThanOrEqual" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="CGe-aA-bFC"/>
                             <constraint firstAttribute="trailing" secondItem="U7w-yv-4mp" secondAttribute="trailing" id="Fp8-P1-Qn4"/>
                             <constraint firstAttribute="trailing" secondItem="21Z-2V-MUj" secondAttribute="trailing" id="IHu-Ll-0kV"/>
+                            <constraint firstItem="h3e-Xf-rQK" firstAttribute="top" secondItem="21Z-2V-MUj" secondAttribute="bottom" priority="750" id="Jaw-Rl-tef"/>
                             <constraint firstItem="21Z-2V-MUj" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="Lrw-C4-Y6u"/>
                             <constraint firstItem="d6i-vM-zFn" firstAttribute="top" secondItem="U7w-yv-4mp" secondAttribute="bottom" id="LtD-ts-ptw"/>
-                            <constraint firstAttribute="bottom" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="OAZ-4i-z9z"/>
                             <constraint firstAttribute="centerX" secondItem="vcS-3e-fYP" secondAttribute="centerX" id="VrM-Hx-sWZ"/>
                             <constraint firstAttribute="trailing" secondItem="d6i-vM-zFn" secondAttribute="trailing" id="XII-eu-6QS"/>
                             <constraint firstAttribute="centerY" secondItem="vcS-3e-fYP" secondAttribute="centerY" id="f2R-cs-BzY"/>

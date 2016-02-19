@@ -314,6 +314,9 @@
         UIWebView *webview = (UIWebView*)wv;
         webview.scalesPageToFit = YES;
         webview.scrollView.bounces = [GoNativeAppConfig sharedAppConfig].pullToRefresh;
+        
+        // for our faux content-inset
+        webview.scrollView.layer.masksToBounds = NO;
     } else if([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
         webview.scrollView.bounces = [GoNativeAppConfig sharedAppConfig].pullToRefresh;
@@ -345,6 +348,9 @@
             WKUserScript *userScript = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
             [webview.configuration.userContentController addUserScript:userScript];
         }
+        
+        // for our faux content-inset
+        webview.scrollView.layer.masksToBounds = NO;
     }
 }
 
