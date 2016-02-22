@@ -1480,6 +1480,7 @@
             if (url) {
                 [self checkPreNavigationForUrl:url];
                 [self checkNavigationForUrl:url];
+                [[GNRegistrationManager sharedManager] checkUrl:url];
             }
         }
         if ([keyPath isEqualToString:@"canGoBack"]) {
