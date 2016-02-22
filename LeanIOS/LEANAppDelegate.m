@@ -74,6 +74,10 @@
 
             } else {
                 if (url && webviewOnTop) {
+                    // for when the app is launched from scratch from a push notification
+                    [(LEANRootViewController*)rvc setInitialUrl:url];
+                    
+                    // for when the app was backgrounded
                     [(LEANRootViewController*)rvc loadUrl:url];
                 }
             }

@@ -232,6 +232,14 @@
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if (self.wkWebview) {
+        @try {
+            [self.wkWebview removeObserver:self forKeyPath:@"URL"];
+            [self.wkWebview removeObserver:self forKeyPath:@"canGoBack"];
+        }
+        @catch (NSException * __unused exception) {
+        }
+    }
 }
 
 - (void)didReceiveNotification:(NSNotification*)notification
@@ -1376,6 +1384,14 @@
     }
     if (self.wkWebview) {
         oldView = self.wkWebview;
+        
+        // remove KVO
+        @try {
+            [oldView removeObserver:self forKeyPath:@"URL"];
+            [oldView removeObserver:self forKeyPath:@"canGoBack"];
+        }
+        @catch (NSException * __unused exception) {
+        }
     }
     
     [self hideWebview];
@@ -1395,6 +1411,10 @@
         self.wkWebview.navigationDelegate = self;
         self.wkWebview.UIDelegate = self;
         scrollView = self.wkWebview.scrollView;
+        
+        // add KVO for single-page app url changes
+        [newView addObserver:self forKeyPath:@"URL" options:0 context:nil];
+        [newView addObserver:self forKeyPath:@"canGoBack" options:0 context:nil];
     } else {
         return;
     }
@@ -1448,6 +1468,25 @@
     }
     
     [self addPullToRefresh];
+}
+
+// To detect single-page app navigation in WKWebView
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context
+{
+    if (object == self.wkWebview) {
+        NSURL *url = self.wkWebview.URL;
+
+        if ([keyPath isEqualToString:@"URL"]) {
+            if (url) {
+                [self checkPreNavigationForUrl:url];
+                [self checkNavigationForUrl:url];
+            }
+        }
+        if ([keyPath isEqualToString:@"canGoBack"]) {
+            // we need a separate observe canGoBack because it seems to update after URL
+            [self.toolbarManager didLoadUrl:url];
+        }
+    }
 }
 
 - (void) webViewDidStartLoad:(UIWebView *)webView
