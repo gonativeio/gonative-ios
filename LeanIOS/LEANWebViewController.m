@@ -430,9 +430,7 @@
         [self.tabManager autoSelectTabForUrl:url];
         
         GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-        if (appConfig.sidebarEnabledRegex) {
-            [self setSidebarEnabled:[appConfig.sidebarEnabledRegex evaluateWithObject:[url absoluteString]]];
-        }
+        [self setSidebarEnabled:[appConfig shouldShowSidebarForUrl:[url absoluteString]]];
     });
 }
 

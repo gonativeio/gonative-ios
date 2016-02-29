@@ -45,7 +45,8 @@ typedef enum : NSUInteger {
 @property NSMutableArray *loginDetectRegexes;
 @property NSMutableArray *loginDetectLocations;
 @property BOOL showNavigationMenu;
-@property NSPredicate *sidebarEnabledRegex;
+@property NSMutableArray<NSPredicate*> *sidebarEnabledRegexes;
+@property NSMutableArray<NSNumber*> *sidebarIsEnabled;
 @property NSMutableArray *navStructureLevels;
 @property NSMutableArray *navTitles;
 @property NSMutableArray *regexInternalEternal;
@@ -157,5 +158,6 @@ typedef enum : NSUInteger {
 
 - (BOOL)shouldShowNavigationTitleImageForUrl:(NSString*)url;
 -(NSString*)userAgentForUrl:(NSURL*)url;
+- (BOOL)shouldShowSidebarForUrl:(NSString*)url;
 
 @end
