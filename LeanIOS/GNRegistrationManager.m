@@ -9,6 +9,7 @@
 #import "GNRegistrationManager.h"
 #import "LEANUtilities.h"
 #import "LEANInstallation.h"
+#import "GoNativeAppConfig.h"
 
 #pragma mark Registration Data
 
@@ -31,8 +32,12 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 
 @interface GNRegistrationEndpoint : NSObject
 @property NSURL *postUrl;
+@property NSString *postUrlString;
 @property NSArray *urlRegexes;
 @property RegistrationData dataTypes;
+// WKWebView cookies are not shared with native url request functions, so if we are using
+// WK, use a hidden webview to do POSTs.
+@property WKWebView *wkWebView;
 @end
 
 @implementation GNRegistrationEndpoint
@@ -41,8 +46,18 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     self = [super init];
     if (self) {
         self.postUrl = postUrl;
+        self.postUrlString = [self.postUrl absoluteString];
         self.urlRegexes = urlRegexes;
         self.dataTypes = dataTypes;
+        
+        if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
+            WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
+            config.processPool = [LEANUtilities wkProcessPool];
+            self.wkWebView = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:CGRectZero configuration:config];
+            
+            // load url to get around same-origin policy
+            [self.wkWebView loadData:[[NSData alloc] init] MIMEType:@"text/html" characterEncodingName:@"utf-8" baseURL:self.postUrl];
+        }
     }
     return self;
 }
@@ -74,6 +89,17 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setHTTPBody:jsonData];
+    
+    // if using WkWebView, send POST via WkWebView.
+    if (self.wkWebView) {
+        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSString *js = [NSString stringWithFormat:@"var xhr = new XMLHttpRequest(); xhr.open('POST', %@, true); xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8'); xhr.send(%@);",
+                        [LEANUtilities jsWrapString:self.postUrlString],
+                        [LEANUtilities jsWrapString:jsonString]];
+        [self.wkWebView evaluateJavaScript:js completionHandler:nil];
+        
+        return;
+    }
     
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
