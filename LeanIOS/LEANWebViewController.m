@@ -321,7 +321,7 @@
     
     if ([self isRootWebView]) {
         [self.navigationController setNavigationBarHidden:![GoNativeAppConfig sharedAppConfig].showNavigationBar animated:YES];
-    } else {
+    } else if ([GoNativeAppConfig sharedAppConfig].showNavigationBarWithNavigationLevels) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
     

@@ -79,6 +79,7 @@ typedef enum : NSUInteger {
 @property UIColor *titleTextColor;
 @property BOOL showToolbar;
 @property BOOL showNavigationBar;
+@property BOOL showNavigationBarWithNavigationLevels;
 @property NSMutableArray *navigationTitleImageRegexes;
 @property NSNumber *menuAnimationDuration;
 @property NSNumber *interactiveDelay;
