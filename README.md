@@ -11,3 +11,5 @@ How to use
 Open project in Xcode. Edit appConfig.json as appropriate.
 
 Licensing information available at: https://gonative.io/license
+
+Purchasing a license is required before publishing the application and distributing to users: https://gonative.io/pricing
