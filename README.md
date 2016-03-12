@@ -10,4 +10,4 @@ How to use
 ------------
 Open project in Xcode. Edit appConfig.json as appropriate.
 
-Licensing information available at: https://gonative.io/
+Licensing information available at: https://gonative.io/license
