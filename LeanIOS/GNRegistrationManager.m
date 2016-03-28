@@ -56,7 +56,7 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
             self.wkWebView = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:CGRectZero configuration:config];
             
             // load url to get around same-origin policy
-            [self.wkWebView loadData:[[NSData alloc] init] MIMEType:@"text/html" characterEncodingName:@"utf-8" baseURL:self.postUrl];
+            [self.wkWebView loadHTMLString:@"" baseURL:self.postUrl];
         }
     }
     return self;
