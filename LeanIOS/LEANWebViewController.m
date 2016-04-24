@@ -169,28 +169,38 @@
     
     self.visitedLoginOrSignup = NO;
     
-    // switch to wkwebview if on ios8
-    if (appConfig.useWKWebView) {
-        WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
-        config.processPool = [LEANUtilities wkProcessPool];
-        WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:config];
-        [LEANUtilities configureWebView:wv];
-        [self switchToWebView:wv showImmediately:NO];
+    if (self.initialWebview) {
+        [self switchToWebView:self.initialWebview showImmediately:YES];
+        self.initialWebview = nil;
+        
+        // nav title image
+        [self checkNavigationTitleImageForUrl:self.wkWebview.URL];
+        
     } else {
-        // set self as webview delegate to handle start/end load events
-        self.webview.delegate = self;
-        [LEANUtilities configureWebView:self.webview];
+        // switch to wkwebview if on ios8
+        if (appConfig.useWKWebView) {
+            WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
+            config.processPool = [LEANUtilities wkProcessPool];
+            WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:config];
+            [LEANUtilities configureWebView:wv];
+            [self switchToWebView:wv showImmediately:NO];
+        } else {
+            // set self as webview delegate to handle start/end load events
+            self.webview.delegate = self;
+            [LEANUtilities configureWebView:self.webview];
+        }
+        
+        // load initial url
+        self.urlLevel = -1;
+        if (!self.initialUrl) {
+            self.initialUrl = appConfig.initialURL;
+        }
+        [self loadUrl:self.initialUrl];
+        
+        // nav title image
+        [self checkNavigationTitleImageForUrl:self.initialUrl];
+
     }
-    
-    // load initial url
-    self.urlLevel = -1;
-    if (!self.initialUrl) {
-        self.initialUrl = appConfig.initialURL;
-    }
-    [self loadUrl:self.initialUrl];
-    
-    // nav title image
-    [self checkNavigationTitleImageForUrl:self.initialUrl];
     
     // hidden nav bar
     if (!appConfig.showNavigationBar && [self isRootWebView]) {
@@ -1674,13 +1684,45 @@
 
 - (WKWebView*)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
-    // This gets called when a link has target=blank.
-    // If we open an external link in a new webview, the app will be stuck on a blank page.
-    // Therefore, load in the same webview instead of creating a new webview.
+    WKWebView *newWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:configuration];
+    [LEANUtilities configureWebView:newWebview];
+    
+    LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
+    newvc.initialWebview = newWebview;
+    
+    NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
+    while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
+        [controllers removeLastObject];
+    }
+    [controllers addObject:newvc];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self loadRequest:navigationAction.request];
+        [self.navigationController setViewControllers:controllers animated:YES];
     });
-    return nil;
+
+    return newWebview;
+}
+
+-(void)webViewDidClose:(WKWebView *)webView
+{
+    if (webView != self.wkWebview) return;
+    
+    NSArray *vcs = self.navigationController.viewControllers;
+    LEANWebViewController *popTo = nil;
+    // find the top webviewcontroller that is not self
+    for (NSInteger i = vcs.count - 1; i >= 0; i--) {
+        if ([vcs[i] isKindOfClass:[LEANWebViewController class]] && vcs[i] != self) {
+            popTo = vcs[i];
+            break;
+        }
+    }
+    
+    if (popTo) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController popToViewController:popTo animated:YES];
+        });
+    } else {
+        [self loadUrl:[GoNativeAppConfig sharedAppConfig].initialURL];
+    }
 }
 
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
@@ -1690,6 +1732,20 @@
         completionHandler();
     }];
     [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:frame.request.URL.host message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        completionHandler(YES);
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        completionHandler(NO);
+    }];
+    [alert addAction:okAction];
+    [alert addAction:cancelAction];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
