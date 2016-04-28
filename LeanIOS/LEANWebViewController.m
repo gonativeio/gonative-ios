@@ -1684,6 +1684,13 @@
 
 - (WKWebView*)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
+    if (![GoNativeAppConfig sharedAppConfig].enableWindowOpen) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self loadRequest:navigationAction.request];
+        });
+        return nil;
+    }
+    
     WKWebView *newWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:configuration];
     [LEANUtilities configureWebView:newWebview];
     

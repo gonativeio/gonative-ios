@@ -38,6 +38,7 @@ typedef enum : NSUInteger {
 @property NSArray *replaceStrings;
 @property BOOL disableConfigUpdater;
 @property BOOL disableEventRecorder;
+@property BOOL enableWindowOpen;
 
 // navigation
 @property NSMutableDictionary *menus;
