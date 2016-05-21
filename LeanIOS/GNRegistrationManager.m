@@ -128,6 +128,7 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 @property RegistrationData allDataTypes;
 
 @property GNRegistrationInfo *registrationInfo;
+@property NSURL *lastUrl;
 @end
 
 @implementation GNRegistrationManager
@@ -219,7 +220,9 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     if (!self.allDataTypes & type) return;
     
     for (GNRegistrationEndpoint *endpoint in self.registrationEndpoints) {
-        if (endpoint.dataTypes & type) {
+        if (!(endpoint.dataTypes & type)) continue;
+        
+        if (self.lastUrl && [LEANUtilities string:[self.lastUrl absoluteString] matchesAnyRegex:endpoint.urlRegexes]) {
             [endpoint sendRegistrationInfo:self.registrationInfo];
         }
     }
@@ -245,9 +248,13 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 
 -(void)checkUrl:(NSURL *)url
 {
+    self.lastUrl = url;
     for (GNRegistrationEndpoint *endpoint in self.registrationEndpoints) {
         if ([LEANUtilities string:[url absoluteString] matchesAnyRegex:endpoint.urlRegexes]) {
-            [endpoint sendRegistrationInfo:self.registrationInfo];
+            // send after delay. Cookies may not have synced if we send immediately.
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [endpoint sendRegistrationInfo:self.registrationInfo];
+            });
         }
     }
 }
