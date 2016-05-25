@@ -918,6 +918,13 @@
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
+    // is target="_blank" and we are allowing window open? Always accept, skipping logic. This makes
+    // target="_blank" behave like window.open
+    if (navigationAction.targetFrame == nil && [GoNativeAppConfig sharedAppConfig].enableWindowOpen) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+        return;
+    }
+    
     BOOL isUserAction = navigationAction.navigationType == WKNavigationTypeLinkActivated || navigationAction.navigationType == WKNavigationTypeFormSubmitted;
     BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:navigationAction.targetFrame.isMainFrame isUserAction:isUserAction];
     if (shouldLoad) decisionHandler(WKNavigationActionPolicyAllow);
