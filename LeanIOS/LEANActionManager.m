@@ -74,7 +74,7 @@
     for (NSDictionary *entry in menu) {
         NSString *system = entry[@"system"];
         if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"share"]) {
-            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self.wvc action:@selector(sharePage)];
+            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self.wvc action:@selector(sharePage:)];
             [newButtonItems addObject:button];
             [self.urls addObject:@""];
         } else {

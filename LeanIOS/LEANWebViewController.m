@@ -581,7 +581,7 @@
             
         case 3:
             //action
-            [self sharePage];
+            [self sharePage:sender];
             break;
             
         case 4:
@@ -657,13 +657,25 @@
     [self.navigationItem setRightBarButtonItems:buttons animated:animated];
 }
 
-- (void) sharePage
+- (void) sharePage:(id)sender
 {
     UIActivityViewController * avc = [[UIActivityViewController alloc]
                                       initWithActivityItems:@[[self.currentRequest URL]] applicationActivities:nil];
     // The activity view inherits tint color, but always has a light background, making the buttons
     // impossible to read if we have light tint color. Force the tint to be the ios default.
     [avc.view setTintColor:[UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0]];
+    
+    // For iPads starting in iOS 8, we need to specify where the pop over should occur from.
+    if ( [avc respondsToSelector:@selector(popoverPresentationController)] ) {
+        if ([sender isKindOfClass:[UIBarButtonItem class]]) {
+            avc.popoverPresentationController.barButtonItem = sender;
+        } else if ([sender isKindOfClass:[UIView class]]) {
+            avc.popoverPresentationController.sourceView = sender;
+        } else {
+            avc.popoverPresentationController.sourceView = self.view;
+        }
+    }
+    
     [self presentViewController:avc animated:YES completion:nil];
 }
 

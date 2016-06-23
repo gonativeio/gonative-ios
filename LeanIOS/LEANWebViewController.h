@@ -32,7 +32,7 @@ static NSString *kLEANWebViewControllerClearPools = @"io.gonative.ios.WebViewCon
 - (void) hideTabBarAnimated:(BOOL)animated;
 - (void) showToolbarAnimated:(BOOL)animated;
 - (void) hideToolbarAnimated:(BOOL)animated;
-- (void) sharePage;
+- (void) sharePage:(id)sender;
 - (BOOL) canGoBack;
 - (void) goBack;
 @end
