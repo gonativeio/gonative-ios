@@ -76,6 +76,7 @@
 		207170CB18C3A376002EBDD0 /* ListCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170CA18C3A376002EBDD0 /* ListCellView.xib */; };
 		2089662718AC6753007FC34F /* LEANLoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2089662618AC6753007FC34F /* LEANLoginManager.m */; };
 		208A9F42191AEBAD0049E664 /* appConfig.json in Resources */ = {isa = PBXBuildFile; fileRef = 208A9F41191AEBAD0049E664 /* appConfig.json */; };
+		209A7D101D347714005A89C6 /* GoNativeAuthUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */; };
 		209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 209B3218193FA36F0052A7C6 /* LEANUrlCache.m */; };
 		209B321D193FB11A0052A7C6 /* localCache.zip in Resources */ = {isa = PBXBuildFile; fileRef = 209B321C193FB11A0052A7C6 /* localCache.zip */; };
 		209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B3307193FC4CE0052A7C6 /* libzipzap.a */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -94,6 +95,7 @@
 		20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 20A525ED1A7D94EE00936DC5 /* Settings.bundle */; };
 		20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */; };
 		20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */; };
+		20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */; };
 		20C8505019CD143100DB208A /* LEANIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C8504F19CD143100DB208A /* LEANIcons.m */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
 		20D7B68319A6BF0100993236 /* LEANSimulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7B68219A6BF0100993236 /* LEANSimulator.m */; };
@@ -217,6 +219,7 @@
 		2089662518AC6753007FC34F /* LEANLoginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANLoginManager.h; sourceTree = "<group>"; };
 		2089662618AC6753007FC34F /* LEANLoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANLoginManager.m; sourceTree = "<group>"; };
 		208A9F41191AEBAD0049E664 /* appConfig.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = appConfig.json; sourceTree = "<group>"; };
+		209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeAuthUrl.swift; sourceTree = "<group>"; };
 		209B3217193FA36F0052A7C6 /* LEANUrlCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANUrlCache.h; sourceTree = "<group>"; };
 		209B3218193FA36F0052A7C6 /* LEANUrlCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUrlCache.m; sourceTree = "<group>"; };
 		209B321C193FB11A0052A7C6 /* localCache.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = localCache.zip; sourceTree = "<group>"; };
@@ -247,6 +250,8 @@
 		20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANConfigUpdater.m; sourceTree = "<group>"; };
 		20B6B55319AC4C2E004019C4 /* LEANDocumentSharer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANDocumentSharer.h; sourceTree = "<group>"; };
 		20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANDocumentSharer.m; sourceTree = "<group>"; };
+		20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GonativeIO-Bridging-Header.h"; sourceTree = "<group>"; };
+		20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeKeychain.swift; sourceTree = "<group>"; };
 		20C8504E19CD143100DB208A /* LEANIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANIcons.h; sourceTree = "<group>"; };
 		20C8504F19CD143100DB208A /* LEANIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIcons.m; sourceTree = "<group>"; };
 		20D77B6E1A2547E5008A938D /* LEANActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANActionManager.h; sourceTree = "<group>"; };
@@ -431,6 +436,8 @@
 				2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */,
 				20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */,
 				20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */,
+				20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */,
+				209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */,
 				204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */,
 				204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */,
 				202E989319EF30C8009C28AD /* Reachability.h */,
@@ -439,6 +446,7 @@
 				2002B4AD18A9991300495B3D /* Main.storyboard */,
 				2002B4D818A99A9900495B3D /* REFrostedViewController */,
 				2002B4A218A9991300495B3D /* Supporting Files */,
+				20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */,
 			);
 			path = LeanIOS;
 			sourceTree = "<group>";
@@ -632,6 +640,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = LEAN;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "GoNative.io LLC";
 				TargetAttributes = {
@@ -732,10 +741,12 @@
 				20504CF51B9E62EF00D1E5D7 /* LEANIdentityService.m in Sources */,
 				20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
+				20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */,
 				20C8505019CD143100DB208A /* LEANIcons.m in Sources */,
 				2002B4E518A99A9900495B3D /* RECommonFunctions.m in Sources */,
 				201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */,
 				2002B4AC18A9991300495B3D /* LEANAppDelegate.m in Sources */,
+				209A7D101D347714005A89C6 /* GoNativeAuthUrl.swift in Sources */,
 				20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */,
 				204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */,
 				20A13AB31905CB6C00B997DD /* NSString+FontAwesome.m in Sources */,
@@ -888,6 +899,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GonativeIO.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -900,6 +912,7 @@
 				GCC_PREFIX_HEADER = "LeanIOS/GoNativeIOS-Prefix.pch";
 				INFOPLIST_FILE = "LeanIOS/GoNativeIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib",
@@ -910,6 +923,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "LeanIOS/GonativeIO-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				WRAPPER_EXTENSION = app;
@@ -921,6 +936,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GonativeIO.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -933,6 +949,7 @@
 				GCC_PREFIX_HEADER = "LeanIOS/GoNativeIOS-Prefix.pch";
 				INFOPLIST_FILE = "LeanIOS/GoNativeIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/lib",
@@ -943,6 +960,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "LeanIOS/GonativeIO-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				WRAPPER_EXTENSION = app;

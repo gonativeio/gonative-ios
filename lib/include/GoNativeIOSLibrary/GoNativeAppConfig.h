@@ -132,6 +132,9 @@ typedef enum : NSUInteger {
 // registration service
 @property NSArray *registrationEndpoints;
 
+// touch id
+@property NSArray *authAllowedUrls;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;

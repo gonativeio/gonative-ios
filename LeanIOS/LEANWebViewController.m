@@ -30,6 +30,7 @@
 #import "LEANActionManager.h"
 #import "LEANIdentityService.h"
 #import "GNRegistrationManager.h"
+#import "GonativeIO-swift.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate>
 
@@ -994,6 +995,24 @@
                 }
             }
         }
+        
+        return NO;
+    }
+    
+    // touchid authentication
+    if ([@"gonative" isEqualToString:url.scheme] && [@"auth" isEqualToString:url.host]) {
+        GoNativeAuthUrl *authUrl = [[GoNativeAuthUrl alloc] init];
+        authUrl.currentUrl = self.currentRequest.URL;
+        [authUrl handleUrl:url callback:^(NSString * _Nullable postUrl, NSDictionary<NSString *,id> * _Nullable postData) {
+            if (!postUrl || !postData) return;
+            
+            NSString *js = [LEANUtilities createJsForPostTo:postUrl data:postData];
+            if (js) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self runJavascript:js];
+                });
+            }
+        }];
         
         return NO;
     }

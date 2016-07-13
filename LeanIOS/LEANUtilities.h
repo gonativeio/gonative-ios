@@ -25,4 +25,5 @@
 + (WKProcessPool *)wkProcessPool;
 +(NSArray<NSPredicate*>*)createRegexArrayFromStrings:(id)input;
 +(BOOL)string:(NSString*)string matchesAnyRegex:(NSArray<NSPredicate*>*)regexes;
++(NSString*)createJsForPostTo:(NSString*)url data:(NSDictionary*)data;
 @end
