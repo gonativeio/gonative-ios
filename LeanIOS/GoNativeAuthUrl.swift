@@ -69,7 +69,7 @@ public class GoNativeAuthUrl : NSObject {
         
         let callbackUrl = queryDict["callback"]
         // check callback url
-        if callbackUrl != nil && self.currentUrl != nil {
+        if callbackUrl != nil {
             let callbackAbsoluteUrl = NSURL.init(string: callbackUrl!, relativeToURL: self.currentUrl)
             
             if callbackAbsoluteUrl != nil && !self.isUrlAllowed(callbackAbsoluteUrl?.absoluteString) {
