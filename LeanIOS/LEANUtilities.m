@@ -458,4 +458,35 @@
     return @"";
 }
 
+
++(NSString*)createJsForCallback:(NSString*)functionName data:(NSDictionary*)data
+{
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:0 error:nil];
+    if (!jsonData) {
+        return nil;
+    }
+    
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    
+    NSString *template = @"function gonative_do_callback(functionName, jsonString) { "
+    "    if (typeof window[functionName] !== 'function') return; "
+    " "
+    "    try { "
+    "        var data = JSON.parse(jsonString); "
+    "        var callbackFunction = window[functionName]; "
+    "        callbackFunction(data); "
+    "    } catch (ignored) { "
+    " "
+    "    } "
+    "} "
+    " "
+    "gonative_do_callback(%@, %@);";
+
+    
+    return [NSString stringWithFormat:template, [self jsWrapString:functionName], [self jsWrapString:jsonString]];
+    
+    return @"";
+}
+
 @end

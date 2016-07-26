@@ -32,7 +32,7 @@ public class GoNativeAuthUrl : NSObject {
     }
     
     @objc
-    func handleUrl(url: NSURL, callback: (postUrl: String?, postData: [String:AnyObject]?)->Void) -> Void {
+    func handleUrl(url: NSURL, callback: (postUrl: String?, postData: [String:AnyObject]?, callbackFunc: String?)->Void) -> Void {
         if url.scheme != "gonative" || url.host != "auth" {
             return
         }
@@ -78,14 +78,20 @@ public class GoNativeAuthUrl : NSObject {
             }
         }
         
+        let callbackFunction = queryDict["callbackFunction"];
+        
+        func doCallback(data: [String:AnyObject]?) {
+            callback(postUrl: callbackUrl, postData: data, callbackFunc: callbackFunction)
+        }
+        
         let path = url.path
         if path == "/status" {
-            if (callbackUrl == nil) {
+            if (callbackUrl == nil && callbackFunction == nil) {
                 return
             }
             
             GoNativeKeychain().getStatusAsync({ (statusData:[String : AnyObject]) -> (Void) in
-                callback(postUrl: callbackUrl, postData: statusData)
+                doCallback(statusData)
                 return
             })
         }
@@ -96,20 +102,18 @@ public class GoNativeAuthUrl : NSObject {
             }
             
             GoNativeKeychain().saveSecretAsync(secret!, callback: { (result) -> (Void) in
-                if callbackUrl != nil {
-                    if result == KeychainOperationResult.Success {
-                        callback(postUrl: callbackUrl, postData: ["success": true])
-                    } else {
-                        callback(postUrl: callbackUrl, postData: [
-                            "success": false,
-                            "error": result.rawValue
+                if result == KeychainOperationResult.Success {
+                    doCallback(["success": true])
+                } else {
+                    doCallback([
+                        "success": false,
+                        "error": result.rawValue
                         ])
-                    }
                 }
             })
         }
         else if path == "/get" {
-            if (callbackUrl == nil) {
+            if (callbackUrl == nil && callbackFunction == nil) {
                 return
             }
             
@@ -126,12 +130,12 @@ public class GoNativeAuthUrl : NSObject {
             
             GoNativeKeychain().getSecretAsync(prompt) { (result, secret) -> (Void) in
                 if result == .Success {
-                    callback(postUrl: callbackUrl, postData: [
+                    doCallback([
                         "success": true,
                         "secret": secret == nil ? "" : secret!
                     ])
                 } else if !(result == KeychainOperationResult.UserCanceled && !doCallbackOnCancel) {
-                    callback(postUrl: callbackUrl, postData: [
+                    doCallback([
                         "success": false,
                         "error": result.rawValue
                     ])
@@ -140,15 +144,13 @@ public class GoNativeAuthUrl : NSObject {
         }
         else if path == "/delete" {
             GoNativeKeychain().deleteSecretAsync({ (result) -> (Void) in
-                if callbackUrl != nil {
-                    if result == .Success {
-                        callback(postUrl: callbackUrl, postData: ["success": true])
-                    } else {
-                        callback(postUrl: callbackUrl, postData: [
-                            "success": false,
-                            "error": result.rawValue
+                if result == .Success {
+                    doCallback(["success": true])
+                } else {
+                    doCallback([
+                        "success": false,
+                        "error": result.rawValue
                         ])
-                    }
                 }
             })
         }

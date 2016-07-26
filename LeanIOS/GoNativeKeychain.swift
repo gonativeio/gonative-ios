@@ -94,7 +94,7 @@ public class GoNativeKeychain: NSObject {
                     SecItemCopyMatching(query as CFDictionaryRef, UnsafeMutablePointer($0))
                 }
                 
-                if status == errSecInteractionNotAllowed {
+                if status == errSecInteractionNotAllowed || status == errSecSuccess {
                     callback(exists: true)
                 } else {
                     callback(exists: false)

@@ -1003,14 +1003,25 @@
     if ([@"gonative" isEqualToString:url.scheme] && [@"auth" isEqualToString:url.host]) {
         GoNativeAuthUrl *authUrl = [[GoNativeAuthUrl alloc] init];
         authUrl.currentUrl = self.currentRequest.URL;
-        [authUrl handleUrl:url callback:^(NSString * _Nullable postUrl, NSDictionary<NSString *,id> * _Nullable postData) {
-            if (!postUrl || !postData) return;
+        [authUrl handleUrl:url callback:^(NSString * _Nullable postUrl, NSDictionary<NSString *,id> * _Nullable postData, NSString * _Nullable callbackFunction) {
             
-            NSString *js = [LEANUtilities createJsForPostTo:postUrl data:postData];
-            if (js) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self runJavascript:js];
-                });
+            if (callbackFunction) {
+                NSString *jsCallback = [LEANUtilities createJsForCallback:callbackFunction data:postData];
+                if (jsCallback) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self runJavascript:jsCallback];
+                    });
+                }
+            }
+            
+            if (postUrl) {
+                NSString *jsPost = [LEANUtilities createJsForPostTo:postUrl data:postData];
+                if (jsPost) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self runJavascript:jsPost];
+                    });
+                }
+
             }
         }];
         
