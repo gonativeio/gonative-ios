@@ -12,6 +12,6 @@
 
 @interface LEANSettingsController : UITableViewController
 @property LEANProfilePicker *profilePicker;
-@property LEANWebViewController *wvc;
+@property (weak, nonatomic) LEANWebViewController *wvc;
 @property (weak) UIPopoverController *popover;
 @end

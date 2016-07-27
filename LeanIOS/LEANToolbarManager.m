@@ -16,7 +16,7 @@
 @property NSArray *toolbarItems;
 @property NSArray *toolbarItemTypes;
 @property NSArray *toolbarItemUrlRegexes;
-@property LEANWebViewController *wvc;
+@property (weak, nonatomic) LEANWebViewController *wvc;
 @property LEANToolbarVisibility visibility;
 @end
 
