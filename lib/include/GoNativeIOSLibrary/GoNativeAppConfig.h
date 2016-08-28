@@ -20,6 +20,12 @@ typedef enum : NSUInteger {
     LEANToolbarVisibilityAnyItemEnabled
 } LEANToolbarVisibility;
 
+typedef enum : NSUInteger {
+    GoNativeScreenOrientationUnspecified,
+    GoNativeScreenOrientationPortrait,
+    GoNativeScreenOrientationLandscape
+} GoNativeScreenOrientation;
+
 @interface GoNativeAppConfig : NSObject
 
 // general
@@ -39,6 +45,8 @@ typedef enum : NSUInteger {
 @property BOOL disableConfigUpdater;
 @property BOOL disableEventRecorder;
 @property BOOL enableWindowOpen;
+@property GoNativeScreenOrientation forceScreenOrientation;
+@property BOOL keepScreenOn;
 
 // navigation
 @property NSMutableDictionary *menus;

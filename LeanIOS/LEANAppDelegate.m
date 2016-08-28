@@ -152,6 +152,11 @@
                                  didFinishLaunchingWithOptions:launchOptions];
     }
     
+    // disable sleep if requested
+    if (appConfig.keepScreenOn) {
+        application.idleTimerDisabled = YES;
+    }
+    
     return YES;
 }
 
@@ -427,6 +432,19 @@
 - (void)application:(UIApplication *)application didChangeStatusBarOrientation:(UIInterfaceOrientation)oldStatusBarOrientation
 {
     [LEANSimulator didChangeStatusBarOrientation];
+}
+
+- (UIInterfaceOrientationMask)application:(UIApplication *)application
+  supportedInterfaceOrientationsForWindow:(UIWindow *)window
+{
+    GoNativeScreenOrientation orientation = [GoNativeAppConfig sharedAppConfig].forceScreenOrientation;
+    if (orientation == GoNativeScreenOrientationPortrait) {
+        return UIInterfaceOrientationMaskPortrait;
+    }
+    else if (orientation == GoNativeScreenOrientationLandscape) {
+        return UIInterfaceOrientationMaskLandscape;
+    }
+    else return UIInterfaceOrientationMaskAllButUpsideDown;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
