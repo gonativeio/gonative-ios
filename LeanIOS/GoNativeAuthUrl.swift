@@ -45,7 +45,7 @@ public class GoNativeAuthUrl : NSObject {
             // check current url against allowed
             let currentUrlString = self.currentUrl!.absoluteString
             if (!self.isUrlAllowed(currentUrlString)) {
-                NSLog("URL not allowed to access auth: %@", currentUrlString)
+                print("URL not allowed to access auth: ", currentUrlString)
                 return
             }
         }
@@ -73,7 +73,7 @@ public class GoNativeAuthUrl : NSObject {
             let callbackAbsoluteUrl = NSURL.init(string: callbackUrl!, relativeToURL: self.currentUrl)
             
             if callbackAbsoluteUrl != nil && !self.isUrlAllowed(callbackAbsoluteUrl?.absoluteString) {
-                NSLog("Callback URL not allowed to access auth: %@", callbackAbsoluteUrl!.absoluteString)
+                print("Callback URL not allowed to access auth: ", callbackAbsoluteUrl!.absoluteString)
                 return
             }
         }

@@ -60,10 +60,10 @@
             NSArray *itemRegexes = [LEANUtilities createRegexArrayFromStrings:urlRegex];
             if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"back"]) {
                 if (iconImage) {
-                    item = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStyleBordered target:self action:@selector(backPressed:)];
+                    item = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(backPressed:)];
                 } else {
                     if (!title) title = @"Back";
-                    item = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleBordered target:self action:@selector(backPressed:)];
+                    item = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(backPressed:)];
                 }
                 
                 item.enabled = NO;

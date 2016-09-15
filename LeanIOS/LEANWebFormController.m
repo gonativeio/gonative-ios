@@ -420,8 +420,8 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
                     }
                     else if ([field[@"type"] isEqualToString:@"date"]) {
                         UIDatePicker *datePicker = (UIDatePicker*)[cell viewWithTag:2];
-                        NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-                        NSDateComponents *components = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit fromDate:datePicker.date];
+                        NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+                        NSDateComponents *components = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth |  NSCalendarUnitDay fromDate:datePicker.date];
                         [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%ld);", [LEANUtilities jsWrapString:field[@"yearSelector"]], (long)components.year]];
                         [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%ld);", [LEANUtilities jsWrapString:field[@"monthSelector"]], (long)components.month]];
                         [self runJavascriptSync: [NSString stringWithFormat: @"jQuery(%@).val(%ld);", [LEANUtilities jsWrapString:field[@"daySelector"]], (long)components.day]];

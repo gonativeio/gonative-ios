@@ -28,6 +28,8 @@
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
+    
     if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
         self.liveBlurBackgroundStyle = REFrostedViewControllerLiveBackgroundStyleDark;
         self.blurTintColor = [UIColor colorWithWhite:0 alpha:0.75f];
