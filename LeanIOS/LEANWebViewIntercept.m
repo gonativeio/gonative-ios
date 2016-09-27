@@ -18,6 +18,7 @@ static NSPredicate* schemeHttpTest;
 static NSOperationQueue* queue;
 
 static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
+static NSString * kRequestPropertyRemoveXframe = @"io.gonative.ios.LEANWebViewIntercept.removeXFrameOptions";
 static LEANUrlCache *urlCache;
 
 @interface LEANWebViewIntercept () <NSURLConnectionDataDelegate>
@@ -73,9 +74,21 @@ static LEANUrlCache *urlCache;
         [request HTTPBodyStream] == [currentRequest HTTPBodyStream]) {
         return YES;
     }
-    else {
-        return NO;
+    
+    // if has removeXFrameOptions=true, then intercept
+    NSURLComponents *components = [NSURLComponents componentsWithURL:request.URL.absoluteURL resolvingAgainstBaseURL:NO];
+    if (components) {
+        for (NSURLQueryItem *item in components.queryItems) {
+            if ([@"removeXFrameOptions" isEqualToString:item.name] &&
+                ([@"true" isEqualToString:item.value] || [@"1" isEqualToString:item.value])) {
+                return YES;
+            }
+        }
     }
+    // may have gotten redirected from a page with removeXFrameOptions=true
+    if ([self propertyForKey:kRequestPropertyRemoveXframe inRequest:request]) return YES;
+    
+    return NO;
 }
 
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
@@ -90,6 +103,25 @@ static LEANUrlCache *urlCache;
         NSString *customUserAgent = [[GoNativeAppConfig sharedAppConfig] userAgentForUrl:request.URL];
         if (customUserAgent) {
             [self.modifiedRequest setValue:customUserAgent forHTTPHeaderField:@"User-Agent"];
+        }
+        
+        // if url contains removeXFrameOptions, remove it from modified request
+        NSURLComponents *components = [NSURLComponents componentsWithURL:request.URL.absoluteURL resolvingAgainstBaseURL:NO];
+        NSMutableArray *removeQueries = [NSMutableArray array];
+        if (components) {
+            for (NSURLQueryItem *item in components.queryItems) {
+                if ([@"removeXFrameOptions" isEqualToString:item.name]) {
+                    [removeQueries addObject:item];
+                }
+            }
+        }
+        if ([removeQueries count] > 0) {
+            NSMutableArray<NSURLQueryItem*> *modifiedQueryItems = [components.queryItems mutableCopy];
+            [modifiedQueryItems removeObjectsInArray:removeQueries];
+            components.queryItems = modifiedQueryItems;
+            self.modifiedRequest.URL = [components URL];
+            // also set this so that we still do interception even if there is a redirect.
+            [[self class] setProperty:[NSNumber numberWithBool:YES] forKey:kRequestPropertyRemoveXframe inRequest:self.modifiedRequest];
         }
         
         // this prevents us from re-intercepting the subsequent request. kOurRequestProperty is checked for in canInitWithRequest
@@ -217,6 +249,17 @@ static LEANUrlCache *urlCache;
 
 #pragma mark - URL Connection Data Delegate
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        // remove X-Frame-Options from all responses
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
+        NSDictionary *headers = [httpResponse allHeaderFields];
+        if (headers[@"x-frame-options"]) {
+            NSMutableDictionary *modifiedHeaders = [headers mutableCopy];
+            [modifiedHeaders removeObjectForKey:@"x-frame-options"];
+            response = [[NSHTTPURLResponse alloc] initWithURL:httpResponse.URL statusCode:httpResponse.statusCode HTTPVersion:nil headerFields:modifiedHeaders];
+        }
+    }
+    
     [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
     
     [[LEANDocumentSharer sharedSharer] receivedResponse:response];
