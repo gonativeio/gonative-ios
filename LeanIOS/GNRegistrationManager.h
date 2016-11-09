@@ -16,4 +16,6 @@
 -(void)setPushRegistrationToken:(NSData*)token;
 -(void)setParseInstallationId:(NSString*)installationId;
 -(void)setOneSignalUserId:(NSString*)userId;
+-(void)setCustomData:(NSDictionary*)data;
+-(void)sendToAllEndpoints;
 @end

@@ -1028,6 +1028,27 @@
         return NO;
     }
     
+    // registration info
+    if ([@"gonative" isEqualToString:url.scheme] && [@"registration" isEqualToString:url.host]
+        && [@"/send" isEqualToString:url.path]) {
+        
+        NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+        NSString *customDataString = query[@"customData"];
+        if (customDataString) {
+            NSDictionary *customData = [NSJSONSerialization JSONObjectWithData:[customDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+            if ([customData isKindOfClass:[NSDictionary class]]) {
+                [[GNRegistrationManager sharedManager] setCustomData:customData];
+                [[GNRegistrationManager sharedManager] sendToAllEndpoints];
+            } else {
+                NSLog(@"Gonative registration error: customData is not JSON object");
+            }
+        } else {
+            [[GNRegistrationManager sharedManager] sendToAllEndpoints];
+        }
+        
+        return NO;
+    }
+    
     // tel links
     if ([url.scheme isEqualToString:@"tel"]) {
         NSString *telNumber = url.resourceSpecifier;

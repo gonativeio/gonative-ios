@@ -17,13 +17,15 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     RegistrationDataInstallation = 1 << 0,
     RegistrationDataPush = 1 << 1,
     RegistrationDataParse = 1 << 2,
-    RegistrationDataOneSignal = 1 << 3
+    RegistrationDataOneSignal = 1 << 3,
+    RegistrationDataCustom = 1 << 4
 };
 
 @interface GNRegistrationInfo : NSObject
 @property NSData *pushRegistrationToken;
 @property NSString *parseInstallationId;
 @property NSString *oneSignalUserId;
+@property NSDictionary *customData;
 @end
 @implementation GNRegistrationInfo
 @end
@@ -79,6 +81,10 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     
     if (self.dataTypes & RegistrationDataOneSignal && info.oneSignalUserId) {
         toSend[@"oneSignalUserId"] = info.oneSignalUserId;
+    }
+    
+    if (self.dataTypes & RegistrationDataCustom) {
+        toSend[@"customData"] = info.customData;
     }
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:toSend options:0 error:nil];
@@ -159,16 +165,16 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 -(RegistrationData)registrationDataTypeFromString:(NSString*)string
 {
     if ([string caseInsensitiveCompare:@"installation"] == NSOrderedSame) {
-        return RegistrationDataInstallation;
+        return RegistrationDataInstallation | RegistrationDataCustom;
     }
     else if ([string caseInsensitiveCompare:@"push"] == NSOrderedSame) {
-        return RegistrationDataPush | RegistrationDataInstallation;
+        return RegistrationDataPush | RegistrationDataInstallation | RegistrationDataCustom;
     }
     else if ([string caseInsensitiveCompare:@"parse"] == NSOrderedSame) {
-        return RegistrationDataParse | RegistrationDataInstallation;
+        return RegistrationDataParse | RegistrationDataInstallation | RegistrationDataCustom;
     }
     else if ([string caseInsensitiveCompare:@"onesignal"] == NSOrderedSame) {
-        return RegistrationDataOneSignal | RegistrationDataInstallation;
+        return RegistrationDataOneSignal | RegistrationDataInstallation | RegistrationDataCustom;
     }
     
     return 0;
@@ -228,6 +234,13 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     }
 }
 
+-(void)sendToAllEndpoints
+{
+    for (GNRegistrationEndpoint *endpoint in self.registrationEndpoints) {
+        [endpoint sendRegistrationInfo:self.registrationInfo];
+    }
+}
+
 -(void)setPushRegistrationToken:(NSData*)token
 {
     self.registrationInfo.pushRegistrationToken = token;
@@ -244,6 +257,12 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 {
     self.registrationInfo.oneSignalUserId = userId;
     [self registrationDataChanged:RegistrationDataOneSignal];
+}
+
+-(void)setCustomData:(NSDictionary *)data
+{
+    self.registrationInfo.customData = data;
+    [self registrationDataChanged:RegistrationDataCustom];
 }
 
 -(void)checkUrl:(NSURL *)url

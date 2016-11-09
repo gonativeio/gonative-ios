@@ -75,6 +75,26 @@
     return urlWithQuerystring;
 }
 
++(NSDictionary*)parseQuaryParamsWithUrl:(NSURL*)url
+{
+    NSString *query = url.query;
+    if (!query) return @{};
+    
+    NSMutableDictionary *result = [NSMutableDictionary dictionary];
+
+    NSArray * queryComponents = [query componentsSeparatedByString:@"&"];
+    for (NSString *keyValue in queryComponents) {
+        NSArray *pairComponents = [keyValue componentsSeparatedByString:@"="];
+        if (pairComponents.count != 2) continue;
+        
+        NSString *key = [[pairComponents firstObject] stringByRemovingPercentEncoding];
+        NSString *value = [[pairComponents lastObject] stringByRemovingPercentEncoding];
+        result[key] = value;
+    }
+    
+    return result;
+}
+
 +(BOOL)isValidEmail:(NSString*)email
 {
     NSString *emailRegex = @"\\S+@\\S+\\.\\S+";
