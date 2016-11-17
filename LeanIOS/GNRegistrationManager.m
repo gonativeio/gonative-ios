@@ -83,8 +83,10 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
         toSend[@"oneSignalUserId"] = info.oneSignalUserId;
     }
     
-    if (self.dataTypes & RegistrationDataCustom) {
-        toSend[@"customData"] = info.customData;
+    if (self.dataTypes & RegistrationDataCustom && info.customData) {
+        for (NSString *key in info.customData) {
+            toSend[[NSString stringWithFormat:@"customData_%@", key]] = info.customData[key];
+        }
     }
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:toSend options:0 error:nil];
