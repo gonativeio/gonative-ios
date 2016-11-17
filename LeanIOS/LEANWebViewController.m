@@ -1525,10 +1525,10 @@
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
     constraint.priority = UILayoutPriorityDefaultHigh;
     [self.view addConstraint:constraint];
-    // tab bar >=
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tabBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:newView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    // toolbar >=
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.toolbar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:newView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    // tab bar <=
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tabBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:newView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+    // toolbar <=
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.toolbar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:newView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     
     if (self.postLoadJavascript) {
         [self runJavascript:self.postLoadJavascript];

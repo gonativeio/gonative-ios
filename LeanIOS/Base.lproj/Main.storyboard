@@ -130,10 +130,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="U7w-yv-4mp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="2Tg-S4-JnX"/>
+                            <constraint firstItem="U7w-yv-4mp" firstAttribute="top" relation="lessThanOrEqual" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="2Tg-S4-JnX"/>
                             <constraint firstItem="xzn-yM-UJR" firstAttribute="bottom" secondItem="21Z-2V-MUj" secondAttribute="top" id="6yx-9Z-Wht"/>
                             <constraint firstItem="U7w-yv-4mp" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="BNH-59-vhV"/>
-                            <constraint firstItem="d6i-vM-zFn" firstAttribute="top" relation="greaterThanOrEqual" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="CGe-aA-bFC"/>
+                            <constraint firstItem="d6i-vM-zFn" firstAttribute="top" relation="lessThanOrEqual" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="CGe-aA-bFC"/>
                             <constraint firstAttribute="trailing" secondItem="U7w-yv-4mp" secondAttribute="trailing" id="Fp8-P1-Qn4"/>
                             <constraint firstAttribute="trailing" secondItem="21Z-2V-MUj" secondAttribute="trailing" id="IHu-Ll-0kV"/>
                             <constraint firstItem="h3e-Xf-rQK" firstAttribute="top" secondItem="21Z-2V-MUj" secondAttribute="bottom" priority="750" id="Jaw-Rl-tef"/>
