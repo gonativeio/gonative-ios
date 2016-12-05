@@ -143,6 +143,11 @@ typedef enum : NSUInteger {
 // touch id
 @property NSArray *authAllowedUrls;
 
+// in-app purchase
+@property BOOL iapEnabled;
+@property NSURL *iapProductsUrl;
+@property NSURL *iapPostUrl;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;

@@ -17,12 +17,14 @@
 #import "LEANConfigUpdater.h"
 #import "LEANSimulator.h"
 #import "GNRegistrationManager.h"
+#import "GNInAppPurchase.h"
 
 #define LOCAL_NOTIFICATION_FILE @"localNotifications.plist"
 
 @interface LEANAppDelegate() <UIAlertViewDelegate>
 @property UIAlertView *alertView;
 @property NSURL *url;
+@property GNInAppPurchase *iap;
 @end
 
 @implementation LEANAppDelegate
@@ -152,6 +154,10 @@
     if (appConfig.keepScreenOn) {
         application.idleTimerDisabled = YES;
     }
+    
+    GNInAppPurchase *iap = [GNInAppPurchase sharedInstance];
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:iap];
+    [iap initialize];
     
     return YES;
 }

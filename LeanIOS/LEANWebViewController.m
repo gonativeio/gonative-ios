@@ -30,6 +30,7 @@
 #import "LEANActionManager.h"
 #import "LEANIdentityService.h"
 #import "GNRegistrationManager.h"
+#import "GNInAppPurchase.h"
 #import "GonativeIO-swift.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate>
@@ -1049,6 +1050,17 @@
         return NO;
     }
     
+    // In-app purchases
+    if ([@"gonative" isEqualToString:url.scheme] && [@"purchase" isEqualToString:url.host]) {
+        NSArray *pathComponents = url.pathComponents;
+        if (pathComponents.count == 2) {
+            NSString *productId = pathComponents[1];
+            [[GNInAppPurchase sharedInstance] purchaseProduct:productId];
+        }
+        
+        return NO;
+    }
+    
     // tel links
     if ([url.scheme isEqualToString:@"tel"]) {
         NSString *telNumber = url.resourceSpecifier;
@@ -1625,8 +1637,7 @@
         self.didLoadPage = YES;
         
         [[LEANUrlInspector sharedInspector] inspectUrl:url];
-        
-        
+                
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self setNavigationButtonStatus];
         
@@ -1732,6 +1743,20 @@
         
         // registration service
         [[GNRegistrationManager sharedManager] checkUrl:url];
+        
+        // IAP
+        if ([GoNativeAppConfig sharedAppConfig].iapEnabled) {
+            [[GNInAppPurchase sharedInstance] getInAppPurchaseInfoWithBlock:^(NSDictionary * iapInfo) {
+                NSDictionary *info = @{@"inAppPurchases": iapInfo};
+                
+                NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_info_ready" data:info];
+                if (jsCallback) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self runJavascript:jsCallback];
+                    });
+                }
+            }];
+        }
         
         // save session cookies as persistent
         NSUInteger forceSessionCookieExpiry = [GoNativeAppConfig sharedAppConfig].forceSessionCookieExpiry;

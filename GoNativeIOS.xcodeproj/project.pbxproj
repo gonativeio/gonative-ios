@@ -96,6 +96,7 @@
 		20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */; };
 		20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */; };
 		20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */; };
+		20C748BE1DF0C4DE002930FD /* GNInAppPurchase.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C748BD1DF0C4DE002930FD /* GNInAppPurchase.m */; };
 		20C8505019CD143100DB208A /* LEANIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C8504F19CD143100DB208A /* LEANIcons.m */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
 		20D7B68319A6BF0100993236 /* LEANSimulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7B68219A6BF0100993236 /* LEANSimulator.m */; };
@@ -252,6 +253,8 @@
 		20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANDocumentSharer.m; sourceTree = "<group>"; };
 		20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GonativeIO-Bridging-Header.h"; sourceTree = "<group>"; };
 		20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeKeychain.swift; sourceTree = "<group>"; };
+		20C748BC1DF0C4DE002930FD /* GNInAppPurchase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNInAppPurchase.h; sourceTree = "<group>"; };
+		20C748BD1DF0C4DE002930FD /* GNInAppPurchase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GNInAppPurchase.m; sourceTree = "<group>"; };
 		20C8504E19CD143100DB208A /* LEANIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANIcons.h; sourceTree = "<group>"; };
 		20C8504F19CD143100DB208A /* LEANIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIcons.m; sourceTree = "<group>"; };
 		20D77B6E1A2547E5008A938D /* LEANActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANActionManager.h; sourceTree = "<group>"; };
@@ -390,6 +393,8 @@
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				2046CAF81BC0790800714F66 /* GNRegistrationManager.h */,
 				2046CAF91BC0790800714F66 /* GNRegistrationManager.m */,
+				20C748BC1DF0C4DE002930FD /* GNInAppPurchase.h */,
+				20C748BD1DF0C4DE002930FD /* GNInAppPurchase.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
 				2002B4AB18A9991300495B3D /* LEANAppDelegate.m */,
 				20054BD418B68D1E00A422F9 /* LEANCastController.h */,
@@ -645,6 +650,7 @@
 				ORGANIZATIONNAME = "GoNative.io LLC";
 				TargetAttributes = {
 					2002B49718A9991300495B3D = {
+						DevelopmentTeam = 2RP7QL3S57;
 						LastSwiftMigration = 0800;
 					};
 					2002B4BB18A9991300495B3D = {
@@ -754,6 +760,7 @@
 				204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */,
 				20A13AB31905CB6C00B997DD /* NSString+FontAwesome.m in Sources */,
 				2002B4A818A9991300495B3D /* main.m in Sources */,
+				20C748BE1DF0C4DE002930FD /* GNInAppPurchase.m in Sources */,
 				20EA5523194FE7900039735B /* LEANPushManager.m in Sources */,
 				2002B4E718A99A9900495B3D /* REFrostedViewController.m in Sources */,
 				2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */,
@@ -916,6 +923,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GonativeIO.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 2RP7QL3S57;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -954,6 +962,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GonativeIO.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 2RP7QL3S57;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
