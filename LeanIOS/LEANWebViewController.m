@@ -1514,33 +1514,21 @@
     
     if (oldView != newView) {
         newView.frame = oldView.frame;
-        [self.view insertSubview:newView aboveSubview:oldView];
+        
+        UIView *webviewContainer = [oldView superview];
+        [webviewContainer insertSubview:newView aboveSubview:oldView];
         [oldView removeFromSuperview];
+        
+        // add layout constriants to constainer view
+        [webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:webviewContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+        [webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:webviewContainer attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+        [webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:webviewContainer attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+        [webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:webviewContainer attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+
     }
     [self adjustInsets];
     // re-scroll after adjusting insets
     [scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-    
-    // Add layout constraints
-    // The top, left, and right are straightforward.
-    // For the bottom, by default we align to the bottom layout guide. However, if a toolbar and/or
-    // tab bar are shown, we want the bottom to be pushed up by them. So make the bottom layout guide
-    // have a lower priority, then add constraints to the tab bar and toolbar with "great than or equal"
-    // relationships.
-    // top layout guide
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.topLayoutGuide attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    // left (leading)
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
-    // right (trailing)
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
-    // bottom layout guide (750 priority)
-    NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
-    constraint.priority = UILayoutPriorityDefaultHigh;
-    [self.view addConstraint:constraint];
-    // tab bar <=
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tabBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:newView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-    // toolbar <=
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.toolbar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationLessThanOrEqual toItem:newView attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
     
     if (self.postLoadJavascript) {
         [self runJavascript:self.postLoadJavascript];
