@@ -650,8 +650,8 @@
 				ORGANIZATIONNAME = "GoNative.io LLC";
 				TargetAttributes = {
 					2002B49718A9991300495B3D = {
-						DevelopmentTeam = 2RP7QL3S57;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Manual;
 					};
 					2002B4BB18A9991300495B3D = {
 						TestTargetID = 2002B49718A9991300495B3D;
@@ -923,7 +923,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GonativeIO.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 2RP7QL3S57;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -962,7 +962,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = GonativeIO.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 2RP7QL3S57;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
