@@ -142,8 +142,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="GBp-Vo-WtS" secondAttribute="bottom" priority="750" id="4Ot-bB-Mmh"/>
-                            <constraint firstItem="d6i-vM-zFn" firstAttribute="top" relation="lessThanOrEqual" secondItem="GBp-Vo-WtS" secondAttribute="bottom" id="9k8-Z1-cNF"/>
+                            <constraint firstAttribute="bottom" secondItem="GBp-Vo-WtS" secondAttribute="bottom" priority="100" id="4Ot-bB-Mmh"/>
+                            <constraint firstItem="d6i-vM-zFn" firstAttribute="top" relation="greaterThanOrEqual" secondItem="GBp-Vo-WtS" secondAttribute="bottom" id="9k8-Z1-cNF"/>
                             <constraint firstItem="U7w-yv-4mp" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="BNH-59-vhV"/>
                             <constraint firstAttribute="trailing" secondItem="U7w-yv-4mp" secondAttribute="trailing" id="Fp8-P1-Qn4"/>
                             <constraint firstItem="d6i-vM-zFn" firstAttribute="top" secondItem="U7w-yv-4mp" secondAttribute="bottom" id="LtD-ts-ptw"/>
@@ -153,7 +153,7 @@
                             <constraint firstAttribute="trailing" secondItem="d6i-vM-zFn" secondAttribute="trailing" id="XII-eu-6QS"/>
                             <constraint firstItem="GBp-Vo-WtS" firstAttribute="left" secondItem="kh9-bI-dsS" secondAttribute="left" id="Zc9-Bq-KNj"/>
                             <constraint firstAttribute="centerY" secondItem="vcS-3e-fYP" secondAttribute="centerY" id="f2R-cs-BzY"/>
-                            <constraint firstItem="U7w-yv-4mp" firstAttribute="top" relation="lessThanOrEqual" secondItem="GBp-Vo-WtS" secondAttribute="bottom" id="hdN-1h-CmV"/>
+                            <constraint firstItem="U7w-yv-4mp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="GBp-Vo-WtS" secondAttribute="bottom" id="hdN-1h-CmV"/>
                             <constraint firstItem="h3e-Xf-rQK" firstAttribute="top" secondItem="d6i-vM-zFn" secondAttribute="bottom" id="kRQ-0d-WHK"/>
                             <constraint firstItem="d6i-vM-zFn" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="lJu-bT-CBi"/>
                         </constraints>
