@@ -21,27 +21,27 @@ enum KeychainOperationResult: String {
     case Unimplemented = "unimplemented"
 }
 
-public class GoNativeKeychain: NSObject {
-    func getStatusAsync(callback: ([String:AnyObject]) -> (Void)) -> Void {
+open class GoNativeKeychain: NSObject {
+    func getStatusAsync(_ callback: @escaping ([String:AnyObject]) -> (Void)) -> Void {
         getSecretExistsAsync { (exists) -> (Void) in
             let result: [String: AnyObject] = [
-                "hasTouchId": self.hasTouchIdD(),
-                "hasSecret": exists
+                "hasTouchId": self.hasTouchIdD() as AnyObject,
+                "hasSecret": exists as AnyObject
             ]
             
             callback(result)
         }
     }
     
-    private func hasTouchIdD() -> Bool {
+    fileprivate func hasTouchIdD() -> Bool {
         if #available(iOS 9.0, *) {
-            return LAContext().canEvaluatePolicy(LAPolicy.DeviceOwnerAuthenticationWithBiometrics, error: nil)
+            return LAContext().canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error: nil)
         } else {
             return false
         }
     }
     
-    func getSecretAsync(prompt: String?, callback: (result: KeychainOperationResult, secret: String?)->(Void)) -> Void {
+    func getSecretAsync(_ prompt: String?, callback: @escaping (_ result: KeychainOperationResult, _ secret: String?)->(Void)) -> Void {
         if #available(iOS 9.0, *) {
             let operationPrompt = prompt == nil ? "Authenticate to retrieve saved credentials" : prompt
             
@@ -54,32 +54,32 @@ public class GoNativeKeychain: NSObject {
             
             var dataTypeRef: AnyObject?
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                let status: OSStatus = withUnsafeMutablePointer(&dataTypeRef) {
-                    SecItemCopyMatching(query as CFDictionaryRef, UnsafeMutablePointer($0))
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
+                let status: OSStatus = withUnsafeMutablePointer(to: &dataTypeRef) {
+                    SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
                 }
                 
                 if status == errSecSuccess {
-                    let data = dataTypeRef as! NSData
-                    let secret = String(data: data, encoding: NSUTF8StringEncoding)
+                    let data = dataTypeRef as! Data
+                    let secret = String(data: data, encoding: String.Encoding.utf8)
                     
-                    dispatch_async(dispatch_get_main_queue(), {
-                        callback(result: .Success, secret: secret)
+                    DispatchQueue.main.async(execute: {
+                        callback(.Success, secret)
                     })
                 } else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        callback(result: self.statusToEnum(status), secret: nil)
+                    DispatchQueue.main.async(execute: {
+                        callback(self.statusToEnum(status), nil)
                     })
                 }
             }
         } else {
-            dispatch_async(dispatch_get_main_queue(), {
-                callback(result: .Unimplemented, secret: nil)
+            DispatchQueue.main.async(execute: {
+                callback(.Unimplemented, nil)
             })
         }
     }
     
-    func getSecretExistsAsync(callback: (exists: Bool)->(Void)) -> Void {
+    func getSecretExistsAsync(_ callback: @escaping (_ exists: Bool)->(Void)) -> Void {
         if #available(iOS 9.0, *) {
             let query: NSDictionary = [
                 kSecClass as String: kSecClassGenericPassword,
@@ -89,41 +89,41 @@ public class GoNativeKeychain: NSObject {
             
             var dataTypeRef: AnyObject?
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                let status: OSStatus = withUnsafeMutablePointer(&dataTypeRef) {
-                    SecItemCopyMatching(query as CFDictionaryRef, UnsafeMutablePointer($0))
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
+                let status: OSStatus = withUnsafeMutablePointer(to: &dataTypeRef) {
+                    SecItemCopyMatching(query as CFDictionary, UnsafeMutablePointer($0))
                 }
                 
                 if status == errSecInteractionNotAllowed || status == errSecSuccess {
-                    callback(exists: true)
+                    callback(true)
                 } else {
-                    callback(exists: false)
+                    callback(false)
                 }
             }
         } else {
-            dispatch_async(dispatch_get_main_queue(), {
-                callback(exists: false)
+            DispatchQueue.main.async(execute: {
+                callback(false)
             })
         }
     }
     
-    func saveSecretAsync(secret: String, callback:(result: KeychainOperationResult)->(Void)) -> Void {
+    func saveSecretAsync(_ secret: String, callback:@escaping (_ result: KeychainOperationResult)->(Void)) -> Void {
         deleteSecretAsync { (deleteResult) -> (Void) in
             // ignore delete result
             self._saveSecretAsync(secret, callback: callback)
         }
     }
     
-    private func _saveSecretAsync(secret: String, callback:(result:KeychainOperationResult)->(Void)) -> Void {
+    fileprivate func _saveSecretAsync(_ secret: String, callback:@escaping (_ result:KeychainOperationResult)->(Void)) -> Void {
         if #available(iOS 9.0, *) {
-            let secretData = secret.dataUsingEncoding(NSUTF8StringEncoding)
+            let secretData = secret.data(using: String.Encoding.utf8)
             
-            let accessControlError:UnsafeMutablePointer<Unmanaged<CFError>?> = nil
-            let accessControlRef = SecAccessControlCreateWithFlags(kCFAllocatorDefault, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, SecAccessControlCreateFlags.TouchIDAny, accessControlError)
+            let accessControlError:UnsafeMutablePointer<Unmanaged<CFError>?>? = nil
+            let accessControlRef = SecAccessControlCreateWithFlags(kCFAllocatorDefault, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, SecAccessControlCreateFlags.touchIDAny, accessControlError)
             
             if accessControlRef == nil || accessControlError != nil {
-                dispatch_async(dispatch_get_main_queue(), {
-                    callback(result: .GenericError)
+                DispatchQueue.main.async(execute: {
+                    callback(.GenericError)
                 })
                 return
             }
@@ -136,34 +136,34 @@ public class GoNativeKeychain: NSObject {
                 kSecAttrAccessControl as String: accessControlRef!
             ]
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
                 let status = SecItemAdd(query, nil)
-                dispatch_async(dispatch_get_main_queue(), {
-                    callback(result: self.statusToEnum(status))
+                DispatchQueue.main.async(execute: {
+                    callback(self.statusToEnum(status))
                 })
             }
         } else {
-            dispatch_async(dispatch_get_main_queue(), {
-                callback(result: .Unimplemented)
+            DispatchQueue.main.async(execute: {
+                callback(.Unimplemented)
             })
         }
     }
     
-    func deleteSecretAsync(callback: (result: KeychainOperationResult)->(Void)) -> Void {
+    func deleteSecretAsync(_ callback: @escaping (_ result: KeychainOperationResult)->(Void)) -> Void {
         let query: NSDictionary = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: kGoNativeKeychainService,
         ]
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.default).async {
             let status = SecItemDelete(query)
-            dispatch_async(dispatch_get_main_queue(), {
-                callback(result: self.statusToEnum(status))
+            DispatchQueue.main.async(execute: {
+                callback(self.statusToEnum(status))
             })
         }
     }
     
-    func statusToEnum(status: OSStatus) -> KeychainOperationResult {
+    func statusToEnum(_ status: OSStatus) -> KeychainOperationResult {
         switch status {
         case errSecSuccess:
             return .Success

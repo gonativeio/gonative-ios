@@ -8,22 +8,22 @@
 
 import Foundation
 
-public class GoNativeAuthUrl : NSObject {
-    var currentUrl: NSURL?
+open class GoNativeAuthUrl : NSObject {
+    var currentUrl: URL?
     var allowedUrlRegexes: [NSPredicate]
     
     override init() {
-        let appConfig = GoNativeAppConfig.sharedAppConfig()
-        self.allowedUrlRegexes = LEANUtilities.createRegexArrayFromStrings(appConfig.authAllowedUrls);
+        let appConfig = GoNativeAppConfig.shared()
+        self.allowedUrlRegexes = LEANUtilities.createRegexArray(fromStrings: appConfig?.authAllowedUrls);
     }
     
-    func isUrlAllowed(url: String?) -> Bool {
+    func isUrlAllowed(_ url: String?) -> Bool {
         if (url == nil) {
             return true
         }
         
         for regex in self.allowedUrlRegexes {
-            if regex.evaluateWithObject(url) {
+            if regex.evaluate(with: url) {
                 return true
             }
         }
@@ -32,12 +32,8 @@ public class GoNativeAuthUrl : NSObject {
     }
     
     @objc
-    func handleUrl(url: NSURL, callback: (postUrl: String?, postData: [String:AnyObject]?, callbackFunc: String?)->Void) -> Void {
+    func handleUrl(_ url: URL, callback: @escaping (_ postUrl: String?, _ postData: [String:Any]?, _ callbackFunc: String?)->Void) -> Void {
         if url.scheme != "gonative" || url.host != "auth" {
-            return
-        }
-        
-        if url.path == nil {
             return
         }
         
@@ -53,15 +49,15 @@ public class GoNativeAuthUrl : NSObject {
         var queryDict = [String:String]()
         let query = url.query
         if query != nil {
-            let queryComponents = query!.componentsSeparatedByString("&")
+            let queryComponents = query!.components(separatedBy: "&")
             for keyValue in queryComponents {
-                let pairComponents = keyValue.componentsSeparatedByString("=")
+                let pairComponents = keyValue.components(separatedBy: "=")
                 if pairComponents.count != 2 {
                     continue
                 }
                 
-                let key = pairComponents.first?.stringByRemovingPercentEncoding
-                let value = pairComponents.last?.stringByRemovingPercentEncoding
+                let key = pairComponents.first?.removingPercentEncoding
+                let value = pairComponents.last?.removingPercentEncoding
                 
                 queryDict.updateValue(value!, forKey: key!)
             }
@@ -70,7 +66,7 @@ public class GoNativeAuthUrl : NSObject {
         let callbackUrl = queryDict["callback"]
         // check callback url
         if callbackUrl != nil {
-            let callbackAbsoluteUrl = NSURL.init(string: callbackUrl!, relativeToURL: self.currentUrl)
+            let callbackAbsoluteUrl = URL.init(string: callbackUrl!, relativeTo: self.currentUrl)
             
             if callbackAbsoluteUrl != nil && !self.isUrlAllowed(callbackAbsoluteUrl?.absoluteString) {
                 print("Callback URL not allowed to access auth: ", callbackAbsoluteUrl!.absoluteString)
@@ -80,8 +76,8 @@ public class GoNativeAuthUrl : NSObject {
         
         let callbackFunction = queryDict["callbackFunction"];
         
-        func doCallback(data: [String:AnyObject]?) {
-            callback(postUrl: callbackUrl, postData: data, callbackFunc: callbackFunction)
+        func doCallback(_ data: [String:Any]?) {
+            callback(callbackUrl, data, callbackFunction)
         }
         
         let path = url.path
@@ -121,7 +117,7 @@ public class GoNativeAuthUrl : NSObject {
             let callbackOnCancel = queryDict["callbackOnCancel"]
             var doCallbackOnCancel = false
             if callbackOnCancel != nil {
-                let lower = callbackOnCancel?.lowercaseString
+                let lower = callbackOnCancel?.lowercased()
                 if lower != "0" && lower != "false" &&
                     lower != "no" {
                     doCallbackOnCancel = true
