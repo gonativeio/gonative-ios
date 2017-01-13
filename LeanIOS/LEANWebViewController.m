@@ -1822,7 +1822,11 @@
         completionHandler();
     }];
     [alert addAction:okAction];
-    [self presentViewController:alert animated:YES completion:nil];
+    
+    // There is a chance that a view controller is already being presented, e.g. if a drop-down box
+    // on iPad is open, and selecting an item triggers a javascript alert. That's why we don't just call
+    // [self presentViewController:]
+    [[self getTopPresentedViewController] presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler
@@ -1836,7 +1840,17 @@
     }];
     [alert addAction:okAction];
     [alert addAction:cancelAction];
-    [self presentViewController:alert animated:YES completion:nil];
+    
+    [[self getTopPresentedViewController] presentViewController:alert animated:YES completion:nil];
+
+}
+
+-(UIViewController*)getTopPresentedViewController {
+    UIViewController *vc = self;
+    while (vc.presentedViewController) {
+        vc = vc.presentedViewController;
+    }
+    return vc;
 }
 
 - (void)checkReadyStatus
