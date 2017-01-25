@@ -9,6 +9,8 @@
 #import <WebKit/WebKit.h>
 #import <MessageUI/MessageUI.h>
 
+#import <OneSignal/OneSignal.h>
+
 #import "LEANWebViewController.h"
 #import "LEANAppDelegate.h"
 #import "LEANUtilities.h"
@@ -28,7 +30,6 @@
 #import "LEANDocumentSharer.h"
 #import "Reachability.h"
 #import "LEANActionManager.h"
-#import "LEANIdentityService.h"
 #import "GNRegistrationManager.h"
 #import "GNInAppPurchase.h"
 #import "GonativeIO-swift.h"
@@ -1061,6 +1062,16 @@
         return NO;
     }
     
+    // OneSignal registration
+    if ([@"gonative" isEqualToString:url.scheme] && [@"onesignal" isEqualToString:url.host]
+        && [@"/register" isEqualToString:url.path]) {
+        
+        if (appConfig.oneSignalEnabled) {
+            [OneSignal registerForPushNotifications];
+        }
+        return NO;
+    }
+    
     // tel links
     if ([url.scheme isEqualToString:@"tel"]) {
         NSString *telNumber = url.resourceSpecifier;
@@ -1725,10 +1736,7 @@
         }
         
         [self showNavigationItemButtonsAnimated:YES];
-        
-        // identity service
-        [[LEANIdentityService sharedService] checkUrl:url];
-        
+                
         // registration service
         [[GNRegistrationManager sharedManager] checkUrl:url];
         

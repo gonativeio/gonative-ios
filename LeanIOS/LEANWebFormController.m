@@ -14,7 +14,6 @@
 #import "NSURL+LEANUtilities.h"
 #import "GoNativeAppConfig.h"
 #import "LEANLoginManager.h"
-#import "LEANPushManager.h"
 #import <WebKit/WebKit.h>
 
 static NSString *kGenericErrorMessage = @"Problem with form submission. Please check your inputs and try again";
@@ -1026,8 +1025,6 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
     
     if (success) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [LEANPushManager sharedManager].userID = self.tempUserID;
-            
             [self.checkSubmissionTimer invalidate];
             self.checkSubmissionTimer = nil;
             [self.hiddenWebView stopLoading];

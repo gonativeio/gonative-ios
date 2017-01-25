@@ -10,7 +10,6 @@
 #import "LEANAppDelegate.h"
 #import "GoNativeAppConfig.h"
 #import "LEANLoginManager.h"
-#import "LEANPushManager.h"
 #import "LEANUrlInspector.h"
 #import "LEANWebViewPool.h"
 #import "LEANConfigUpdater.h"
@@ -405,7 +404,6 @@ static NSString * const simulatorConfigTemplate = @"https://gonative.io/api/simu
         
         [[LEANUrlInspector sharedInspector] setup];
         [[LEANWebViewPool sharedPool] setup];
-        [[LEANPushManager sharedManager] sendRegistration];
     });
 }
 

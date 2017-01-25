@@ -44,7 +44,6 @@
 		201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201AB2D51996AD66008C31BF /* LEANInstallation.m */; };
 		202B4D5219510F640099821E /* TextAreaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D5119510F640099821E /* TextAreaView.xib */; };
 		202B4D56195122FD0099821E /* DateCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D55195122FD0099821E /* DateCellView.xib */; };
-		202BE56F1B9756E80064D928 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE56E1B9756E80064D928 /* Parse.framework */; };
 		202BE5711B9757070064D928 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5701B9757070064D928 /* AudioToolbox.framework */; };
 		202BE5731B97570D0064D928 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5721B97570D0064D928 /* CFNetwork.framework */; };
 		202BE5751B97571B0064D928 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5741B97571B0064D928 /* CoreLocation.framework */; };
@@ -55,15 +54,13 @@
 		202BE57F1B9757450064D928 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57E1B9757450064D928 /* libsqlite3.dylib */; };
 		202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5801B97574E0064D928 /* Accounts.framework */; };
 		202BE5831B9757530064D928 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5821B9757530064D928 /* Social.framework */; };
-		202BE5851B9757AD0064D928 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5841B9757AD0064D928 /* Bolts.framework */; };
 		202E989519EF30C8009C28AD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 202E989419EF30C8009C28AD /* Reachability.m */; };
 		203ADBAA1C224F0300273067 /* GonativeIO.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 203ADBA91C224F0300273067 /* GonativeIO.entitlements */; };
+		2041A8C61E36D75F0010BAC4 /* OneSignal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2041A8C51E36D75F0010BAC4 /* OneSignal.framework */; };
 		2046CAFA1BC0790800714F66 /* GNRegistrationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2046CAF91BC0790800714F66 /* GNRegistrationManager.m */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
-		20504CF51B9E62EF00D1E5D7 /* LEANIdentityService.m in Sources */ = {isa = PBXBuildFile; fileRef = 20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */; };
 		205141F51C3F54D40087DEB2 /* libGoNativeIOSLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */; };
-		2056509E1C6D7D7800F0B663 /* OneSignal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2056509D1C6D7D7800F0B663 /* OneSignal.framework */; };
 		205650A21C6ED77400F0B663 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */; };
 		205650A31C6ED77400F0B663 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */; };
 		205650A41C6ED77400F0B663 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */; };
@@ -102,7 +99,6 @@
 		20D7B68319A6BF0100993236 /* LEANSimulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7B68219A6BF0100993236 /* LEANSimulator.m */; };
 		20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20DE147F18F103850083F46A /* ForgotPasswordView.xib */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
-		20EA5523194FE7900039735B /* LEANPushManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20EA5522194FE7900039735B /* LEANPushManager.m */; };
 		20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */; };
 		20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2219C7BE8200B46C5A /* GoogleCast.framework */; };
 		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
@@ -179,7 +175,6 @@
 		201AB2D51996AD66008C31BF /* LEANInstallation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANInstallation.m; sourceTree = "<group>"; };
 		202B4D5119510F640099821E /* TextAreaView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextAreaView.xib; sourceTree = "<group>"; };
 		202B4D55195122FD0099821E /* DateCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DateCellView.xib; sourceTree = "<group>"; };
-		202BE56E1B9756E80064D928 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		202BE5701B9757070064D928 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		202BE5721B97570D0064D928 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		202BE5741B97571B0064D928 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -190,21 +185,18 @@
 		202BE57E1B9757450064D928 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		202BE5801B97574E0064D928 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		202BE5821B9757530064D928 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
-		202BE5841B9757AD0064D928 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		202E989319EF30C8009C28AD /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		202E989419EF30C8009C28AD /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		203ADBA91C224F0300273067 /* GonativeIO.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = GonativeIO.entitlements; path = ../GonativeIO.entitlements; sourceTree = "<group>"; };
+		2041A8C51E36D75F0010BAC4 /* OneSignal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OneSignal.framework; sourceTree = "<group>"; };
 		2046CAF81BC0790800714F66 /* GNRegistrationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNRegistrationManager.h; sourceTree = "<group>"; };
 		2046CAF91BC0790800714F66 /* GNRegistrationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GNRegistrationManager.m; sourceTree = "<group>"; };
 		204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+LEANUtilities.h"; sourceTree = "<group>"; };
 		204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+LEANUtilities.m"; sourceTree = "<group>"; };
 		204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
-		20504CF31B9E62EF00D1E5D7 /* LEANIdentityService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANIdentityService.h; sourceTree = "<group>"; };
-		20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIdentityService.m; sourceTree = "<group>"; };
 		205141F31C3F54C00087DEB2 /* GoNativeAppConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoNativeAppConfig.h; sourceTree = "<group>"; };
 		205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoNativeIOSLibrary.a; sourceTree = "<group>"; };
-		2056509D1C6D7D7800F0B663 /* OneSignal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OneSignal.framework; sourceTree = "<group>"; };
 		2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
@@ -264,8 +256,6 @@
 		20DE147F18F103850083F46A /* ForgotPasswordView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgotPasswordView.xib; sourceTree = "<group>"; };
 		20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewPool.h; sourceTree = "<group>"; };
 		20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewPool.m; sourceTree = "<group>"; };
-		20EA5521194FE7900039735B /* LEANPushManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANPushManager.h; sourceTree = "<group>"; };
-		20EA5522194FE7900039735B /* LEANPushManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANPushManager.m; sourceTree = "<group>"; };
 		20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANToolbarManager.h; sourceTree = "<group>"; };
 		20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANToolbarManager.m; sourceTree = "<group>"; };
 		20F49C2219C7BE8200B46C5A /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleCast.framework; sourceTree = "<group>"; };
@@ -280,7 +270,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2056509E1C6D7D7800F0B663 /* OneSignal.framework in Frameworks */,
 				202BE5831B9757530064D928 /* Social.framework in Frameworks */,
 				202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */,
 				202BE57F1B9757450064D928 /* libsqlite3.dylib in Frameworks */,
@@ -289,7 +278,6 @@
 				202BE57B1B9757310064D928 /* StoreKit.framework in Frameworks */,
 				202BE5791B97572C0064D928 /* Security.framework in Frameworks */,
 				205650A31C6ED77400F0B663 /* FBSDKLoginKit.framework in Frameworks */,
-				202BE5851B9757AD0064D928 /* Bolts.framework in Frameworks */,
 				202BE5771B9757240064D928 /* QuartzCore.framework in Frameworks */,
 				202BE5751B97571B0064D928 /* CoreLocation.framework in Frameworks */,
 				202BE5731B97570D0064D928 /* CFNetwork.framework in Frameworks */,
@@ -299,13 +287,13 @@
 				20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */,
 				20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */,
 				20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */,
-				202BE56F1B9756E80064D928 /* Parse.framework in Frameworks */,
 				209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */,
 				209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */,
 				205141F51C3F54D40087DEB2 /* libGoNativeIOSLibrary.a in Frameworks */,
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
 				2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */,
 				2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */,
+				2041A8C61E36D75F0010BAC4 /* OneSignal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,10 +333,10 @@
 		2002B49A18A9991300495B3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2041A8C51E36D75F0010BAC4 /* OneSignal.framework */,
 				2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */,
 				205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */,
 				205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */,
-				2056509D1C6D7D7800F0B663 /* OneSignal.framework */,
 				202BE5821B9757530064D928 /* Social.framework */,
 				202BE5801B97574E0064D928 /* Accounts.framework */,
 				202BE57E1B9757450064D928 /* libsqlite3.dylib */,
@@ -365,8 +353,6 @@
 				20F49C2219C7BE8200B46C5A /* GoogleCast.framework */,
 				205EF30219BF84AF002AE261 /* WebKit.framework */,
 				209B330A193FC5BD0052A7C6 /* libz.dylib */,
-				202BE5841B9757AD0064D928 /* Bolts.framework */,
-				202BE56E1B9756E80064D928 /* Parse.framework */,
 				2002B49B18A9991300495B3D /* Foundation.framework */,
 				2002B49D18A9991300495B3D /* CoreGraphics.framework */,
 				2002B49F18A9991300495B3D /* UIKit.framework */,
@@ -407,16 +393,12 @@
 				20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */,
 				20C8504E19CD143100DB208A /* LEANIcons.h */,
 				20C8504F19CD143100DB208A /* LEANIcons.m */,
-				20504CF31B9E62EF00D1E5D7 /* LEANIdentityService.h */,
-				20504CF41B9E62EF00D1E5D7 /* LEANIdentityService.m */,
 				201AB2D41996AD66008C31BF /* LEANInstallation.h */,
 				201AB2D51996AD66008C31BF /* LEANInstallation.m */,
 				2089662518AC6753007FC34F /* LEANLoginManager.h */,
 				2089662618AC6753007FC34F /* LEANLoginManager.m */,
 				2002B4F218A99C4100495B3D /* LEANNavigationController.h */,
 				2002B4F318A99C4100495B3D /* LEANNavigationController.m */,
-				20EA5521194FE7900039735B /* LEANPushManager.h */,
-				20EA5522194FE7900039735B /* LEANPushManager.m */,
 				2002B4F418A99C4100495B3D /* LEANRootViewController.h */,
 				2002B4F518A99C4100495B3D /* LEANRootViewController.m */,
 				20191C4219231A0900BF1549 /* LEANSettingsController.h */,
@@ -652,6 +634,11 @@
 					2002B49718A9991300495B3D = {
 						LastSwiftMigration = 0810;
 						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					2002B4BB18A9991300495B3D = {
 						TestTargetID = 2002B49718A9991300495B3D;
@@ -747,7 +734,6 @@
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,
 				20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */,
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
-				20504CF51B9E62EF00D1E5D7 /* LEANIdentityService.m in Sources */,
 				20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
 				20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */,
@@ -761,7 +747,6 @@
 				20A13AB31905CB6C00B997DD /* NSString+FontAwesome.m in Sources */,
 				2002B4A818A9991300495B3D /* main.m in Sources */,
 				20C748BE1DF0C4DE002930FD /* GNInAppPurchase.m in Sources */,
-				20EA5523194FE7900039735B /* LEANPushManager.m in Sources */,
 				2002B4E718A99A9900495B3D /* REFrostedViewController.m in Sources */,
 				2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */,
 				20D7B68319A6BF0100993236 /* LEANSimulator.m in Sources */,

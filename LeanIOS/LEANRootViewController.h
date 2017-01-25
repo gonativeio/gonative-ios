@@ -20,5 +20,5 @@
 
 - (BOOL)webviewOnTop;
 - (void)setInitialUrl:(NSURL *)url; // for initial launch from push notification
-
+- (void)presentAlert:(UIAlertController*)alert;
 @end

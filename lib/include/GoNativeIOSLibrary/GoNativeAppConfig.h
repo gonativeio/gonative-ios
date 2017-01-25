@@ -112,21 +112,14 @@ typedef enum : NSUInteger {
 
 
 // services
-@property BOOL pushNotifications;
 @property BOOL analytics;
 @property NSInteger idsite_test;
 @property NSInteger idsite_prod;
 
-// parse integration
-@property BOOL parseEnabled;
-@property NSString *parseApplicationId;
-@property NSString *parseClientKey;
-@property BOOL parsePushEnabled;
-@property BOOL parseAnalyticsEnabled;
-
 // onesignal integration
 @property BOOL oneSignalEnabled;
 @property NSString *oneSignalAppId;
+@property BOOL oneSignalAutoRegister;
 
 // Facebook SDK
 @property BOOL facebookEnabled;

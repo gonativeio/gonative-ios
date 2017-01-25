@@ -11,10 +11,7 @@
 @interface GNRegistrationManager : NSObject
 +(instancetype)sharedManager;
 -(void)processConfig:(NSArray*)endpoints;
-- (void)checkUrl:(NSURL*)url;
--(BOOL)pushEnabled;
--(void)setPushRegistrationToken:(NSData*)token;
--(void)setParseInstallationId:(NSString*)installationId;
+-(void)checkUrl:(NSURL*)url;
 -(void)setOneSignalUserId:(NSString*)userId;
 -(void)setCustomData:(NSDictionary*)data;
 -(void)sendToAllEndpoints;

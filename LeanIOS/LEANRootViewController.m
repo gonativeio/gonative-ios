@@ -96,6 +96,15 @@
     return [((UINavigationController*)self.contentViewController).topViewController isKindOfClass:[LEANWebViewController class]];
 }
 
-
+- (void)presentAlert:(UIAlertController*)alert
+{
+    UINavigationController *nav = (UINavigationController*)self.contentViewController;
+    UIViewController *topController = nav.topViewController;
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
+    [topController presentViewController:alert animated:YES completion:nil];
+}
 
 @end
