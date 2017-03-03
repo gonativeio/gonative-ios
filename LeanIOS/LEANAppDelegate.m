@@ -16,10 +16,8 @@
 #import "LEANConfigUpdater.h"
 #import "LEANSimulator.h"
 #import "GNRegistrationManager.h"
-#import "GNInAppPurchase.h"
 
 @interface LEANAppDelegate()
-@property GNInAppPurchase *iap;
 @end
 
 @implementation LEANAppDelegate
@@ -140,10 +138,6 @@
         application.idleTimerDisabled = YES;
     }
     
-    GNInAppPurchase *iap = [GNInAppPurchase sharedInstance];
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:iap];
-    [iap initialize];
-    
     return YES;
 }
 
@@ -208,6 +202,12 @@
 - (UIInterfaceOrientationMask)application:(UIApplication *)application
   supportedInterfaceOrientationsForWindow:(UIWindow *)window
 {
+    if (![window.rootViewController isKindOfClass:[LEANRootViewController class]]) {
+        // likely to be a full-screen video. Allow all orientations.
+        return UIInterfaceOrientationMaskAllButUpsideDown;
+    }
+
+    // use appConfig.forceScreenOrientation
     GoNativeScreenOrientation orientation = [GoNativeAppConfig sharedAppConfig].forceScreenOrientation;
     if (orientation == GoNativeScreenOrientationPortrait) {
         return UIInterfaceOrientationMaskPortrait;

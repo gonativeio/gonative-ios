@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string></string>
+	<string>${PRODUCT_NAME} Camera Usage</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
+	<string>${PRODUCT_NAME} PhotoLibrary Usage</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
+	<string>${PRODUCT_NAME} Microphone Usage</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -31,7 +31,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>${PRODUCT_NAME} WhenInUse Location</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FontAwesome.ttf</string>

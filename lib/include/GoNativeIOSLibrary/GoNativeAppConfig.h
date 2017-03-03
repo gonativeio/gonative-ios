@@ -141,6 +141,15 @@ typedef enum : NSUInteger {
 @property NSURL *iapProductsUrl;
 @property NSURL *iapPostUrl;
 
+// admob ads
+@property BOOL admobEnabled;
+@property NSString* admobApplicationId;
+@property NSString* admobBannerAdUnitId;
+@property NSString* admobInterstitialAdUnitId;
+
+// Card.IO scanning
+@property BOOL cardIOEnabled;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
@@ -166,6 +175,8 @@ typedef enum : NSUInteger {
 + (NSURL*)urlForSimulatorNavTitleIcon;
 - (void)setupFromJsonFiles;
 - (void)processDynamicUpdate:(NSString*)json;
+
+- (void)setSidebarNavigation:(NSArray*)items;
 
 - (BOOL)shouldShowNavigationTitleImageForUrl:(NSString*)url;
 -(NSString*)userAgentForUrl:(NSURL*)url;

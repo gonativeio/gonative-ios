@@ -31,7 +31,6 @@
 #import "Reachability.h"
 #import "LEANActionManager.h"
 #import "GNRegistrationManager.h"
-#import "GNInAppPurchase.h"
 #import "GonativeIO-swift.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate>
@@ -1001,74 +1000,80 @@
         return NO;
     }
     
-    // touchid authentication
-    if ([@"gonative" isEqualToString:url.scheme] && [@"auth" isEqualToString:url.host]) {
-        GoNativeAuthUrl *authUrl = [[GoNativeAuthUrl alloc] init];
-        authUrl.currentUrl = self.currentRequest.URL;
-        [authUrl handleUrl:url callback:^(NSString * _Nullable postUrl, NSDictionary<NSString *,id> * _Nullable postData, NSString * _Nullable callbackFunction) {
-            
-            if (callbackFunction) {
-                NSString *jsCallback = [LEANUtilities createJsForCallback:callbackFunction data:postData];
-                if (jsCallback) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self runJavascript:jsCallback];
-                    });
+    if ([@"gonative" isEqualToString:url.scheme]) {
+        // touchid authentication
+        if ([@"auth" isEqualToString:url.host]) {
+            GoNativeAuthUrl *authUrl = [[GoNativeAuthUrl alloc] init];
+            authUrl.currentUrl = self.currentRequest.URL;
+            [authUrl handleUrl:url callback:^(NSString * _Nullable postUrl, NSDictionary<NSString *,id> * _Nullable postData, NSString * _Nullable callbackFunction) {
+                
+                if (callbackFunction) {
+                    NSString *jsCallback = [LEANUtilities createJsForCallback:callbackFunction data:postData];
+                    if (jsCallback) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self runJavascript:jsCallback];
+                        });
+                    }
                 }
-            }
-            
-            if (postUrl) {
-                NSString *jsPost = [LEANUtilities createJsForPostTo:postUrl data:postData];
-                if (jsPost) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self runJavascript:jsPost];
-                    });
+                
+                if (postUrl) {
+                    NSString *jsPost = [LEANUtilities createJsForPostTo:postUrl data:postData];
+                    if (jsPost) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self runJavascript:jsPost];
+                        });
+                    }
+                    
                 }
-
-            }
-        }];
+            }];
+            
+            return NO;
+        }
         
-        return NO;
-    }
-    
-    // registration info
-    if ([@"gonative" isEqualToString:url.scheme] && [@"registration" isEqualToString:url.host]
-        && [@"/send" isEqualToString:url.path]) {
-        
-        NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
-        NSString *customDataString = query[@"customData"];
-        if (customDataString) {
-            NSDictionary *customData = [NSJSONSerialization JSONObjectWithData:[customDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-            if ([customData isKindOfClass:[NSDictionary class]]) {
-                [[GNRegistrationManager sharedManager] setCustomData:customData];
-                [[GNRegistrationManager sharedManager] sendToAllEndpoints];
+        // registration info
+        if ([@"registration" isEqualToString:url.host] && [@"/send" isEqualToString:url.path]) {
+            NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+            NSString *customDataString = query[@"customData"];
+            if (customDataString) {
+                NSDictionary *customData = [NSJSONSerialization JSONObjectWithData:[customDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                if ([customData isKindOfClass:[NSDictionary class]]) {
+                    [[GNRegistrationManager sharedManager] setCustomData:customData];
+                    [[GNRegistrationManager sharedManager] sendToAllEndpoints];
+                } else {
+                    NSLog(@"Gonative registration error: customData is not JSON object");
+                }
             } else {
-                NSLog(@"Gonative registration error: customData is not JSON object");
+                [[GNRegistrationManager sharedManager] sendToAllEndpoints];
             }
-        } else {
-            [[GNRegistrationManager sharedManager] sendToAllEndpoints];
+            
+            return NO;
         }
         
-        return NO;
-    }
-    
-    // In-app purchases
-    if ([@"gonative" isEqualToString:url.scheme] && [@"purchase" isEqualToString:url.host]) {
-        NSArray *pathComponents = url.pathComponents;
-        if (pathComponents.count == 2) {
-            NSString *productId = pathComponents[1];
-            [[GNInAppPurchase sharedInstance] purchaseProduct:productId];
+        // OneSignal registration
+        if ([@"onesignal" isEqualToString:url.host] && [@"/register" isEqualToString:url.path]) {
+            if (appConfig.oneSignalEnabled) {
+                [OneSignal registerForPushNotifications];
+            }
+            return NO;
         }
         
-        return NO;
-    }
-    
-    // OneSignal registration
-    if ([@"gonative" isEqualToString:url.scheme] && [@"onesignal" isEqualToString:url.host]
-        && [@"/register" isEqualToString:url.path]) {
-        
-        if (appConfig.oneSignalEnabled) {
-            [OneSignal registerForPushNotifications];
+        // Sidebar
+        if ([@"sidebar" isEqualToString:url.host]) {
+            if ([@"/setItems" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+                NSString *itemsString = query[@"items"];
+                if (itemsString) {
+                    id items = [NSJSONSerialization JSONObjectWithData:[itemsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                    [appConfig setSidebarNavigation:items];
+                }
+            }
         }
+        
+        // Share page
+        if ([@"share" isEqualToString:url.host] && [@"/sharePage" isEqualToString:url.path]) {
+            [self sharePage:nil];
+        }
+        
         return NO;
     }
     
@@ -1739,20 +1744,6 @@
                 
         // registration service
         [[GNRegistrationManager sharedManager] checkUrl:url];
-        
-        // IAP
-        if ([GoNativeAppConfig sharedAppConfig].iapEnabled) {
-            [[GNInAppPurchase sharedInstance] getInAppPurchaseInfoWithBlock:^(NSDictionary * iapInfo) {
-                NSDictionary *info = @{@"inAppPurchases": iapInfo};
-                
-                NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_info_ready" data:info];
-                if (jsCallback) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self runJavascript:jsCallback];
-                    });
-                }
-            }];
-        }
         
         // save session cookies as persistent
         NSUInteger forceSessionCookieExpiry = [GoNativeAppConfig sharedAppConfig].forceSessionCookieExpiry;
