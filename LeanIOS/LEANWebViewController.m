@@ -58,7 +58,6 @@
 @property UIBarButtonItem *refreshButton;
 @property UIRefreshControl *pullRefreshControl;
 
-@property BOOL willBeLandscape;
 @property BOOL keyboardVisible;
 @property CGRect keyboardRect; // in window coordinates
 
@@ -239,6 +238,9 @@
     // keyboard change notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardShown:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHidden:) name:UIKeyboardWillHideNotification object:nil];
+    
+    // to help fix status bar issues when rotating in full-screen video
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
 -(void)dealloc
@@ -2052,20 +2054,9 @@
     }
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    self.willBeLandscape = toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight;
-    [self setNeedsStatusBarAppearanceUpdate];
-}
-
 - (BOOL)prefersStatusBarHidden
 {
-    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-    {
-        return NO;
-    } else {
-        return self.willBeLandscape;
-    }
+    return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
@@ -2075,11 +2066,6 @@
     } else {
         return UIStatusBarStyleDefault;
     }
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
@@ -2099,5 +2085,10 @@
     [self adjustInsets];
 }
 
+-(void)orientationChanged
+{
+    // fixes status bar weirdness when rotating video to landscape
+    [self setNeedsStatusBarAppearanceUpdate];
+}
 
 @end
