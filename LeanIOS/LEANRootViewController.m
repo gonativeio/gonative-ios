@@ -30,7 +30,9 @@
 {
     [super awakeFromNib];
     
-    if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    
+    if ([appConfig.iosTheme isEqualToString:@"dark"]) {
         self.liveBlurBackgroundStyle = REFrostedViewControllerLiveBackgroundStyleDark;
         self.blurTintColor = [UIColor colorWithWhite:0 alpha:0.75f];
     } else {
@@ -38,7 +40,7 @@
         self.blurTintColor = nil;
     }
     
-    self.animationDuration = [[GoNativeAppConfig sharedAppConfig].menuAnimationDuration floatValue];
+    self.animationDuration = [appConfig.menuAnimationDuration floatValue];
     self.limitMenuViewSize = YES;
     self.menuViewSize = CGSizeMake(270, NAN);
     
@@ -48,7 +50,10 @@
     self.menuViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"menuController"];
     
     self.webViewController = ((UINavigationController*)self.contentViewController).viewControllers[0];
-
+    
+    if (appConfig.tintColor) {
+        self.view.tintColor = appConfig.tintColor;
+    }
     
     // pre-load the menu view
     [self.menuViewController view];

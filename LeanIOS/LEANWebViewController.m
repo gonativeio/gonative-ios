@@ -299,6 +299,9 @@
 
 - (void)retryFailedPage
 {
+    // return if we are not the top view controller
+    if (![self isViewLoaded] || !self.view.window) return;
+    
     // if there is a page loaded, user can just retry navigation
     if (self.didLoadPage) return;
     
@@ -585,7 +588,7 @@
             
         case 3:
             //action
-            [self sharePage:sender];
+            [self sharePageWithUrl:nil sender:sender];
             break;
             
         case 4:
@@ -663,11 +666,20 @@
 
 - (void) sharePage:(id)sender
 {
+    [self sharePageWithUrl:nil sender:sender];
+}
+
+- (void) sharePageWithUrl:(NSString*)url sender:(id)sender;
+{
+    NSURL *shareUrl;
+    if (url) {
+        shareUrl = [NSURL URLWithString:url relativeToURL:[self.currentRequest URL]];
+    } else {
+        shareUrl = [self.currentRequest URL];
+    }
+    
     UIActivityViewController * avc = [[UIActivityViewController alloc]
-                                      initWithActivityItems:@[[self.currentRequest URL]] applicationActivities:nil];
-    // The activity view inherits tint color, but always has a light background, making the buttons
-    // impossible to read if we have light tint color. Force the tint to be the ios default.
-    [avc.view setTintColor:[UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0]];
+                                      initWithActivityItems:@[shareUrl] applicationActivities:nil];
     
     // For iPads starting in iOS 8, we need to specify where the pop over should occur from.
     if ( [avc respondsToSelector:@selector(popoverPresentationController)] ) {
@@ -1073,7 +1085,9 @@
         
         // Share page
         if ([@"share" isEqualToString:url.host] && [@"/sharePage" isEqualToString:url.path]) {
-            [self sharePage:nil];
+            NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+            NSString *shareUrl = query[@"url"]; // can be nil
+            [self sharePageWithUrl:shareUrl sender:nil];
         }
         
         return NO;

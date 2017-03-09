@@ -144,11 +144,9 @@
 - (void)configureApplication
 {
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-
-    // tint color from app config
-    if (appConfig.tintColor) {
-        self.window.tintColor = appConfig.tintColor;
-    }
+    
+    UIColor *defaultTintColor = [UIColor colorWithRed:104.0/255 green:104.0/255 blue:112.0/255 alpha:1.0];
+    self.window.tintColor = defaultTintColor;
     
     // start cast controller
     if (appConfig.enableChromecast) {
