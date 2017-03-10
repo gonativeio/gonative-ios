@@ -343,6 +343,14 @@
     }
     
     [self adjustInsets];
+    
+    NSURL *url = self.webview.request.URL;
+    if (!url) {
+        url = self.wkWebview.URL;
+    }
+    if (url) {
+        [self checkNavigationForUrl:url];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
