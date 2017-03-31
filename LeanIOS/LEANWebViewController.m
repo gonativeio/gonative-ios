@@ -31,7 +31,7 @@
 #import "Reachability.h"
 #import "LEANActionManager.h"
 #import "GNRegistrationManager.h"
-#import "GonativeIO-swift.h"
+#import "GonativeIO-Swift.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate>
 
