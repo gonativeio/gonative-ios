@@ -14,4 +14,6 @@
 - (void)didLoadUrl:(NSURL*)url;
 - (void)selectTabWithUrl:(NSString*)url javascript:(NSString*)javascript;
 - (void)autoSelectTabForUrl:(NSURL*)url;
+- (void)selectTabNumber:(NSUInteger)number;
+- (void)setTabsWithJson:(NSString*)json;
 @end

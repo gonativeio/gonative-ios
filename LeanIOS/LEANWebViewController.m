@@ -1098,6 +1098,26 @@
             [self sharePageWithUrl:shareUrl sender:nil];
         }
         
+        // Tabs
+        if ([@"tabs" isEqualToString:url.host]) {
+            if ([url.path hasPrefix:@"/select/"]) {
+                NSArray *components = url.pathComponents;
+                if (components.count == 3 ) {
+                    NSString *tabNumberString = components[2];
+                    NSInteger tabNumber = [tabNumberString integerValue];
+                    if (tabNumberString >= 0) {
+                        [self.tabManager selectTabNumber:tabNumber];
+                    }
+                }
+            } else if ([@"/setTabs" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+                NSString *tabsJson = query[@"tabs"];
+                if (tabsJson && tabsJson.length) {
+                    [self.tabManager setTabsWithJson:tabsJson];
+                }
+            }
+        }
+        
         return NO;
     }
     
@@ -1768,6 +1788,28 @@
                 
         // registration service
         [[GNRegistrationManager sharedManager] checkUrl:url];
+        
+        // send OneSignal info
+        if ([GoNativeAppConfig sharedAppConfig].oneSignalEnabled) {
+            [OneSignal IdsAvailable:^(NSString *userId, NSString *pushToken) {
+                NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
+                NSDictionary *installation = [LEANInstallation info];
+                [toSend addEntriesFromDictionary:installation];
+                if (userId) {
+                    toSend[@"oneSignalUserId"] = userId;
+                }
+                if (pushToken) {
+                    toSend[@"oneSignalPushToken"] = pushToken;
+                }
+                
+                NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_onesignal_info" data:toSend];
+                if (jsCallback) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self runJavascript:jsCallback];
+                    });
+                }
+            }];
+        }
         
         // save session cookies as persistent
         NSUInteger forceSessionCookieExpiry = [GoNativeAppConfig sharedAppConfig].forceSessionCookieExpiry;

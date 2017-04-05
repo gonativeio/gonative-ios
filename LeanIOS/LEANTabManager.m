@@ -19,6 +19,7 @@
 @property NSString *currentMenuID;
 @property BOOL showTabBar;
 @property NSMutableDictionary<NSObject*, NSArray<NSPredicate*>*> *tabRegexCache;
+@property BOOL useJavascript; // disables auto-loading of tabs from config
 @end
 
 @implementation LEANTabManager
@@ -38,6 +39,11 @@
 
 - (void)didLoadUrl:(NSURL *)url
 {
+    if (self.useJavascript) {
+        [self autoSelectTabForUrl:url];
+        return;
+    }
+    
     NSArray *tabMenuRegexes = [GoNativeAppConfig sharedAppConfig].tabMenuRegexes;
     if (!tabMenuRegexes || !url) return;
     
@@ -56,7 +62,7 @@
     if (showTabBar) {
         if (!self.showTabBar) {
             // select first item
-            if ([self.tabBar.items count] > 0) {
+            if ([self.tabBar.items count] > 0 && !self.tabBar.selectedItem) {
                 self.tabBar.selectedItem = self.tabBar.items[0];
             }
         }
@@ -79,7 +85,14 @@
     self.currentMenuID = menuID;
     
     NSArray *menu = [GoNativeAppConfig sharedAppConfig].tabMenus[menuID];
+    [self setTabBarItems:menu];
+}
+
+- (void)setTabBarItems:(NSArray*) menu
+{
     NSMutableArray *items = [[NSMutableArray alloc] initWithCapacity:[menu count]];
+    
+    UITabBarItem *selectedItem;
     
     for (NSUInteger i = 0; i < [menu count]; i++) {
         NSString *label = menu[i][@"label"];
@@ -99,10 +112,17 @@
         }
         
         [items addObject:[[UITabBarItem alloc] initWithTitle:label image:iconImage tag:i]];
+        
+        if ([menu[i][@"selected"] boolValue]) {
+            selectedItem = [items lastObject];
+        }
     }
     
     self.menu = menu;
     [self.tabBar setItems:items animated:NO];
+    if (selectedItem) {
+        self.tabBar.selectedItem = selectedItem;
+    }
 }
 
 - (NSArray<NSPredicate*>*) getRegexForTab:(NSDictionary*) tabConfig
@@ -193,4 +213,44 @@
     }
 }
 
+- (void)selectTabNumber:(NSUInteger)number
+{
+    if (number >= self.tabBar.items.count) {
+        NSLog(@"Invalid tab number %lu", (unsigned long)number);
+        return;
+    }
+    
+    self.tabBar.selectedItem = self.tabBar.items[number];
+}
+
+- (void)setTabsWithJson:(NSString*)json
+{
+    NSError *jsonError;
+    NSDictionary *tabConfig = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&jsonError];
+    if (jsonError) {
+        NSLog(@"Error parsing JSON: %@", jsonError);
+        return;
+    }
+    if (![tabConfig isKindOfClass:[NSDictionary class]]) {
+        NSLog(@"Not JSON object");
+        return;
+    }
+
+    self.useJavascript = YES;
+    
+    NSArray *menu = tabConfig[@"items"];
+    if ([menu isKindOfClass:[NSArray class]]) {
+        [self setTabBarItems:menu];
+    }
+    
+    NSNumber *showTabBar = tabConfig[@"enabled"];
+    if ([showTabBar isKindOfClass:[NSNumber class]]) {
+        if ([showTabBar boolValue]) {
+            [self.wvc showTabBarAnimated:YES];
+        } else {
+            [self.wvc hideTabBarAnimated:YES];
+        }
+        self.showTabBar = [showTabBar boolValue];
+    }
+}
 @end
