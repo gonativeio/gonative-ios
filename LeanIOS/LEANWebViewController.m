@@ -1072,9 +1072,71 @@
         }
         
         // OneSignal registration
-        if ([@"onesignal" isEqualToString:url.host] && [@"/register" isEqualToString:url.path]) {
-            if (appConfig.oneSignalEnabled) {
+        if ([@"onesignal" isEqualToString:url.host]) {
+            if (!appConfig.oneSignalEnabled) {
+                return NO;
+            }
+            
+            if ([@"/register" isEqualToString:url.path]) {
                 [OneSignal registerForPushNotifications];
+                return NO;
+            }
+            if ([@"/tags/get" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+                NSString *callback = query[@"callback"];
+                if (!callback || callback.length == 0) {
+                    return NO;
+                }
+                
+                [OneSignal getTags:^(NSDictionary *result) {
+                    NSDictionary *results = @{
+                                              @"success": @YES,
+                                              @"tags": result
+                                              };
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:results];
+                    [self runJavascript:js];
+                } onFailure:^(NSError *error) {
+                    NSDictionary *results = @{
+                                              @"success": @NO,
+                                              };
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:results];
+                    [self runJavascript:js];
+                }];
+                return NO;
+            }
+            if ([@"/tags/set" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+                NSString *callback = query[@"callback"];
+                NSString *tagsString = query[@"tags"];
+                NSDictionary *tags = [NSJSONSerialization JSONObjectWithData:[tagsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                if (![tags isKindOfClass:[NSDictionary class]]) {
+                    return NO;
+                }
+                
+                // verify all tags are strings
+                for (id key in tags) {
+                    if (![key isKindOfClass:[NSString class]] || ![tags[key] isKindOfClass:[NSString class]]) {
+                        return NO;
+                    }
+                }
+                
+                // set the tags
+                [OneSignal sendTags:tags onSuccess:^(NSDictionary *result) {
+                    if (callback && callback.length > 0) {
+                        NSString *js = [LEANUtilities createJsForCallback:callback data:@{
+                              @"success": @YES
+                                                                                          }];
+                        [self runJavascript:js];
+                    }
+                } onFailure:^(NSError *error) {
+                    if (callback && callback.length > 0) {
+                        NSString *js = [LEANUtilities createJsForCallback:callback data:@{
+                               @"success": @NO
+                                                                                          }];
+                        [self runJavascript:js];
+                    }
+                }];
+                return NO;
             }
             return NO;
         }
