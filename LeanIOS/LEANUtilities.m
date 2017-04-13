@@ -131,6 +131,63 @@
     return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
 }
 
+// replaces navigator.geolocation
++ (void)overrideGeolocation:(UIView*)wv {
+    if (!wv) {
+        return;
+    }
+    NSString *js = @"var gonative_geolocation_variables = { "
+    "	successFunctions: [], "
+    "	failureFunctions: [] "
+    "}; "
+    " "
+    "function gonative_geolocation_failed(data) { "
+    "	if (!gonative_geolocation_variables || !Array.isArray(gonative_geolocation_variables.failureFunctions)) { "
+    "		return; "
+    "	} "
+    " "
+    "	for (var i = 0; i < gonative_geolocation_variables.failureFunctions.length; i++) { "
+    "		var f = gonative_geolocation_variables.failureFunctions[i]; "
+    "		if (typeof f === 'function') { "
+    "			f(data); "
+    "		} "
+    "	} "
+    "	gonative_geolocation_variables.failureFunctions = []; "
+    "	gonative_geolocation_variables.successFunctions = []; "
+    "} "
+    " "
+    "function gonative_geolocation_received(data) { "
+    "	if (!gonative_geolocation_variables || !Array.isArray(gonative_geolocation_variables.successFunctions)) { "
+    "		return; "
+    "	} "
+    " "
+    "	for (var i = 0; i < gonative_geolocation_variables.successFunctions.length; i++) { "
+    "		var f = gonative_geolocation_variables.successFunctions[i]; "
+    "		if (typeof f === 'function') { "
+    "			f(data); "
+    "		} "
+    "	} "
+    "	gonative_geolocation_variables.failureFunctions = []; "
+    "	gonative_geolocation_variables.successFunctions = []; "
+    "} "
+    " "
+    " "
+    "navigator.geolocation.getCurrentPosition = function(success, failure) { "
+    "	if (typeof success === 'function') gonative_geolocation_variables.successFunctions.push(success); "
+    "	if (typeof failure === 'function') gonative_geolocation_variables.failureFunctions.push(success); "
+    "	location.href = 'gonative://geolocationShim/requestLocation'; "
+    "}; ";
+    
+    if ([wv isKindOfClass:[UIWebView class]]) {
+        UIWebView *webView = (UIWebView*)wv;
+        [webView stringByEvaluatingJavaScriptFromString:js];
+    } else if ([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
+        WKWebView *webview = (WKWebView*)wv;
+        [webview evaluateJavaScript:js completionHandler:nil];
+    }
+}
+
+
 // injects jquery into webviews using packaged jquery file
 + (void)addJqueryToWebView:(UIView*)wv {
     NSString *jqueryTest = @"window.jQuery.fn.jquery";

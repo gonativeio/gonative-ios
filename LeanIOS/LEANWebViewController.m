@@ -8,6 +8,7 @@
 
 #import <WebKit/WebKit.h>
 #import <MessageUI/MessageUI.h>
+#import <CoreLocation/CoreLocation.h>
 
 #import <OneSignal/OneSignal.h>
 
@@ -33,7 +34,7 @@
 #import "GNRegistrationManager.h"
 #import "GonativeIO-Swift.h"
 
-@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate>
+@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate>
 
 @property IBOutlet UIWebView* webview;
 @property WKWebView *wkWebview;
@@ -80,6 +81,7 @@
 
 @property LEANActionManager *actionManager;
 @property LEANToolbarManager *toolbarManager;
+@property CLLocationManager *locationManager;
 
 @end
 
@@ -241,6 +243,9 @@
     
     // to help fix status bar issues when rotating in full-screen video
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object:nil];
+    
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
 }
 
 -(void)dealloc
@@ -1160,6 +1165,12 @@
             [self sharePageWithUrl:shareUrl sender:nil];
         }
         
+        // Geolocation shim
+        if ([@"geolocationShim" isEqualToString:url.host] && [@"/requestLocation" isEqualToString:url.path]) {
+            [self requestLocation];
+            return NO;
+        }
+        
         // Tabs
         if ([@"tabs" isEqualToString:url.host]) {
             if ([url.path hasPrefix:@"/select/"]) {
@@ -1750,7 +1761,10 @@
                 
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self setNavigationButtonStatus];
-        
+
+        [LEANUtilities overrideGeolocation:self.webview];
+        [LEANUtilities overrideGeolocation:self.wkWebview];
+
         [LEANUtilities addJqueryToWebView:self.webview];
         [LEANUtilities addJqueryToWebView:self.wkWebview];
         
@@ -2163,6 +2177,74 @@
         [self.webview stringByEvaluatingJavaScriptFromString:action.javascript];
     }
 }
+
+#pragma mark - Location
+
+-(void)requestLocation
+{
+    CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
+        NSError *error = [NSError errorWithDomain:kCLErrorDomain code:kCLErrorDenied userInfo:nil];
+        [self locationManager:self.locationManager didFailWithError:error];
+    } else if (status == kCLAuthorizationStatusNotDetermined) {
+        [self.locationManager requestWhenInUseAuthorization];
+    } else {
+        [self.locationManager requestLocation];
+    }
+}
+
+-(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status != kCLAuthorizationStatusNotDetermined) {
+        [self.locationManager requestLocation];
+    }
+}
+
+-(void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    NSMutableDictionary *jsError = [NSMutableDictionary dictionaryWithObjectsAndKeys:@1, @"PERMISSION_DENIED", @2, @"POSITION_UNAVAILABLE", @3, @"TIMEOUT", nil];
+    
+    if (error.code == kCLErrorDenied) {
+        jsError[@"code"] = @1;
+        jsError[@"message"] = @"User denied Geolocation";
+    } else if (error.code == kCLErrorLocationUnknown) {
+        jsError[@"code"] = @2;
+        jsError[@"message"] = @"Position unavailable";
+    }
+    
+    NSString *js = [LEANUtilities createJsForCallback:@"gonative_geolocation_failed" data:jsError];
+    [self runJavascript:js];
+}
+
+-(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
+{
+    CLLocation *location = [locations lastObject];
+    NSMutableDictionary *coords = [NSMutableDictionary dictionary];
+    coords[@"latitude"] = [NSNumber numberWithDouble:location.coordinate.latitude];
+    coords[@"longitude"] = [NSNumber numberWithDouble:location.coordinate.longitude];
+    coords[@"accuracy"] = [NSNumber numberWithDouble:location.horizontalAccuracy];
+    if (location.verticalAccuracy > 0) {
+        coords[@"altitude"] = [NSNumber numberWithDouble:location.altitude];
+        coords[@"altitudeAccuracy"] = [NSNumber numberWithDouble:location.verticalAccuracy];
+    } else {
+        coords[@"altitude"] = [NSNull null];
+        coords[@"altitudeAccuracy"] = [NSNull null];
+    }
+    coords[@"heading"] = location.course < 0 ? [NSNull null] : [NSNumber numberWithDouble:location.course];
+    coords[@"speed"] = location.speed < 0 ? [NSNull null] : [NSNumber numberWithDouble:location.speed];
+    
+    double ts = trunc([[NSDate date] timeIntervalSince1970] * 1000);
+    NSNumber *timestamp = [NSNumber numberWithDouble:ts];
+    
+    NSDictionary *data = @{
+                           @"timestamp": timestamp,
+                           @"coords": coords
+                           };
+    
+    NSString *js = [LEANUtilities createJsForCallback:@"gonative_geolocation_received" data:data];
+    [self runJavascript:js];
+}
+
 
 #pragma mark - Scroll View Delegate
 
