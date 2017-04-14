@@ -176,7 +176,12 @@
     "	if (typeof success === 'function') gonative_geolocation_variables.successFunctions.push(success); "
     "	if (typeof failure === 'function') gonative_geolocation_variables.failureFunctions.push(success); "
     "	location.href = 'gonative://geolocationShim/requestLocation'; "
-    "}; ";
+    "}; "
+    " "
+    "if (typeof window.gonative_geolocation_ready === 'function') { "
+    "    window.gonative_geolocation_ready(); "
+    "} ";
+
     
     if ([wv isKindOfClass:[UIWebView class]]) {
         UIWebView *webView = (UIWebView*)wv;
