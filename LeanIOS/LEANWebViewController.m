@@ -77,6 +77,8 @@
 @property NSString *postLoadJavascript;
 @property NSString *postLoadJavascriptForRefresh;
 
+@property (nonatomic, copy) void (^locationPermissionBlock)();
+
 @property BOOL visitedLoginOrSignup;
 
 @property LEANActionManager *actionManager;
@@ -1166,8 +1168,14 @@
         }
         
         // Geolocation shim
-        if ([@"geolocationShim" isEqualToString:url.host] && [@"/requestLocation" isEqualToString:url.path]) {
-            [self requestLocation];
+        if ([@"geolocationShim" isEqualToString:url.host]) {
+            if ([@"/requestLocation" isEqualToString:url.path]) {
+                [self requestLocation];
+            } else if ([@"/startWatchingLocation" isEqualToString:url.path]) {
+                [self startWatchingLocation];
+            } else if ([@"/stopWatchingLocation" isEqualToString:url.path]) {
+                [self stopWatchingLocation];
+            }
             return NO;
         }
         
@@ -1727,6 +1735,9 @@
             self.shareButton = nil;
             [self showNavigationItemButtonsAnimated:YES];
         }
+        
+        // stop watching location
+        [self.locationManager stopUpdatingLocation];
     });
 }
 
@@ -2180,17 +2191,37 @@
 
 #pragma mark - Location
 
--(void)requestLocation
+-(void)checkLocationPermissionWithBlock:(void (^)())block
 {
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
         NSError *error = [NSError errorWithDomain:kCLErrorDomain code:kCLErrorDenied userInfo:nil];
         [self locationManager:self.locationManager didFailWithError:error];
     } else if (status == kCLAuthorizationStatusNotDetermined) {
+        self.locationPermissionBlock = block;
         [self.locationManager requestWhenInUseAuthorization];
     } else {
-        [self.locationManager requestLocation];
+        block();
     }
+}
+
+-(void)requestLocation
+{
+    [self checkLocationPermissionWithBlock:^{
+        [self.locationManager requestLocation];
+    }];
+}
+
+-(void)startWatchingLocation
+{
+    [self checkLocationPermissionWithBlock:^{
+        [self.locationManager startUpdatingLocation];
+    }];
+}
+
+-(void)stopWatchingLocation
+{
+    [self.locationManager stopUpdatingLocation];
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
