@@ -13,6 +13,7 @@
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"
 #import "LEANUrlCache.h"
+#import "GNCustomHeaders.h"
 
 static NSPredicate* schemeHttpTest;
 static NSOperationQueue* queue;
@@ -96,6 +97,7 @@ static LEANUrlCache *urlCache;
 }
 
 - (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
+    
     if (self = [super initWithRequest:request cachedResponse:cachedResponse client:client]) {
         self.modifiedRequest = request.mutableCopy;
         
@@ -103,6 +105,14 @@ static LEANUrlCache *urlCache;
         NSString *customUserAgent = [[GoNativeAppConfig sharedAppConfig] userAgentForUrl:request.URL];
         if (customUserAgent) {
             [self.modifiedRequest setValue:customUserAgent forHTTPHeaderField:@"User-Agent"];
+        }
+        
+        // custom headers
+        NSDictionary *customHeaders = [GNCustomHeaders getCustomHeaders];
+        if (customHeaders) {
+            for (NSString *key in customHeaders) {
+                [self.modifiedRequest setValue:customHeaders[key] forHTTPHeaderField:key];
+            }
         }
         
         // if url contains removeXFrameOptions, remove it from modified request
