@@ -1876,6 +1876,15 @@
         // registration service
         [[GNRegistrationManager sharedManager] checkUrl:url];
         
+        // send device info
+        NSDictionary *installation = [LEANInstallation info];
+        NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:installation];
+        if (jsCallback) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self runJavascript:jsCallback];
+            });
+        }
+        
         // send OneSignal info
         if ([GoNativeAppConfig sharedAppConfig].oneSignalEnabled) {
             [OneSignal IdsAvailable:^(NSString *userId, NSString *pushToken) {
