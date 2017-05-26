@@ -1145,6 +1145,11 @@
                 }];
                 return NO;
             }
+            
+            if (([@"/promptLocation" isEqualToString:url.path])) {
+                [OneSignal promptLocation];
+                return NO;
+            }
             return NO;
         }
         
