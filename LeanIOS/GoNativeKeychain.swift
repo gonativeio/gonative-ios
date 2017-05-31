@@ -163,6 +163,15 @@ open class GoNativeKeychain: NSObject {
         }
     }
     
+    @objc
+    func deleteSecret() {
+        let query: NSDictionary = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: kGoNativeKeychainService,
+            ]
+        SecItemDelete(query);
+    }
+    
     func statusToEnum(_ status: OSStatus) -> KeychainOperationResult {
         switch status {
         case errSecSuccess:

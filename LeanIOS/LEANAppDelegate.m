@@ -16,6 +16,7 @@
 #import "LEANConfigUpdater.h"
 #import "LEANSimulator.h"
 #import "GNRegistrationManager.h"
+#import "GonativeIO-Swift.h"
 
 @interface LEANAppDelegate()
 @end
@@ -24,6 +25,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    // clear keychain item if this is first launch
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"hasLaunched"]) {
+        GoNativeKeychain *keyChain = [[GoNativeKeychain alloc] init];
+        [keyChain deleteSecret];
+        
+        [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"hasLaunched"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+       
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     
     // Register launch
