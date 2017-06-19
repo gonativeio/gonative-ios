@@ -12,7 +12,7 @@
 +(instancetype)sharedManager;
 -(void)processConfig:(NSArray*)endpoints;
 -(void)checkUrl:(NSURL*)url;
--(void)setOneSignalUserId:(NSString*)userId;
+-(void)setOneSignalUserId:(NSString *)userId pushToken:(NSString*)pushToken;
 -(void)setCustomData:(NSDictionary*)data;
 -(void)sendToAllEndpoints;
 @end

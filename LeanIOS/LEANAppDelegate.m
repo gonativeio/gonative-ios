@@ -124,7 +124,7 @@
     [registration processConfig:appConfig.registrationEndpoints];
     if (appConfig.oneSignalEnabled) {
         [OneSignal IdsAvailable:^(NSString *userId, NSString *pushToken) {
-            [registration setOneSignalUserId:userId];
+            [registration setOneSignalUserId:userId pushToken:pushToken];
         }];
     }
     
