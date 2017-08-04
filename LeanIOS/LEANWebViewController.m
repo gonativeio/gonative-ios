@@ -1085,7 +1085,7 @@
             }
             
             if ([@"/register" isEqualToString:url.path]) {
-                [OneSignal registerForPushNotifications];
+                [OneSignal promptForPushNotificationsWithUserResponse:nil];
                 return NO;
             }
             if ([@"/tags/get" isEqualToString:url.path]) {
@@ -1892,24 +1892,27 @@
         
         // send OneSignal info
         if ([GoNativeAppConfig sharedAppConfig].oneSignalEnabled) {
-            [OneSignal IdsAvailable:^(NSString *userId, NSString *pushToken) {
-                NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
-                NSDictionary *installation = [LEANInstallation info];
-                [toSend addEntriesFromDictionary:installation];
-                if (userId) {
-                    toSend[@"oneSignalUserId"] = userId;
+            OSPermissionSubscriptionState *state = [OneSignal getPermissionSubscriptionState];
+
+            NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
+            NSDictionary *installation = [LEANInstallation info];
+            [toSend addEntriesFromDictionary:installation];
+            if (state.subscriptionStatus) {
+                if (state.subscriptionStatus.userId) {
+                    toSend[@"oneSignalUserId"] = state.subscriptionStatus.userId;
                 }
-                if (pushToken) {
-                    toSend[@"oneSignalPushToken"] = pushToken;
+                if (state.subscriptionStatus.pushToken) {
+                    toSend[@"oneSignalPushToken"] = state.subscriptionStatus.pushToken;
+
                 }
-                
-                NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_onesignal_info" data:toSend];
-                if (jsCallback) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self runJavascript:jsCallback];
-                    });
-                }
-            }];
+            }
+            
+            NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_onesignal_info" data:toSend];
+            if (jsCallback) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self runJavascript:jsCallback];
+                });
+            }
         }
         
         // save session cookies as persistent

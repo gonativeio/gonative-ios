@@ -18,7 +18,7 @@
 #import "GNRegistrationManager.h"
 #import "GonativeIO-Swift.h"
 
-@interface LEANAppDelegate()
+@interface LEANAppDelegate() <OSSubscriptionObserver>
 @end
 
 @implementation LEANAppDelegate
@@ -115,7 +115,7 @@
                      kOSSettingsKeyInFocusDisplayOption: [NSNumber numberWithInteger:OSNotificationDisplayTypeNone]}];
         
         if (appConfig.oneSignalAutoRegister) {
-            [OneSignal registerForPushNotifications];
+            [OneSignal promptForPushNotificationsWithUserResponse:nil];
         }
     }
     
@@ -123,9 +123,11 @@
     GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
     [registration processConfig:appConfig.registrationEndpoints];
     if (appConfig.oneSignalEnabled) {
-        [OneSignal IdsAvailable:^(NSString *userId, NSString *pushToken) {
-            [registration setOneSignalUserId:userId pushToken:pushToken];
-        }];
+        [OneSignal addSubscriptionObserver:self];
+        OSPermissionSubscriptionState *state = [OneSignal getPermissionSubscriptionState];
+        if (state.subscriptionStatus.subscribed) {
+            [registration setOneSignalUserId:state.subscriptionStatus.userId pushToken:state.subscriptionStatus.pushToken];
+        }
     }
     
     // download new config
@@ -261,4 +263,16 @@
     
     return NO;
 }
+
+#pragma mark OneSignalSubscriptionObserver
+-(void)onOSSubscriptionChanged:(OSSubscriptionStateChanges *)stateChanges
+{
+    GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
+    OSSubscriptionState *state = stateChanges.to;
+    if (state.subscribed) {
+        [registration setOneSignalUserId:state.userId pushToken:state.pushToken];
+    }
+
+}
+
 @end
