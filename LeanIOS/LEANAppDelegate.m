@@ -225,7 +225,10 @@
     else if (orientation == GoNativeScreenOrientationLandscape) {
         return UIInterfaceOrientationMaskLandscape;
     }
-    else return UIInterfaceOrientationMaskAllButUpsideDown;
+    else {
+        // default implementation, use what the Info.plist specifies
+        return [application supportedInterfaceOrientationsForWindow:window];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
