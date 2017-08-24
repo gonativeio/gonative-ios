@@ -451,13 +451,13 @@
     if ([wv isKindOfClass:[UIWebView class]]) {
         UIWebView *webview = (UIWebView*)wv;
         webview.scalesPageToFit = YES;
-        webview.scrollView.bounces = [GoNativeAppConfig sharedAppConfig].pullToRefresh;
+        webview.scrollView.bounces = NO;
         
         // for our faux content-inset
         webview.scrollView.layer.masksToBounds = NO;
     } else if([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
-        webview.scrollView.bounces = [GoNativeAppConfig sharedAppConfig].pullToRefresh;
+        webview.scrollView.bounces = NO;
         
         // user script for customCSS
         NSString *customCss = [GoNativeAppConfig sharedAppConfig].customCss;

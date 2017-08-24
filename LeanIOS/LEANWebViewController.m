@@ -326,8 +326,6 @@
 
 - (void)addPullToRefresh
 {
-    if (![GoNativeAppConfig sharedAppConfig].pullToRefresh) return;
-    
     if (!self.pullRefreshControl) {
         self.pullRefreshControl = [[UIRefreshControl alloc] init];
         [self.pullRefreshControl addTarget:self action:@selector(pullToRefresh:) forControlEvents:UIControlEventValueChanged];
@@ -336,12 +334,25 @@
     
     [self.wkWebview.scrollView addSubview:self.pullRefreshControl];
     [self.webview.scrollView addSubview:self.pullRefreshControl];
+    
+    self.wkWebview.scrollView.bounces = YES;
+    self.webview.scrollView.bounces = YES;
+}
+
+- (void)removePullRefresh
+{
+    self.webview.scrollView.bounces = NO;
+    self.wkWebview.scrollView.bounces = NO;
+    [self.pullRefreshControl removeFromSuperview];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self addPullToRefresh];
+    
+    if ([GoNativeAppConfig sharedAppConfig].pullToRefresh) {
+        [self addPullToRefresh];
+    }
     
     if ([self isRootWebView]) {
         [self.navigationController setNavigationBarHidden:![GoNativeAppConfig sharedAppConfig].showNavigationBar animated:YES];
@@ -1632,8 +1643,7 @@
     
     [self hideWebview];
     
-    // remove pull to refresh
-    [self.pullRefreshControl removeFromSuperview];
+    [self removePullRefresh];
     
     UIScrollView *scrollView;
     if ([newView isKindOfClass:[UIWebView class]]) {
@@ -1691,7 +1701,9 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
     
-    [self addPullToRefresh];
+    if ([GoNativeAppConfig sharedAppConfig].pullToRefresh) {
+        [self addPullToRefresh];
+    }
 }
 
 // To detect single-page app navigation in WKWebView
@@ -1727,6 +1739,10 @@
 - (void)didStartLoad
 {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (![GoNativeAppConfig sharedAppConfig].pullToRefresh) {
+            [self removePullRefresh];
+        }
+        
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         [self.customActionButton setEnabled:NO];
         
@@ -1769,7 +1785,11 @@
         }
         
         // don't do any more processing or set didloadpage if we are showing an offline page
-        if (!url || [url.host isEqualToString:@"offline"]) return;
+        if (!url || [url.host isEqualToString:@"offline"]) {
+            [self addPullToRefresh];
+            self.didLoadPage = NO;
+            return;
+        }
         
         self.didLoadPage = YES;
         
