@@ -211,7 +211,7 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 
 -(void)registrationDataChanged:(RegistrationData)type
 {
-    if (!self.allDataTypes & type) return;
+    if (!(self.allDataTypes & type)) return;
     
     for (GNRegistrationEndpoint *endpoint in self.registrationEndpoints) {
         if (!(endpoint.dataTypes & type)) continue;

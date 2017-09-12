@@ -77,7 +77,7 @@
 @property NSString *postLoadJavascript;
 @property NSString *postLoadJavascriptForRefresh;
 
-@property (nonatomic, copy) void (^locationPermissionBlock)();
+@property (nonatomic, copy) void (^locationPermissionBlock)(void);
 
 @property BOOL visitedLoginOrSignup;
 
@@ -209,7 +209,7 @@
     
     // hidden nav bar
     if (!appConfig.showNavigationBar && [self isRootWebView]) {
-        UINavigationBar *bar = [[UINavigationBar alloc] init];
+        UIToolbar *bar = [[UIToolbar alloc] init];
         if ([appConfig.iosTheme isEqualToString:@"dark"]) {
             bar.barStyle = UIBarStyleBlack;
         }
@@ -2228,7 +2228,7 @@
 
 #pragma mark - Location
 
--(void)checkLocationPermissionWithBlock:(void (^)())block
+-(void)checkLocationPermissionWithBlock:(void (^)(void))block
 {
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
