@@ -9,7 +9,7 @@
 import Foundation
 
 open class GoNativeAuthUrl : NSObject {
-    var currentUrl: URL?
+    @objc var currentUrl: URL?
     var allowedUrlRegexes: [NSPredicate]
     
     override init() {
