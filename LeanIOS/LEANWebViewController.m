@@ -1800,9 +1800,6 @@
 
         [LEANUtilities overrideGeolocation:self.webview];
         [LEANUtilities overrideGeolocation:self.wkWebview];
-
-        [LEANUtilities addJqueryToWebView:self.webview];
-        [LEANUtilities addJqueryToWebView:self.wkWebview];
         
         // update navigation title
         if ([GoNativeAppConfig sharedAppConfig].useWebpageTitle) {

@@ -956,11 +956,7 @@ static NSString *kGenericErrorMessage = @"Problem with form submission. Please c
 }
 
 - (void)webviewFinishedOnUrl:(NSURL*)url
-{
-    // detect and add jquery if necessary
-    [LEANUtilities addJqueryToWebView:self.hiddenWebView];
-    [LEANUtilities addJqueryToWebView:self.hiddenWkWebview];
-    
+{    
     BOOL success = NO;
     
     // if redirected to different page, then we are done

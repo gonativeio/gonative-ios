@@ -248,35 +248,6 @@
     }
 }
 
-
-// injects jquery into webviews using packaged jquery file
-+ (void)addJqueryToWebView:(UIView*)wv {
-    NSString *jqueryTest = @"window.jQuery.fn.jquery";
-    
-    if ([wv isKindOfClass:[UIWebView class]]) {
-        UIWebView *webView = (UIWebView*)wv;
-        NSString *loaded = [webView stringByEvaluatingJavaScriptFromString:jqueryTest];
-        if (!loaded || [loaded length] == 0) {
-            NSURL *jquery = [[NSBundle mainBundle] URLForResource:@"jquery-2.1.0.min" withExtension:@"js"];
-            NSString *contents = [NSString stringWithContentsOfURL:jquery encoding:NSUTF8StringEncoding error:nil];
-            [webView stringByEvaluatingJavaScriptFromString:contents];
-            [webView stringByEvaluatingJavaScriptFromString:@"jQuery.noConflict()"];
-        }
-
-    } else if ([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
-        WKWebView *webview = (WKWebView*)wv;
-        [webview evaluateJavaScript:jqueryTest completionHandler:^(id result, NSError *error) {
-            if (![result isKindOfClass:[NSString class]] || [result length] == 0) {
-                NSURL *jquery = [[NSBundle mainBundle] URLForResource:@"jquery-2.1.0.min" withExtension:@"js"];
-                NSString *contents = [NSString stringWithContentsOfURL:jquery encoding:NSUTF8StringEncoding error:nil];
-                [webview evaluateJavaScript:contents completionHandler:^(id result2, NSError *error2) {
-                    [webview evaluateJavaScript:@"jQuery.noConflict()" completionHandler:nil];
-                }];
-            }
-        }];
-    }
-}
-
 +(NSString*)jsWrapString:(NSString*)string
 {
     return [NSString stringWithFormat:@"decodeURIComponent(\"%@\")", [string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];

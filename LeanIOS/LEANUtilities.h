@@ -19,7 +19,6 @@
 +(NSString *)stripHTML:(NSString*)x replaceWith:(NSString*) replacement;
 + (UIColor *)colorFromHexString:(NSString *)hexString;
 + (void)overrideGeolocation:(UIView*)webview;
-+ (void)addJqueryToWebView:(UIView*)webView;
 +(NSString*)jsWrapString:(NSString*)string;
 +(NSString*)capitalizeWords:(NSString*)string;
 +(NSString*)getLaunchImageName;
