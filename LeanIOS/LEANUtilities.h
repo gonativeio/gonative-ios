@@ -14,10 +14,11 @@
 +(NSString*)urlEscapeString:(NSString *)unencodedString;
 +(NSString*)urlQueryStringWithDictionary:(NSDictionary*) dictionary;
 +(NSString*)addQueryStringToUrlString:(NSString *)urlString withDictionary:(NSDictionary *)dictionary;
-+(NSDictionary*)parseQuaryParamsWithUrl:(NSURL*)url;
++(NSDictionary*)parseQueryParamsWithUrl:(NSURL*)url;
 +(BOOL)isValidEmail:(NSString*)email;
 +(NSString *)stripHTML:(NSString*)x replaceWith:(NSString*) replacement;
 + (UIColor *)colorFromHexString:(NSString *)hexString;
++(UIColor*)colorWithAlphaFromHexString:(NSString*)hexString;
 + (void)overrideGeolocation:(UIView*)webview;
 +(NSString*)jsWrapString:(NSString*)string;
 +(NSString*)capitalizeWords:(NSString*)string;

@@ -84,6 +84,10 @@
 @property LEANActionManager *actionManager;
 @property LEANToolbarManager *toolbarManager;
 @property CLLocationManager *locationManager;
+@property NSString *connectivityCallback;
+
+@property NSNumber* statusBarStyle; // set via native bridge, only works if no navigation bar
+@property IBOutlet NSLayoutConstraint *topGuideConstraint; // modify constant to place content under status bar
 
 @end
 
@@ -274,6 +278,13 @@
     }
     else if ([name isEqualToString:kReachabilityChangedNotification]) {
         [self retryFailedPage];
+        if (self.connectivityCallback) {
+            NSDictionary *status = [self getConnectivity];
+            NSString *js = [LEANUtilities createJsForCallback:self.connectivityCallback data:status];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self runJavascript:js];
+            });
+        }
     }
     else if ([name isEqualToString:kLEANAppConfigNotificationProcessedNavigationTitles]) {
         NSURL *url = nil;
@@ -1072,7 +1083,7 @@
         
         // registration info
         if ([@"registration" isEqualToString:url.host] && [@"/send" isEqualToString:url.path]) {
-            NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
             NSString *customDataString = query[@"customData"];
             if (customDataString) {
                 NSDictionary *customData = [NSJSONSerialization JSONObjectWithData:[customDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
@@ -1100,7 +1111,7 @@
                 return NO;
             }
             if ([@"/tags/get" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
                 NSString *callback = query[@"callback"];
                 if (!callback || callback.length == 0) {
                     return NO;
@@ -1123,7 +1134,7 @@
                 return NO;
             }
             if ([@"/tags/set" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
                 NSString *callback = query[@"callback"];
                 NSString *tagsString = query[@"tags"];
                 NSDictionary *tags = [NSJSONSerialization JSONObjectWithData:[tagsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
@@ -1167,7 +1178,7 @@
         // Sidebar
         if ([@"sidebar" isEqualToString:url.host]) {
             if ([@"/setItems" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
                 NSString *itemsString = query[@"items"];
                 if (itemsString) {
                     id items = [NSJSONSerialization JSONObjectWithData:[itemsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
@@ -1178,7 +1189,7 @@
         
         // Share page
         if ([@"share" isEqualToString:url.host] && [@"/sharePage" isEqualToString:url.path]) {
-            NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
             NSString *shareUrl = query[@"url"]; // can be nil
             [self sharePageWithUrl:shareUrl sender:nil];
         }
@@ -1207,11 +1218,79 @@
                     }
                 }
             } else if ([@"/setTabs" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQuaryParamsWithUrl:url];
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
                 NSString *tabsJson = query[@"tabs"];
                 if (tabsJson && tabsJson.length) {
                     [self.tabManager setTabsWithJson:tabsJson];
                 }
+            }
+        }
+        
+        // Status bar
+        if ([@"statusbar" isEqualToString:url.host]) {
+            if ([url.path isEqualToString:@"/set"]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                
+                NSString *style = query[@"style"];
+                if (style) {
+                    if ([style isEqualToString:@"light"]) {
+                        // light icons and text
+                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
+                        [self setNeedsStatusBarAppearanceUpdate];
+                    }
+                    else if ([style isEqualToString:@"dark"]) {
+                        // dark icons and text
+                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
+                        [self setNeedsStatusBarAppearanceUpdate];
+                    }
+                }
+                
+                NSString *color = query[@"color"];
+                if (color) {
+                    UIColor *parsedColor = [LEANUtilities colorWithAlphaFromHexString:color];
+                    if (parsedColor) {
+                        UIView *background = [[UIView alloc] init];
+                        background.backgroundColor = parsedColor;
+                        [self.statusBarBackground removeFromSuperview];
+                        self.statusBarBackground = background;
+                        [self.view addSubview:self.statusBarBackground];
+                    }
+                }
+                
+                NSString *overlay = query[@"overlay"];
+                if (overlay) {
+                    if ([overlay isEqualToString:@"true"] || [overlay isEqualToString:@"1"]) {
+                        self.topGuideConstraint.constant = -40.0;
+                    } else {
+                        self.topGuideConstraint.constant = 0;
+                    }
+                }
+            }
+        }
+        
+        // connectivity
+        if ([@"connectivity" isEqualToString:url.host]) {
+            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+            NSString *callback = query[@"callback"];
+            NSDictionary *status = [self getConnectivity];
+
+            if ([@"/get" isEqualToString:url.path]) {
+                if ([callback isKindOfClass:[NSString class]] && callback.length > 0) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSString *js = [LEANUtilities createJsForCallback:callback data:status];
+                        [self runJavascript:js];
+                    });
+                }
+            } else if ([@"/subscribe" isEqualToString:url.path]) {
+                if ([callback isKindOfClass:[NSString class]] && callback.length > 0) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSString *js = [LEANUtilities createJsForCallback:callback data:status];
+                        [self runJavascript:js];
+                    });
+                    self.connectivityCallback = callback;
+                }
+            } else if ([@"/unsubscribe" isEqualToString:url.path]) {
+                self.connectivityCallback = nil;
             }
         }
         
@@ -2208,6 +2287,42 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSDictionary*)getConnectivity
+{
+    LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
+    Reachability *reachability = appDelegate.internetReachability;
+    NetworkStatus status = [reachability currentReachabilityStatus];
+    NSString *statusString;
+    NSNumber *connected;
+
+    switch (status) {
+        case NotReachable:
+            statusString = @"DISCONNECTED";
+            connected = [NSNumber numberWithBool:NO];
+            break;
+        case ReachableViaWiFi:
+            statusString = @"WIFI";
+            connected = [NSNumber numberWithBool:YES];
+            break;
+        case ReachableViaWWAN:
+            statusString = @"MOBILE";
+            connected = [NSNumber numberWithBool:YES];
+            break;
+            
+        default:
+            statusString = @"UNKNOWN";
+            break;
+    }
+    
+    NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:2];
+    [result setObject:statusString forKey:@"type"];
+    if (connected) {
+        [result setObject:connected forKey:@"connected"];
+    }
+    
+    return result;
+}
+
 #pragma mark - MFMailComposeViewControllerDelegate
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
 {
@@ -2334,6 +2449,10 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
+    if (self.statusBarStyle) {
+        return [self.statusBarStyle integerValue];
+    }
+    
     if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
         return UIStatusBarStyleLightContent;
     } else {
