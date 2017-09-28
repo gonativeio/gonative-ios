@@ -182,14 +182,6 @@
         return YES;
     }
     
-    // Facebook SDK
-    if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
-        return [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                              openURL:url
-                                                    sourceApplication:sourceApplication
-                                                           annotation:annotation];
-    }
-    
     if ([url.scheme hasSuffix:@".https"] || [url.scheme hasSuffix:@".http"]) {
         UIViewController *rvc = self.window.rootViewController;
         
@@ -205,6 +197,14 @@
         });
         
         return YES;
+    }
+    
+    // Facebook SDK
+    if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
+        return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                              openURL:url
+                                                    sourceApplication:sourceApplication
+                                                           annotation:annotation];
     }
     
     return NO;
