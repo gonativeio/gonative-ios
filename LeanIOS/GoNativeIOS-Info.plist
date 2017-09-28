@@ -93,5 +93,7 @@
 	<string></string>
 	<key>FacebookDisplayName</key>
 	<string></string>
+	<key>CFBundleURLTypes</key>
+	<array/>
 </dict>
 </plist>

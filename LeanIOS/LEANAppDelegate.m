@@ -176,7 +176,6 @@
     NSLog(@"Error registering for push notifications: %@", err);
 }
 
-
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     if ([LEANSimulator openURL:url]) {
@@ -190,6 +189,24 @@
                                                     sourceApplication:sourceApplication
                                                            annotation:annotation];
     }
+    
+    if ([url.scheme hasSuffix:@".https"] || [url.scheme hasSuffix:@".http"]) {
+        UIViewController *rvc = self.window.rootViewController;
+        
+        NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+        if ([url.scheme hasSuffix:@".https"]) {
+            components.scheme = @"https";
+        } else if ([url.scheme hasSuffix:@".http"]) {
+            components.scheme = @"http";
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [(LEANRootViewController*)rvc loadUrl:[components URL]];
+        });
+        
+        return YES;
+    }
+    
     return NO;
 }
 
