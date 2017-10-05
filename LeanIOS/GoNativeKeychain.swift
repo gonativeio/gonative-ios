@@ -26,6 +26,7 @@ open class GoNativeKeychain: NSObject {
         getSecretExistsAsync { (exists) -> (Void) in
             let result: [String: AnyObject] = [
                 "hasTouchId": self.hasTouchIdD() as AnyObject,
+                "biometryType": self.getBiometryType() as AnyObject,
                 "hasSecret": exists as AnyObject
             ]
             
@@ -38,6 +39,27 @@ open class GoNativeKeychain: NSObject {
             return LAContext().canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error: nil)
         } else {
             return false
+        }
+    }
+    
+    fileprivate func getBiometryType() -> String {
+        if #available(iOS 11.0, *) {
+            if !hasTouchIdD() {
+                return "none";
+            }
+            
+            let type = LAContext().biometryType;
+            if type == LABiometryType.none {
+                return "none";
+            } else if type == LABiometryType.typeTouchID {
+                return "touchId";
+            } else if type == LABiometryType.typeFaceID {
+                return "faceId";
+            } else {
+                return "unknown";
+            }
+        } else {
+            return "none";
         }
     }
     

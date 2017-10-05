@@ -2470,7 +2470,11 @@
     if (self.statusBarBackground) {
         // fix sizing (usually because of rotation) when navigation bar is hidden
         CGSize statusSize = [UIApplication sharedApplication].statusBarFrame.size;
-        CGFloat height = 20;
+        CGFloat height = MIN(statusSize.height, statusSize.width);
+        // fix for double height status bar on non-iPhoneX
+        if (height == 40) {
+            height = 20;
+        }
         CGFloat width = MAX(statusSize.height, statusSize.width);
         self.statusBarBackground.frame = CGRectMake(0, 0, width, height);
     }
@@ -2481,6 +2485,12 @@
 {
     // fixes status bar weirdness when rotating video to landscape
     [self setNeedsStatusBarAppearanceUpdate];
+}
+
+-(void)viewDidLayoutSubviews
+{
+    // fix tab bar height on iPhone X, otherwise it is too short
+    [self.tabBar invalidateIntrinsicContentSize];
 }
 
 @end
