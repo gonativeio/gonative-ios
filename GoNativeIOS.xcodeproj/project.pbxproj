@@ -90,7 +90,6 @@
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */; };
-		20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2219C7BE8200B46C5A /* GoogleCast.framework */; };
 		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
@@ -280,7 +279,6 @@
 				205650A21C6ED77400F0B663 /* FBSDKCoreKit.framework in Frameworks */,
 				20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */,
 				20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */,
-				20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */,
 				209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */,
 				209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */,
 				205141F51C3F54D40087DEB2 /* libGoNativeIOSLibrary.a in Frameworks */,
