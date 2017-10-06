@@ -106,7 +106,7 @@ open class GoNativeKeychain: NSObject {
             let query: NSDictionary = [
                 kSecClass as String: kSecClassGenericPassword,
                 kSecAttrService as String: kGoNativeKeychainService,
-                kSecUseNoAuthenticationUI as String: true
+                kSecUseAuthenticationUI as String: kSecUseAuthenticationUIFail
             ]
             
             var dataTypeRef: AnyObject?
@@ -154,7 +154,7 @@ open class GoNativeKeychain: NSObject {
                 kSecClass as String: kSecClassGenericPassword,
                 kSecAttrService as String: kGoNativeKeychainService,
                 kSecValueData as String: secretData!,
-                kSecUseNoAuthenticationUI as String: true,
+                kSecUseAuthenticationUI as String: kSecUseAuthenticationUIFail,
                 kSecAttrAccessControl as String: accessControlRef!
             ]
             

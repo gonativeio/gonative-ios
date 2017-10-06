@@ -14,7 +14,6 @@
 #import "LEANUrlCache.h"
 #import "LEANRootViewController.h"
 #import "LEANConfigUpdater.h"
-#import "LEANSimulator.h"
 #import "GNRegistrationManager.h"
 #import "GonativeIO-Swift.h"
 
@@ -155,21 +154,8 @@
 
 - (void)configureApplication
 {
-    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-    
     UIColor *defaultTintColor = [UIColor colorWithRed:104.0/255 green:104.0/255 blue:112.0/255 alpha:1.0];
     self.window.tintColor = defaultTintColor;
-    
-    // start cast controller
-    if (appConfig.enableChromecast) {
-        self.castController = [[LEANCastController alloc] init];
-        [self.castController performScan:YES];
-    } else {
-        [self.castController performScan:NO];
-        self.castController = nil;
-    }
-    
-    [LEANSimulator checkStatus];
 }
 
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
@@ -178,10 +164,6 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    if ([LEANSimulator openURL:url]) {
-        return YES;
-    }
-    
     if ([url.scheme hasSuffix:@".https"] || [url.scheme hasSuffix:@".http"]) {
         UIViewController *rvc = self.window.rootViewController;
         
@@ -212,18 +194,9 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    if ([GoNativeAppConfig sharedAppConfig].isSimulator) {
-        [LEANSimulator checkSimulatorSetting];
-    }
-    
     if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
         [FBSDKAppEvents activateApp];
     }
-}
-
-- (void)application:(UIApplication *)application didChangeStatusBarOrientation:(UIInterfaceOrientation)oldStatusBarOrientation
-{
-    [LEANSimulator didChangeStatusBarOrientation];
 }
 
 - (UIInterfaceOrientationMask)application:(UIApplication *)application

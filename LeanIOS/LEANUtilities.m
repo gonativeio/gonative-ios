@@ -19,9 +19,9 @@
         NSArray *arrKeyValue = [arrParameters[i] componentsSeparatedByString:@"="];
         if ([arrKeyValue count] >= 2) {
             NSMutableString *strKey = [NSMutableString stringWithCapacity:0];
-            [strKey setString:[[arrKeyValue[0] lowercaseString] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+            [strKey setString:[[arrKeyValue[0] lowercaseString] stringByRemovingPercentEncoding]];
             NSMutableString *strValue   = [NSMutableString stringWithCapacity:0];
-            [strValue setString:[[arrKeyValue[1]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByReplacingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+            [strValue setString:[[arrKeyValue[1]  stringByReplacingOccurrencesOfString:@"+" withString:@" "] stringByRemovingPercentEncoding]];
             if (strKey.length > 0) dictParameters[strKey] = strValue;
         }
     }
@@ -31,10 +31,7 @@
 
 +(NSString*)urlEscapeString:(NSString *)unencodedString
 {
-    CFStringRef originalStringRef = (__bridge_retained CFStringRef)unencodedString;
-    NSString *s = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,originalStringRef, NULL, NULL,kCFStringEncodingUTF8);
-    CFRelease(originalStringRef);
-    return s;
+    return [unencodedString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
 }
 
 +(NSString*)urlQueryStringWithDictionary:(NSDictionary*) dictionary{
@@ -293,7 +290,7 @@
 
 +(NSString*)jsWrapString:(NSString*)string
 {
-    return [NSString stringWithFormat:@"decodeURIComponent(\"%@\")", [string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    return [NSString stringWithFormat:@"decodeURIComponent(\"%@\")", [string stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
 }
 
 +(NSString*)capitalizeWords:(NSString *)string

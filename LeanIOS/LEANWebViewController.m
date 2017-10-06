@@ -19,9 +19,7 @@
 #import "LEANMenuViewController.h"
 #import "LEANNavigationController.h"
 #import "LEANRootViewController.h"
-#import "LEANWebFormController.h"
 #import "NSURL+LEANUtilities.h"
-#import "LEANCustomAction.h"
 #import "LEANUrlInspector.h"
 #import "LEANProfilePicker.h"
 #import "LEANInstallation.h"
@@ -32,6 +30,7 @@
 #import "Reachability.h"
 #import "LEANActionManager.h"
 #import "GNRegistrationManager.h"
+#import "LEANWebViewIntercept.h"
 #import "GonativeIO-Swift.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate>
@@ -101,13 +100,6 @@
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     
     self.hideWebviewAlpha = [appConfig.hideWebviewAlpha floatValue];
-    
-    // push login controller if it should be the first thing shown
-    if (appConfig.loginIsFirstPage && [self isRootWebView]) {
-        LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.loginConfig title:appConfig.appName isLogin:YES];
-        wfc.originatingViewController = self;
-        [self.navigationController pushViewController:wfc animated:NO];
-    }
     
     // hide toolbar and tab bar on initial launch
     [self hideTabBarAnimated:NO];
@@ -409,56 +401,6 @@
     [self setToolbarItems:array animated:NO];
 }
 
-- (void) updateCustomActions
-{
-    // get custom actions
-    self.customActions = [LEANCustomAction actionsForUrl:[[self.webview request] URL]];
-   
-    if ([self.customActions count] == 0) {
-        // remove button
-        [self setToolbarItems:self.defaultToolbarItems animated:YES];
-        self.customActionButton = nil;
-    } else {
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        [button addTarget:self action:@selector(showCustomActions:) forControlEvents:UIControlEventTouchUpInside];
-        
-        self.customActionButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-        
-        NSMutableArray *array = [self.defaultToolbarItems mutableCopy];
-        [array addObject:[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil]];
-        [array addObject:self.customActionButton];
-        [self setToolbarItems:array animated:YES];
-    }
-    
-}
-
-- (void)showCustomActions:(id)sender
-{
-    
-    /*
-    LEANCustomActionController *controller = [[LEANCustomActionController alloc] init];
-    controller.view.opaque = NO;
-    
-    // fade in
-    controller.view.alpha = 0.0;
-    [self.view addSubview:controller.view];
-    [UIView animateWithDuration:0.4 animations:^{
-        controller.view.alpha = 1.0;
-    }];
-
-    [self.navigationController setToolbarHidden:YES animated:YES]; */
-    
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
-    for (LEANCustomAction* action in self.customActions) {
-        [actionSheet addButtonWithTitle:action.name];
-    }
-    actionSheet.cancelButtonIndex = [actionSheet addButtonWithTitle:@"Cancel"];
-    
-    actionSheet.delegate = self;
-    
-    [actionSheet showFromBarButtonItem:self.customActionButton animated:YES];
-}
-
 -(void)setSidebarEnabled:(BOOL)enabled
 {
     if (![self isRootWebView]) return;
@@ -684,12 +626,6 @@
     // right: refresh button
     if (self.refreshButton) {
         [buttons addObject:self.refreshButton];
-    }
-    
-    // right: chromecast button
-    LEANAppDelegate *appDelegate = (LEANAppDelegate*)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.castController.castButton && !appDelegate.castController.castButton.customView.hidden) {
-        [buttons addObject:appDelegate.castController.castButton];
     }
     
     // right: document share button
@@ -950,11 +886,10 @@
 #pragma mark - Search Bar Delegate
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    // the default url character does not escape '/', so use this function. NSString is toll-free bridged with CFStringRef
-    NSString *searchText = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)searchBar.text,NULL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",kCFStringEncodingUTF8 ));
-    // the search template can have any allowable url character, but we need to escape unicode characters like '✓' so that the NSURL creation doesn't die.
-    NSString *searchTemplate = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL,(CFStringRef)[GoNativeAppConfig sharedAppConfig].searchTemplateURL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",NULL,kCFStringEncodingUTF8 ));
+    NSString *searchText = [searchBar.text stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    NSString *searchTemplate = [GoNativeAppConfig sharedAppConfig].searchTemplateURL;
     NSURL *url = [NSURL URLWithString:[searchTemplate stringByAppendingString:searchText]];
+
     [self loadUrl:url];
     
     self.navigationItem.titleView = self.defaultTitleView;
@@ -1343,7 +1278,7 @@
                         }
                         
                         NSString *key = [keyValue[0] lowercaseString];
-                        NSString *value = [keyValue[1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                        NSString *value = [keyValue[1] stringByRemovingPercentEncoding];
                         
                         if ([key isEqualToString:@"subject"]) {
                             [mc setSubject:value];
@@ -1395,106 +1330,6 @@
         });
         return NO;
     }
-    
-    // checkLoginSignup might be NO when returning from login screen with loginIsFirstPage
-    BOOL checkLoginSignup = self.checkLoginSignup;
-    self.checkLoginSignup = YES;
-    
-    // log in
-    if (checkLoginSignup && appConfig.loginConfig &&
-        [url matchesPathOf:appConfig.loginURL]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showWebview];
-        });
-        
-        if (appConfig.loginIsFirstPage) {
-            if (self.currentRequest) {
-                // this is not the first page loaded, so was probably called via Logout.
-                
-                // recheck status as it has probably changed
-                [[LEANLoginManager sharedManager] checkLogin];
-                
-                LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.loginConfig title:appConfig.appName isLogin:YES];
-                
-                wfc.originatingViewController = self;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.navigationController pushViewController:wfc animated:YES];
-                });
-            } else {
-                // this is the first page loaded, which means that the form controller has already been pushed in viewDidLoad. Do nothing.
-            }
-            
-            return NO;
-        }
-        
-        LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.loginConfig title:@"Log In" isLogin:YES];
-        wfc.originatingViewController = self;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
-            formSheet.modalPresentationStyle = UIModalPresentationFormSheet;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self presentViewController:formSheet animated:YES completion:nil];
-            });
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.navigationController pushViewController:wfc animated:YES];
-            });
-        }
-        return NO;
-    }
-    
-    // sign up
-    if (checkLoginSignup && appConfig.signupURL &&
-        [url matchesPathOf:appConfig.signupURL]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showWebview];
-        });
-        
-        LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithDictionary:appConfig.signupConfig title:@"Sign Up" isLogin:NO];
-        wfc.originatingViewController = self;
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
-            formSheet.modalPresentationStyle = UIModalPresentationFormSheet;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self presentViewController:formSheet animated:YES completion:nil];
-            });
-        }
-        else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.navigationController pushViewController:wfc animated:YES];
-            });
-        }
-        return NO;
-    }
-    
-    // other forms
-    if (appConfig.interceptForms) {
-        for (id form in appConfig.interceptForms) {
-            if ([url matchesPathOf:[NSURL URLWithString:form[@"interceptUrl"]]]) {
-                [self showWebview];
-                
-                LEANWebFormController *wfc = [[LEANWebFormController alloc] initWithJsonObject:form];
-                wfc.originatingViewController = self;
-                if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                    UINavigationController *formSheet = [[UINavigationController alloc] initWithRootViewController:wfc];
-                    formSheet.modalPresentationStyle = UIModalPresentationFormSheet;
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self presentViewController:formSheet animated:YES completion:nil];
-                        
-                    });
-                }
-                else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.navigationController pushViewController:wfc animated:YES];
-                    });
-                }
-                
-                return NO;
-            }
-        }
-    }
-    
     
     // twitter app
     if ([hostname isEqualToString:@"twitter.com"] && [[[request URL] path] isEqualToString:@"/intent/tweet"])
@@ -1636,7 +1471,7 @@
     NSURLRequest *previousRequest = self.currentRequest;
     self.currentRequest = request;
     // save for html interception
-    ((LEANAppDelegate*)[[UIApplication sharedApplication] delegate]).currentRequest = request;
+    [LEANWebviewInterceptTracker sharedTracker].currentRequest = request;
     
     // update title image, tabs, etc
     [self checkPreNavigationForUrl:request.URL];
@@ -1938,13 +1773,6 @@
             [self runJavascript:self.analyticsJs];
         }
         
-        if ([GoNativeAppConfig sharedAppConfig].enableChromecast) {
-            [self detectVideo];
-            // [self performSelector:@selector(detectVideo) withObject:nil afterDelay:1];
-        }
-        
-        [self updateCustomActions];
-        
         // tabs
         [self checkNavigationForUrl: url];
         
@@ -2234,46 +2062,6 @@
     }
 }
 
-- (void)detectVideo
-{
-    NSString *dataUrlJs = @"jwplayer().config.fallbackDiv.getAttribute('data-url_alt');";
-    NSString *titleJs = @"jwplayer().config.fallbackDiv.getAttribute('data-title');";
-    
-    LEANAppDelegate *appDelegate = (LEANAppDelegate*)[[UIApplication sharedApplication] delegate];
-    LEANCastController *castController = appDelegate.castController;
-    
-    if (self.webview) {
-        NSURL *url = nil;
-        NSString *title = nil;
-        NSString *dataurl = [self.webview stringByEvaluatingJavaScriptFromString:dataUrlJs];
-        
-        if (dataurl && [dataurl length] > 0) {
-            url = [NSURL URLWithString:dataurl relativeToURL:self.currentRequest.URL];
-            title = [self.webview stringByEvaluatingJavaScriptFromString:titleJs];
-        }
-        
-        castController.urlToPlay = url;
-        castController.titleToPlay = title;
-
-    }
-    else if (self.wkWebview) {
-        [self.wkWebview evaluateJavaScript:dataUrlJs completionHandler:^(id result, NSError *error) {
-            if ([result isKindOfClass:[NSString class]] && [result length] > 0) {
-                NSURL *url = [NSURL URLWithString:result relativeToURL:self.currentRequest.URL];
-                
-                [self.wkWebview evaluateJavaScript:titleJs completionHandler:^(id result2, NSError *error2) {
-                    castController.urlToPlay = url;
-                    castController.titleToPlay = result2;
-                }];
-                
-            } else {
-                castController.urlToPlay = nil;
-                castController.titleToPlay = nil;
-            }
-        }];
-    }
-}
-
 - (void) setNavigationButtonStatus
 {
     self.backButton.enabled = self.webview.canGoBack;
@@ -2327,15 +2115,6 @@
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
 {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - Action Sheet Delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex < [self.customActions count]) {
-        LEANCustomAction *action = self.customActions[buttonIndex];
-        [self.webview stringByEvaluatingJavaScriptFromString:action.javascript];
-    }
 }
 
 #pragma mark - Location

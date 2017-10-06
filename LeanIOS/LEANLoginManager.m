@@ -13,10 +13,10 @@
 #import "LEANUrlInspector.h"
 #import <WebKit/WebKit.h>
 
-@interface LEANLoginManager () <NSURLConnectionDataDelegate, WKNavigationDelegate>
+@interface LEANLoginManager () <NSURLSessionDataDelegate, WKNavigationDelegate>
 @property BOOL isChecking;
-@property NSURLConnection *connection;
-@property NSURL *currentUrl;
+@property NSURLSession *session;
+@property NSURLSessionTask *task;
 @property WKWebView *wkWebview;
 @end
 
@@ -34,6 +34,9 @@
             
             sharedManager.loggedIn = NO;
             [sharedManager checkLogin];
+            
+            NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+            sharedManager.session = [NSURLSession sessionWithConfiguration:config delegate:sharedManager delegateQueue:nil];
         }
         return sharedManager;
     }
@@ -68,7 +71,7 @@
 
 -(void) checkLogin
 {
-    [self.connection cancel];
+    [self.task cancel];
     [self.wkWebview stopLoading];
     
     NSURL *url = [GoNativeAppConfig sharedAppConfig].loginDetectionURL;
@@ -95,7 +98,8 @@
         [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
         [request setValue:@"gzip, deflate" forHTTPHeaderField:@"Accept-Encoding"];
         
-        self.connection = [NSURLConnection connectionWithRequest:request delegate:self];
+        self.task = [self.session dataTaskWithRequest:request];
+        [self.task resume];
     }
 }
 
@@ -128,41 +132,30 @@
     [self setStatus:@"default" loggedIn:NO];
 }
 
-#pragma mark URL Connection Data Delegate
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
-{
-    if ([response isKindOfClass:[NSURLResponse class]]) {
-        self.isChecking = NO;
-        [connection cancel];
-        
-        [self finishedOnUrl:self.currentUrl];
-    }
-}
-
-- (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
-{
-    // follow all redirects.
-    self.currentUrl = [request URL];
-    return request;
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    [self failedWithError:error];
-}
-
 - (void)stopChecking
 {
-    if (self.connection) {
-        [self.connection cancel];
-        self.connection = nil;
+    if (self.task) {
+        [self.task cancel];
+        self.task = nil;
     }
     
     if (self.wkWebview) {
         [self.wkWebview stopLoading];
     }
-    self.currentUrl = nil;
     self.isChecking = NO;
+}
+
+#pragma mark URL Session Delegate
+-(void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
+{
+    [self failedWithError:error];
+}
+
+-(void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
+{
+    self.isChecking = NO;
+    [self finishedOnUrl:response.URL];
+    completionHandler(NSURLSessionResponseCancel);
 }
 
 # pragma mark WebView navigation delegate

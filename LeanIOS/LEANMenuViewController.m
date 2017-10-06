@@ -15,7 +15,6 @@
 #import "FontAwesome/NSString+FontAwesome.h"
 #import "FontAwesome/UIFont+FontAwesome.h"
 #import "LEANUrlInspector.h"
-#import "LEANSettingsController.h"
 #import "LEANTabManager.h"
 #import "LEANProfilePicker.h"
 
@@ -30,7 +29,6 @@
 @property UIImage *collapsedIndicator;
 @property UIImage *expandedIndicator;
 @property UIButton *settingsButton;
-@property UIPopoverController *settingsPopover;
 
 @property UIView *headerView;
 @property UISegmentedControl *segmentedControl;
@@ -69,10 +67,7 @@
     else if ([GoNativeAppConfig sharedAppConfig].appIcon) {
         [headerButton setImage:[GoNativeAppConfig sharedAppConfig].appIcon forState:UIControlStateNormal];
     }
-    
-    self.settingsButton = (UIButton*)[headerView viewWithTag:2];
-    [self.settingsButton addTarget:self action:@selector(settingsPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
+        
     self.segmentedControl = (UISegmentedControl*)[headerView viewWithTag:3];
     [self setupSegmentedControl];
     
@@ -182,23 +177,6 @@
 - (IBAction)picturePressed:(id)sender {
     [self.wvc loadUrl:[GoNativeAppConfig sharedAppConfig].initialURL];
     [self.frostedViewController hideMenuViewController];
-}
-
-- (IBAction)settingsPressed:(id)sender
-{
-    LEANSettingsController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingsController"];
-    controller.profilePicker = self.profilePicker;
-    controller.wvc = self.wvc;
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.settingsPopover = [[UIPopoverController alloc] initWithContentViewController:controller];
-        controller.popover = self.settingsPopover;
-        [self.settingsPopover presentPopoverFromRect:[self.settingsButton bounds] inView:self.settingsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-        
-    } else {
-        [self.frostedViewController hideMenuViewController];
-        [self.wvc.navigationController pushViewController:controller animated:YES];
-    }
 }
 
 - (void)parseProfilePickerJSON:(NSString *)json

@@ -12,3 +12,7 @@
 +(void)register;
 @end
 
+@interface LEANWebviewInterceptTracker : NSObject
+@property NSURLRequest *currentRequest;
++ (LEANWebviewInterceptTracker*)sharedTracker;
+@end

@@ -22,9 +22,10 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.LEANWebViewIntercept";
 static NSString * kRequestPropertyRemoveXframe = @"io.gonative.ios.LEANWebViewIntercept.removeXFrameOptions";
 static LEANUrlCache *urlCache;
 
-@interface LEANWebViewIntercept () <NSURLConnectionDataDelegate>
+@interface LEANWebViewIntercept () <NSURLSessionDataDelegate>
 @property NSMutableURLRequest *modifiedRequest;
-@property NSURLConnection *conn;
+@property NSURLSession *session;
+@property NSURLSessionTask *task;
 @property BOOL isHtml;
 @property NSStringEncoding htmlEncoding;
 @property NSMutableData *htmlBuffer;
@@ -66,7 +67,7 @@ static LEANUrlCache *urlCache;
     }
     
     // if is equal to current url being loaded, then intercept
-    NSURLRequest *currentRequest = ((LEANAppDelegate*)[UIApplication sharedApplication].delegate).currentRequest;
+    NSURLRequest *currentRequest = [LEANWebviewInterceptTracker sharedTracker].currentRequest;
     NSURLRequest *poolRequest = [LEANWebViewPool sharedPool].currentLoadingRequest;
     
     if (([[request URL] isEqual:[currentRequest URL]] || [[request URL] isEqual:[poolRequest URL]]) &&
@@ -152,14 +153,18 @@ static LEANUrlCache *urlCache;
         [self.client URLProtocolDidFinishLoading:self];
     }
     else {
-        self.conn = [NSURLConnection connectionWithRequest:self.modifiedRequest delegate:self];
+        NSLog(@"start loading %@", self.modifiedRequest.URL);
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        self.session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
+        self.task = [self.session dataTaskWithRequest:self.modifiedRequest];
+        [self.task resume];
     }
 }
 
 - (void)stopLoading {
-    [self.conn cancel];
+    [self.session invalidateAndCancel];
+    self.session = nil;
     self.modifiedRequest = nil;
-    self.conn = nil;
 }
 
 - (NSData *)modifyHtml:(NSData *)htmlBuffer
@@ -257,8 +262,9 @@ static LEANUrlCache *urlCache;
     return nil;
 }
 
-#pragma mark - URL Connection Data Delegate
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+#pragma mark - URL Session Delegate
+-(void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
+{
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         // remove X-Frame-Options from all responses
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
@@ -290,9 +296,12 @@ static LEANUrlCache *urlCache;
     } else {
         self.isHtml = NO;
     }
+    
+    completionHandler(NSURLSessionResponseAllow);
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+-(void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
+{
     if (self.isHtml)
         [self.htmlBuffer appendData:data];
     else
@@ -301,23 +310,16 @@ static LEANUrlCache *urlCache;
     [[LEANDocumentSharer sharedSharer] receivedData:data];
 }
 
-- (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
+-(void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
-    if (redirectResponse != nil) {
-        NSMutableURLRequest *newReq = [request mutableCopy];
-        [[self class] removePropertyForKey:kOurRequestProperty inRequest:newReq];
-        [self.client URLProtocol:self wasRedirectedToRequest:newReq redirectResponse:redirectResponse];
-
-        // client will resend request, so cancel this one.
-        // See Apple's CustomHTTPProtocol example.
-        [self.conn cancel];
-        [self.client URLProtocol:self didFailWithError:[NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil]];
+    [self.session invalidateAndCancel];
+    
+    if (error) {
+        [self.client URLProtocol:self didFailWithError:error];
+        [[LEANDocumentSharer sharedSharer] cancel];
+        return;
     }
     
-    return request;
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     if (self.isHtml) {
         [self.client URLProtocol:self didLoadData:[self modifyHtml:self.htmlBuffer]];
     } else {
@@ -328,22 +330,34 @@ static LEANUrlCache *urlCache;
     [[LEANDocumentSharer sharedSharer] finish];
 }
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    [self.client URLProtocol:self didFailWithError:error];
-    [[LEANDocumentSharer sharedSharer] cancel];
+-(void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest * _Nullable))completionHandler
+{
+    if (request != nil) {
+        NSMutableURLRequest *newReq = [request mutableCopy];
+        [[self class] removePropertyForKey:kOurRequestProperty inRequest:newReq];
+        [self.client URLProtocol:self wasRedirectedToRequest:newReq redirectResponse:response];
+        
+        // client will resend request, so cancel this one.
+        // See Apple's CustomHTTPProtocol example.
+        [self.client URLProtocol:self didFailWithError:[NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil]];
+    }
+    completionHandler(nil);
 }
-
-//- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
-//{
-//    if (self.isHtml)
-//        return [[NSCachedURLResponse alloc] initWithResponse:[cachedResponse response] data:[self modifyHtml:[cachedResponse data]] userInfo:[cachedResponse userInfo] storagePolicy:[cachedResponse storagePolicy]];
-//    else
-//        return cachedResponse;
-//}
-
 
 @end
 
-
-
+@implementation LEANWebviewInterceptTracker
++ (LEANWebviewInterceptTracker *)sharedTracker
+{
+    static LEANWebviewInterceptTracker *sharedTracker;
+    
+    @synchronized(self)
+    {
+        if (!sharedTracker) {
+            sharedTracker = [[LEANWebviewInterceptTracker alloc] init];
+        }
+        return sharedTracker;
+    }
+}
+@end
 

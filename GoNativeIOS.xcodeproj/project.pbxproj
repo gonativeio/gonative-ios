@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		200103B318E38AED004EAC71 /* CheckboxView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 200103B218E38AED004EAC71 /* CheckboxView.xib */; };
 		2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49B18A9991300495B3D /* Foundation.framework */; };
 		2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49D18A9991300495B3D /* CoreGraphics.framework */; };
 		2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
@@ -35,15 +34,10 @@
 		2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */; };
 		2004820518B080DD005FDD9A /* HeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2004820418B080DD005FDD9A /* HeaderView.xib */; };
 		2004AF7B18F8F936001E01E9 /* LEANWebViewIntercept.m in Sources */ = {isa = PBXBuildFile; fileRef = 2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */; };
-		20054BD618B68D1E00A422F9 /* LEANCastController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20054BD518B68D1E00A422F9 /* LEANCastController.m */; };
-		200A392519070B1500EFDDD6 /* CheckingLoginView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 200A392419070B1500EFDDD6 /* CheckingLoginView.xib */; };
 		200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */ = {isa = PBXBuildFile; fileRef = 200F75CF1BCDA6B800C08BB5 /* notification.aff */; };
 		2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE941907671A00EC4311 /* LEANUrlInspector.m */; };
-		20191C4419231A0900BF1549 /* LEANSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 20191C4319231A0900BF1549 /* LEANSettingsController.m */; };
 		20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 20191C461923DF6400BF1549 /* LEANProfilePicker.m */; };
 		201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */ = {isa = PBXBuildFile; fileRef = 201AB2D51996AD66008C31BF /* LEANInstallation.m */; };
-		202B4D5219510F640099821E /* TextAreaView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D5119510F640099821E /* TextAreaView.xib */; };
-		202B4D56195122FD0099821E /* DateCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 202B4D55195122FD0099821E /* DateCellView.xib */; };
 		202BE5711B9757070064D928 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5701B9757070064D928 /* AudioToolbox.framework */; };
 		202BE5731B97570D0064D928 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5721B97570D0064D928 /* CFNetwork.framework */; };
 		202BE5751B97571B0064D928 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5741B97571B0064D928 /* CoreLocation.framework */; };
@@ -65,11 +59,6 @@
 		205650A41C6ED77400F0B663 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */; };
 		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
-		207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */; };
-		207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C218C2E8B3002EBDD0 /* TextCellView.xib */; };
-		207170C518C2F0CF002EBDD0 /* PasswordCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C418C2F0CF002EBDD0 /* PasswordCellView.xib */; };
-		207170C718C2F250002EBDD0 /* OptionCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170C618C2F250002EBDD0 /* OptionCellView.xib */; };
-		207170CB18C3A376002EBDD0 /* ListCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 207170CA18C3A376002EBDD0 /* ListCellView.xib */; };
 		2081A28A1F33ECE900057E3F /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 2081A2891F33ECE900057E3F /* NotificationService.m */; };
 		2081A28E1F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2081A2931F33ED5500057E3F /* OneSignal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2041A8C51E36D75F0010BAC4 /* OneSignal.framework */; };
@@ -83,7 +72,6 @@
 		209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B3307193FC4CE0052A7C6 /* libzipzap.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B330A193FC5BD0052A7C6 /* libz.dylib */; };
 		20A0B6ED1A363EFB00D9C3F2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */; };
-		20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A13A9519058A5600B997DD /* LEANCustomAction.m */; };
 		20A13A9819058AA200B997DD /* LoginHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13A9719058AA200B997DD /* LoginHeaderView.xib */; };
 		20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AA71905A43C00B997DD /* MenuGroupIcon.xib */; };
 		20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A13AAB1905CB6C00B997DD /* FAImageView.m */; };
@@ -100,8 +88,6 @@
 		20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */; };
 		20C8505019CD143100DB208A /* LEANIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C8504F19CD143100DB208A /* LEANIcons.m */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
-		20D7B68319A6BF0100993236 /* LEANSimulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D7B68219A6BF0100993236 /* LEANSimulator.m */; };
-		20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20DE147F18F103850083F46A /* ForgotPasswordView.xib */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */; };
 		20F49C2319C7BE8200B46C5A /* GoogleCast.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2219C7BE8200B46C5A /* GoogleCast.framework */; };
@@ -142,7 +128,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		200103B218E38AED004EAC71 /* CheckboxView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckboxView.xib; sourceTree = "<group>"; };
 		2002B49818A9991300495B3D /* GonativeIO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GonativeIO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2002B49B18A9991300495B3D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2002B49D18A9991300495B3D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -186,20 +171,13 @@
 		2004820418B080DD005FDD9A /* HeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeaderView.xib; sourceTree = "<group>"; };
 		2004AF7918F8F936001E01E9 /* LEANWebViewIntercept.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewIntercept.h; sourceTree = "<group>"; };
 		2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewIntercept.m; sourceTree = "<group>"; };
-		20054BD418B68D1E00A422F9 /* LEANCastController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANCastController.h; sourceTree = "<group>"; };
-		20054BD518B68D1E00A422F9 /* LEANCastController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANCastController.m; sourceTree = "<group>"; };
-		200A392419070B1500EFDDD6 /* CheckingLoginView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckingLoginView.xib; sourceTree = "<group>"; };
 		200F75CF1BCDA6B800C08BB5 /* notification.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = notification.aff; sourceTree = "<group>"; };
 		2018EE931907671A00EC4311 /* LEANUrlInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANUrlInspector.h; sourceTree = "<group>"; };
 		2018EE941907671A00EC4311 /* LEANUrlInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUrlInspector.m; sourceTree = "<group>"; };
-		20191C4219231A0900BF1549 /* LEANSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANSettingsController.h; sourceTree = "<group>"; };
-		20191C4319231A0900BF1549 /* LEANSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANSettingsController.m; sourceTree = "<group>"; };
 		20191C451923DF6400BF1549 /* LEANProfilePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANProfilePicker.h; sourceTree = "<group>"; };
 		20191C461923DF6400BF1549 /* LEANProfilePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANProfilePicker.m; sourceTree = "<group>"; };
 		201AB2D41996AD66008C31BF /* LEANInstallation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANInstallation.h; sourceTree = "<group>"; };
 		201AB2D51996AD66008C31BF /* LEANInstallation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANInstallation.m; sourceTree = "<group>"; };
-		202B4D5119510F640099821E /* TextAreaView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextAreaView.xib; sourceTree = "<group>"; };
-		202B4D55195122FD0099821E /* DateCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DateCellView.xib; sourceTree = "<group>"; };
 		202BE5701B9757070064D928 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		202BE5721B97570D0064D928 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		202BE5741B97571B0064D928 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -227,12 +205,6 @@
 		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
-		207170BE18C2E47A002EBDD0 /* LEANWebFormController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebFormController.h; sourceTree = "<group>"; };
-		207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebFormController.m; sourceTree = "<group>"; };
-		207170C218C2E8B3002EBDD0 /* TextCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextCellView.xib; sourceTree = "<group>"; };
-		207170C418C2F0CF002EBDD0 /* PasswordCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PasswordCellView.xib; sourceTree = "<group>"; };
-		207170C618C2F250002EBDD0 /* OptionCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OptionCellView.xib; sourceTree = "<group>"; };
-		207170CA18C3A376002EBDD0 /* ListCellView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListCellView.xib; sourceTree = "<group>"; };
 		2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2081A2881F33ECE900057E3F /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
 		2081A2891F33ECE900057E3F /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
@@ -252,8 +224,6 @@
 		209B3307193FC4CE0052A7C6 /* libzipzap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzipzap.a; sourceTree = "<group>"; };
 		209B330A193FC5BD0052A7C6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		20A13A9419058A5500B997DD /* LEANCustomAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANCustomAction.h; sourceTree = "<group>"; };
-		20A13A9519058A5600B997DD /* LEANCustomAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANCustomAction.m; sourceTree = "<group>"; };
 		20A13A9719058AA200B997DD /* LoginHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginHeaderView.xib; sourceTree = "<group>"; };
 		20A13AA71905A43C00B997DD /* MenuGroupIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuGroupIcon.xib; sourceTree = "<group>"; };
 		20A13AAA1905CB6C00B997DD /* FAImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAImageView.h; sourceTree = "<group>"; };
@@ -279,9 +249,6 @@
 		20C8504F19CD143100DB208A /* LEANIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIcons.m; sourceTree = "<group>"; };
 		20D77B6E1A2547E5008A938D /* LEANActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANActionManager.h; sourceTree = "<group>"; };
 		20D77B6F1A2547E5008A938D /* LEANActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANActionManager.m; sourceTree = "<group>"; };
-		20D7B68119A6BF0100993236 /* LEANSimulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANSimulator.h; sourceTree = "<group>"; };
-		20D7B68219A6BF0100993236 /* LEANSimulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANSimulator.m; sourceTree = "<group>"; };
-		20DE147F18F103850083F46A /* ForgotPasswordView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForgotPasswordView.xib; sourceTree = "<group>"; };
 		20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewPool.h; sourceTree = "<group>"; };
 		20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewPool.m; sourceTree = "<group>"; };
 		20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANToolbarManager.h; sourceTree = "<group>"; };
@@ -405,7 +372,6 @@
 				203ADBA91C224F0300273067 /* GonativeIO.entitlements */,
 				20C23645193E32EA00F6ADF0 /* Config */,
 				20A13AA91905CB6C00B997DD /* FontAwesome */,
-				207170C118C2E820002EBDD0 /* Forms */,
 				20A13AA61905A3EC00B997DD /* Menus */,
 				204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */,
 				204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */,
@@ -421,12 +387,8 @@
 				2046CAF91BC0790800714F66 /* GNRegistrationManager.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
 				2002B4AB18A9991300495B3D /* LEANAppDelegate.m */,
-				20054BD418B68D1E00A422F9 /* LEANCastController.h */,
-				20054BD518B68D1E00A422F9 /* LEANCastController.m */,
 				20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */,
 				20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */,
-				20A13A9419058A5500B997DD /* LEANCustomAction.h */,
-				20A13A9519058A5600B997DD /* LEANCustomAction.m */,
 				20B6B55319AC4C2E004019C4 /* LEANDocumentSharer.h */,
 				20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */,
 				20C8504E19CD143100DB208A /* LEANIcons.h */,
@@ -439,10 +401,6 @@
 				2002B4F318A99C4100495B3D /* LEANNavigationController.m */,
 				2002B4F418A99C4100495B3D /* LEANRootViewController.h */,
 				2002B4F518A99C4100495B3D /* LEANRootViewController.m */,
-				20191C4219231A0900BF1549 /* LEANSettingsController.h */,
-				20191C4319231A0900BF1549 /* LEANSettingsController.m */,
-				20D7B68119A6BF0100993236 /* LEANSimulator.h */,
-				20D7B68219A6BF0100993236 /* LEANSimulator.m */,
 				20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */,
 				20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */,
 				20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */,
@@ -530,24 +488,6 @@
 				205141F31C3F54C00087DEB2 /* GoNativeAppConfig.h */,
 			);
 			path = GoNativeIOSLibrary;
-			sourceTree = "<group>";
-		};
-		207170C118C2E820002EBDD0 /* Forms */ = {
-			isa = PBXGroup;
-			children = (
-				207170BE18C2E47A002EBDD0 /* LEANWebFormController.h */,
-				207170BF18C2E47A002EBDD0 /* LEANWebFormController.m */,
-				207170C218C2E8B3002EBDD0 /* TextCellView.xib */,
-				20DE147F18F103850083F46A /* ForgotPasswordView.xib */,
-				202B4D55195122FD0099821E /* DateCellView.xib */,
-				207170CA18C3A376002EBDD0 /* ListCellView.xib */,
-				207170C418C2F0CF002EBDD0 /* PasswordCellView.xib */,
-				207170C618C2F250002EBDD0 /* OptionCellView.xib */,
-				200103B218E38AED004EAC71 /* CheckboxView.xib */,
-				200A392419070B1500EFDDD6 /* CheckingLoginView.xib */,
-				202B4D5119510F640099821E /* TextAreaView.xib */,
-			);
-			name = Forms;
 			sourceTree = "<group>";
 		};
 		2081A2871F33ECE900057E3F /* OneSignalNotificationServiceExtension */ = {
@@ -747,33 +687,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				207170CB18C3A376002EBDD0 /* ListCellView.xib in Resources */,
 				2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */,
 				20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */,
 				203ADBAA1C224F0300273067 /* GonativeIO.entitlements in Resources */,
 				20580E031B2E53730061943C /* offline.html in Resources */,
 				20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */,
 				2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */,
-				200A392519070B1500EFDDD6 /* CheckingLoginView.xib in Resources */,
-				202B4D56195122FD0099821E /* DateCellView.xib in Resources */,
-				20DE148018F103850083F46A /* ForgotPasswordView.xib in Resources */,
-				200103B318E38AED004EAC71 /* CheckboxView.xib in Resources */,
 				2002B4B718A9991300495B3D /* Images.xcassets in Resources */,
 				20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */,
 				209B321D193FB11A0052A7C6 /* localCache.zip in Resources */,
 				208A9F42191AEBAD0049E664 /* appConfig.json in Resources */,
 				2002B4AF18A9991300495B3D /* Main.storyboard in Resources */,
-				207170C318C2E8B3002EBDD0 /* TextCellView.xib in Resources */,
 				2004820518B080DD005FDD9A /* HeaderView.xib in Resources */,
 				200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */,
 				20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */,
 				2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */,
-				207170C518C2F0CF002EBDD0 /* PasswordCellView.xib in Resources */,
 				20A13AB21905CB6C00B997DD /* FontAwesome.ttf in Resources */,
 				20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */,
-				202B4D5219510F640099821E /* TextAreaView.xib in Resources */,
 				20A13A9819058AA200B997DD /* LoginHeaderView.xib in Resources */,
-				207170C718C2F250002EBDD0 /* OptionCellView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -805,21 +736,17 @@
 				2002B4B518A9991300495B3D /* LEANWebViewController.m in Sources */,
 				2002B4E618A99A9900495B3D /* REFrostedContainerViewController.m in Sources */,
 				20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */,
-				20191C4419231A0900BF1549 /* LEANSettingsController.m in Sources */,
 				202E989519EF30C8009C28AD /* Reachability.m in Sources */,
 				2089662718AC6753007FC34F /* LEANLoginManager.m in Sources */,
-				20054BD618B68D1E00A422F9 /* LEANCastController.m in Sources */,
 				2002B4FC18A99C4100495B3D /* LEANUtilities.m in Sources */,
 				20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */,
 				2046CAFA1BC0790800714F66 /* GNRegistrationManager.m in Sources */,
 				20A13AB41905CB6C00B997DD /* UIFont+FontAwesome.m in Sources */,
 				20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */,
 				204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */,
-				207170C018C2E47A002EBDD0 /* LEANWebFormController.m in Sources */,
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,
 				20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */,
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
-				20A13A9619058A5600B997DD /* LEANCustomAction.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
 				20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */,
 				20C8505019CD143100DB208A /* LEANIcons.m in Sources */,
@@ -833,7 +760,6 @@
 				2002B4A818A9991300495B3D /* main.m in Sources */,
 				2002B4E718A99A9900495B3D /* REFrostedViewController.m in Sources */,
 				2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */,
-				20D7B68319A6BF0100993236 /* LEANSimulator.m in Sources */,
 				20B8FFB71EB79D3F000F4CFA /* GNCustomHeaders.m in Sources */,
 				2002B4E818A99A9900495B3D /* UIImage+REFrostedViewController.m in Sources */,
 				2002B4E918A99A9900495B3D /* UIView+REFrostedViewController.m in Sources */,
