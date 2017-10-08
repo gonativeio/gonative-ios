@@ -500,6 +500,9 @@
         
         // for our faux content-inset
         webview.scrollView.layer.masksToBounds = NO;
+        
+        // disable hard press to preview
+        webview.allowsLinkPreview = NO;
     }
 }
 
