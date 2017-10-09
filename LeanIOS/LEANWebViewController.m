@@ -2223,7 +2223,7 @@
 
 - (BOOL)prefersStatusBarHidden
 {
-    return UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation);
+    return self.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact;
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
