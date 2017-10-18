@@ -223,6 +223,11 @@
     self.tabBar.selectedItem = self.tabBar.items[number];
 }
 
+- (void)deselectTabs
+{
+    self.tabBar.selectedItem = nil;
+}
+
 - (void)setTabsWithJson:(NSString*)json
 {
     NSError *jsonError;

@@ -1152,6 +1152,8 @@
                         [self.tabManager selectTabNumber:tabNumber];
                     }
                 }
+            } else if ([@"/deselect" isEqualToString:url.path]) {
+                [self.tabManager deselectTabs];
             } else if ([@"/setTabs" isEqualToString:url.path]) {
                 NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
                 NSString *tabsJson = query[@"tabs"];
