@@ -121,6 +121,7 @@ typedef enum : NSUInteger {
 @property BOOL oneSignalEnabled;
 @property NSString *oneSignalAppId;
 @property BOOL oneSignalAutoRegister;
+@property NSURL *oneSignalTagsJsonUrl;
 
 // Facebook SDK
 @property BOOL facebookEnabled;

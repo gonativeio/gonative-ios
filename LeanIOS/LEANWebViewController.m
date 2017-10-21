@@ -31,6 +31,7 @@
 #import "LEANActionManager.h"
 #import "GNRegistrationManager.h"
 #import "LEANWebViewIntercept.h"
+#import "Subscriptions/GNSubscriptionsController.h"
 #import "GonativeIO-Swift.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate>
@@ -1107,6 +1108,15 @@
                 [OneSignal promptLocation];
                 return NO;
             }
+
+            if (([@"/showTagsUI" isEqualToString:url.path])) {
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Subscriptions" bundle:nil];
+                UIViewController *vc = [storyboard instantiateInitialViewController];
+                [self presentViewController:vc animated:YES completion:nil];
+
+                return NO;
+            }
+
             return NO;
         }
         
