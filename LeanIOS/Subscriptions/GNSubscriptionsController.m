@@ -31,7 +31,7 @@
         
         if (error) {
             NSLog(@"An error occurred retrieving %@: %@", url, error);
-            [self failedWithUserMessage:@"Error retriving tag list"];
+            [self failedWithUserMessage:@"Error retrieving tag list"];
             return;
         }
         

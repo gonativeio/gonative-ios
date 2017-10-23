@@ -12,7 +12,7 @@
 @interface GNSubscriptionsTableViewController ()
 @property GNSubscriptionsModel *model;
 
-@property NSMutableArray *switchTagToIdentifier;
+@property NSMutableArray *switchTagToItem;
 @end
 
 @implementation GNSubscriptionsTableViewController
@@ -21,7 +21,7 @@
     [super viewDidLoad];
     self.view.hidden = YES;
     
-    self.switchTagToIdentifier = [NSMutableArray array];
+    self.switchTagToItem = [NSMutableArray array];
 }
 
 -(void)loadModel:(GNSubscriptionsModel*)model
@@ -53,8 +53,8 @@
     cell.textLabel.text = item.name;
     
     UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectZero];
-    switchView.tag = self.switchTagToIdentifier.count;
-    self.switchTagToIdentifier[switchView.tag] = item.identifier;
+    switchView.tag = self.switchTagToItem.count;
+    self.switchTagToItem[switchView.tag] = item;
     [switchView setOn:item.isSubscribed];
     [switchView addTarget:self action:@selector(switchUpdatedState:) forControlEvents:UIControlEventValueChanged];
     cell.accessoryView = switchView;
@@ -69,15 +69,17 @@
 - (void)switchUpdatedState:(id)sender
 {
     UISwitch *switchView = (UISwitch*)sender;
-    NSString *identifier = self.switchTagToIdentifier[switchView.tag];
-    if (!identifier) {
+    GNSubscriptionItem *item = self.switchTagToItem[switchView.tag];
+    item.isSubscribed = switchView.isOn;
+    
+    if (!item.identifier) {
         return;
     }
     
     if (switchView.isOn) {
-        [OneSignal sendTag:identifier value:@"1"];
+        [OneSignal sendTag:item.identifier value:@"1"];
     } else {
-        [OneSignal deleteTag:identifier];
+        [OneSignal deleteTag:item.identifier];
     }
 }
 
