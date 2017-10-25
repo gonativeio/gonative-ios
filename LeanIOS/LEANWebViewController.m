@@ -437,12 +437,14 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self hideTabBarAnimated:YES];
         });
-        return;
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tabManager didLoadUrl:url];
+        });
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tabManager didLoadUrl:url];
-        [self.toolbarManager didLoadUrl:url];
     });
 }
 
