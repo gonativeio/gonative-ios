@@ -22,6 +22,7 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 @interface GNRegistrationInfo : NSObject
 @property NSString *oneSignalUserId;
 @property NSString *oneSignalPushToken;
+@property BOOL oneSignalSubscribed;
 @property NSDictionary *customData;
 @end
 @implementation GNRegistrationInfo
@@ -73,6 +74,7 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
         if (info.oneSignalPushToken) {
             toSend[@"oneSignalPushToken"] = info.oneSignalPushToken;
         }
+        toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:info.oneSignalSubscribed];
     }
     
     if (self.dataTypes & RegistrationDataCustom && info.customData) {
@@ -229,10 +231,11 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     }
 }
 
--(void)setOneSignalUserId:(NSString *)userId pushToken:(NSString*)pushToken;
+-(void)setOneSignalUserId:(NSString *)userId pushToken:(NSString*)pushToken subscribed:(BOOL)subscribed
 {
     self.registrationInfo.oneSignalUserId = userId;
     self.registrationInfo.oneSignalPushToken = pushToken;
+    self.registrationInfo.oneSignalSubscribed = YES;
     [self registrationDataChanged:RegistrationDataOneSignal];
 }
 

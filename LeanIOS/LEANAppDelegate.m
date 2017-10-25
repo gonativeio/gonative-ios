@@ -124,9 +124,7 @@
     if (appConfig.oneSignalEnabled) {
         [OneSignal addSubscriptionObserver:self];
         OSPermissionSubscriptionState *state = [OneSignal getPermissionSubscriptionState];
-        if (state.subscriptionStatus.subscribed) {
-            [registration setOneSignalUserId:state.subscriptionStatus.userId pushToken:state.subscriptionStatus.pushToken];
-        }
+        [registration setOneSignalUserId:state.subscriptionStatus.userId pushToken:state.subscriptionStatus.pushToken subscribed:state.subscriptionStatus.subscribed];
     }
     
     // download new config
@@ -262,10 +260,7 @@
 {
     GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
     OSSubscriptionState *state = stateChanges.to;
-    if (state.subscribed) {
-        [registration setOneSignalUserId:state.userId pushToken:state.pushToken];
-    }
-
+    [registration setOneSignalUserId:state.userId pushToken:state.pushToken subscribed:state.subscribed];
 }
 
 @end
