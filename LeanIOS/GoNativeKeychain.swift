@@ -22,6 +22,8 @@ enum KeychainOperationResult: String {
 }
 
 open class GoNativeKeychain: NSObject {
+    var authContext = LAContext()
+    
     func getStatusAsync(_ callback: @escaping ([String:AnyObject]) -> (Void)) -> Void {
         getSecretExistsAsync { (exists) -> (Void) in
             let result: [String: AnyObject] = [
@@ -36,7 +38,7 @@ open class GoNativeKeychain: NSObject {
     
     fileprivate func hasTouchIdD() -> Bool {
         if #available(iOS 9.0, *) {
-            return LAContext().canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error: nil)
+            return authContext.canEvaluatePolicy(LAPolicy.deviceOwnerAuthenticationWithBiometrics, error: nil)
         } else {
             return false
         }
@@ -48,7 +50,7 @@ open class GoNativeKeychain: NSObject {
                 return "none";
             }
             
-            let type = LAContext().biometryType;
+            let type = authContext.biometryType;
             if type == LABiometryType.none {
                 return "none";
             } else if type == LABiometryType.typeTouchID {

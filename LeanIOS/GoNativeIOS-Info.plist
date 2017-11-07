@@ -12,6 +12,8 @@
 	<string>${PRODUCT_NAME} NFC Usage</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>${PRODUCT_NAME} Add Photo Usage</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>${PRODUCT_NAME} Face ID Usage</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>

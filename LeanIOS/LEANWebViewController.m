@@ -1312,7 +1312,8 @@
                 [self presentViewController:mc animated:YES completion:nil];
             });
         } else {
-            NSLog(@"MFMailComposeViewController cannot send mail. Ignoring mailto link");
+            NSLog(@"MFMailComposeViewController cannot send mail. Opening mailto url in mail app");
+            [[UIApplication sharedApplication] openURL:url];
         }
         return NO;
     }
