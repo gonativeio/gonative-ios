@@ -102,10 +102,6 @@
     
     self.hideWebviewAlpha = [appConfig.hideWebviewAlpha floatValue];
     
-    // hide toolbar and tab bar on initial launch
-    [self hideTabBarAnimated:NO];
-    [self hideToolbarAnimated:NO];
-    
     self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
     self.toolbarManager = [[LEANToolbarManager alloc] initWithToolbar:self.toolbar webviewController:self];
     
