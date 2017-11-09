@@ -463,12 +463,18 @@
         UIWebView *webview = (UIWebView*)wv;
         webview.scalesPageToFit = YES;
         webview.scrollView.bounces = NO;
+        if (@available(iOS 11.0, *)) {
+            webview.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
         
         // for our faux content-inset
         webview.scrollView.layer.masksToBounds = NO;
     } else if([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
         webview.scrollView.bounces = NO;
+        if (@available(iOS 11.0, *)) {
+            webview.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
         
         // user script for customCSS
         NSString *customCss = [GoNativeAppConfig sharedAppConfig].customCss;
