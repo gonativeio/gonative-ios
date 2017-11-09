@@ -85,6 +85,7 @@
 @property LEANToolbarManager *toolbarManager;
 @property CLLocationManager *locationManager;
 @property NSString *connectivityCallback;
+@property BOOL javascriptTabs;
 
 @property NSNumber* statusBarStyle; // set via native bridge, only works if no navigation bar
 @property IBOutlet NSLayoutConstraint *topGuideConstraint; // modify constant to place content under status bar
@@ -103,6 +104,7 @@
     self.hideWebviewAlpha = [appConfig.hideWebviewAlpha floatValue];
     
     self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
+    self.javascriptTabs = NO;
     self.toolbarManager = [[LEANToolbarManager alloc] initWithToolbar:self.toolbar webviewController:self];
     
     // set title to application title
@@ -420,7 +422,9 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self checkNavigationTitleImageForUrl:url];
-        [self.tabManager autoSelectTabForUrl:url];
+        if (!self.javascriptTabs) {
+            [self.tabManager autoSelectTabForUrl:url];
+        }
         
         GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
         [self setSidebarEnabled:[appConfig shouldShowSidebarForUrl:[url absoluteString]]];
@@ -429,14 +433,16 @@
 
 - (void)checkNavigationForUrl:(NSURL*) url;
 {
-    if (![GoNativeAppConfig sharedAppConfig].tabMenus) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self hideTabBarAnimated:YES];
-        });
-    } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tabManager didLoadUrl:url];
-        });
+    if (!self.javascriptTabs) {
+        if (![GoNativeAppConfig sharedAppConfig].tabMenus) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self hideTabBarAnimated:YES];
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tabManager didLoadUrl:url];
+            });
+        }
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1167,6 +1173,7 @@
                 NSString *tabsJson = query[@"tabs"];
                 if (tabsJson && tabsJson.length) {
                     [self.tabManager setTabsWithJson:tabsJson];
+                    self.javascriptTabs = YES;
                 }
             }
         }
