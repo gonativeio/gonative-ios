@@ -188,9 +188,9 @@
                 [self.wvc runJavascript:js];
             }
             else if ([javascript length] > 0) {
-                [self.wvc loadUrl:[NSURL URLWithString:url] andJavascript:javascript];
+                [self.wvc loadUrl:[NSURL URLWithString:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]] andJavascript:javascript];
             } else {
-                [self.wvc loadUrl:[NSURL URLWithString:url]];
+                [self.wvc loadUrl:[NSURL URLWithString:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]]];
             }
         }
     }

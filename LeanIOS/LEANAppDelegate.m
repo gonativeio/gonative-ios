@@ -57,7 +57,7 @@
                     urlString = payload.additionalData[@"targetUrl"];
                 }
                 if ([urlString isKindOfClass:[NSString class]]) {
-                    url = [NSURL URLWithString:urlString];
+                    url = [NSURL URLWithString:[urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
                 }
             }
             
@@ -93,7 +93,7 @@
                     urlString = payload.additionalData[@"targetUrl"];
                 }
                 if ([urlString isKindOfClass:[NSString class]]) {
-                    url = [NSURL URLWithString:urlString];
+                    url = [NSURL URLWithString:[urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
                 }
             }
             
