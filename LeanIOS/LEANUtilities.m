@@ -92,6 +92,18 @@
     return result;
 }
 
++(NSURL*)urlWithString:(NSString*)string
+{
+    static NSCharacterSet *myCharacterSet = nil;
+    if (!myCharacterSet) {
+        NSMutableCharacterSet *set = [[NSMutableCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
+        [set addCharactersInString:@"#"];
+        myCharacterSet = set;
+    }
+    
+    return [NSURL URLWithString:[string stringByAddingPercentEncodingWithAllowedCharacters:myCharacterSet]];
+}
+
 +(BOOL)isValidEmail:(NSString*)email
 {
     NSString *emailRegex = @"\\S+@\\S+\\.\\S+";

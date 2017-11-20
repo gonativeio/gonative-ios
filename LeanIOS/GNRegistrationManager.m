@@ -181,7 +181,7 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
         }
         
         NSString *urlString = endpoint[@"url"];
-        NSURL *url = [NSURL URLWithString:[urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+        NSURL *url = [LEANUtilities urlWithString:urlString];
         if (!url) {
             NSLog(@"Invalid registration endpoint url %@", url);
             continue;

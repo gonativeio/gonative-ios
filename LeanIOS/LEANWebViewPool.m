@@ -188,7 +188,7 @@
         NSString *urlString = [self.urlsToLoad anyObject];
         self.currentLoadingUrl = urlString;
         
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[LEANUtilities urlWithString:urlString]];
         self.currentLoadingRequest = request;
         [self.urlsToLoad removeObject:urlString];
         

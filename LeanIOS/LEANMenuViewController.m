@@ -17,6 +17,7 @@
 #import "LEANUrlInspector.h"
 #import "LEANTabManager.h"
 #import "LEANProfilePicker.h"
+#import "LEANUtilities.h"
 
 @interface LEANMenuViewController ()
 
@@ -336,9 +337,9 @@
             }
             
             if ([javascript length] > 0) {
-                [self.wvc loadUrl:[NSURL URLWithString:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]] andJavascript:javascript];
+                [self.wvc loadUrl:[LEANUtilities urlWithString:url] andJavascript:javascript];
             } else {
-                [self.wvc loadUrl:[NSURL URLWithString:[url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]]];
+                [self.wvc loadUrl:[LEANUtilities urlWithString:url]];
             }
         }
         [self.frostedViewController hideMenuViewController];

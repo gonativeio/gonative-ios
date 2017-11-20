@@ -14,6 +14,7 @@
 #import "LEANUrlCache.h"
 #import "LEANRootViewController.h"
 #import "LEANConfigUpdater.h"
+#import "LEANUtilities.h"
 #import "GNRegistrationManager.h"
 #import "GonativeIO-Swift.h"
 
@@ -57,7 +58,7 @@
                     urlString = payload.additionalData[@"targetUrl"];
                 }
                 if ([urlString isKindOfClass:[NSString class]]) {
-                    url = [NSURL URLWithString:[urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+                    url = [LEANUtilities urlWithString:urlString];
                 }
             }
             
@@ -93,7 +94,7 @@
                     urlString = payload.additionalData[@"targetUrl"];
                 }
                 if ([urlString isKindOfClass:[NSString class]]) {
-                    url = [NSURL URLWithString:[urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+                    url = [LEANUtilities urlWithString:urlString];
                 }
             }
             

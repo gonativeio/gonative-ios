@@ -15,6 +15,7 @@
 +(NSString*)urlQueryStringWithDictionary:(NSDictionary*) dictionary;
 +(NSString*)addQueryStringToUrlString:(NSString *)urlString withDictionary:(NSDictionary *)dictionary;
 +(NSDictionary*)parseQueryParamsWithUrl:(NSURL*)url;
++(NSURL*)urlWithString:(NSString*)string;
 +(BOOL)isValidEmail:(NSString*)email;
 +(NSString *)stripHTML:(NSString*)x replaceWith:(NSString*) replacement;
 + (UIColor *)colorFromHexString:(NSString *)hexString;
