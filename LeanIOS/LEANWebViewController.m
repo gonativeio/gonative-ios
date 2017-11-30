@@ -686,7 +686,8 @@
 
 - (void)refreshPage
 {
-    [self loadRequest:self.currentRequest andJavascript:self.postLoadJavascriptForRefresh];
+    [self.wkWebview reload];
+    [self.webview reload];
 }
 
 - (void) logout
