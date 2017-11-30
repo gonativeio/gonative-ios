@@ -1212,7 +1212,12 @@
                 NSString *overlay = query[@"overlay"];
                 if (overlay) {
                     if ([overlay isEqualToString:@"true"] || [overlay isEqualToString:@"1"]) {
-                        self.topGuideConstraint.constant = -40.0;
+                        if (@available(iOS 11.0, *)) {
+                            // need a larger offset than 20 for iPhone X
+                            self.topGuideConstraint.constant = -self.view.safeAreaInsets.top;
+                        } else {
+                            self.topGuideConstraint.constant = -20.0;
+                        }
                     } else {
                         self.topGuideConstraint.constant = 0;
                     }
