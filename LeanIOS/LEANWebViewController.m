@@ -73,6 +73,7 @@
 @property UIView *defaultTitleView;
 @property UIView *navigationTitleImageView;
 @property CGFloat hideWebviewAlpha;
+@property BOOL statusBarOverlay;
 
 @property NSString *postLoadJavascript;
 @property NSString *postLoadJavascriptForRefresh;
@@ -102,6 +103,7 @@
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     
     self.hideWebviewAlpha = [appConfig.hideWebviewAlpha floatValue];
+    self.statusBarOverlay = NO;
     
     self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
     self.javascriptTabs = NO;
@@ -553,6 +555,20 @@
     // This function used to adjust the content inset of the webview's scrollview, but we
     // have moved away from that strategy. Now we just let autolayout constraints resize
     // the webview frame, and set masksToBounds=false
+}
+
+- (void)applyStatusBarOverlay
+{
+    if (self.statusBarOverlay) {
+        if (@available(iOS 11.0, *)) {
+            // need a larger offset than 20 for iPhone X
+            self.topGuideConstraint.constant = -self.view.safeAreaInsets.top;
+        } else {
+            self.topGuideConstraint.constant = -20.0;
+        }
+    } else {
+        self.topGuideConstraint.constant = 0;
+    }
 }
 
 - (IBAction) buttonPressed:(id)sender
@@ -1213,15 +1229,11 @@
                 NSString *overlay = query[@"overlay"];
                 if (overlay) {
                     if ([overlay isEqualToString:@"true"] || [overlay isEqualToString:@"1"]) {
-                        if (@available(iOS 11.0, *)) {
-                            // need a larger offset than 20 for iPhone X
-                            self.topGuideConstraint.constant = -self.view.safeAreaInsets.top;
-                        } else {
-                            self.topGuideConstraint.constant = -20.0;
-                        }
+                        self.statusBarOverlay = YES;
                     } else {
-                        self.topGuideConstraint.constant = 0;
+                        self.statusBarOverlay = NO;
                     }
+                    [self applyStatusBarOverlay];
                 }
             }
         }
@@ -2266,6 +2278,7 @@
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
 {
     [self adjustInsets];
+    [self applyStatusBarOverlay];
 }
 
 - (void)viewWillLayoutSubviews
