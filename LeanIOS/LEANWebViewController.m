@@ -65,7 +65,6 @@
 @property NSURLRequest *currentRequest;
 @property NSInteger urlLevel; // -1 for unknown
 @property NSString *profilePickerJs;
-@property NSString *analyticsJs;
 @property NSTimer *timer;
 @property BOOL startedLoading; // for transitions, keeps track of whether document.readystate has switched to "loading"
 @property BOOL didLoadPage; // keep track of whether any page has loaded. If network reconnects, then will attempt reload if there is no page loaded
@@ -147,26 +146,6 @@
     // profile picker
     if (appConfig.profilePickerJS && [appConfig.profilePickerJS length] > 0) {
         self.profilePickerJs = appConfig.profilePickerJS;
-    }
-    
-    if (appConfig.analytics) {
-        NSString *distribution = [LEANInstallation info][@"distribution"];
-        NSInteger idsite;
-        if ([distribution isEqualToString:@"appstore"]) idsite = appConfig.idsite_prod;
-        else idsite = appConfig.idsite_test;
-        
-        
-        NSString *template = @"var _paq = _paq || []; "
-        "_paq.push(['trackPageView']); "
-        "_paq.push(['enableLinkTracking']); "
-        "(function() { "
-        "    var u = 'https://analytics.gonative.io/'; "
-        "    _paq.push(['setTrackerUrl', u+'piwik.php']); "
-        "    _paq.push(['setSiteId', %d]); "
-        "    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; "
-        "    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s); "
-        "})(); ";
-        self.analyticsJs = [NSString stringWithFormat:template, idsite];
     }
     
     self.visitedLoginOrSignup = NO;
@@ -1802,11 +1781,6 @@
                     }];
                 }
             });
-        }
-        
-        // analytics
-        if (self.analyticsJs && (!self.webview || !self.webview.isLoading)) {
-            [self runJavascript:self.analyticsJs];
         }
         
         // tabs
