@@ -51,14 +51,12 @@ open class GoNativeKeychain: NSObject {
             }
             
             let type = authContext.biometryType;
-            if type == LABiometryType.none {
-                return "none";
-            } else if type == LABiometryType.typeTouchID {
+            if type.rawValue == 1 {
                 return "touchId";
-            } else if type == LABiometryType.typeFaceID {
+            } else if type.rawValue == 2 {
                 return "faceId";
             } else {
-                return "unknown";
+                return "none";
             }
         } else {
             return "none";
