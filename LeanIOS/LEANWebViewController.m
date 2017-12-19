@@ -1265,14 +1265,10 @@
         if ([MFMailComposeViewController canSendMail]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 // parse the mailto link
-                NSArray *rawURLparts = [url.resourceSpecifier componentsSeparatedByString:@"?"];
-                if (rawURLparts.count > 2) {
-                    NSLog(@"error parsing mailto %@", url);
-                    return;
-                }
-                
+                NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+
                 NSMutableArray *toRecipients = [NSMutableArray array];
-                NSArray *recipients = [rawURLparts[0] componentsSeparatedByString:@","];
+                NSArray *recipients = [components.path componentsSeparatedByString:@","];
                 for (NSString *recipient in recipients) {
                     if (recipient.length > 0) {
                         [toRecipients addObject:recipient];
@@ -1282,32 +1278,20 @@
                 MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
                 mc.mailComposeDelegate = self;
                 
-                if (rawURLparts.count == 2) {
-                    NSString *queryString = rawURLparts[1];
-                    NSArray *queryParams = [queryString componentsSeparatedByString:@"&"];
-                    for (NSString *param in queryParams) {
-                        NSArray *keyValue = [param componentsSeparatedByString:@"="];
-                        if (keyValue.count != 2) {
-                            continue;
-                        }
-                        
-                        NSString *key = [keyValue[0] lowercaseString];
-                        NSString *value = [keyValue[1] stringByRemovingPercentEncoding];
-                        
-                        if ([key isEqualToString:@"subject"]) {
-                            [mc setSubject:value];
-                        } else if ([key isEqualToString:@"body"]) {
-                            [mc setMessageBody:value isHTML:NO];
-                        } else if ([key isEqualToString:@"to"]) {
-                            [toRecipients addObjectsFromArray:[value componentsSeparatedByString:@","]];
-                        } else if ([key isEqualToString:@"cc"]) {
-                            [mc setCcRecipients:[value componentsSeparatedByString:@","]];
-                        } else if ([key isEqualToString:@"bcc"]) {
-                            [mc setBccRecipients:[value componentsSeparatedByString:@","]];
-                        }
+                for (NSURLQueryItem *item in components.queryItems) {
+                    if ([[item.name lowercaseString] isEqualToString: @"subject"]) {
+                        [mc setSubject:item.value];
+                    } else if ([[item.name lowercaseString]isEqualToString:@"body"]) {
+                        [mc setMessageBody:item.value isHTML:NO];
+                    } else if ([[item.name lowercaseString] isEqualToString:@"to"]) {
+                        // append to array, do not replace
+                        [toRecipients addObjectsFromArray:[item.value componentsSeparatedByString:@","]];
+                    } else if ([[item.name lowercaseString] isEqualToString:@"cc"]) {
+                        [mc setCcRecipients:[item.value componentsSeparatedByString:@","]];
+                    } else if ([[item.name lowercaseString] isEqualToString:@"bcc"]) {
+                        [mc setBccRecipients:[item.value componentsSeparatedByString:@","]];
                     }
                 }
-                
                 [mc setToRecipients:toRecipients];
                 [self presentViewController:mc animated:YES completion:nil];
             });
