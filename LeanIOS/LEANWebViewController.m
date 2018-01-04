@@ -1302,6 +1302,12 @@
         return NO;
     }
     
+    // sms links
+    if ([url.scheme isEqualToString:@"sms"]) {
+        [[UIApplication sharedApplication] openURL:url];
+        return NO;
+    }
+    
     // always allow iframes to load
     if (![urlString isEqualToString:[[request mainDocumentURL] absoluteString]]) {
         return YES;
