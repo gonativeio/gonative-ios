@@ -141,6 +141,16 @@
     if (appConfig.facebookEnabled) {
         [[FBSDKApplicationDelegate sharedInstance] application:application
                                  didFinishLaunchingWithOptions:launchOptions];
+        if (launchOptions[UIApplicationLaunchOptionsURLKey] == nil) {
+            [FBSDKAppLinkUtility fetchDeferredAppLink:^(NSURL *url, NSError *error) {
+                if (error) {
+                    NSLog(@"Received error while fetching deferred app link %@", error);
+                }
+                if (url) {
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+            }];
+        }
     }
     
     // disable sleep if requested
