@@ -988,6 +988,29 @@
     }
     
     if ([@"gonative" isEqualToString:url.scheme]) {
+        if (appConfig.nativeBridgeUrls && appConfig.nativeBridgeUrls.count > 0) {
+            NSString *currentUrl;
+            if (self.wkWebview) {
+                currentUrl = self.wkWebview.URL.absoluteString;
+            } else if (self.webview) {
+                currentUrl = self.webview.request.mainDocumentURL.absoluteString;
+            }
+            
+            if (currentUrl) {
+                BOOL matched = NO;
+                for (NSPredicate *predicate in appConfig.nativeBridgeUrls) {
+                    if ([predicate evaluateWithObject:currentUrl]) {
+                        matched = YES;
+                        break;
+                    }
+                }
+                if (!matched) {
+                    NSLog(@"URL not authorized for native bridge: %@", currentUrl);
+                    return NO;
+                }
+            }
+        }
+        
         // touchid authentication
         if ([@"auth" isEqualToString:url.host]) {
             GoNativeAuthUrl *authUrl = [[GoNativeAuthUrl alloc] init];

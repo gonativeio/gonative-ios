@@ -48,6 +48,7 @@ typedef enum : NSUInteger {
 @property GoNativeScreenOrientation forceScreenOrientation;
 @property BOOL keepScreenOn;
 @property NSDictionary *customHeaders;
+@property NSArray<NSPredicate*> *nativeBridgeUrls;
 
 // navigation
 @property NSMutableDictionary *menus;
