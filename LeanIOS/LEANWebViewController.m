@@ -2160,6 +2160,9 @@
 {
     [self checkLocationPermissionWithBlock:^{
         [self.locationManager requestLocation];
+        if (self.locationManager.location) {
+            [self receivedLocation:self.locationManager.location];
+        }
     }];
 }
 
@@ -2201,6 +2204,10 @@
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
 {
     CLLocation *location = [locations lastObject];
+    [self receivedLocation:location];
+}
+
+-(void)receivedLocation:(CLLocation*)location {
     NSMutableDictionary *coords = [NSMutableDictionary dictionary];
     coords[@"latitude"] = [NSNumber numberWithDouble:location.coordinate.latitude];
     coords[@"longitude"] = [NSNumber numberWithDouble:location.coordinate.longitude];
