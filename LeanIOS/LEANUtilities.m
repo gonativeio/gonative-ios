@@ -458,11 +458,6 @@
 +(void)configureWebView:(UIView*)wv
 {
     wv.frame = [[UIScreen mainScreen] bounds];
-    if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
-        wv.backgroundColor = [UIColor blackColor];
-    } else {
-        wv.backgroundColor = [UIColor whiteColor];
-    }
     wv.opaque = YES;
     
     // we are using autolayout, so disable autoresizingmask stuff

@@ -135,11 +135,7 @@
     // add nav button
     if (appConfig.showNavigationMenu &&  [self isRootWebView]) {
         self.navButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navImage"] style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
-        // hack to space it a bit closer to the left edge
-        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-        [negativeSpacer setWidth:-10];
-        
-        self.navigationItem.leftBarButtonItems = @[negativeSpacer, self.navButton];
+        self.navigationItem.leftBarButtonItems = @[self.navButton];
     }
     self.defaultLeftNavBarItems = self.navigationItem.leftBarButtonItems;
     
