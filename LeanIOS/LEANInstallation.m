@@ -8,6 +8,8 @@
 
 #import "LEANInstallation.h"
 #import "GoNativeAppConfig.h"
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+#import <CoreTelephony/CTCarrier.h>
 #import <sys/utsname.h>
 
 @implementation LEANInstallation
@@ -65,6 +67,18 @@
                            @"installationId": [device.identifierForVendor UUIDString]} mutableCopy];
     
     if (deviceRegKey) info[@"deviceRegKey"] = deviceRegKey;
+    
+#if !(TARGET_IPHONE_SIMULATOR)
+    NSString *carrierName = nil;
+    CTTelephonyNetworkInfo *netinfo = [[CTTelephonyNetworkInfo alloc] init];
+    if (netinfo) {
+        CTCarrier *carrier = netinfo.subscriberCellularProvider;
+        carrierName = carrier.carrierName;
+    }
+    if (carrierName) {
+        info[@"carrierName"] = carrierName;
+    }
+#endif
     
     return info;
 }
