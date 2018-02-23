@@ -15,6 +15,7 @@
 #import "LEANWebViewController.h"
 #import "LEANAppDelegate.h"
 #import "LEANUtilities.h"
+#import "GNCustomHeaders.h"
 #import "GoNativeAppConfig.h"
 #import "LEANMenuViewController.h"
 #import "LEANNavigationController.h"
@@ -924,8 +925,19 @@
     
     BOOL isUserAction = navigationAction.navigationType == WKNavigationTypeLinkActivated || navigationAction.navigationType == WKNavigationTypeFormSubmitted;
     BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:navigationAction.targetFrame.isMainFrame isUserAction:isUserAction];
-    if (shouldLoad) decisionHandler(WKNavigationActionPolicyAllow);
-    else decisionHandler(WKNavigationActionPolicyCancel);
+    if (!shouldLoad) {
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
+    }
+    
+    NSDictionary *customHeaders = [GNCustomHeaders getCustomHeaders];
+    if (navigationAction.targetFrame.isMainFrame && customHeaders && [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
+        decisionHandler(WKNavigationActionPolicyCancel);
+        NSURLRequest *modifiedRequest = [GNCustomHeaders modifyRequest:navigationAction.request];
+        [self.wkWebview loadRequest:modifiedRequest];
+    } else {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    }
 }
 
 - (BOOL)shouldLoadRequest:(NSURLRequest*)request isMainFrame:(BOOL)isMainFrame isUserAction:(BOOL)isUserAction

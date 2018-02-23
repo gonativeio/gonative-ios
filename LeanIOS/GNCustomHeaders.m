@@ -9,6 +9,8 @@
 #import "GNCustomHeaders.h"
 #import "GoNativeAppConfig.h"
 
+static NSString * kOurRequestProperty = @"io.gonative.ios.GNCustomHeaders";
+
 @implementation GNCustomHeaders
 +(NSDictionary*)getCustomHeaders
 {
@@ -51,4 +53,33 @@
     
     return value;
 }
+
++(NSURLRequest*)modifyRequest:(NSURLRequest*)request
+{
+    NSMutableURLRequest *modifiedRequest = [request mutableCopy];
+    
+    NSDictionary *headers = [self getCustomHeaders];
+    for (NSString *key in headers) {
+        [modifiedRequest setValue:headers[key] forHTTPHeaderField:key];
+    }
+    
+    return modifiedRequest;
+}
+
++(BOOL)shouldModifyRequest:(NSURLRequest *)request
+{
+    NSDictionary *headers = [self getCustomHeaders];
+    if (!headers || headers.count == 0) return NO;
+    
+    BOOL missingField = NO;
+    for (NSString *key in headers) {
+        if (![request valueForHTTPHeaderField:key]) {
+            missingField = YES;
+            break;
+        }
+    }
+    
+    return missingField;
+}
+
 @end

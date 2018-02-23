@@ -10,4 +10,6 @@
 
 @interface GNCustomHeaders : NSObject
 +(NSDictionary*)getCustomHeaders;
++(NSURLRequest*)modifyRequest:(NSURLRequest*)request;
++(BOOL)shouldModifyRequest:(NSURLRequest*)request;
 @end
