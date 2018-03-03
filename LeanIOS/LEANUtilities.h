@@ -30,4 +30,5 @@
 +(BOOL)string:(NSString*)string matchesAnyRegex:(NSArray<NSPredicate*>*)regexes;
 +(NSString*)createJsForPostTo:(NSString*)url data:(NSDictionary*)data;
 +(NSString*)createJsForCallback:(NSString*)functionName data:(NSDictionary*)data;
++(BOOL)checkNativeBridgeUrl:(NSString*)url;
 @end

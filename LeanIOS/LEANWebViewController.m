@@ -996,27 +996,15 @@
     }
     
     if ([@"gonative" isEqualToString:url.scheme]) {
-        if (appConfig.nativeBridgeUrls && appConfig.nativeBridgeUrls.count > 0) {
-            NSString *currentUrl;
-            if (self.wkWebview) {
-                currentUrl = self.wkWebview.URL.absoluteString;
-            } else if (self.webview) {
-                currentUrl = self.webview.request.mainDocumentURL.absoluteString;
-            }
-            
-            if (currentUrl) {
-                BOOL matched = NO;
-                for (NSPredicate *predicate in appConfig.nativeBridgeUrls) {
-                    if ([predicate evaluateWithObject:currentUrl]) {
-                        matched = YES;
-                        break;
-                    }
-                }
-                if (!matched) {
-                    NSLog(@"URL not authorized for native bridge: %@", currentUrl);
-                    return NO;
-                }
-            }
+        NSString *currentUrl;
+        if (self.wkWebview) {
+            currentUrl = self.wkWebview.URL.absoluteString;
+        } else if (self.webview) {
+            currentUrl = self.webview.request.mainDocumentURL.absoluteString;
+        }
+        if (![LEANUtilities checkNativeBridgeUrl:currentUrl]) {
+            NSLog(@"URL not authorized for native bridge: %@", currentUrl);
+            return NO;
         }
         
         // touchid authentication
@@ -1836,17 +1824,24 @@
         // registration service
         [[GNRegistrationManager sharedManager] checkUrl:url];
         
+        BOOL doNativeBridge = YES;
+        if (url) {
+            doNativeBridge = [LEANUtilities checkNativeBridgeUrl:[url absoluteString]];
+        }
+        
         // send device info
-        NSDictionary *installation = [LEANInstallation info];
-        NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:installation];
-        if (jsCallback) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self runJavascript:jsCallback];
-            });
+        if (doNativeBridge) {
+            NSDictionary *installation = [LEANInstallation info];
+            NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:installation];
+            if (jsCallback) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self runJavascript:jsCallback];
+                });
+            }
         }
         
         // send OneSignal info
-        if ([GoNativeAppConfig sharedAppConfig].oneSignalEnabled) {
+        if ([GoNativeAppConfig sharedAppConfig].oneSignalEnabled && doNativeBridge) {
             OSPermissionSubscriptionState *state = [OneSignal getPermissionSubscriptionState];
 
             NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
@@ -1858,7 +1853,6 @@
                 }
                 if (state.subscriptionStatus.pushToken) {
                     toSend[@"oneSignalPushToken"] = state.subscriptionStatus.pushToken;
-
                 }
             }
             

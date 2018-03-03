@@ -654,4 +654,21 @@
     return @"";
 }
 
++(BOOL)checkNativeBridgeUrl:(NSString*)url
+{
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    if (!appConfig.nativeBridgeUrls || appConfig.nativeBridgeUrls.count == 0) {
+        return YES;
+    }
+    
+    BOOL matched = NO;
+    for (NSPredicate *predicate in appConfig.nativeBridgeUrls) {
+        if ([predicate evaluateWithObject:url]) {
+            matched = YES;
+            break;
+        }
+    }
+    return matched;
+}
+
 @end
