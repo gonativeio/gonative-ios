@@ -911,7 +911,7 @@
 {
     BOOL isMainFrame = [[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]];
     BOOL isUserAction = navigationType == UIWebViewNavigationTypeLinkClicked || navigationType ==UIWebViewNavigationTypeFormSubmitted;
-    return [self shouldLoadRequest:request isMainFrame:isMainFrame isUserAction:isUserAction];
+    return [self shouldLoadRequest:request isMainFrame:isMainFrame isUserAction:isUserAction hideWebview:YES];
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
@@ -924,7 +924,7 @@
     }
     
     BOOL isUserAction = navigationAction.navigationType == WKNavigationTypeLinkActivated || navigationAction.navigationType == WKNavigationTypeFormSubmitted;
-    BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:navigationAction.targetFrame.isMainFrame isUserAction:isUserAction];
+    BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:navigationAction.targetFrame.isMainFrame isUserAction:isUserAction hideWebview:YES];
     if (!shouldLoad) {
         decisionHandler(WKNavigationActionPolicyCancel);
         return;
@@ -940,7 +940,7 @@
     }
 }
 
-- (BOOL)shouldLoadRequest:(NSURLRequest*)request isMainFrame:(BOOL)isMainFrame isUserAction:(BOOL)isUserAction
+- (BOOL)shouldLoadRequest:(NSURLRequest*)request isMainFrame:(BOOL)isMainFrame isUserAction:(BOOL)isUserAction hideWebview:(BOOL)hideWebview
 {
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     NSURL *url = [request URL];
@@ -1548,10 +1548,10 @@
     // Do not hide the webview if url.fragment exists. There sometimes is an issue with single-page apps where shouldLoadRequest
     // is called for SPA page loads if there is a fragment. We will never get an sort of page finished callback, so the page
     // is always hidden.
-    BOOL hideWebView = !url.fragment;
+    BOOL hide = hideWebview && !url.fragment;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (hideWebView) [self hideWebview];
+        if (hide) [self hideWebview];
         [self setNavigationButtonStatus];
     });
     
@@ -1885,6 +1885,15 @@
 
 - (WKWebView*)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
+    // createWebView is called before shouldLoadRequest is called. To avoid creating an extra
+    // WebViewController for an external link, we check shouldLoadRequest here.
+    if (navigationAction.request) {
+        BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:YES isUserAction:YES hideWebview:NO];
+        if (!shouldLoad) {
+            return nil;
+        }
+    }
+    
     if (![GoNativeAppConfig sharedAppConfig].enableWindowOpen) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self loadRequest:navigationAction.request];
