@@ -33,6 +33,7 @@
 #import "GNRegistrationManager.h"
 #import "LEANWebViewIntercept.h"
 #import "Subscriptions/GNSubscriptionsController.h"
+#import "GNConfigPreferences.h"
 #import "GonativeIO-Swift.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate>
@@ -170,6 +171,10 @@
         
         // load initial url
         self.urlLevel = -1;
+        if (!self.initialUrl) {
+            NSString *initialUrlPref = [[GNConfigPreferences sharedPreferences] getInitialUrl];
+            self.initialUrl = [NSURL URLWithString:initialUrlPref];
+        }
         if (!self.initialUrl) {
             self.initialUrl = appConfig.initialURL;
         }
@@ -1004,6 +1009,13 @@
         }
         if (![LEANUtilities checkNativeBridgeUrl:currentUrl]) {
             NSLog(@"URL not authorized for native bridge: %@", currentUrl);
+            return NO;
+        }
+        
+        // config preferences
+        if ([@"config" isEqualToString:url.host]) {
+            GNConfigPreferences *config = [GNConfigPreferences sharedPreferences];
+            [config handleUrl:url];
             return NO;
         }
         
@@ -1938,7 +1950,12 @@
             [self.navigationController popToViewController:popTo animated:YES];
         });
     } else {
-        [self loadUrl:[GoNativeAppConfig sharedAppConfig].initialURL];
+        NSString *initialUrlPref = [[GNConfigPreferences sharedPreferences] getInitialUrl];
+        if (initialUrlPref) {
+            [self loadUrl:[NSURL URLWithString:initialUrlPref]];
+        } else {
+            [self loadUrl:[GoNativeAppConfig sharedAppConfig].initialURL];
+        }
     }
 }
 

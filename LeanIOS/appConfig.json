@@ -1,7 +1,7 @@
 {
   "general": {
     "userAgentAdd": "gonative",
-    "initialUrl": "https://gonative.io",
+    "initialUrl": "https://weiyin.net",
     "appName": "GoNative.io",
     "useWKWebView": true
   },
@@ -12,7 +12,7 @@
       "menus": [{
         "name": "default",
         "items": [{
-          "url": "https://gonative.io/",
+          "url": "https://weiyin.net/",
           "label": "Home",
           "subLinks": []
         }, {
