@@ -68,6 +68,10 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.GNCustomHeaders";
 
 +(BOOL)shouldModifyRequest:(NSURLRequest *)request
 {
+    if (request.HTTPMethod && ![request.HTTPMethod isEqualToString:@"GET"]) {
+        return NO;
+    }
+    
     NSDictionary *headers = [self getCustomHeaders];
     if (!headers || headers.count == 0) return NO;
     
