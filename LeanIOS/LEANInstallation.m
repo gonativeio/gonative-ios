@@ -8,6 +8,7 @@
 
 #import "LEANInstallation.h"
 #import "GoNativeAppConfig.h"
+#import "LEANAppDelegate.h"
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <CoreTelephony/CTCarrier.h>
 #import <sys/utsname.h>
@@ -67,6 +68,9 @@
                            @"installationId": [device.identifierForVendor UUIDString]} mutableCopy];
     
     if (deviceRegKey) info[@"deviceRegKey"] = deviceRegKey;
+    
+    LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
+    info[@"isFirstLaunch"] = [NSNumber numberWithBool:appDelegate.isFirstLaunch];
     
 #if !(TARGET_IPHONE_SIMULATOR)
     NSString *carrierName = nil;

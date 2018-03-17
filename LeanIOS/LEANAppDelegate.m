@@ -32,6 +32,10 @@
         
         [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"hasLaunched"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        self.isFirstLaunch = YES;
+    } else {
+        self.isFirstLaunch = NO;
     }
        
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];

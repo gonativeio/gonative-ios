@@ -13,6 +13,7 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property Reachability *internetReachability;
+@property BOOL isFirstLaunch;
 
 - (void)configureApplication;
 
