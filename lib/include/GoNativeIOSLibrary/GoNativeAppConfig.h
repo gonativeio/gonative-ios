@@ -130,6 +130,11 @@ typedef enum : NSUInteger {
 @property NSString *facebookAppId;
 @property NSString *facebookDisplayName;
 
+// Adjust SDK
+@property BOOL adjustEnabled;
+@property NSString *adjustAppToken;
+@property NSString *adjustEnvironment;
+
 // identity service
 @property NSArray *checkIdentityUrlRegexes;
 @property NSURL *identityEndpointUrl;
