@@ -97,7 +97,7 @@
     static NSCharacterSet *myCharacterSet = nil;
     if (!myCharacterSet) {
         NSMutableCharacterSet *set = [[NSMutableCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
-        [set addCharactersInString:@"#"];
+        [set addCharactersInString:@"#%"];
         myCharacterSet = set;
     }
     
