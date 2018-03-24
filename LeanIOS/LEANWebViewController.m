@@ -512,11 +512,15 @@
 
 - (void)hideBottomBar:(UIView*)bar constraint:(NSLayoutConstraint*)constraint animated:(BOOL)animated
 {
-    if (bar.hidden) return;
-    
     [self.view layoutIfNeeded];
     CGFloat barHeight = MIN(bar.bounds.size.width, bar.bounds.size.height);
     constraint.constant = -barHeight;
+
+    if (bar.hidden) {
+        [self.view layoutIfNeeded];
+        return;
+    }
+    
     if (animated) {
         [UIView animateWithDuration:0.3 animations:^(void){
             [self.view layoutIfNeeded];
@@ -2333,6 +2337,10 @@
         self.statusBarBackground.frame = CGRectMake(0, 0, width, height);
     }
     [self adjustInsets];
+    
+    // bar thickness changes when rotating, so resize internal contents
+    [self.tabBar invalidateIntrinsicContentSize];
+    [self.toolbar invalidateIntrinsicContentSize];
 }
 
 -(void)orientationChanged
@@ -2343,8 +2351,15 @@
 
 -(void)viewDidLayoutSubviews
 {
-    // fix tab bar height on iPhone X, otherwise it is too short
-    [self.tabBar invalidateIntrinsicContentSize];
+    // Heights of tab and tool bars will change after rotation, as bars are thinner on landscape.
+    // If the bar is hidden, then the bottom constraint is based on the thickness of the bar.
+    // The constraint will need to be updated to keep everything in the right place.
+    if (self.tabBar.hidden) {
+        [self hideBottomBar:self.tabBar constraint:self.tabBarBottomConstraint animated:NO];
+    }
+    if (self.toolbar.hidden) {
+        [self hideBottomBar:self.toolbar constraint:self.toolbarBottomConstraint animated:NO];
+    }
 }
 
 @end
