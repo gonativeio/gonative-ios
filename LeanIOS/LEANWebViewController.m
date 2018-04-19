@@ -1870,6 +1870,7 @@
                 if (state.subscriptionStatus.pushToken) {
                     toSend[@"oneSignalPushToken"] = state.subscriptionStatus.pushToken;
                 }
+                toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:state.subscriptionStatus.subscribed];
             }
             
             NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_onesignal_info" data:toSend];
