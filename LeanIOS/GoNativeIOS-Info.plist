@@ -14,6 +14,8 @@
 	<string>${BUILD_SETTINGS_APP_NAME} needs access to your camera roll to upload photos.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>${BUILD_SETTINGS_APP_NAME} needs access to your Face ID to authenticate you. </string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>${BUILD_SETTINGS_APP_NAME} needs access to your calendar to retrieve and add events.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -36,6 +38,8 @@
 	<string>1.0.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>${BUILD_SETTINGS_APP_NAME} needs access to your location to customize your app experience.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>${BUILD_SETTINGS_APP_NAME} needs access to your location to customize your app experience.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
