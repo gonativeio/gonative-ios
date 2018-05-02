@@ -39,6 +39,15 @@
     }
        
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    if (appConfig.configError) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSString *message = @"Invalid appConfig json";
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+            LEANRootViewController *rvc = (LEANRootViewController*) self.window.rootViewController;
+            [rvc presentAlert:alert];
+        });
+    }
     
     // Register launch
     [LEANConfigUpdater registerEvent:@"launch" data:nil];

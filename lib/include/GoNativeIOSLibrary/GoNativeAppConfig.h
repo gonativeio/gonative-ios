@@ -29,6 +29,7 @@ typedef enum : NSUInteger {
 @interface GoNativeAppConfig : NSObject
 
 // general
+@property NSError *configError;
 @property NSURL *initialURL;
 @property NSString *initialHost;
 @property NSString *appName;
@@ -158,6 +159,10 @@ typedef enum : NSUInteger {
 
 // Card.IO scanning
 @property BOOL cardIOEnabled;
+
+// Scandit barcode scanning
+@property BOOL scanditEnabled;
+@property NSString *scanditLicenseKey;
 
 // misc
 @property NSPredicate *forceLandscapeMatch;
