@@ -141,9 +141,6 @@
         [registration setOneSignalUserId:state.subscriptionStatus.userId pushToken:state.subscriptionStatus.pushToken subscribed:state.subscriptionStatus.subscribed];
     }
     
-    // download new config
-    [[[LEANConfigUpdater alloc] init] updateConfig];
-    
     [self configureApplication];
     
     // listen for reachability

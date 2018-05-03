@@ -98,7 +98,9 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
         NSString *js = [NSString stringWithFormat:@"var xhr = new XMLHttpRequest(); xhr.open('POST', %@, true); xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8'); xhr.send(%@);",
                         [LEANUtilities jsWrapString:self.postUrlString],
                         [LEANUtilities jsWrapString:jsonString]];
-        [self.wkWebView evaluateJavaScript:js completionHandler:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.wkWebView evaluateJavaScript:js completionHandler:nil];
+        });
         
         return;
     }

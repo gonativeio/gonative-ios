@@ -10,7 +10,6 @@
 
 @interface LEANConfigUpdater : NSObject
 
-- (void)updateConfig;
 + (void)registerEvent:(NSString*)event data:(NSDictionary*)data;
 
 

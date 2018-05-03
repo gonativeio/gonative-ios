@@ -16,48 +16,6 @@
 
 @implementation LEANConfigUpdater
 
-- (void)updateConfig
-{
-    NSString *publicKey = [GoNativeAppConfig sharedAppConfig].publicKey;
-    if (!publicKey || [GoNativeAppConfig sharedAppConfig].disableConfigUpdater) {
-        return;
-    }
-    
-    if ([GoNativeAppConfig sharedAppConfig].isSimulator) {
-        publicKey = @"simulator";
-    }
-    
-    NSString *urlString = [NSString stringWithFormat:@"https://gonative.io/static/appConfig/%@.json", publicKey];
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDownloadTask *downloadTask =  [session downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-        
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
-        if (error || httpResponse.statusCode != 200 || !location) {
-            return;
-        }
-        
-        // parse json to make sure it's valid
-        NSInputStream *inputStream = [NSInputStream inputStreamWithURL:location];
-        [inputStream open];
-        NSError *jsonError;
-        [NSJSONSerialization JSONObjectWithStream:inputStream options:0 error:&jsonError];
-        if (jsonError) {
-            NSLog(@"Invalid appConfig.json downloaded");
-            [inputStream close];
-            return;
-        }
-        [inputStream close];
-        
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSURL *destination = [GoNativeAppConfig urlForOtaConfig];
-        [fileManager removeItemAtURL:destination error:nil];
-        [fileManager moveItemAtURL:location toURL:destination error:nil];
-    }];
-    [downloadTask resume];
-}
-
-
 + (void)registerEvent:(NSString*)event data:(NSDictionary *)data
 {
     if (!event || [GoNativeAppConfig sharedAppConfig].disableEventRecorder) {
