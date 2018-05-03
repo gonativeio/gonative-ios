@@ -1848,6 +1848,8 @@
         // send device info
         if (doNativeBridge) {
             NSDictionary *installation = [LEANInstallation info];
+            LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
+            appDelegate.isFirstLaunch = NO;
             NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:installation];
             if (jsCallback) {
                 dispatch_async(dispatch_get_main_queue(), ^{
