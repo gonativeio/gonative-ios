@@ -10,6 +10,7 @@
 #import "LEANUtilities.h"
 #import "LEANInstallation.h"
 #import "GoNativeAppConfig.h"
+#import <OneSignal/OneSignal.h>
 
 #pragma mark Registration Data
 
@@ -75,6 +76,7 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
             toSend[@"oneSignalPushToken"] = info.oneSignalPushToken;
         }
         toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:info.oneSignalSubscribed];
+        toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
     }
     
     if (self.dataTypes & RegistrationDataCustom && info.customData) {

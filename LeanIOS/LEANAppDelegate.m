@@ -57,6 +57,7 @@
     
     // OneSignal
     if (appConfig.oneSignalEnabled) {
+        [OneSignal setRequiresUserPrivacyConsent:appConfig.oneSignalRequiresUserPrivacyConsent];
         [OneSignal initWithLaunchOptions:launchOptions appId:appConfig.oneSignalAppId handleNotificationReceived:^(OSNotification *notification) {
 
             OSNotificationPayload *payload = notification.payload;
@@ -127,7 +128,7 @@
         } settings:@{kOSSettingsKeyAutoPrompt: @false,
                      kOSSettingsKeyInFocusDisplayOption: [NSNumber numberWithInteger:OSNotificationDisplayTypeNone]}];
         
-        if (appConfig.oneSignalAutoRegister) {
+        if (appConfig.oneSignalAutoRegister && ![OneSignal requiresUserPrivacyConsent]) {
             [OneSignal promptForPushNotificationsWithUserResponse:nil];
         }
     }

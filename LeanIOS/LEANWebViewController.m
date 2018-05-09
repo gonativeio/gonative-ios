@@ -1081,6 +1081,20 @@
                 [OneSignal promptForPushNotificationsWithUserResponse:nil];
                 return NO;
             }
+            
+            if ([@"/userPrivacyConsent/grant" isEqualToString:url.path]) {
+                [OneSignal consentGranted:YES];
+                if (appConfig.oneSignalAutoRegister) {
+                    [OneSignal promptForPushNotificationsWithUserResponse:nil];
+                }
+                return NO;
+            }
+
+            if ([@"/userPrivacyConsent/revoke" isEqualToString:url.path]) {
+                [OneSignal consentGranted:NO];
+                return NO;
+            }
+
             if ([@"/tags/get" isEqualToString:url.path]) {
                 NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
                 NSString *callback = query[@"callback"];
@@ -1873,6 +1887,7 @@
                     toSend[@"oneSignalPushToken"] = state.subscriptionStatus.pushToken;
                 }
                 toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:state.subscriptionStatus.subscribed];
+                toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
             }
             
             NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_onesignal_info" data:toSend];
