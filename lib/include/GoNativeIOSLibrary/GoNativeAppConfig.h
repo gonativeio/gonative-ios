@@ -68,6 +68,7 @@ typedef enum : NSUInteger {
 @property NSString *userIdRegex;
 @property BOOL useWebpageTitle;
 @property NSArray *segmentedControlItems;
+@property NSString *customUrlScheme;
 
 @property NSMutableDictionary *tabMenus;
 @property NSMutableArray *tabMenuRegexes;
@@ -164,6 +165,10 @@ typedef enum : NSUInteger {
 // Scandit barcode scanning
 @property BOOL scanditEnabled;
 @property NSString *scanditLicenseKey;
+
+// Share extension
+@property BOOL shareEnabled;
+@property NSString *iosAppGroup;
 
 // misc
 @property NSPredicate *forceLandscapeMatch;
