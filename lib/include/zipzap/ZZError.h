@@ -1,6 +1,6 @@
 //
 //  ZZError.h
-//  zipzap
+//  ZipZap
 //
 //  Created by Glen Low on 25/01/13.
 //  Copyright (c) 2013, Pixelglow Software. All rights reserved.
@@ -32,13 +32,16 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ * The domain of ZipZap errors.
+ */
 extern NSString* const ZZErrorDomain;
 
+/**
+ * The index of the erroneous entry.
+ */
 extern NSString* const ZZEntryIndexKey;
 
-/**
- * Error codes for NSError.
- */
 typedef NS_ENUM(NSInteger, ZZErrorCode)
 {
 	/**
@@ -102,12 +105,18 @@ typedef NS_ENUM(NSInteger, ZZErrorCode)
 	ZZInvalidCRChecksum,
     
 	/**
-	 * The wrong key was passed in (don't count on this; we cannot always detect that the problem is indeed a wrong password. in most "wrong password" cases we will raise a CRC error.)
+	 * The wrong key was passed in.
 	 */
-	ZZWrongPassword
+	ZZWrongPassword,
+	
+	/**
+	 * The data, stream or data consumer block failed but did not set the error.
+	 * This will be set on the underlying error of the local file write.
+	 */
+	ZZBlockFailedWithoutError
 };
 
-static inline BOOL ZZRaiseError(NSError** error, ZZErrorCode errorCode, NSDictionary* userInfo)
+static inline BOOL ZZRaiseErrorNo(NSError** error, ZZErrorCode errorCode, NSDictionary* userInfo)
 {
 	if (error)
 		*error = [NSError errorWithDomain:ZZErrorDomain
@@ -115,3 +124,13 @@ static inline BOOL ZZRaiseError(NSError** error, ZZErrorCode errorCode, NSDictio
 								 userInfo:userInfo];
 	return NO;
 }
+
+static inline id ZZRaiseErrorNil(NSError** error, ZZErrorCode errorCode, NSDictionary* userInfo)
+{
+	if (error)
+		*error = [NSError errorWithDomain:ZZErrorDomain
+									 code:errorCode
+								 userInfo:userInfo];
+	return nil;
+}
+

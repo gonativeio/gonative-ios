@@ -1,6 +1,6 @@
 //
 //  ZZArchiveEntry.h
-//  zipzap
+//  ZipZap
 //
 //  Created by Glen Low on 25/09/12.
 //  Copyright (c) 2012, Pixelglow Software. All rights reserved.
@@ -40,8 +40,10 @@
 
 @protocol ZZArchiveEntryWriter;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
- * The ZZArchiveEntry class represents an entry in the <ZZArchive> or <ZZMutableArchive> zip file.
+ * The ZZArchiveEntry class represents an entry in the ZZArchive instance.
  */
 @interface ZZArchiveEntry : NSObject
 
@@ -81,9 +83,19 @@
 @property (readonly, nonatomic) mode_t fileMode;
 
 /**
- * The file name of the entry.
+ * The file name of the entry. Encoding is either CP-437 or UTF-8, depending on the EFS flag of the general purpose bit flags.
  */
 @property (readonly, nonatomic) NSString* fileName;
+
+/**
+ * The file name of the entry as array of bytes
+ */
+@property (readonly, nonatomic) NSData* rawFileName;
+
+/**
+ * The encoding of filename and comment fields, according to the EFS flag of the general purpose bit flags.
+ */
+@property (readonly, nonatomic) NSStringEncoding encoding;
 
 /**
  * Creates a new file entry from a streaming callback.
@@ -107,7 +119,7 @@
  */
 + (instancetype)archiveEntryWithFileName:(NSString*)fileName
 								compress:(BOOL)compress
-							   dataBlock:(NSData*(^)(NSError** error))dataBlock;
+							   dataBlock:(NSData* _Nullable(^)(NSError** error))dataBlock;
 
 /**
  * Creates a new file entry from a data-consuming callback.
@@ -147,9 +159,9 @@
 								fileMode:(mode_t)fileMode
 							lastModified:(NSDate*)lastModified
 						compressionLevel:(NSInteger)compressionLevel
-							   dataBlock:(NSData*(^)(NSError** error))dataBlock
-							 streamBlock:(BOOL(^)(NSOutputStream* stream, NSError** error))streamBlock
-					   dataConsumerBlock:(BOOL(^)(CGDataConsumerRef dataConsumer, NSError** error))dataConsumerBlock;
+							   dataBlock:(nullable NSData* _Nullable(^)(NSError** error))dataBlock
+							 streamBlock:(nullable BOOL(^)(NSOutputStream* stream, NSError** error))streamBlock
+					   dataConsumerBlock:(nullable BOOL(^)(CGDataConsumerRef dataConsumer, NSError** error))dataConsumerBlock;
 
 /**
  * Checks whether the entry file is consistent.
@@ -163,12 +175,19 @@
 - (BOOL)check:(out NSError**)error;
 
 /**
+ * The file name of the entry with the given encoding.
+ *
+ * @param encoding The encoding for the filename.
+ */
+- (NSString*)fileNameWithEncoding:(NSStringEncoding)encoding;
+
+/**
  * Creates a stream to represent the entry file.
  *
  * @param error A pointer to a variable that will contain the error if any.
  * @return The new stream: nil for new entries.
  */
-- (NSInputStream*)newStreamWithError:(NSError**)error;
+- (nullable NSInputStream*)newStreamWithError:(NSError**)error;
 
 /**
  * Creates a stream to represent the entry file.
@@ -177,7 +196,7 @@
  * @param error A pointer to a variable that will contain the error if any.
  * @return The new stream: nil for new entries.
  */
-- (NSInputStream*)newStreamWithPassword:(NSString*)password error:(NSError**)error;
+- (nullable NSInputStream*)newStreamWithPassword:(nullable NSString*)password error:(NSError**)error;
 
 /**
  * Creates data to represent the entry file.
@@ -185,7 +204,7 @@
  * @param error A pointer to a variable that will contain the error if any.
  * @return The new data: nil for new entries.
  */
-- (NSData*)newDataWithError:(NSError**)error;
+- (nullable NSData*)newDataWithError:(NSError**)error;
 
 /**
  * Creates data to represent the entry file.
@@ -194,7 +213,7 @@
  * @param error A pointer to a variable that will contain the error if any.
  * @return The new data: nil for new entries.
  */
-- (NSData*)newDataWithPassword:(NSString*)password error:(NSError**)error;
+- (nullable NSData*)newDataWithPassword:(nullable NSString*)password error:(NSError**)error;
 
 /**
  * Creates a data provider to represent the entry file.
@@ -202,7 +221,7 @@
  * @param error A pointer to a variable that will contain the error if any.
  * @return The new data provider: nil for new entries.
  */
-- (CGDataProviderRef)newDataProviderWithError:(NSError**)error;
+- (nullable CGDataProviderRef)newDataProviderWithError:(NSError**)error CF_RETURNS_RETAINED;
 
 /**
  * Creates a data provider to represent the entry file.
@@ -211,8 +230,10 @@
  * @param error A pointer to a variable that will contain the error if any.
  * @return The new data provider: nil for new entries.
  */
-- (CGDataProviderRef)newDataProviderWithPassword:(NSString*)password error:(NSError**)error;
+- (nullable CGDataProviderRef)newDataProviderWithPassword:(nullable NSString*)password error:(NSError**)error CF_RETURNS_RETAINED;
 
 - (id<ZZArchiveEntryWriter>)newWriterCanSkipLocalFile:(BOOL)canSkipLocalFile;
 
 @end
+
+NS_ASSUME_NONNULL_END

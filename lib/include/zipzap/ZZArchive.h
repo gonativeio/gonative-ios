@@ -1,6 +1,6 @@
 //
 //  ZZArchive.h
-//  zipzap
+//  ZipZap
 //
 //  Created by Glen Low on 25/09/12.
 //  Copyright (c) 2012, Pixelglow Software. All rights reserved.
@@ -33,6 +33,10 @@
 #import <Foundation/Foundation.h>
 #import "ZZConstants.h"
 
+@class ZZArchiveEntry;
+
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * The ZZArchive class represents a zip file for reading only.
  */
@@ -41,7 +45,7 @@
 /**
  * The URL representing this archive.
  */
-@property (readonly, nonatomic) NSURL* URL;
+@property (readonly, nullable, nonatomic) NSURL* URL;
 
 /**
  * The uninterpreted contents of this archive.
@@ -49,67 +53,62 @@
 @property (readonly, nonatomic) NSData* contents;
 
 /**
- * The array of <ZZArchiveEntry> entries within this archive.
+ * The array of ZZArchiveEntry entries within this archive.
  */
-@property (readonly, nonatomic) NSArray* entries;
+@property (readonly, nonatomic) NSArray<ZZArchiveEntry*>* entries;
 
 /**
  * Creates a new archive with the zip file at the given file URL.
  *
- * The archive will use UTF-8 encoding for reading entry file names and comments.
+ * The archive will use UTF-8 encoding for reading entry file names and comments, and will not create the file if it is missing.
  *
  * @param URL The file URL of the zip file.
- * @return The initialized archive. If the zip file does not exist, this will have no entries.
+ * @param error The error information when an error occurs. Pass in nil if you do not want error information.
+ * @return The initialized archive. Returns nil if the archive cannot be initialized.
  */
-+ (instancetype)archiveWithContentsOfURL:(NSURL*)URL;
++ (nullable instancetype)archiveWithURL:(NSURL*)URL
+								  error:(out NSError**)error;
 
 /**
  * Creates a new archive with the raw zip file data given.
  *
- * The archive will use UTF-8 encoding for reading entry file names and comments.
+ * The archive will use UTF-8 encoding for reading entry file names and comments, and will not create the data if it is missing.
  *
- * @param data The raw data of the zip file
- * @return The initialized archive.
+ * @param data The raw data of the zip file.
+ * @param error The error information when an error occurs. Pass in nil if you do not want error information.
+ * @return The initialized archive. Returns nil if the archive cannot be initialized.
  */
-+ (instancetype)archiveWithData:(NSData*)data;
++ (nullable instancetype)archiveWithData:(NSData*)data
+								   error:(out NSError**)error;
+
+/**
+ * This initializer should never be used.
+ */
+- (instancetype)init NS_UNAVAILABLE;
 
 /**
  * Initializes a new archive with the zip file at the given file URL.
  *
  * @param URL The file URL of the zip file.
- * @param encoding The encoding for reading entry file names and comments.
- * @return The initialized archive. If the zip file does not exist, this will have no entries.
+ * @param options The options to consider when opening the zip file.
+ * @param error The error information when an error occurs. Pass in nil if you do not want error information.
+ * @return The initialized archive. Returns nil if the archive cannot be initialized.
  */
-- (id)initWithContentsOfURL:(NSURL*)URL
-				   encoding:(NSStringEncoding)encoding;
+- (nullable instancetype)initWithURL:(NSURL*)URL
+							 options:(nullable NSDictionary*)options
+							   error:(out NSError**)error;
 
 /**
  * Initializes a new archive with the raw zip file data given.
  *
  * @param data The raw data of the zip file
- * @param encoding The encoding for reading entry file names and comments.
- * @return The initialized archive.
- */
-- (id)initWithData:(NSData*)data
-		  encoding:(NSStringEncoding)encoding;
-
-/**
- * Loads the contents and entries from the source. Any old entries will then be considered invalid.
- *
- * Whenever you access <entries> or <contents>, the receiver will load them as needed.
- * You only need to call this method to force a reload from source, or to check for errors when loading.
- *
+ * @param options The options to consider when opening the zip file.
  * @param error The error information when an error occurs. Pass in nil if you do not want error information.
- * @return Whether the load was successful or not.
+ * @return The initialized archive. Returns nil if the archive cannot be initialized.
  */
-- (BOOL)load:(out NSError**)error;
-
-@end
-
-/**
- * The ZZMutableArchive class represents a zip file for reading and writing.
- */
-@interface ZZMutableArchive : ZZArchive
+- (nullable instancetype)initWithData:(NSData*)data
+							  options:(nullable NSDictionary*)options
+								error:(out NSError**)error;
 
 /**
  * Updates the entries and writes them to the source.
@@ -124,7 +123,9 @@
  * @return Whether the update was successful or not.
  *
  */
-- (BOOL)updateEntries:(NSArray*)newEntries
+- (BOOL)updateEntries:(NSArray<ZZArchiveEntry*>*)newEntries
 				error:(out NSError**)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,11 +1,11 @@
 //
-//  zipzap.h
-//  zipzap
+//  ZipZap.h
+//  ZipZap
 //
 //  Created by Glen Low on 31/10/12.
 //  Copyright (c) 2012, Pixelglow Software. All rights reserved.
 //
-//
+
 //
 //  Redistribution and use in source and binary forms, with or without modification,
 //  are permitted provided that the following conditions are met:
@@ -30,7 +30,16 @@
 //  THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#import <zipzap/ZZArchive.h>
-#import <zipzap/ZZArchiveEntry.h>
-#import <zipzap/ZZConstants.h>
-#import <zipzap/ZZError.h>
+#import <Foundation/Foundation.h>
+
+#import "ZZArchive.h"
+#import "ZZArchiveEntry.h"
+#import "ZZConstants.h"
+#import "ZZError.h"
+
+//! Project version number for ZipZap.
+FOUNDATION_EXPORT double ZipZapVersionNumber;
+
+//! Project version string for ZipZap.
+FOUNDATION_EXPORT const unsigned char ZipZapVersionString[];
+

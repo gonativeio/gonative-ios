@@ -1,8 +1,9 @@
 //
 //  ZZConstants.h
-//  zipzap
+//  ZipZap
 //
-//  Created by Daniel Cohen Gindi on 12/29/13.
+//  Created by Daniel Cohen Gindi on 29/12/13.
+//  Copyright (c) 2013, Pixelglow Software. All rights reserved.
 //
 
 //
@@ -29,17 +30,50 @@
 //  THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+#import <Foundation/Foundation.h>
+
 typedef NS_ENUM(NSInteger, ZZEncryptionMode)
 {
+	/**
+	 * No encryption.
+	 */
 	ZZEncryptionModeNone,
+
+	/**
+	 * Standard PKZIP encryption.
+	 */
 	ZZEncryptionModeStandard,
+
+	/**
+	 * Strong PKZIP encryption. Currently not supported.
+	 */
 	ZZEncryptionModeStrong,
+
+	/**
+	 * WinZip encryption using AES.
+	 */
 	ZZEncryptionModeWinZipAES
 };
 
 typedef NS_ENUM(uint8_t, ZZAESEncryptionStrength)
 {
+	/**
+	 * Use 128-bit AES for encryption.
+	 */
 	ZZAESEncryptionStrength128 = 0x01,
+
+	/**
+	 * Use 192-bit AES for encryption.
+	 */
 	ZZAESEncryptionStrength192 = 0x02,
+
+	/**
+	 * Use 256-bit AES for encryption.
+	 */
 	ZZAESEncryptionStrength256 = 0x03
 };
+
+/**
+ * An NSNumber object that determines whether to create the archive file if it is missing. Creation occurs during -[ZZArchive updateEntries:error:]. Default is @NO.
+ */
+extern NSString* const ZZOpenOptionsCreateIfMissingKey;

@@ -25,7 +25,7 @@
         self.urlsToManifest = [[NSMutableDictionary alloc] init];
         
         NSURL *path = [[NSBundle mainBundle] URLForResource:@"localCache" withExtension:@"zip"];
-        self.cacheFile = [ZZArchive archiveWithContentsOfURL:path];
+        self.cacheFile = [ZZArchive archiveWithURL:path error:nil];
         self.filesToEntries = [[NSMutableDictionary alloc] init];
         
         for (ZZArchiveEntry *entry in self.cacheFile.entries) {

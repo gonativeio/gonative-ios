@@ -228,11 +228,6 @@
 		209B3217193FA36F0052A7C6 /* LEANUrlCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANUrlCache.h; sourceTree = "<group>"; };
 		209B3218193FA36F0052A7C6 /* LEANUrlCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUrlCache.m; sourceTree = "<group>"; };
 		209B321C193FB11A0052A7C6 /* localCache.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = localCache.zip; sourceTree = "<group>"; };
-		209B3302193FC4CE0052A7C6 /* zipzap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipzap.h; sourceTree = "<group>"; };
-		209B3303193FC4CE0052A7C6 /* ZZArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZArchive.h; sourceTree = "<group>"; };
-		209B3304193FC4CE0052A7C6 /* ZZArchiveEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZArchiveEntry.h; sourceTree = "<group>"; };
-		209B3305193FC4CE0052A7C6 /* ZZConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZConstants.h; sourceTree = "<group>"; };
-		209B3306193FC4CE0052A7C6 /* ZZError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZError.h; sourceTree = "<group>"; };
 		209B3307193FC4CE0052A7C6 /* libzipzap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzipzap.a; sourceTree = "<group>"; };
 		209B330A193FC5BD0052A7C6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -260,6 +255,31 @@
 		20C8504F19CD143100DB208A /* LEANIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIcons.m; sourceTree = "<group>"; };
 		20D77B6E1A2547E5008A938D /* LEANActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANActionManager.h; sourceTree = "<group>"; };
 		20D77B6F1A2547E5008A938D /* LEANActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANActionManager.m; sourceTree = "<group>"; };
+		20E471F520B75AE6004E0045 /* ZZFileChannelOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZFileChannelOutput.h; sourceTree = "<group>"; };
+		20E471F620B75AE7004E0045 /* ZZStoreOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZStoreOutputStream.h; sourceTree = "<group>"; };
+		20E471F720B75AE7004E0045 /* ZZDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZDataProvider.h; sourceTree = "<group>"; };
+		20E471F820B75AE7004E0045 /* ZZScopeGuard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZScopeGuard.h; sourceTree = "<group>"; };
+		20E471F920B75AE7004E0045 /* ZZConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZConstants.h; sourceTree = "<group>"; };
+		20E471FA20B75AE7004E0045 /* ZZOldArchiveEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZOldArchiveEntry.h; sourceTree = "<group>"; };
+		20E471FB20B75AE7004E0045 /* ZZArchiveEntryWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZArchiveEntryWriter.h; sourceTree = "<group>"; };
+		20E471FC20B75AE7004E0045 /* ZZDataChannelOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZDataChannelOutput.h; sourceTree = "<group>"; };
+		20E471FD20B75AE7004E0045 /* ZZError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZError.h; sourceTree = "<group>"; };
+		20E471FE20B75AE7004E0045 /* ZZDataChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZDataChannel.h; sourceTree = "<group>"; };
+		20E471FF20B75AE7004E0045 /* zipzap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zipzap.h; sourceTree = "<group>"; };
+		20E4720020B75AE7004E0045 /* ZZDeflateOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZDeflateOutputStream.h; sourceTree = "<group>"; };
+		20E4720120B75AE7004E0045 /* ZZAESDecryptInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZAESDecryptInputStream.h; sourceTree = "<group>"; };
+		20E4720220B75AE7004E0045 /* ZZStandardCryptoEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZStandardCryptoEngine.h; sourceTree = "<group>"; };
+		20E4720320B75AE7004E0045 /* ZZInflateInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZInflateInputStream.h; sourceTree = "<group>"; };
+		20E4720420B75AE7004E0045 /* ZZArchiveEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZArchiveEntry.h; sourceTree = "<group>"; };
+		20E4720520B75AE7004E0045 /* ZZHeaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZHeaders.h; sourceTree = "<group>"; };
+		20E4720620B75AE7004E0045 /* ZZChannelOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZChannelOutput.h; sourceTree = "<group>"; };
+		20E4720720B75AE7004E0045 /* ZZStandardDecryptInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZStandardDecryptInputStream.h; sourceTree = "<group>"; };
+		20E4720820B75AE8004E0045 /* ZZOldArchiveEntryWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZOldArchiveEntryWriter.h; sourceTree = "<group>"; };
+		20E4720920B75AE8004E0045 /* ZZNewArchiveEntryWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZNewArchiveEntryWriter.h; sourceTree = "<group>"; };
+		20E4720A20B75AE8004E0045 /* ZZNewArchiveEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZNewArchiveEntry.h; sourceTree = "<group>"; };
+		20E4720B20B75AE8004E0045 /* ZZArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZArchive.h; sourceTree = "<group>"; };
+		20E4720C20B75AE8004E0045 /* ZZChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZChannel.h; sourceTree = "<group>"; };
+		20E4720D20B75AE8004E0045 /* ZZFileChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZFileChannel.h; sourceTree = "<group>"; };
 		20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewPool.h; sourceTree = "<group>"; };
 		20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewPool.m; sourceTree = "<group>"; };
 		20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANToolbarManager.h; sourceTree = "<group>"; };
@@ -548,11 +568,31 @@
 		209B3301193FC4CE0052A7C6 /* zipzap */ = {
 			isa = PBXGroup;
 			children = (
-				209B3302193FC4CE0052A7C6 /* zipzap.h */,
-				209B3303193FC4CE0052A7C6 /* ZZArchive.h */,
-				209B3304193FC4CE0052A7C6 /* ZZArchiveEntry.h */,
-				209B3305193FC4CE0052A7C6 /* ZZConstants.h */,
-				209B3306193FC4CE0052A7C6 /* ZZError.h */,
+				20E471FF20B75AE7004E0045 /* zipzap.h */,
+				20E4720120B75AE7004E0045 /* ZZAESDecryptInputStream.h */,
+				20E4720B20B75AE8004E0045 /* ZZArchive.h */,
+				20E4720420B75AE7004E0045 /* ZZArchiveEntry.h */,
+				20E471FB20B75AE7004E0045 /* ZZArchiveEntryWriter.h */,
+				20E4720C20B75AE8004E0045 /* ZZChannel.h */,
+				20E4720620B75AE7004E0045 /* ZZChannelOutput.h */,
+				20E471F920B75AE7004E0045 /* ZZConstants.h */,
+				20E471FE20B75AE7004E0045 /* ZZDataChannel.h */,
+				20E471FC20B75AE7004E0045 /* ZZDataChannelOutput.h */,
+				20E471F720B75AE7004E0045 /* ZZDataProvider.h */,
+				20E4720020B75AE7004E0045 /* ZZDeflateOutputStream.h */,
+				20E471FD20B75AE7004E0045 /* ZZError.h */,
+				20E4720D20B75AE8004E0045 /* ZZFileChannel.h */,
+				20E471F520B75AE6004E0045 /* ZZFileChannelOutput.h */,
+				20E4720520B75AE7004E0045 /* ZZHeaders.h */,
+				20E4720320B75AE7004E0045 /* ZZInflateInputStream.h */,
+				20E4720A20B75AE8004E0045 /* ZZNewArchiveEntry.h */,
+				20E4720920B75AE8004E0045 /* ZZNewArchiveEntryWriter.h */,
+				20E471FA20B75AE7004E0045 /* ZZOldArchiveEntry.h */,
+				20E4720820B75AE8004E0045 /* ZZOldArchiveEntryWriter.h */,
+				20E471F820B75AE7004E0045 /* ZZScopeGuard.h */,
+				20E4720220B75AE7004E0045 /* ZZStandardCryptoEngine.h */,
+				20E4720720B75AE7004E0045 /* ZZStandardDecryptInputStream.h */,
+				20E471F620B75AE7004E0045 /* ZZStoreOutputStream.h */,
 			);
 			path = zipzap;
 			sourceTree = "<group>";
@@ -977,7 +1017,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
@@ -986,7 +1026,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LeanIOS/GoNativeIOS-Prefix.pch";
 				INFOPLIST_FILE = "LeanIOS/GoNativeIOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1017,7 +1057,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
@@ -1026,7 +1066,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "LeanIOS/GoNativeIOS-Prefix.pch";
 				INFOPLIST_FILE = "LeanIOS/GoNativeIOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
