@@ -128,6 +128,11 @@ typedef enum : NSUInteger {
 @property NSString *oneSignalInFocusDisplay;
 @property BOOL oneSignalRequiresUserPrivacyConsent;
 
+// Xtremepush integration
+@property BOOL xtremepushEnabled;
+@property NSString *xtremepushAppKey;
+@property BOOL xtremepushAutoRegister;
+
 // Facebook SDK
 @property BOOL facebookEnabled;
 @property NSString *facebookAppId;

@@ -99,32 +99,10 @@
             }
         } handleNotificationAction:^(OSNotificationOpenedResult *result) {
             OSNotificationPayload *payload = result.notification.payload;
-            
-            NSString *urlString;
-            NSURL *url;
             if (payload.additionalData) {
-                urlString = payload.additionalData[@"u"];
-                if (![urlString isKindOfClass:[NSString class]]) {
-                    urlString = payload.additionalData[@"targetUrl"];
-                }
-                if ([urlString isKindOfClass:[NSString class]]) {
-                    url = [LEANUtilities urlWithString:urlString];
-                }
+                [self handlePushNotificationData:payload.additionalData];
             }
             
-            BOOL webviewOnTop = NO;
-            UIViewController *rvc = self.window.rootViewController;
-            if ([rvc isKindOfClass:[LEANRootViewController class]]) {
-                webviewOnTop = [(LEANRootViewController*)rvc webviewOnTop];
-            }
-
-            if (url && webviewOnTop) {
-                // for when the app is launched from scratch from a push notification
-                [(LEANRootViewController*)rvc setInitialUrl:url];
-                
-                // for when the app was backgrounded
-                [(LEANRootViewController*)rvc loadUrl:url];
-            }
         } settings:@{kOSSettingsKeyAutoPrompt: @false,
                      kOSSettingsKeyInFocusDisplayOption: [NSNumber numberWithInteger:OSNotificationDisplayTypeNone]}];
         
@@ -170,6 +148,35 @@
     }
     
     return YES;
+}
+
+-(void)handlePushNotificationData:(NSDictionary*)data
+{
+    if (!data) return;
+    
+    NSString *urlString;
+    NSURL *url;
+    urlString = data[@"u"];
+    if (![urlString isKindOfClass:[NSString class]]) {
+        urlString = data[@"targetUrl"];
+    }
+    if ([urlString isKindOfClass:[NSString class]]) {
+        url = [LEANUtilities urlWithString:urlString];
+    }
+    
+    BOOL webviewOnTop = NO;
+    UIViewController *rvc = self.window.rootViewController;
+    if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+        webviewOnTop = [(LEANRootViewController*)rvc webviewOnTop];
+    }
+    
+    if (url && webviewOnTop) {
+        // for when the app is launched from scratch from a push notification
+        [(LEANRootViewController*)rvc setInitialUrl:url];
+        
+        // for when the app was backgrounded
+        [(LEANRootViewController*)rvc loadUrl:url];
+    }
 }
 
 - (void)configureApplication
