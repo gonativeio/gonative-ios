@@ -16,6 +16,7 @@
 #import "LEANConfigUpdater.h"
 #import "LEANUtilities.h"
 #import "GNRegistrationManager.h"
+#import "GNConfigPreferences.h"
 #import "GonativeIO-Swift.h"
 
 @interface LEANAppDelegate() <OSSubscriptionObserver>
@@ -223,6 +224,19 @@
 {
     if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
         [FBSDKAppEvents activateApp];
+    }
+    
+    if (self.previousInitialUrl) {
+        NSString *initialUrl = [[GNConfigPreferences sharedPreferences] getInitialUrl];
+        if (![self.previousInitialUrl isEqualToString:initialUrl]) {
+            // was changed in Settings
+            UIViewController *rvc = self.window.rootViewController;
+            if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+                LEANRootViewController *vc = (LEANRootViewController*)rvc;
+                [vc loadUrl:[NSURL URLWithString:initialUrl]];
+                self.previousInitialUrl = initialUrl;
+            }
+        }
     }
 }
 

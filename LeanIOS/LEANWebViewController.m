@@ -173,10 +173,14 @@
         self.urlLevel = -1;
         if (!self.initialUrl) {
             NSString *initialUrlPref = [[GNConfigPreferences sharedPreferences] getInitialUrl];
-            self.initialUrl = [NSURL URLWithString:initialUrlPref];
+            if (initialUrlPref && initialUrlPref.length > 0) {
+                self.initialUrl = [NSURL URLWithString:initialUrlPref];
+                [[GNConfigPreferences sharedPreferences] setInitialUrl:initialUrlPref];
+            }
         }
-        if (!self.initialUrl) {
+        if (!self.initialUrl && appConfig.initialURL) {
             self.initialUrl = appConfig.initialURL;
+            [[GNConfigPreferences sharedPreferences] setInitialUrl:[appConfig.initialURL absoluteString]];
         }
         [self loadUrl:self.initialUrl];
         

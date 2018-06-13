@@ -14,6 +14,7 @@
 @property (strong, nonatomic) UIWindow *window;
 @property Reachability *internetReachability;
 @property BOOL isFirstLaunch;
+@property NSString *previousInitialUrl;
 
 - (void)configureApplication;
 

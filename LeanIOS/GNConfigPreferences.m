@@ -7,6 +7,7 @@
 //
 
 #import "GNConfigPreferences.h"
+#import "LEANAppDelegate.h"
 
 #define kInitialUrlKey @"io.gonative.ios.initialUrl"
 
@@ -50,6 +51,10 @@
         [defaults removeObjectForKey:kInitialUrlKey];
     }
     [defaults synchronize];
+    
+    // set in app delegate so that page does not get reloaded
+    LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
+    appDelegate.previousInitialUrl = url;
 }
 
 -(NSString*)getInitialUrl
