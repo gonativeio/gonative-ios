@@ -233,7 +233,11 @@
             UIViewController *rvc = self.window.rootViewController;
             if ([rvc isKindOfClass:[LEANRootViewController class]]) {
                 LEANRootViewController *vc = (LEANRootViewController*)rvc;
-                [vc loadUrl:[NSURL URLWithString:initialUrl]];
+                if (initialUrl && initialUrl.length > 0) {
+                    [vc loadUrl:[NSURL URLWithString:initialUrl]];
+                } else {
+                    [vc loadUrl: [GoNativeAppConfig sharedAppConfig].initialURL];
+                }
                 self.previousInitialUrl = initialUrl;
             }
         }
