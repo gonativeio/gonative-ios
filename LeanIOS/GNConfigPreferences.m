@@ -44,6 +44,8 @@
 
 -(void)setInitialUrl:(NSString*)url
 {
+    url = [self processUrl:url];
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (url && url.length > 0) {
         [defaults setObject:url forKey:kInitialUrlKey];
@@ -59,6 +61,19 @@
 
 -(NSString*)getInitialUrl
 {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kInitialUrlKey];
+    NSString *url = [[NSUserDefaults standardUserDefaults] objectForKey:kInitialUrlKey];
+    return [self processUrl:url];
+}
+
+-(NSString*)processUrl:(NSString*)url
+{
+    if (!url) return url;
+    
+    // if protocol is not specified, add http://
+    if ([url rangeOfString:@"://"].location == NSNotFound) {
+        url = [NSString stringWithFormat:@"http://%@", url];
+    }
+    
+    return url;
 }
 @end
