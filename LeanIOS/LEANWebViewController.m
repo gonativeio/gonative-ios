@@ -9,6 +9,7 @@
 #import <WebKit/WebKit.h>
 #import <MessageUI/MessageUI.h>
 #import <CoreLocation/CoreLocation.h>
+#import <PassKit/PassKit.h>
 
 #import <OneSignal/OneSignal.h>
 
@@ -950,6 +951,51 @@
         [self.wkWebview loadRequest:modifiedRequest];
     } else {
         decisionHandler(WKNavigationActionPolicyAllow);
+    }
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
+{
+    if (navigationResponse.canShowMIMEType) {
+        decisionHandler(WKNavigationResponsePolicyAllow);
+        return;
+    }
+
+    decisionHandler(WKNavigationResponsePolicyCancel);
+    
+    if ([@"application/vnd.apple.pkpass" isEqualToString:navigationResponse.response.MIMEType]) {
+        NSURL *url = navigationResponse.response.URL;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self hideWebview];
+            
+            NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self showWebview];
+                });
+                
+                if (!error && [response isKindOfClass:[NSHTTPURLResponse class]]) {
+                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
+                    if (httpResponse.statusCode == 200) {
+                        NSError *passError;
+                        PKPass *pass = [[PKPass alloc] initWithData:data error:&passError];
+                        if (passError) {
+                            NSLog(@"Error parsing pass from %@: %@", url, passError);
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                PKAddPassesViewController *apvc = [[PKAddPassesViewController alloc] initWithPass:pass];
+                                [[self getTopPresentedViewController] presentViewController:apvc animated:YES completion:nil];
+                            });
+                        }
+                    } else {
+                        NSLog(@"Got status %ld when downloading pass from %@", (long)httpResponse.statusCode, url);
+                    }
+                } else {
+                    NSLog(@"Error getting pass (%@): %@", url, error);
+                }
+            }];
+            [task resume];
+        });
     }
 }
 
