@@ -181,7 +181,6 @@
         }
         if (!self.initialUrl && appConfig.initialURL) {
             self.initialUrl = appConfig.initialURL;
-            [[GNConfigPreferences sharedPreferences] setInitialUrl:[appConfig.initialURL absoluteString]];
         }
         [self loadUrl:self.initialUrl];
         

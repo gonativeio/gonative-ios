@@ -67,7 +67,7 @@
 
 -(NSString*)processUrl:(NSString*)url
 {
-    if (!url) return url;
+    if (!url || url.length == 0) return nil;
     
     // if protocol is not specified, add http://
     if ([url rangeOfString:@"://"].location == NSNotFound) {
