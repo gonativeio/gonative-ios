@@ -31,4 +31,5 @@
 +(NSString*)createJsForPostTo:(NSString*)url data:(NSDictionary*)data;
 +(NSString*)createJsForCallback:(NSString*)functionName data:(NSDictionary*)data;
 +(BOOL)checkNativeBridgeUrl:(NSString*)url;
++(BOOL)cookie:(NSHTTPCookie*)cookie matchesUrl:(NSURL*)url;
 @end

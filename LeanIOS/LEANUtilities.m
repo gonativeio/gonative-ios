@@ -671,4 +671,50 @@
     return matched;
 }
 
++(BOOL)cookie:(NSHTTPCookie*)cookie matchesUrl:(NSURL*)url
+{
+    // check host. Ignore leading "." in cookie and match on subdomain
+    NSString *urlHost = [@"." stringByAppendingString:url.host];
+    NSString *cookieDomain = cookie.domain;
+    if (![cookieDomain hasPrefix:@"."]) {
+        cookieDomain = [@"." stringByAppendingString:cookieDomain];
+    }
+    if (![urlHost hasSuffix:cookieDomain]) {
+        return NO;
+    }
+    
+    // check ports if exist
+    if (cookie.portList && cookie.portList.count > 0) {
+        BOOL matches = NO;
+        for (NSNumber *port in cookie.portList) {
+            if ([port isEqual:url.port]) {
+                matches = YES;
+                break;
+            }
+        }
+        if (!matches) {
+            return NO;
+        }
+    }
+    
+    // check path
+    NSString *urlPath = url.path;
+    if (!urlPath || urlPath.length == 0) {
+        urlPath = @"/";
+    }
+    if (![urlPath hasPrefix:cookie.path]) {
+        return NO;
+    }
+    // path has prefix, but check for trailing /
+    if (![urlPath hasSuffix:@"/"]) {
+        urlPath = [urlPath stringByAppendingString:@"/"];
+    }
+    NSString *cookiePath = cookie.path;
+    if (![cookiePath hasSuffix:@"/"]) {
+        cookiePath = [cookiePath stringByAppendingString:@"/"];
+    }
+    
+    return [urlPath hasPrefix:cookiePath];
+}
+
 @end

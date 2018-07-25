@@ -967,33 +967,63 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self hideWebview];
             
-            NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self showWebview];
-                });
-                
-                if (!error && [response isKindOfClass:[NSHTTPURLResponse class]]) {
-                    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
-                    if (httpResponse.statusCode == 200) {
-                        NSError *passError;
-                        PKPass *pass = [[PKPass alloc] initWithData:data error:&passError];
-                        if (passError) {
-                            NSLog(@"Error parsing pass from %@: %@", url, passError);
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+
+            void (^downloadPass)(void) = ^void() {
+                NSURLSessionDataTask *task =  [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self showWebview];
+                    });
+                    
+                    if (!error && [response isKindOfClass:[NSHTTPURLResponse class]]) {
+                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
+                        if (httpResponse.statusCode == 200) {
+                            NSError *passError;
+                            PKPass *pass = [[PKPass alloc] initWithData:data error:&passError];
+                            if (passError) {
+                                NSLog(@"Error parsing pass from %@: %@", url, passError);
+                            } else {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    PKAddPassesViewController *apvc = [[PKAddPassesViewController alloc] initWithPass:pass];
+                                    [[self getTopPresentedViewController] presentViewController:apvc animated:YES completion:nil];
+                                });
+                            }
                         } else {
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                PKAddPassesViewController *apvc = [[PKAddPassesViewController alloc] initWithPass:pass];
-                                [[self getTopPresentedViewController] presentViewController:apvc animated:YES completion:nil];
-                            });
+                            NSLog(@"Got status %ld when downloading pass from %@", (long)httpResponse.statusCode, url);
                         }
                     } else {
-                        NSLog(@"Got status %ld when downloading pass from %@", (long)httpResponse.statusCode, url);
+                        NSLog(@"Error getting pass (%@): %@", url, error);
                     }
-                } else {
-                    NSLog(@"Error getting pass (%@): %@", url, error);
+                }];
+                [task resume];
+            };
+            
+            // If using WKWebView on iOS11+, get cookies from WKHTTPCookieStore
+            BOOL gettingWKWebviewCookies = NO;
+            if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
+                if (@available(iOS 11.0, *)) {
+                    gettingWKWebviewCookies = YES;
+                    WKHTTPCookieStore *cookieStore = [WKWebsiteDataStore defaultDataStore].httpCookieStore;
+                    [cookieStore getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull cookies) {
+                        NSMutableArray *cookiesToSend = [NSMutableArray array];
+                        for (NSHTTPCookie *cookie in cookies) {
+                            if ([LEANUtilities cookie:cookie matchesUrl:url]) {
+                                [cookiesToSend addObject:cookie];
+                            }
+                        }
+                        NSDictionary *headerFields = [NSHTTPCookie requestHeaderFieldsWithCookies:cookiesToSend];
+                        NSString *cookieHeader = headerFields[@"Cookie"];
+                        if (cookieHeader) {
+                            [request addValue:cookieHeader forHTTPHeaderField:@"Cookie"];
+                        }
+                        downloadPass();
+                    }];
                 }
-            }];
-            [task resume];
+            }
+            if (!gettingWKWebviewCookies) {
+                downloadPass();
+            }
         });
     }
 }
