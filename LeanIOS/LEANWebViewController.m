@@ -1260,6 +1260,33 @@
             }
         }
         
+        if ([@"window" isEqualToString:url.host]) {
+            if ([@"/open" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSURL *urlToOpen = [NSURL URLWithString:query[@"url"]];
+                if (urlToOpen) {
+                    NSMutableURLRequest *requestToOpen = [NSMutableURLRequest requestWithURL:urlToOpen];
+                    // need to set mainDocumentURL to properly handle external links in shouldLoadRequest:
+                    requestToOpen.mainDocumentURL = urlToOpen;
+                    if (requestToOpen) {
+                        BOOL shouldLoad = [self shouldLoadRequest:requestToOpen isMainFrame:YES isUserAction:YES hideWebview:NO];
+                        if (shouldLoad) {
+                            LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
+                            newvc.initialUrl = urlToOpen;
+                            NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
+                            while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
+                                [controllers removeLastObject];
+                            }
+                            [controllers addObject:newvc];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self.navigationController setViewControllers:controllers animated:YES];
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        
         // Share page
         if ([@"share" isEqualToString:url.host] && [@"/sharePage" isEqualToString:url.path]) {
             NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
