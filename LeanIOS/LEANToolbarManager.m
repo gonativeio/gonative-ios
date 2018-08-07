@@ -112,7 +112,15 @@
             if ([regexArray isKindOfClass:[NSArray class]] && [regexArray count] > 0) {
                 regexMatches = NO;
                 for (NSPredicate *predicate in regexArray) {
-                    if ([predicate evaluateWithObject:urlString]) {
+                    BOOL matches = NO;
+                    @try {
+                        matches = [predicate evaluateWithObject:urlString];
+                    }
+                    @catch (NSException* exception) {
+                        NSLog(@"Error in toolbar regexes: %@", exception);
+                    }
+
+                    if (matches) {
                         regexMatches = YES;
                         break;
                     }

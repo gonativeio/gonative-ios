@@ -832,7 +832,15 @@
         NSString *urlString = [url absoluteString];
         for (NSDictionary *entry in entries) {
             NSPredicate *predicate = entry[@"predicate"];
-            if ([predicate evaluateWithObject:urlString]) {
+            BOOL matches = NO;
+            @try {
+                matches = [predicate evaluateWithObject:urlString];
+            }
+            @catch (NSException* exception) {
+                NSLog(@"Regex error in regexInternalExternal: %@", exception);
+            }
+
+            if (matches) {
                 return [entry[@"level"] integerValue];
             }
         }
@@ -1519,7 +1527,14 @@
         bool matchedRegex = NO;
         for (NSUInteger i = 0; i < [appConfig.regexInternalEternal count]; i++) {
             NSPredicate *predicate = appConfig.regexInternalEternal[i];
-            if ([predicate evaluateWithObject:urlString]) {
+            BOOL matches = NO;
+            @try {
+                matches = [predicate evaluateWithObject:urlString];
+            }
+            @catch (NSException* exception) {
+                NSLog(@"Error in regex internal external: %@", exception);
+            }
+            if (matches) {
                 matchedRegex = YES;
                 if (![appConfig.regexIsInternal[i] boolValue]) {
                     // external

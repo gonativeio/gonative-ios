@@ -118,7 +118,15 @@
     NSArray *regexes = [GoNativeAppConfig sharedAppConfig].loginDetectRegexes;
     for (NSUInteger i = 0; i < [regexes count]; i++) {
         NSPredicate *predicate = regexes[i];
-        if ([predicate evaluateWithObject:urlString]) {
+        BOOL matches = NO;
+        @try {
+            matches = [predicate evaluateWithObject:urlString];
+        }
+        @catch (NSException* exception) {
+            NSLog(@"Error in login detection regex: %@", exception);
+        }
+
+        if (matches) {
             id entry = [GoNativeAppConfig sharedAppConfig].loginDetectLocations[i];
             [self setStatus:entry[@"status"] loggedIn:[entry[@"loggedIn"] boolValue]];
             return;

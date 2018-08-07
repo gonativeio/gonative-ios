@@ -36,7 +36,15 @@
     
     for (NSUInteger i = 0; i < [actionRegexes count]; i++) {
         NSPredicate *predicate = actionRegexes[i];
-        if ([predicate evaluateWithObject:urlString]) {
+        BOOL matches = NO;
+        @try {
+            matches = [predicate evaluateWithObject:urlString];
+        }
+        @catch (NSException* exception) {
+            NSLog(@"Error in action regex: %@", exception);
+        }
+
+        if (matches) {
             [self setMenuID:[GoNativeAppConfig sharedAppConfig].actionIDs[i]];
             return;
         }

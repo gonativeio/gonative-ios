@@ -167,7 +167,15 @@
         if (!regexList) continue;
         
         for (NSPredicate *regex in regexList) {
-            if ([regex evaluateWithObject:urlString]) {
+            BOOL matches = NO;
+            @try {
+                matches = [regex evaluateWithObject:urlString];
+            }
+            @catch (NSException* exception) {
+                NSLog(@"Error in tab selection regex: %@", exception);
+            }
+
+            if (matches) {
                 self.tabBar.selectedItem = self.tabBar.items[i];
                 return;
             }

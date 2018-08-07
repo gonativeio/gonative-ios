@@ -663,7 +663,15 @@
     
     BOOL matched = NO;
     for (NSPredicate *predicate in appConfig.nativeBridgeUrls) {
-        if ([predicate evaluateWithObject:url]) {
+        BOOL matches = NO;
+        @try {
+            matches = [predicate evaluateWithObject:url];
+        }
+        @catch (NSException* exception) {
+            NSLog(@"Regex error in nativeBridgeUrls: %@", exception);
+        }
+
+        if (matches) {
             matched = YES;
             break;
         }
