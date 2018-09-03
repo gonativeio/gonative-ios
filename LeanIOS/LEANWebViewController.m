@@ -9,7 +9,6 @@
 #import <WebKit/WebKit.h>
 #import <MessageUI/MessageUI.h>
 #import <CoreLocation/CoreLocation.h>
-#import <PassKit/PassKit.h>
 
 #import <OneSignal/OneSignal.h>
 
@@ -988,13 +987,13 @@
                         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
                         if (httpResponse.statusCode == 200) {
                             NSError *passError;
-                            PKPass *pass = [[PKPass alloc] initWithData:data error:&passError];
+//                            PKPass *pass = [[PKPass alloc] initWithData:data error:&passError];
                             if (passError) {
                                 NSLog(@"Error parsing pass from %@: %@", url, passError);
                             } else {
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    PKAddPassesViewController *apvc = [[PKAddPassesViewController alloc] initWithPass:pass];
-                                    [[self getTopPresentedViewController] presentViewController:apvc animated:YES completion:nil];
+//                                    PKAddPassesViewController *apvc = [[PKAddPassesViewController alloc] initWithPass:pass];
+//                                    [[self getTopPresentedViewController] presentViewController:apvc animated:YES completion:nil];
                                 });
                             }
                         } else {
