@@ -8,6 +8,7 @@
 
 #import "LEANNavigationController.h"
 #import "LEANWebViewController.h"
+#import "LEANRootViewController.h"
 #import "GoNativeAppConfig.h"
 
 @interface LEANNavigationController () <UINavigationControllerDelegate>
@@ -37,7 +38,11 @@
     if (appConfig.showNavigationMenu) {
         self.sidebarEnabled = YES;
         UIScreenEdgePanGestureRecognizer *r = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureRecognized:)];
-        r.edges = UIRectEdgeLeft;
+        if ([UIView userInterfaceLayoutDirectionForSemanticContentAttribute:self.view.semanticContentAttribute] == UIUserInterfaceLayoutDirectionRightToLeft) {
+            r.edges = UIRectEdgeRight;
+        } else {
+            r.edges = UIRectEdgeLeft;
+        }
         [self.view addGestureRecognizer:r];
     } else {
         self.sidebarEnabled = NO;
