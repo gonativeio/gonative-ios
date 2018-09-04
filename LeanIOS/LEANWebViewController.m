@@ -950,6 +950,8 @@
         return;
     }
     
+    [[LEANDocumentSharer sharedSharer] receivedRequest:navigationAction.request];
+    
     NSDictionary *customHeaders = [GNCustomHeaders getCustomHeaders];
     if (navigationAction.targetFrame.isMainFrame && customHeaders && [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
         decisionHandler(WKNavigationActionPolicyCancel);
@@ -962,6 +964,8 @@
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
 {
+    [[LEANDocumentSharer sharedSharer] receviedWebviewResponse:navigationResponse.response];
+    
     if (navigationResponse.canShowMIMEType) {
         decisionHandler(WKNavigationResponsePolicyAllow);
         return;

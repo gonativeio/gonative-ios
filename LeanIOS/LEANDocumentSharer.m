@@ -40,8 +40,6 @@
 {
     self = [super init];
     if (self) {
-        NSURL *cacheDir = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject]];
-        self.dataFile = [cacheDir URLByAppendingPathComponent:@"io.gonative.documentsharer.cachedfile"];
         self.allowableMimeTypes = @[@"application/pdf", // pdf
                                     
                                     @"application/octet-stream",
@@ -77,6 +75,10 @@
     self.lastRequest = request;
     self.isSharableFile = NO;
     self.isFinished = NO;
+    
+    self.dataFile = nil;
+    [self.dataFileHandle closeFile];
+    self.dataFileHandle = nil;
 }
 
 
@@ -92,6 +94,19 @@
     }
 }
 
+- (void)receviedWebviewResponse:(NSURLResponse *)response
+{
+    self.lastResponse = response;
+    self.isFinished = YES;
+    self.dataFile = nil;
+    
+    // check mime types
+    if ([self.allowableMimeTypes containsObject:response.MIMEType] || [response.MIMEType hasPrefix:self.imageMimePrefix]) {
+        self.isSharableFile = YES;
+        [self.sharableRequests addObject:self.lastRequest];
+    }
+}
+
 
 - (void)receivedData:(NSData *)data
 {
@@ -99,6 +114,11 @@
     
     if (!self.isSharableFile) {
         return;
+    }
+    
+    if (!self.dataFile) {
+        NSURL *cacheDir = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject]];
+        self.dataFile = [cacheDir URLByAppendingPathComponent:@"io.gonative.documentsharer.cachedfile"];
     }
     
     if (!self.dataFileHandle) {
@@ -160,9 +180,8 @@
         return;
     }
     
-    
-    // is the last reqwuest we intercepted
-    if ([LEANDocumentSharer request:req matchesRequest:self.lastRequest]) {
+    // is the last request we intercepted
+    if ([LEANDocumentSharer request:req matchesRequest:self.lastRequest] && self.dataFile) {
         // copy to documents folder with a good suggested file name
         NSURL *documentsDir = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]];
         NSURL *sharedFile = [documentsDir URLByAppendingPathComponent:[self.lastResponse suggestedFilename]];
@@ -195,6 +214,7 @@
             button.enabled = YES;
         }];
         
+        button.enabled = NO;
         [downloadTask resume];
     }
 }
