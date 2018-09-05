@@ -2470,8 +2470,11 @@
     }
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration
+-(void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
+    // usually called because of rotation
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
     [self adjustInsets];
     [self applyStatusBarOverlay];
 }

@@ -243,32 +243,30 @@
     return self.contentViewController.shouldAutorotate;
 }
 
-- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    if ([self.delegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [self.delegate respondsToSelector:@selector(frostedViewController:willAnimateRotationToInterfaceOrientation:duration:)])
-        [self.delegate frostedViewController:self willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    if ([self.delegate conformsToProtocol:@protocol(REFrostedViewControllerDelegate)] && [self.delegate respondsToSelector:@selector(frostedViewController:willTransitionToSize:withTransitionCoordinator:)])
+        [self.delegate frostedViewController:self willTransitionToSize:size withTransitionCoordinator:coordinator];
     
-    if (self.visible) {
-        if (self.automaticSize) {
-            if (self.direction == REFrostedViewControllerDirectionLeft || self.direction == REFrostedViewControllerDirectionRight)
-                self.calculatedMenuViewSize = CGSizeMake(self.view.bounds.size.width - 50.0f, self.view.bounds.size.height);
-            
-            if (self.direction == REFrostedViewControllerDirectionTop || self.direction == REFrostedViewControllerDirectionBottom)
-                self.calculatedMenuViewSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height - 50.0f);
-        } else {
-            self.calculatedMenuViewSize = CGSizeMake(_menuViewSize.width > 0 ? _menuViewSize.width : self.view.bounds.size.width,
-                                                     _menuViewSize.height > 0 ? _menuViewSize.height : self.view.bounds.size.height);
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        if (self.visible) {
+            if (self.automaticSize) {
+                if (self.direction == REFrostedViewControllerDirectionLeft || self.direction == REFrostedViewControllerDirectionRight)
+                    self.calculatedMenuViewSize = CGSizeMake(self.view.bounds.size.width - 50.0f, self.view.bounds.size.height);
+                
+                if (self.direction == REFrostedViewControllerDirectionTop || self.direction == REFrostedViewControllerDirectionBottom)
+                    self.calculatedMenuViewSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height - 50.0f);
+            } else {
+                self.calculatedMenuViewSize = CGSizeMake(self->_menuViewSize.width > 0 ? self->_menuViewSize.width : self.view.bounds.size.width,
+                                                         self->_menuViewSize.height > 0 ? self->_menuViewSize.height : self.view.bounds.size.height);
+            }
         }
-    }
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    if (!self.visible) {
-        self.calculatedMenuViewSize = CGSizeZero;
-    }
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        if (!self.visible) {
+            self.calculatedMenuViewSize = CGSizeZero;
+        }
+    }];
 }
 
 @end

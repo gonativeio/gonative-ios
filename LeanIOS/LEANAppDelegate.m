@@ -190,7 +190,7 @@
     NSLog(@"Error registering for push notifications: %@", err);
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
     if ([url.scheme hasSuffix:@".https"] || [url.scheme hasSuffix:@".http"]) {
         UIViewController *rvc = self.window.rootViewController;
@@ -211,10 +211,7 @@
     
     // Facebook SDK
     if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
-        return [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                              openURL:url
-                                                    sourceApplication:sourceApplication
-                                                           annotation:annotation];
+        return [[FBSDKApplicationDelegate sharedInstance] application:app openURL:url options:options];
     }
     
     return NO;

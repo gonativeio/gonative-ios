@@ -79,7 +79,8 @@ typedef NS_ENUM(NSInteger, REFrostedViewControllerLiveBackgroundStyle) {
 @protocol REFrostedViewControllerDelegate <NSObject>
 
 @optional
-- (void)frostedViewController:(REFrostedViewController *)frostedViewController willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
+- (void)frostedViewController:(REFrostedViewController *)frostedViewController willTransitionToSize:(CGSize)size
+    withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator;
 - (void)frostedViewController:(REFrostedViewController *)frostedViewController didRecognizePanGesture:(UIPanGestureRecognizer *)recognizer;
 - (void)frostedViewController:(REFrostedViewController *)frostedViewController willShowMenuViewController:(UIViewController *)menuViewController;
 - (void)frostedViewController:(REFrostedViewController *)frostedViewController didShowMenuViewController:(UIViewController *)menuViewController;

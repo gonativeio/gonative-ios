@@ -93,6 +93,7 @@
 		20C8505019CD143100DB208A /* LEANIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C8504F19CD143100DB208A /* LEANIcons.m */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
+		20F118D3213F4FA700AEC0D7 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F118D2213F4FA700AEC0D7 /* Bolts.framework */; };
 		20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */; };
 		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
@@ -282,6 +283,7 @@
 		20E4720D20B75AE8004E0045 /* ZZFileChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZFileChannel.h; sourceTree = "<group>"; };
 		20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewPool.h; sourceTree = "<group>"; };
 		20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewPool.m; sourceTree = "<group>"; };
+		20F118D2213F4FA700AEC0D7 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANToolbarManager.h; sourceTree = "<group>"; };
 		20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANToolbarManager.m; sourceTree = "<group>"; };
 		20F49C2219C7BE8200B46C5A /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleCast.framework; sourceTree = "<group>"; };
@@ -300,6 +302,7 @@
 				202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */,
 				202BE57F1B9757450064D928 /* libsqlite3.dylib in Frameworks */,
 				205650A41C6ED77400F0B663 /* FBSDKShareKit.framework in Frameworks */,
+				20F118D3213F4FA700AEC0D7 /* Bolts.framework in Frameworks */,
 				202BE57D1B9757390064D928 /* SystemConfiguration.framework in Frameworks */,
 				202BE5791B97572C0064D928 /* Security.framework in Frameworks */,
 				205650A31C6ED77400F0B663 /* FBSDKLoginKit.framework in Frameworks */,
@@ -369,6 +372,7 @@
 		2002B49A18A9991300495B3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				20F118D2213F4FA700AEC0D7 /* Bolts.framework */,
 				2041A8C51E36D75F0010BAC4 /* OneSignal.framework */,
 				2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */,
 				205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */,
@@ -701,7 +705,7 @@
 			attributes = {
 				CLASSPREFIX = LEAN;
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "GoNative.io LLC";
 				TargetAttributes = {
 					2002B49718A9991300495B3D = {
@@ -911,12 +915,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -970,12 +976,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

@@ -20,13 +20,25 @@
 
 #import <FBSDKShareKit/FBSDKSharing.h>
 
-/*!
- @abstract A dialog for sharing content through Messenger.
+/**
+ A dialog for sharing content through Messenger.
+
+ SUPPORTED SHARE TYPES
+ - FBSDKShareLinkContent
+ - FBSDKShareMessengerOpenGraphMusicTemplateContent
+ - FBSDKShareMessengerMediaTemplateContent
+ - FBSDKShareMessengerGenericTemplateContent
+
+ UNSUPPORTED SHARE TYPES (DEPRECATED AUGUST 2018)
+ - FBSDKShareOpenGraphContent
+ - FBSDKSharePhotoContent
+ - FBSDKShareVideoContent
+ - Any other types that are not one of the four supported types listed above
  */
 @interface FBSDKMessageDialog : NSObject <FBSDKSharingDialog>
 
-/*!
- @abstract Convenience method to show a Message Share Dialog with content and a delegate.
+/**
+ Convenience method to show a Message Share Dialog with content and a delegate.
  @param content The content to be shared.
  @param delegate The receiver's delegate.
  */

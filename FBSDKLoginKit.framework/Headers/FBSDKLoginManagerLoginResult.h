@@ -20,35 +20,37 @@
 
 @class FBSDKAccessToken;
 
-/*!
- @abstract Describes the result of a login attempt.
+/**
+  Describes the result of a login attempt.
  */
 @interface FBSDKLoginManagerLoginResult : NSObject
 
-/*!
- @abstract the access token.
+/**
+  the access token.
  */
 @property (copy, nonatomic) FBSDKAccessToken *token;
 
-/*!
- @abstract whether the login was cancelled by the user.
+/**
+  whether the login was cancelled by the user.
  */
 @property (readonly, nonatomic) BOOL isCancelled;
 
-/*!
- @abstract the set of permissions granted by the user in the associated request.
- @discussion inspect the token's permissions set for a complete list.
+/**
+  the set of permissions granted by the user in the associated request.
+
+ inspect the token's permissions set for a complete list.
  */
 @property (copy, nonatomic) NSSet *grantedPermissions;
 
-/*!
- @abstract the set of permissions declined by the user in the associated request.
- @discussion inspect the token's permissions set for a complete list.
+/**
+  the set of permissions declined by the user in the associated request.
+
+ inspect the token's permissions set for a complete list.
  */
 @property (copy, nonatomic) NSSet *declinedPermissions;
 
-/*!
- @abstract Initializes a new instance.
+/**
+  Initializes a new instance.
  @param token the access token
  @param isCancelled whether the login was cancelled by the user
  @param grantedPermissions the set of granted permissions

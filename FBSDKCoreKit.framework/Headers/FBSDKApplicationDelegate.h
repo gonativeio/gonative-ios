@@ -18,28 +18,26 @@
 
 #import <UIKit/UIKit.h>
 
-/*!
- @class FBSDKApplicationDelegate
+/**
 
- @abstract
- The FBSDKApplicationDelegate is designed to post process the results from Facebook Login
+  The FBSDKApplicationDelegate is designed to post process the results from Facebook Login
  or Facebook Dialogs (or any action that requires switching over to the native Facebook
  app or Safari).
 
- @discussion
+
+
  The methods in this class are designed to mirror those in UIApplicationDelegate, and you
  should call them in the respective methods in your AppDelegate implementation.
  */
 @interface FBSDKApplicationDelegate : NSObject
 
-/*!
- @abstract Gets the singleton instance.
+/**
+  Gets the singleton instance.
  */
 + (instancetype)sharedInstance;
 
-/*!
- @abstract
- Call this method from the [UIApplicationDelegate application:openURL:sourceApplication:annotation:] method
+/**
+  Call this method from the [UIApplicationDelegate application:openURL:sourceApplication:annotation:] method
  of the AppDelegate for your app. It should be invoked for the proper processing of responses during interaction
  with the native Facebook app or Safari as part of SSO authorization flow or Facebook dialogs.
 
@@ -58,10 +56,30 @@
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation;
 
-/*!
- @abstract
- Call this method from the [UIApplicationDelegate application:didFinishLaunchingWithOptions:] method
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_9_0
+/**
+  Call this method from the [UIApplicationDelegate application:openURL:options:] method
+ of the AppDelegate for your app. It should be invoked for the proper processing of responses during interaction
+ with the native Facebook app or Safari as part of SSO authorization flow or Facebook dialogs.
+
+ @param application The application as passed to [UIApplicationDelegate application:openURL:options:].
+
+ @param url The URL as passed to [UIApplicationDelegate application:openURL:options:].
+
+ @param options The options dictionary as passed to [UIApplicationDelegate application:openURL:options:].
+
+ @return YES if the url was intended for the Facebook SDK, NO if not.
+ */
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options;
+#endif
+
+/**
+  Call this method from the [UIApplicationDelegate application:didFinishLaunchingWithOptions:] method
  of the AppDelegate for your app. It should be invoked for the proper use of the Facebook SDK.
+ As part of SDK initialization basic auto logging of app events will occur, this can be
+controlled via 'FacebookAutoLogAppEventsEnabled' key in the project info plist file.
 
  @param application The application as passed to [UIApplicationDelegate application:didFinishLaunchingWithOptions:].
 
