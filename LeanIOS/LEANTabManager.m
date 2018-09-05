@@ -12,6 +12,9 @@
 #import "LEANIcons.h"
 #import "LEANUtilities.h"
 
+#define TAB_IMAGE_SIZE_REGULAR 23
+#define TAB_IMAGE_SIZE_COMPACT 17
+
 @interface LEANTabManager() <UITabBarDelegate>
 @property UITabBar *tabBar;
 @property NSArray *menu;
@@ -107,7 +110,11 @@
             if (iconName && [iconName hasPrefix:@"gonative-"]) {
                 iconImage = [UIImage imageNamed:iconName];
             } else {
-                iconImage = [LEANIcons imageForIconIdentifier:iconName size:26];
+                if (self.wvc.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
+                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT];
+                } else {
+                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_REGULAR];
+                }
             }
         }
         
@@ -122,6 +129,34 @@
     [self.tabBar setItems:items animated:NO];
     if (selectedItem) {
         self.tabBar.selectedItem = selectedItem;
+    }
+}
+
+-(void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    if (previousTraitCollection.verticalSizeClass == self.wvc.traitCollection.verticalSizeClass) return;
+    if (!self.menu) return;
+    
+    // we need to resize icons if the vertical size class has changed
+    for (NSUInteger i = 0; i < [self.menu count]; i++) {
+        NSString *iconName = self.menu[i][@"icon"];
+        UIImage *iconImage;
+        if ([iconName isKindOfClass:[NSString class]]) {
+            if (iconName && [iconName hasPrefix:@"gonative-"]) {
+                // no change in image
+                continue;
+            } else {
+                if (self.wvc.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
+                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT];
+                } else {
+                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_REGULAR];
+                }
+                
+                if (self.tabBar.items.count > i) {
+                    self.tabBar.items[i].image = iconImage;
+                }
+            }
+        }
     }
 }
 

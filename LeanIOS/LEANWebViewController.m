@@ -372,6 +372,11 @@
     [super viewWillDisappear:animated];
 }
 
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
+{
+    [self.tabManager traitCollectionDidChange:previousTraitCollection];
+}
+
 - (void) buildDefaultToobar
 {
     NSMutableArray *array = [self.toolbarItems mutableCopy];
@@ -2477,6 +2482,13 @@
     
     [self adjustInsets];
     [self applyStatusBarOverlay];
+    
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        // bar thickness changes when rotating, so resize internal contents
+        [self.tabBar invalidateIntrinsicContentSize];
+        [self.toolbar invalidateIntrinsicContentSize];
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+    }];
 }
 
 - (void)viewWillLayoutSubviews
@@ -2493,10 +2505,6 @@
         self.statusBarBackground.frame = CGRectMake(0, 0, width, height);
     }
     [self adjustInsets];
-    
-    // bar thickness changes when rotating, so resize internal contents
-    [self.tabBar invalidateIntrinsicContentSize];
-    [self.toolbar invalidateIntrinsicContentSize];
 }
 
 -(void)orientationChanged

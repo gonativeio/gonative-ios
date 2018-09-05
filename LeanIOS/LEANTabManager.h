@@ -17,4 +17,5 @@
 - (void)selectTabNumber:(NSUInteger)number;
 - (void)deselectTabs;
 - (void)setTabsWithJson:(NSString*)json;
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection;
 @end
