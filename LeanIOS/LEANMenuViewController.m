@@ -223,7 +223,7 @@
         UIView* separatorLineView = [[UIView alloc] initWithFrame:CGRectMake(15, 0, 240, 1)];
         separatorLineView.backgroundColor = [UIColor colorWithHue:0 saturation:0 brightness:.7 alpha:.5];
         separatorLineView.tag = 99;
-        [cell.contentView addSubview:separatorLineView];
+        [cell addSubview:separatorLineView];
     }
     
     label = (UILabel*)[cell.contentView viewWithTag:1];
@@ -287,9 +287,9 @@
     
     // hide separator line from first cell
     if (indexPath.section == 0 && indexPath.row == 0) {
-        [cell.contentView viewWithTag:99].hidden = YES;
+        [cell viewWithTag:99].hidden = YES;
     } else {
-        [cell.contentView viewWithTag:99].hidden = NO;
+        [cell viewWithTag:99].hidden = NO;
     }
     
     return cell;
