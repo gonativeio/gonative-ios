@@ -959,7 +959,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
 		};
@@ -1014,7 +1013,6 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Release;
 		};
@@ -1052,7 +1050,6 @@
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1090,7 +1087,6 @@
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

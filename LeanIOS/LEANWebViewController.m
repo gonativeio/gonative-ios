@@ -2515,6 +2515,8 @@
 
 -(void)viewDidLayoutSubviews
 {
+    [super viewDidLayoutSubviews];
+    
     // Heights of tab and tool bars will change after rotation, as bars are thinner on landscape.
     // If the bar is hidden, then the bottom constraint is based on the thickness of the bar.
     // The constraint will need to be updated to keep everything in the right place.
@@ -2524,6 +2526,10 @@
     if (self.toolbar.hidden) {
         [self hideBottomBar:self.toolbar constraint:self.toolbarBottomConstraint animated:NO];
     }
+    
+    // fixes issue on iPhone XS Max and iPhone XR where instrinsic content height = 49
+    [self.tabBar invalidateIntrinsicContentSize];
+    [self.toolbar invalidateIntrinsicContentSize];
 }
 
 @end
