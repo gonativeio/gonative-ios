@@ -133,6 +133,10 @@ typedef enum : NSUInteger {
 @property NSString *xtremepushAppKey;
 @property BOOL xtremepushAutoRegister;
 
+// CleverPush
+@property BOOL cleverPushEnabled;
+@property NSString *cleverPushChannelId;
+
 // Facebook SDK
 @property BOOL facebookEnabled;
 @property NSString *facebookAppId;
