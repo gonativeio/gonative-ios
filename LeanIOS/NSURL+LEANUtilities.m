@@ -33,4 +33,23 @@
     return [host1 isEqualToString:host2] && [path1 isEqualToString:path2];
 }
 
+- (BOOL)matchesIgnoreAnchor:(NSURL*)url2
+{
+    // consider it a match if both fields are null
+    if (self.scheme || url2.scheme) {
+        if (![self.scheme isEqualToString:url2.scheme]) return NO;
+    }
+    if (self.host || url2.host) {
+        if (![self.host isEqualToString:url2.host]) return NO;
+    }
+    if (self.path || url2.path) {
+        if (![self.path isEqualToString:url2.path]) return NO;
+    }
+    if (self.query || url2.query) {
+        if (![self.query isEqualToString:url2.query]) return NO;
+    }
+    
+    return YES;
+}
+
 @end

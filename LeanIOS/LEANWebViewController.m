@@ -1706,16 +1706,12 @@
     
     // Do not hide the webview if url.fragment exists and the url is the same.
     // here sometimes is an issue with single-page apps where shouldLoadRequest
-    // is called for SPA page loads if there is a fragment. We will never get an sort of page finished callback, so the page
+    // is called for SPA page loads if there is a fragment (anchor). We will never get an sort of page finished callback, so the page
     // is always hidden.
     BOOL hide = hideWebview;
     if (hide && url.fragment) {
         NSURL *currentUrl = self.currentRequest.URL;
-        if (currentUrl &&
-            [url.host isEqualToString:currentUrl.host] &&
-            [url.scheme isEqualToString:currentUrl.scheme] &&
-            [url.path isEqualToString:currentUrl.path] &&
-            [url.query isEqualToString:currentUrl.query]) {
+        if (currentUrl && [currentUrl matchesIgnoreAnchor:url]) {
             hide = NO;
         }
     }

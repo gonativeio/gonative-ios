@@ -11,5 +11,5 @@
 @interface NSURL (LEANUtilities)
 
 - (BOOL)matchesPathOf:(NSURL*)url2;
-
+- (BOOL)matchesIgnoreAnchor:(NSURL*)url2;
 @end
