@@ -136,6 +136,7 @@ typedef enum : NSUInteger {
 // CleverPush
 @property BOOL cleverPushEnabled;
 @property NSString *cleverPushChannelId;
+@property BOOL cleverPushAutoRegister;
 
 // Facebook SDK
 @property BOOL facebookEnabled;
