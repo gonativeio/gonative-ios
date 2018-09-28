@@ -44,7 +44,7 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSString *message = @"Invalid appConfig json";
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-ok", @"Button: OK") style:UIAlertActionStyleCancel handler:nil]];
             LEANRootViewController *rvc = (LEANRootViewController*) self.window.rootViewController;
             [rvc presentAlert:alert];
         });
@@ -89,9 +89,9 @@
                 // Show an alert, and include a "view" button if there is a url and the webview is currently the top view.
                 
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-ok", @"Button: OK") style:UIAlertActionStyleCancel handler:nil]];
                 if (url && webviewOnTop) {
-                    [alert addAction:[UIAlertAction actionWithTitle:@"View" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-view", @"Button: View") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                         [rvc loadUrl:url];
                     }]];
                 }

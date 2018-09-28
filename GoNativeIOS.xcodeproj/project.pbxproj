@@ -61,6 +61,7 @@
 		205650A31C6ED77400F0B663 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */; };
 		205650A41C6ED77400F0B663 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */; };
 		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
+		20689025215E9FD900419CB2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 20689023215E9FD900419CB2 /* Localizable.strings */; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		208184611F9AA00900D55384 /* GNSubscriptionsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 208184601F9AA00900D55384 /* GNSubscriptionsModel.m */; };
 		2081A28A1F33ECE900057E3F /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 2081A2891F33ECE900057E3F /* NotificationService.m */; };
@@ -213,6 +214,8 @@
 		205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		20689024215E9FD900419CB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		20689026215EA28D00419CB2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
 		2081845F1F9AA00900D55384 /* GNSubscriptionsModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNSubscriptionsModel.h; sourceTree = "<group>"; };
 		208184601F9AA00900D55384 /* GNSubscriptionsModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNSubscriptionsModel.m; sourceTree = "<group>"; };
@@ -412,6 +415,7 @@
 				204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */,
 				2004820418B080DD005FDD9A /* HeaderView.xib */,
 				2002B4B618A9991300495B3D /* Images.xcassets */,
+				20689023215E9FD900419CB2 /* Localizable.strings */,
 				20A525ED1A7D94EE00936DC5 /* Settings.bundle */,
 				2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */,
 				200F75CF1BCDA6B800C08BB5 /* notification.aff */,
@@ -739,6 +743,7 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = 2002B48F18A9991300495B3D;
 			productRefGroup = 2002B49918A9991300495B3D /* Products */;
@@ -773,6 +778,7 @@
 				200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */,
 				20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */,
 				2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */,
+				20689025215E9FD900419CB2 /* Localizable.strings in Resources */,
 				20A13AB21905CB6C00B997DD /* FontAwesome.ttf in Resources */,
 				20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */,
 			);
@@ -899,6 +905,15 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
+		20689023215E9FD900419CB2 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				20689024215E9FD900419CB2 /* en */,
+				20689026215EA28D00419CB2 /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -907,6 +922,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUILD_SETTINGS_APP_NAME = GoNative;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -967,6 +983,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUILD_SETTINGS_APP_NAME = GoNative;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;

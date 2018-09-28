@@ -608,7 +608,7 @@
 - (void) searchPressed:(id)sender
 {
     self.navigationItem.titleView = self.searchBar;
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self action:@selector(searchCanceled)];
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"button-cancel", @"Button: Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(searchCanceled)];
     
     [self.navigationItem setLeftBarButtonItems:nil animated:YES];
     [self.navigationItem setRightBarButtonItems:@[cancelButton] animated:YES];
@@ -2123,11 +2123,11 @@
         [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
             textField.text = defaultText;
         }];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-ok", @"Button: OK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             NSString *input = ((UITextField *)alertController.textFields.firstObject).text;
             completionHandler(input);
         }]];
-        [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-cancel", @"Button: Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
             completionHandler(nil);
         }]];
         [[self getTopPresentedViewController] presentViewController:alertController animated:YES completion:^{}];
@@ -2136,7 +2136,7 @@
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"button-ok", @"Button: OK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         completionHandler();
     }];
     [alert addAction:okAction];
@@ -2150,10 +2150,10 @@
 - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler
 {
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"button-ok", @"Button: OK") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         completionHandler(YES);
     }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"button-cancel", @"Button: Cancel") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         completionHandler(NO);
     }];
     [alert addAction:okAction];
