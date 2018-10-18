@@ -290,6 +290,10 @@
 {
     self.keyboardVisible = NO;
     [self adjustInsets];
+    
+    // work around a bug starting in iOS 12 where the scroll doesn't readjust when the keyboard is hidden
+    [self.wkWebview.scrollView setContentInset:UIEdgeInsetsMake(0.0001, 0, 0, 0)];
+    [self.wkWebview.scrollView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
 }
 
 - (void)retryFailedPage
