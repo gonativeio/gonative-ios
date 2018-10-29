@@ -14,12 +14,6 @@
 
 #pragma mark Registration Data
 
-typedef NS_OPTIONS(NSUInteger, RegistrationData) {
-    RegistrationDataInstallation = 1 << 0,
-    RegistrationDataOneSignal = 1 << 1,
-    RegistrationDataCustom = 1 << 2
-};
-
 @interface GNRegistrationInfo : NSObject
 @property NSString *oneSignalUserId;
 @property NSString *oneSignalPushToken;
@@ -35,21 +29,19 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 @property NSURL *postUrl;
 @property NSString *postUrlString;
 @property NSArray *urlRegexes;
-@property RegistrationData dataTypes;
 // WKWebView cookies are not shared with native url request functions, so if we are using
 // WK, use a hidden webview to do POSTs.
 @property WKWebView *wkWebView;
 @end
 
 @implementation GNRegistrationEndpoint
--(instancetype)initWithUrl:(NSURL*)postUrl urlRegexes:(NSArray*)urlRegexes dataTypes:(RegistrationData)dataTypes
+-(instancetype)initWithUrl:(NSURL*)postUrl urlRegexes:(NSArray*)urlRegexes
 {
     self = [super init];
     if (self) {
         self.postUrl = postUrl;
         self.postUrlString = [self.postUrl absoluteString];
         self.urlRegexes = urlRegexes;
-        self.dataTypes = dataTypes;
         
         if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
             WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
@@ -66,11 +58,9 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 -(void)sendRegistrationInfo:(GNRegistrationInfo*)info {
     NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
     
-    if (self.dataTypes & RegistrationDataInstallation) {
-        [toSend addEntriesFromDictionary:[LEANInstallation info]];
-    }
+    [toSend addEntriesFromDictionary:[LEANInstallation info]];
     
-    if (self.dataTypes & RegistrationDataOneSignal && info.oneSignalUserId) {
+    if (info.oneSignalUserId) {
         toSend[@"oneSignalUserId"] = info.oneSignalUserId;
         if (info.oneSignalPushToken) {
             toSend[@"oneSignalPushToken"] = info.oneSignalPushToken;
@@ -79,7 +69,7 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
         toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
     }
     
-    if (self.dataTypes & RegistrationDataCustom && info.customData) {
+    if (info.customData) {
         for (NSString *key in info.customData) {
             toSend[[NSString stringWithFormat:@"customData_%@", key]] = info.customData[key];
         }
@@ -131,7 +121,6 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
 
 @interface GNRegistrationManager()
 @property NSMutableArray<GNRegistrationEndpoint*> *registrationEndpoints;
-@property RegistrationData allDataTypes;
 
 @property GNRegistrationInfo *registrationInfo;
 @property NSURL *lastUrl;
@@ -162,22 +151,10 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     return self;
 }
 
--(RegistrationData)registrationDataTypeFromString:(NSString*)string
-{
-    if ([string caseInsensitiveCompare:@"installation"] == NSOrderedSame) {
-        return RegistrationDataInstallation | RegistrationDataCustom;
-    }
-    else if ([string caseInsensitiveCompare:@"onesignal"] == NSOrderedSame) {
-        return RegistrationDataOneSignal | RegistrationDataInstallation | RegistrationDataCustom;
-    }
-    
-    return 0;
-}
 
 -(void)processConfig:(NSArray*)endpoints
 {
     [self.registrationEndpoints removeAllObjects];
-    self.allDataTypes = 0;
     
     for (NSDictionary *endpoint in endpoints) {
         if (![endpoint isKindOfClass:[NSDictionary class]]) {
@@ -191,37 +168,17 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
             continue;
         }
         
-        RegistrationData dataTypes = 0;
-        if ([endpoint[@"dataType"] isKindOfClass:[NSString class]]) {
-            dataTypes = [self registrationDataTypeFromString:endpoint[@"dataType"]];
-        } else if ([endpoint[@"dataType"] isKindOfClass:[NSArray class]]) {
-            NSArray *dataTypesArray = endpoint[@"dataType"];
-            for (NSString *entry in dataTypesArray) {
-                if (![entry isKindOfClass:[NSString class]]) continue;
-                dataTypes |= [self registrationDataTypeFromString:entry];
-            }
-        }
-        
-        if (!dataTypes) {
-            NSLog(@"No data types specified for registration endpoint %@", urlString);
-            continue;
-        }
-        
         NSArray *urlRegexes = [LEANUtilities createRegexArrayFromStrings:endpoint[@"urlRegex"]];
         
-        GNRegistrationEndpoint *registrationEndpoint = [[GNRegistrationEndpoint alloc] initWithUrl:url urlRegexes:urlRegexes dataTypes:dataTypes];
+        GNRegistrationEndpoint *registrationEndpoint = [[GNRegistrationEndpoint alloc] initWithUrl:url urlRegexes:urlRegexes];
         [self.registrationEndpoints addObject:registrationEndpoint];
-        self.allDataTypes |= dataTypes;
     }
 }
 
--(void)registrationDataChanged:(RegistrationData)type
+-(void)registrationDataChanged
 {
-    if (!(self.allDataTypes & type)) return;
     
     for (GNRegistrationEndpoint *endpoint in self.registrationEndpoints) {
-        if (!(endpoint.dataTypes & type)) continue;
-        
         if (self.lastUrl && [LEANUtilities string:[self.lastUrl absoluteString] matchesAnyRegex:endpoint.urlRegexes]) {
             [endpoint sendRegistrationInfo:self.registrationInfo];
         }
@@ -240,13 +197,13 @@ typedef NS_OPTIONS(NSUInteger, RegistrationData) {
     self.registrationInfo.oneSignalUserId = userId;
     self.registrationInfo.oneSignalPushToken = pushToken;
     self.registrationInfo.oneSignalSubscribed = YES;
-    [self registrationDataChanged:RegistrationDataOneSignal];
+    [self registrationDataChanged];
 }
 
 -(void)setCustomData:(NSDictionary *)data
 {
     self.registrationInfo.customData = data;
-    [self registrationDataChanged:RegistrationDataCustom];
+    [self registrationDataChanged];
 }
 
 -(void)checkUrl:(NSURL *)url
