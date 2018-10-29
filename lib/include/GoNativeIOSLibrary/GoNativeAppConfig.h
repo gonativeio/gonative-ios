@@ -138,6 +138,10 @@ typedef enum : NSUInteger {
 @property NSString *cleverPushChannelId;
 @property BOOL cleverPushAutoRegister;
 
+// IBM Push
+@property BOOL ibmpushEnabled;
+@property NSDictionary *ibmpushConfig;
+
 // Facebook SDK
 @property BOOL facebookEnabled;
 @property NSString *facebookAppId;
