@@ -56,6 +56,14 @@
 }
 
 -(void)sendRegistrationInfo:(GNRegistrationInfo*)info {
+    // [LEANInstallation info] requires main thread
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self sendRegistrationInfo:info];
+        });
+        return;
+    }
+
     NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
     
     [toSend addEntriesFromDictionary:[LEANInstallation info]];
