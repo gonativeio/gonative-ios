@@ -6,3 +6,6 @@
 
 /* Button: View */
 "button-view" = "Afficher";
+
+/* Button: Menu */
+"button-menu" = "Menu";

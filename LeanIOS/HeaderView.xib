@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -33,6 +33,9 @@
                 </button>
                 <button opaque="NO" userInteractionEnabled="NO" alpha="0.80000000000000004" tag="1" contentMode="scaleToFill" semanticContentAttribute="forceLeftToRight" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zu8-K3-HJE">
                     <rect key="frame" x="95" y="40" width="80" height="80"/>
+                    <accessibility key="accessibilityConfiguration">
+                        <bool key="isElement" value="NO"/>
+                    </accessibility>
                     <constraints>
                         <constraint firstAttribute="width" constant="80" id="gwK-ut-eGb"/>
                         <constraint firstAttribute="height" constant="80" id="mOx-8R-x54"/>
@@ -56,7 +59,7 @@
                 <constraint firstAttribute="trailing" secondItem="YPm-sd-bGW" secondAttribute="trailing" constant="8" id="zmt-S3-cmc"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="286" y="269.5"/>
+            <point key="canvasLocation" x="457.60000000000002" y="242.42878560719643"/>
         </view>
     </objects>
     <resources>

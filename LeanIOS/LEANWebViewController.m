@@ -137,7 +137,9 @@
     // add nav button
     if (appConfig.showNavigationMenu &&  [self isRootWebView]) {
         self.navButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navImage"] style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
+        self.navButton.accessibilityLabel = NSLocalizedString(@"button-menu", @"Button: Menu");
         self.navigationItem.leftBarButtonItems = @[self.navButton];
+        
     }
     self.defaultLeftNavBarItems = self.navigationItem.leftBarButtonItems;
     
@@ -406,7 +408,9 @@
     [navController setSidebarEnabled:enabled];
     
     if (enabled) {
-        self.navButton.customView = nil;
+        if (self.navButton.customView) {
+            self.navButton.customView = nil;
+        }
     } else {
         self.navButton.customView = [[UIView alloc] init];
         [navController.frostedViewController hideMenuViewController];
