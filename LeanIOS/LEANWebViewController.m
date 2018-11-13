@@ -162,6 +162,7 @@
         if (appConfig.useWKWebView) {
             WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
             config.processPool = [LEANUtilities wkProcessPool];
+            config.allowsInlineMediaPlayback = YES;
             WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:config];
             [LEANUtilities configureWebView:wv];
             [self switchToWebView:wv showImmediately:NO];
