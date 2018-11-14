@@ -63,6 +63,9 @@
 		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
 		20689025215E9FD900419CB2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 20689023215E9FD900419CB2 /* Localizable.strings */; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
+		2075775621957C1600ADD73A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2075775521957C1600ADD73A /* LaunchScreen.storyboard */; };
+		207577582195BE3500ADD73A /* LaunchScreenNoNav.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 207577572195BE3500ADD73A /* LaunchScreenNoNav.storyboard */; };
+		2075775A2195D80300ADD73A /* LaunchScreenNav.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 207577592195D80300ADD73A /* LaunchScreenNav.storyboard */; };
 		208184611F9AA00900D55384 /* GNSubscriptionsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 208184601F9AA00900D55384 /* GNSubscriptionsModel.m */; };
 		2081A28A1F33ECE900057E3F /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 2081A2891F33ECE900057E3F /* NotificationService.m */; };
 		2081A28E1F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -217,6 +220,9 @@
 		20689024215E9FD900419CB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		20689026215EA28D00419CB2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
+		2075775521957C1600ADD73A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		207577572195BE3500ADD73A /* LaunchScreenNoNav.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreenNoNav.storyboard; sourceTree = "<group>"; };
+		207577592195D80300ADD73A /* LaunchScreenNav.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreenNav.storyboard; sourceTree = "<group>"; };
 		2081845F1F9AA00900D55384 /* GNSubscriptionsModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNSubscriptionsModel.h; sourceTree = "<group>"; };
 		208184601F9AA00900D55384 /* GNSubscriptionsModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNSubscriptionsModel.m; sourceTree = "<group>"; };
 		2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -413,6 +419,9 @@
 				2002BA911F9A758500439AD6 /* Subscriptions */,
 				204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */,
 				204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */,
+				2075775521957C1600ADD73A /* LaunchScreen.storyboard */,
+				207577572195BE3500ADD73A /* LaunchScreenNoNav.storyboard */,
+				207577592195D80300ADD73A /* LaunchScreenNav.storyboard */,
 				2004820418B080DD005FDD9A /* HeaderView.xib */,
 				2002B4B618A9991300495B3D /* Images.xcassets */,
 				20689023215E9FD900419CB2 /* Localizable.strings */,
@@ -769,12 +778,15 @@
 				20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */,
 				2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */,
 				2002B4B718A9991300495B3D /* Images.xcassets in Resources */,
+				207577582195BE3500ADD73A /* LaunchScreenNoNav.storyboard in Resources */,
 				20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */,
+				2075775A2195D80300ADD73A /* LaunchScreenNav.storyboard in Resources */,
 				209B321D193FB11A0052A7C6 /* localCache.zip in Resources */,
 				2002BA971F9A758600439AD6 /* Subscriptions.storyboard in Resources */,
 				208A9F42191AEBAD0049E664 /* appConfig.json in Resources */,
 				2002B4AF18A9991300495B3D /* Main.storyboard in Resources */,
 				2004820518B080DD005FDD9A /* HeaderView.xib in Resources */,
+				2075775621957C1600ADD73A /* LaunchScreen.storyboard in Resources */,
 				200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */,
 				20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */,
 				2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */,
@@ -1037,7 +1049,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1075,7 +1086,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
