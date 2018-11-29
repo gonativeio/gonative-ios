@@ -35,7 +35,7 @@
 		2002BA971F9A758600439AD6 /* Subscriptions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2002BA921F9A758600439AD6 /* Subscriptions.storyboard */; };
 		2002BA981F9A758600439AD6 /* GNSubscriptionsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002BA931F9A758600439AD6 /* GNSubscriptionsController.m */; };
 		2002BA991F9A758600439AD6 /* GNSubscriptionsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002BA961F9A758600439AD6 /* GNSubscriptionsTableViewController.m */; };
-		2004820518B080DD005FDD9A /* HeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2004820418B080DD005FDD9A /* HeaderView.xib */; };
+		2004820518B080DD005FDD9A /* SidebarHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2004820418B080DD005FDD9A /* SidebarHeaderView.xib */; };
 		2004AF7B18F8F936001E01E9 /* LEANWebViewIntercept.m in Sources */ = {isa = PBXBuildFile; fileRef = 2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */; };
 		200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */ = {isa = PBXBuildFile; fileRef = 200F75CF1BCDA6B800C08BB5 /* notification.aff */; };
 		2018EE951907671A00EC4311 /* LEANUrlInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE941907671A00EC4311 /* LEANUrlInspector.m */; };
@@ -181,7 +181,7 @@
 		2002BA941F9A758600439AD6 /* GNSubscriptionsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNSubscriptionsTableViewController.h; sourceTree = "<group>"; };
 		2002BA951F9A758600439AD6 /* GNSubscriptionsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNSubscriptionsController.h; sourceTree = "<group>"; };
 		2002BA961F9A758600439AD6 /* GNSubscriptionsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GNSubscriptionsTableViewController.m; sourceTree = "<group>"; };
-		2004820418B080DD005FDD9A /* HeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HeaderView.xib; sourceTree = "<group>"; };
+		2004820418B080DD005FDD9A /* SidebarHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SidebarHeaderView.xib; sourceTree = "<group>"; };
 		2004AF7918F8F936001E01E9 /* LEANWebViewIntercept.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewIntercept.h; sourceTree = "<group>"; };
 		2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewIntercept.m; sourceTree = "<group>"; };
 		200F75CF1BCDA6B800C08BB5 /* notification.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = notification.aff; sourceTree = "<group>"; };
@@ -422,7 +422,7 @@
 				2075775521957C1600ADD73A /* LaunchScreen.storyboard */,
 				207577572195BE3500ADD73A /* LaunchScreenNoNav.storyboard */,
 				207577592195D80300ADD73A /* LaunchScreenNav.storyboard */,
-				2004820418B080DD005FDD9A /* HeaderView.xib */,
+				2004820418B080DD005FDD9A /* SidebarHeaderView.xib */,
 				2002B4B618A9991300495B3D /* Images.xcassets */,
 				20689023215E9FD900419CB2 /* Localizable.strings */,
 				20A525ED1A7D94EE00936DC5 /* Settings.bundle */,
@@ -785,7 +785,7 @@
 				2002BA971F9A758600439AD6 /* Subscriptions.storyboard in Resources */,
 				208A9F42191AEBAD0049E664 /* appConfig.json in Resources */,
 				2002B4AF18A9991300495B3D /* Main.storyboard in Resources */,
-				2004820518B080DD005FDD9A /* HeaderView.xib in Resources */,
+				2004820518B080DD005FDD9A /* SidebarHeaderView.xib in Resources */,
 				2075775621957C1600ADD73A /* LaunchScreen.storyboard in Resources */,
 				200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */,
 				20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */,

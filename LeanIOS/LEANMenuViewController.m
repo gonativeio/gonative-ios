@@ -55,7 +55,7 @@
     self.tableView.sectionHeaderHeight = 0;
     self.tableView.sectionFooterHeight = 0;
     
-    NSArray *arr = [[NSBundle mainBundle] loadNibNamed:@"HeaderView" owner:nil options:nil];
+    NSArray *arr = [[NSBundle mainBundle] loadNibNamed:@"SidebarHeaderView" owner:nil options:nil];
 
     UIView *headerView = arr[0];
     self.headerView = headerView;
