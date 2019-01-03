@@ -116,4 +116,9 @@
     [topController presentViewController:alert animated:YES completion:nil];
 }
 
+- (BOOL) prefersHomeIndicatorAutoHidden
+{
+    return [GoNativeAppConfig sharedAppConfig].iosAutoHideHomeIndicator;
+}
+
 @end

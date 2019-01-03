@@ -101,6 +101,7 @@ typedef enum : NSUInteger {
 @property BOOL showRefreshButton;
 @property NSNumber *hideWebviewAlpha;
 @property BOOL disableAnimations;
+@property BOOL iosAutoHideHomeIndicator;
 
 
 // forms
