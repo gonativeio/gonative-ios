@@ -129,6 +129,9 @@
     
     // Facebook SDK
     if (appConfig.facebookEnabled) {
+        [FBSDKSettings setAppID:appConfig.facebookAppId];
+        [FBSDKSettings setDisplayName:appConfig.facebookDisplayName];
+        
         [[FBSDKApplicationDelegate sharedInstance] application:application
                                  didFinishLaunchingWithOptions:launchOptions];
         if (launchOptions[UIApplicationLaunchOptionsURLKey] == nil) {

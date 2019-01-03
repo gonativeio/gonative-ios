@@ -10,6 +10,7 @@
 #import <MessageUI/MessageUI.h>
 #import <CoreLocation/CoreLocation.h>
 
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <OneSignal/OneSignal.h>
 
 #import "LEANWebViewController.h"
@@ -1170,6 +1171,56 @@
                 }
             } else {
                 [[GNRegistrationManager sharedManager] sendToAllEndpoints];
+            }
+            
+            return NO;
+        }
+        
+        // Facebook events
+        if ([@"facebook" isEqualToString:url.host]) {
+            if (!appConfig.facebookEnabled) {
+                return NO;
+            }
+            
+            BOOL isPurchase = [@"/events/sendPurchase" isEqualToString:url.path];
+            if (isPurchase || [@"/events/send" isEqualToString:url.path]) {
+                NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+                NSString *dataString = nil;
+                for (NSURLQueryItem *queryItem in components.queryItems) {
+                    if ([queryItem.name isEqualToString:@"data"]) {
+                        dataString = queryItem.value;
+                        break;
+                    }
+                }
+                if (!dataString) return NO;
+                
+                NSError *error = nil;
+                NSDictionary *data = [NSJSONSerialization JSONObjectWithData:[dataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+                if (![data isKindOfClass:[NSDictionary class]] || error) {
+                    NSLog(@"Error parsing gonative://facebook/events/send 'data' query parameter: %@", error);
+                    return NO;
+                }
+                
+                NSDictionary *parameters = data[@"parameters"];
+                if (![parameters isKindOfClass:[NSDictionary class]]) parameters = nil;
+                
+                if (!isPurchase) {
+                    NSString *eventName = data[@"event"];
+                    if (![eventName isKindOfClass:[NSString class]]) return NO;
+                    NSNumber *valueToSum = data[@"valueToSum"];
+                    if (![valueToSum isKindOfClass:[NSNumber class]]) valueToSum = nil;
+                    
+                    [FBSDKAppEvents logEvent:eventName valueToSum:valueToSum parameters:parameters accessToken:nil];
+                } else {
+                    NSNumber *purchaseAmount = data[@"purchaseAmount"];
+                    if (!purchaseAmount) return NO;
+                    NSString *currency = data[@"currency"];
+                    if (![currency isKindOfClass:[NSString class]]) return NO;
+                    
+                    [FBSDKAppEvents logPurchase:purchaseAmount.doubleValue currency:currency parameters:parameters];
+                }
+                
+                return NO;
             }
             
             return NO;
