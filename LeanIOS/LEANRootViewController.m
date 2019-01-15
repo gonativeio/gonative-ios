@@ -63,6 +63,15 @@
     [self.menuViewController view];
 }
 
+-(void)viewDidLoad
+{
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    if ([appConfig.iosTheme isEqualToString:@"dark"]) {
+        self.view.backgroundColor = [UIColor blackColor];
+    }
+    [super viewDidLoad];
+}
+
 - (void)loadUrl:(NSURL *)url
 {
     UINavigationController *nav = (UINavigationController*)self.contentViewController;

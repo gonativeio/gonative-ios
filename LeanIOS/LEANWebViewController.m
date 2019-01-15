@@ -51,6 +51,7 @@
 @property IBOutlet UIToolbar *toolbar;
 @property IBOutlet NSLayoutConstraint *tabBarBottomConstraint;
 @property IBOutlet NSLayoutConstraint *toolbarBottomConstraint;
+@property IBOutlet UIView *webviewContainer;
 @property NSArray *defaultLeftNavBarItems;
 @property NSArray *defaultToolbarItems;
 @property UIBarButtonItem *customActionButton;
@@ -119,10 +120,12 @@
     // dark theme
     if ([appConfig.iosTheme isEqualToString:@"dark"]) {
         self.view.backgroundColor = [UIColor blackColor];
+        self.webviewContainer.backgroundColor = [UIColor blackColor];
         self.tabBar.barStyle = UIBarStyleBlack;
         self.toolbar.barStyle = UIBarStyleBlack;
     } else {
         self.view.backgroundColor = [UIColor whiteColor];
+        self.webviewContainer.backgroundColor = [UIColor whiteColor];
         self.tabBar.barStyle = UIBarStyleDefault;
         self.toolbar.barStyle = UIBarStyleDefault;
     }
@@ -233,6 +236,9 @@
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
+    
+    // we will always be loading a page at launch, hide webview here to fix a white flash for dark themed apps
+    [self hideWebview];
 }
 
 -(void)dealloc
@@ -1835,15 +1841,14 @@
     if (oldView != newView) {
         newView.frame = oldView.frame;
         
-        UIView *webviewContainer = [oldView superview];
-        [webviewContainer insertSubview:newView aboveSubview:oldView];
+        [self.webviewContainer insertSubview:newView aboveSubview:oldView];
         [oldView removeFromSuperview];
         
         // add layout constriants to constainer view
-        [webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:webviewContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
-        [webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:webviewContainer attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
-        [webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:webviewContainer attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
-        [webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:webviewContainer attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
+        [self.webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.webviewContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
+        [self.webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.webviewContainer attribute:NSLayoutAttributeBottom multiplier:1 constant:0]];
+        [self.webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.webviewContainer attribute:NSLayoutAttributeLeft multiplier:1 constant:0]];
+        [self.webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self.webviewContainer attribute:NSLayoutAttributeRight multiplier:1 constant:0]];
 
     }
     [self adjustInsets];

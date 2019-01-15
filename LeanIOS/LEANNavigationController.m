@@ -25,6 +25,7 @@
     // theme
     if ([appConfig.iosTheme isEqualToString:@"dark"]) {
         self.navigationBar.barStyle = UIBarStyleBlack;
+        self.view.backgroundColor = [UIColor blackColor];
     } else {
         self.navigationBar.barStyle = UIBarStyleDefault;
     }

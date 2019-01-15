@@ -160,6 +160,7 @@
                         <outlet property="toolbarBottomConstraint" destination="LtD-ts-ptw" id="1Bx-Yf-GMZ"/>
                         <outlet property="topGuideConstraint" destination="NbD-9P-xqX" id="Q9a-bG-f82"/>
                         <outlet property="webview" destination="21Z-2V-MUj" id="EXY-SC-jQg"/>
+                        <outlet property="webviewContainer" destination="GBp-Vo-WtS" id="yGP-OL-uv7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
