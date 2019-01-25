@@ -44,10 +44,16 @@
         distribution = @"appstore";
     }
     
-    NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
+    NSBundle *mainBundle = [NSBundle mainBundle];
+    NSDictionary *bundleInfo = mainBundle.infoDictionary;
+    
+    NSString *bundleId = mainBundle.bundleIdentifier;
     if (!bundleId) bundleId = @"";
     
-    NSString *appVersion = [[NSBundle mainBundle] infoDictionary][(NSString*)kCFBundleVersionKey];
+    NSString *appBuild = bundleInfo[(NSString*)kCFBundleVersionKey];
+    if (!appBuild) appBuild = @"";
+    
+    NSString *appVersion = bundleInfo[@"CFBundleShortVersionString"];
     if (!appVersion) appVersion = @"";
     
     NSString *language = [[NSLocale preferredLanguages] firstObject];
@@ -58,6 +64,7 @@
                            @"publicKey": publicKey,
                            @"appId": bundleId,
                            @"appVersion": appVersion,
+                           @"appBuild": appBuild,
                            @"distribution": distribution,
                            @"language": language,
                            @"os": device.systemName,
