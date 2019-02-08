@@ -224,6 +224,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedTabNavigation object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedNavigationTitles object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kLEANAppConfigNotificationProcessedNavigationLevels object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kReachabilityChangedNotification object:nil];
     
@@ -282,7 +283,18 @@
             NSString *newTitle = [LEANWebViewController titleForUrl:url];
             if (newTitle) {
                 self.navigationItem.title = newTitle;
+            } else {
+                self.navigationItem.title = [GoNativeAppConfig sharedAppConfig].appName;
             }
+        }
+    }
+    else if ([name isEqualToString:kLEANAppConfigNotificationProcessedNavigationLevels]) {
+        NSURL *url = nil;
+        if (self.webview) url = self.webview.request.URL;
+        else if (self.wkWebview) url = self.wkWebview.URL;
+        
+        if (url) {
+            self.urlLevel = [LEANWebViewController urlLevelForUrl:url];
         }
     }
 }
@@ -873,53 +885,17 @@
 + (NSString*) titleForUrl:(NSURL*)url
 {
     NSArray *entries = [GoNativeAppConfig sharedAppConfig].navTitles;
-    NSString *title;
+    if (!entries) return nil;
     
-    if (entries) {
-        NSString *urlString = [url absoluteString];
-        for (NSDictionary *entry in entries) {
-            NSPredicate *predicate = entry[@"predicate"];
-            if ([predicate evaluateWithObject:urlString]) {
-                if (entry[@"title"]) {
-                    title = entry[@"title"];
-                }
-                
-                if (!title && entry[@"urlRegex"]) {
-                    NSRegularExpression *regex = entry[@"urlRegex"];
-                    NSTextCheckingResult *match = [regex firstMatchInString:urlString options:0 range:NSMakeRange(0, [urlString length])];
-                    if ([match range].location != NSNotFound) {
-                        NSString *temp = [urlString substringWithRange:[match rangeAtIndex:1]];
-                        
-                        // dashes to spaces, capitalize
-                        temp = [temp stringByReplacingOccurrencesOfString:@"-" withString:@" "];
-                        title = [LEANUtilities capitalizeWords:temp];
-                    }
-                    
-                    // remove words from end of title
-                    if (title && [entry[@"urlChompWords"] intValue] > 0) {
-                        __block NSInteger numWords = 0;
-                        __block NSRange lastWordRange = NSMakeRange(0, [title length]);
-                        [title enumerateSubstringsInRange:NSMakeRange(0, [title length]) options:NSStringEnumerationByWords | NSStringEnumerationReverse usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-                            
-                            numWords++;
-                            if (numWords >= [entry[@"urlChompWords"] intValue]) {
-                                lastWordRange = substringRange;
-                                *stop = YES;
-                            }
-                        }];
-                        
-                        title = [title substringToIndex:lastWordRange.location];
-                        title = [title stringByTrimmingCharactersInSet:
-                                 [NSCharacterSet whitespaceCharacterSet]];
-                    }
-                }
-                
-                break;
-            }
+    NSString *urlString = [url absoluteString];
+    for (NSDictionary *entry in entries) {
+        NSPredicate *predicate = entry[@"predicate"];
+        if ([predicate evaluateWithObject:urlString]) {
+            return entry[@"title"];
         }
     }
     
-    return title;
+    return nil;
 }
 
 #pragma mark - Search Bar Delegate
@@ -1327,6 +1303,64 @@
                 return NO;
             }
 
+            return NO;
+        }
+        
+        // Navigation titles and levels
+        if ([@"navigationTitles" isEqualToString:url.host]) {
+            if ([@"/set" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *dataString = query[@"data"];
+                NSString *persistString = query[@"persist"];
+                
+                NSDictionary *data = nil;
+                BOOL persist = NO;
+                
+                if (dataString && dataString.length > 0) {
+                    NSError *error = nil;
+                    data = [NSJSONSerialization JSONObjectWithData:[dataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+                    if (error) {
+                        NSLog(@"Error parsing navigationTitles: %@", error);
+                        return NO;
+                    }
+                }
+                
+                persist = [@"1" isEqualToString:persistString] || [@"true" isEqualToString:persistString];
+                [appConfig setNavigationTitles:data persist:persist];
+            } else if ([@"/setCurrent" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *title = query[@"title"];
+                if (title) {
+                    self.navigationItem.title = title;
+                } else {
+                    self.navigationItem.title = appConfig.appName;
+                }
+            }
+            return NO;
+        }
+        
+        if ([@"navigationLevels" isEqualToString:url.host]) {
+            if ([@"/set" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *dataString = query[@"data"];
+                NSString *persistString = query[@"persist"];
+                
+                NSDictionary *data = nil;
+                BOOL persist = NO;
+                
+                if (dataString && dataString.length > 0) {
+                    NSError *error = nil;
+                    data = [NSJSONSerialization JSONObjectWithData:[dataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+                    if (error) {
+                        NSLog(@"Error parsing navigationLevels: %@", error);
+                        return NO;
+                    }
+                }
+                
+                persist = [@"1" isEqualToString:persistString] || [@"true" isEqualToString:persistString];
+                [appConfig setNavigationLevels:data persist:persist];
+            }
+            
             return NO;
         }
         
@@ -1946,6 +1980,8 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self showWebview];
         
+        GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+        
         NSURL *url = nil;
         if (self.webview) {
             url = self.webview.request.URL;
@@ -1971,7 +2007,7 @@
         [LEANUtilities overrideGeolocation:self.wkWebview];
         
         // update navigation title
-        if ([GoNativeAppConfig sharedAppConfig].useWebpageTitle) {
+        if (appConfig.useWebpageTitle) {
             if (self.webview) {
                 NSString *theTitle=[self.webview stringByEvaluatingJavaScriptFromString:@"document.title"];
                 self.nav.title = theTitle;
@@ -1982,26 +2018,16 @@
         }
         
         // update menu
-        if ([GoNativeAppConfig sharedAppConfig].loginDetectionURL && (!self.webview || !self.webview.isLoading)) {
+        if (appConfig.loginDetectionURL && (!self.webview || !self.webview.isLoading)) {
             [[LEANLoginManager sharedManager] checkLogin];
             
-            self.visitedLoginOrSignup = [url matchesPathOf:[GoNativeAppConfig sharedAppConfig].loginURL] ||
+            self.visitedLoginOrSignup = [url matchesPathOf:appConfig.loginURL] ||
             [url matchesPathOf:[GoNativeAppConfig sharedAppConfig].signupURL];
         }
         
-        // dynamic config updater
-        if ([GoNativeAppConfig sharedAppConfig].updateConfigJS && (!self.webview || !self.webview.isLoading)) {
-            if (self.webview) {
-                NSString *result = [self.webview stringByEvaluatingJavaScriptFromString:[GoNativeAppConfig sharedAppConfig].updateConfigJS];
-                [[GoNativeAppConfig sharedAppConfig] processDynamicUpdate:result];
-            }
-            if (self.wkWebview) {
-                [self.wkWebview evaluateJavaScript:[GoNativeAppConfig sharedAppConfig].updateConfigJS completionHandler:^(id response, NSError *error) {
-                    if ([response isKindOfClass:[NSString class]]) {
-                        [[GoNativeAppConfig sharedAppConfig] processDynamicUpdate:response];
-                    }
-                }];
-            }
+        // post-load javascript
+        if (appConfig.postLoadJavascript && (!self.webview || !self.webview.isLoading)) {
+            [self runJavascript:appConfig.postLoadJavascript];
         }
         
         // profile picker

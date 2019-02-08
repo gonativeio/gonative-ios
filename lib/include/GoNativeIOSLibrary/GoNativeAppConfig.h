@@ -14,6 +14,8 @@ static NSString *kLEANAppConfigNotificationProcessedTabNavigation = @"io.gonativ
 static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative.ios.LEANAppConfig.processedWebViewPools";
 static NSString *kLEANAppConfigNotificationProcessedSegmented = @"io.gonative.ios.LEANAppConfig.processedSegmented";
 static NSString *kLEANAppConfigNotificationProcessedNavigationTitles = @"io.gonative.ios.LEANAppConfig.processedNavigationTitles";
+static NSString *kLEANAppConfigNotificationProcessedNavigationLevels = @"io.gonative.ios.LEANAppConfig.processedNavigationLevels";
+
 
 typedef enum : NSUInteger {
     LEANToolbarVisibilityAlways,
@@ -190,7 +192,7 @@ typedef enum : NSUInteger {
 @property BOOL showShareButton;
 @property BOOL enableChromecast;
 @property BOOL allowZoom;
-@property NSString *updateConfigJS;
+@property NSString *postLoadJavascript;
 
 // simulator
 @property BOOL isSimulator;
@@ -209,9 +211,10 @@ typedef enum : NSUInteger {
 + (NSURL*)urlForSimulatorSidebarIcon;
 + (NSURL*)urlForSimulatorNavTitleIcon;
 - (void)setupFromJsonFiles;
-- (void)processDynamicUpdate:(NSString*)json;
 
 - (void)setSidebarNavigation:(NSArray*)items;
+- (void)setNavigationTitles:(NSDictionary*)navigationTitles persist:(BOOL)persist;
+- (void)setNavigationLevels:(NSDictionary*)navigationLevels persist:(BOOL)persist;
 
 - (BOOL)shouldShowNavigationTitleImageForUrl:(NSString*)url;
 -(NSString*)userAgentForUrl:(NSURL*)url;
