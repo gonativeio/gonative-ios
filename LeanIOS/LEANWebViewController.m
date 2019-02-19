@@ -77,6 +77,8 @@
 @property UIView *navigationTitleImageView;
 @property CGFloat hideWebviewAlpha;
 @property BOOL statusBarOverlay;
+@property CGFloat savedScreenBrightness;
+@property BOOL restoreBrightnessOnNavigation;
 
 @property NSString *postLoadJavascript;
 @property NSString *postLoadJavascriptForRefresh;
@@ -107,6 +109,8 @@
     
     self.hideWebviewAlpha = [appConfig.hideWebviewAlpha floatValue];
     self.statusBarOverlay = NO;
+    self.savedScreenBrightness = -1;
+    self.restoreBrightnessOnNavigation = NO;
     
     self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
     self.javascriptTabs = NO;
@@ -1110,6 +1114,39 @@
             return NO;
         }
         
+        // brightness
+        if ([@"screen" isEqualToString:url.host]) {
+            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+            NSString *brightnessString = query[@"brightness"];
+            if (!brightnessString) {
+                NSLog(@"Brightness not specified in %@", [url absoluteString]);
+                return NO;
+            }
+
+            if ([brightnessString isEqualToString:@"default"]) {
+                if (self.savedScreenBrightness >= 0) {
+                    [UIScreen mainScreen].brightness = self.savedScreenBrightness;
+                }
+                self.restoreBrightnessOnNavigation = NO;
+                return NO;
+            }
+            
+            CGFloat newBrightness = [brightnessString floatValue];
+
+            if (newBrightness > 1.0 || newBrightness < 0) {
+                NSLog(@"Invalid brightness value in %@", [url absoluteString]);
+                return NO;
+            }
+            
+            NSString *restoreString = query[@"restoreOnNavigation"];
+            BOOL restoreOnNavigation = [restoreString isEqualToString:@"true"] ||
+                [restoreString isEqualToString:@"1"];
+            
+            self.savedScreenBrightness = [UIScreen mainScreen].brightness;
+            self.restoreBrightnessOnNavigation = restoreOnNavigation;
+            [UIScreen mainScreen].brightness = newBrightness;
+        }
+        
         // touchid authentication
         if ([@"auth" isEqualToString:url.host]) {
             GoNativeAuthUrl *authUrl = [[GoNativeAuthUrl alloc] init];
@@ -1668,6 +1705,13 @@
     }
     
     // Starting here, we are going to load the request, but possibly in a different webviewcontroller depending on the structured nav level
+    if (self.restoreBrightnessOnNavigation) {
+        if (self.savedScreenBrightness >= 0) {
+            [UIScreen mainScreen].brightness = self.savedScreenBrightness;
+        }
+        self.restoreBrightnessOnNavigation = NO;
+    }
+    
     NSInteger newLevel = [LEANWebViewController urlLevelForUrl:url];
     if (self.urlLevel >= 0 && newLevel >= 0) {
         if (newLevel > self.urlLevel) {
