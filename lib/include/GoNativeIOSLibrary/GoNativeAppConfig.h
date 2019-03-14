@@ -84,6 +84,7 @@ typedef enum : NSUInteger {
 @property NSArray *toolbarItems;
 
 @property BOOL pullToRefresh;
+@property BOOL swipeGestures;
 
 // styling
 @property NSString *iosTheme;

@@ -1909,6 +1909,8 @@
         // add KVO for single-page app url changes
         [newView addObserver:self forKeyPath:@"URL" options:0 context:nil];
         [newView addObserver:self forKeyPath:@"canGoBack" options:0 context:nil];
+        
+        self.wkWebview.allowsBackForwardNavigationGestures = [GoNativeAppConfig sharedAppConfig].swipeGestures;
     } else {
         return;
     }
