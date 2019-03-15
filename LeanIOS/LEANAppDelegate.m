@@ -85,7 +85,8 @@
                 webviewOnTop = [rvc webviewOnTop];
             }
             
-            if (notification.isAppInFocus && ![@"none" isEqualToString:appConfig.oneSignalInFocusDisplay]) {
+            if (notification.isAppInFocus && ![@"none" isEqualToString:appConfig.oneSignalInFocusDisplay] &&
+                (title || message || url)) {
                 // Show an alert, and include a "view" button if there is a url and the webview is currently the top view.
                 
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
