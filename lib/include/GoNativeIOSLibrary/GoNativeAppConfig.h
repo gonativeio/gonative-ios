@@ -188,6 +188,9 @@ typedef enum : NSUInteger {
 @property BOOL shareEnabled;
 @property NSString *iosAppGroup;
 
+// NFC
+@property BOOL nfcEnabled;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
