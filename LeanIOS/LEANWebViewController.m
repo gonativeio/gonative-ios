@@ -1107,6 +1107,28 @@
             return NO;
         }
         
+        // multi
+        if ([@"nativebridge" isEqualToString:url.host]) {
+            if ([@"/multi" isEqualToString:url.path]) {
+                NSDictionary *params = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *data = params[@"data"];
+                if (!data) return NO;
+                NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+                if (![dict isKindOfClass:[NSDictionary class]]) return NO;
+                NSArray *urls = dict[@"urls"];
+                if (![urls isKindOfClass:[NSArray class]]) return NO;
+                for (NSString *s in urls) {
+                    if (![s isKindOfClass:[NSString class]]) continue;
+                    NSURL *u = [NSURL URLWithString:s];
+                    if (!u) continue;
+                    if (![@"gonative" isEqualToString:u.scheme]) continue;
+                    [self shouldLoadRequest:[NSURLRequest requestWithURL:u] isMainFrame:isMainFrame isUserAction:isUserAction hideWebview:hideWebview];
+                }
+            }
+            return NO;
+        }
+        
         // config preferences
         if ([@"config" isEqualToString:url.host]) {
             GNConfigPreferences *config = [GNConfigPreferences sharedPreferences];
