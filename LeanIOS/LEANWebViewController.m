@@ -845,8 +845,17 @@
 
 - (void) runJavascript:(NSString *) script
 {
-    [self.webview stringByEvaluatingJavaScriptFromString:script];
-    [self.wkWebview evaluateJavaScript:script completionHandler:nil];
+    if (!script || script.length == 0) return;
+    
+    if ([NSThread isMainThread]) {
+        [self.webview stringByEvaluatingJavaScriptFromString:script];
+        [self.wkWebview evaluateJavaScript:script completionHandler:nil];
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.webview stringByEvaluatingJavaScriptFromString:script];
+            [self.wkWebview evaluateJavaScript:script completionHandler:nil];
+        });
+    }
 }
 
 // is this is the first LEANWebViewController in the navigation stack?

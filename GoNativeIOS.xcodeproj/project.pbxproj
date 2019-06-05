@@ -747,7 +747,7 @@
 			};
 			buildConfigurationList = 2002B49318A9991300495B3D /* Build configuration list for PBXProject "GoNativeIOS" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
