@@ -1138,6 +1138,15 @@
             return NO;
         }
         
+        // open settings
+        if ([@"open" isEqualToString:url.host]) {
+            if ([@"/app-settings" isEqualToString:url.path]) {
+                NSURL *settingsUrl = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                [[UIApplication sharedApplication] openURL:settingsUrl];
+            }
+            return NO;
+        }
+        
         // config preferences
         if ([@"config" isEqualToString:url.host]) {
             GNConfigPreferences *config = [GNConfigPreferences sharedPreferences];

@@ -176,6 +176,7 @@ typedef enum : NSUInteger {
 @property NSString* admobApplicationId;
 @property NSString* admobBannerAdUnitId;
 @property NSString* admobInterstitialAdUnitId;
+@property BOOL admobShowBanner;
 
 // Card.IO scanning
 @property BOOL cardIOEnabled;
