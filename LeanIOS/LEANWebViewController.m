@@ -1814,7 +1814,8 @@
     // pop to the top webviewcontroller in the stack
     NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
     BOOL changedControllerStack = NO;
-    while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
+    while (controllers && controllers.count > 0 &&
+           ![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
         [controllers removeLastObject];
         changedControllerStack = YES;
     }
