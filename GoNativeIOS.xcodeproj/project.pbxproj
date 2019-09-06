@@ -53,6 +53,7 @@
 		202E989519EF30C8009C28AD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 202E989419EF30C8009C28AD /* Reachability.m */; };
 		203ADBAA1C224F0300273067 /* GonativeIO.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 203ADBA91C224F0300273067 /* GonativeIO.entitlements */; };
 		2041A8C61E36D75F0010BAC4 /* OneSignal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2041A8C51E36D75F0010BAC4 /* OneSignal.framework */; };
+		2041B6022321BEB400DBDF5F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205EF30219BF84AF002AE261 /* WebKit.framework */; };
 		2046CAFA1BC0790800714F66 /* GNRegistrationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2046CAF91BC0790800714F66 /* GNRegistrationManager.m */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
@@ -347,6 +348,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2041B6022321BEB400DBDF5F /* WebKit.framework in Frameworks */,
 				2081A2951F33ED8100057E3F /* SystemConfiguration.framework in Frameworks */,
 				2081A2941F33ED6900057E3F /* UIKit.framework in Frameworks */,
 				2081A2931F33ED5500057E3F /* OneSignal.framework in Frameworks */,
