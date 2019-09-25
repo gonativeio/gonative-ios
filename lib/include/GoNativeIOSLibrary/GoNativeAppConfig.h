@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+static NSString *kGoNativeAppConfigNotificationUserAgentReady = @"io.gonative.ios.LEANAppConfig.useragentready";
 static NSString *kLEANAppConfigNotificationProcessedMenu = @"io.gonative.ios.LEANAppConfig.processedMenu";
 static NSString *kLEANAppConfigNotificationProcessedTabNavigation = @"io.gonative.ios.LEANAppConfig.processedTabNavigation";
 static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative.ios.LEANAppConfig.processedWebViewPools";
 static NSString *kLEANAppConfigNotificationProcessedSegmented = @"io.gonative.ios.LEANAppConfig.processedSegmented";
 static NSString *kLEANAppConfigNotificationProcessedNavigationTitles = @"io.gonative.ios.LEANAppConfig.processedNavigationTitles";
 static NSString *kLEANAppConfigNotificationProcessedNavigationLevels = @"io.gonative.ios.LEANAppConfig.processedNavigationLevels";
-
 
 typedef enum : NSUInteger {
     LEANToolbarVisibilityAlways,
@@ -40,6 +40,7 @@ typedef enum : NSUInteger {
 @property NSString *userAgentAdd;
 @property NSString *forceUserAgent;
 @property NSString *userAgent;
+@property BOOL userAgentReady;
 @property NSMutableArray *userAgentRegexes;
 @property NSMutableArray *userAgentStrings;
 @property BOOL useWKWebView;

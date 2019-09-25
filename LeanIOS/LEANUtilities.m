@@ -291,10 +291,7 @@
     "} ";
 
     
-    if ([wv isKindOfClass:[UIWebView class]]) {
-        UIWebView *webView = (UIWebView*)wv;
-        [webView stringByEvaluatingJavaScriptFromString:js];
-    } else if ([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
+    if ([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
         [webview evaluateJavaScript:js completionHandler:nil];
     }
@@ -466,17 +463,7 @@
     // disable double-tap that causes page to shift
     [self removeDoubleTapFromView:wv];
     
-    if ([wv isKindOfClass:[UIWebView class]]) {
-        UIWebView *webview = (UIWebView*)wv;
-        webview.scalesPageToFit = YES;
-        webview.scrollView.bounces = NO;
-        if (@available(iOS 11.0, *)) {
-            webview.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-        }
-        
-        // for our faux content-inset
-        webview.scrollView.layer.masksToBounds = NO;
-    } else if([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
+    if ([wv isKindOfClass:NSClassFromString(@"WKWebView")]) {
         WKWebView *webview = (WKWebView*)wv;
         webview.scrollView.bounces = NO;
         if (@available(iOS 11.0, *)) {

@@ -39,7 +39,6 @@
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate>
 
-@property IBOutlet UIWebView* webview;
 @property WKWebView *wkWebview;
 
 @property IBOutlet UIBarButtonItem* backButton;
@@ -133,10 +132,7 @@
         self.tabBar.barStyle = UIBarStyleDefault;
         self.toolbar.barStyle = UIBarStyleDefault;
     }
-    
-    // configure zoomability
-    self.webview.scalesPageToFit = appConfig.allowZoom;
-    
+        
     // hide button if no native nav
     if (!appConfig.showNavigationMenu) {
         self.navButton.customView = [[UIView alloc] init];
@@ -166,37 +162,11 @@
         [self checkNavigationTitleImageForUrl:self.wkWebview.URL];
         
     } else {
-        // switch to wkwebview if on ios8
-        if (appConfig.useWKWebView) {
-            WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
-            config.processPool = [LEANUtilities wkProcessPool];
-            config.allowsInlineMediaPlayback = YES;
-            WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:config];
-            [LEANUtilities configureWebView:wv];
-            [self switchToWebView:wv showImmediately:NO];
+        if (appConfig.userAgentReady) {
+            [self initializeWebview];
         } else {
-            // set self as webview delegate to handle start/end load events
-            self.webview.delegate = self;
-            [LEANUtilities configureWebView:self.webview];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kGoNativeAppConfigNotificationUserAgentReady object:nil];
         }
-        
-        // load initial url
-        self.urlLevel = -1;
-        if (!self.initialUrl) {
-            NSString *initialUrlPref = [[GNConfigPreferences sharedPreferences] getInitialUrl];
-            if (initialUrlPref && initialUrlPref.length > 0) {
-                self.initialUrl = [NSURL URLWithString:initialUrlPref];
-                [[GNConfigPreferences sharedPreferences] setInitialUrl:initialUrlPref];
-            }
-        }
-        if (!self.initialUrl && appConfig.initialURL) {
-            self.initialUrl = appConfig.initialURL;
-        }
-        [self loadUrl:self.initialUrl];
-        
-        // nav title image
-        [self checkNavigationTitleImageForUrl:self.initialUrl];
-
     }
     
     // hidden nav bar
@@ -246,6 +216,34 @@
     [self hideWebview];
 }
 
+-(void)initializeWebview
+{
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
+    config.processPool = [LEANUtilities wkProcessPool];
+    config.allowsInlineMediaPlayback = YES;
+    WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.wkWebview.frame configuration:config];
+    [LEANUtilities configureWebView:wv];
+    [self switchToWebView:wv showImmediately:NO];
+    
+    // load initial url
+    self.urlLevel = -1;
+    if (!self.initialUrl) {
+        NSString *initialUrlPref = [[GNConfigPreferences sharedPreferences] getInitialUrl];
+        if (initialUrlPref && initialUrlPref.length > 0) {
+            self.initialUrl = [NSURL URLWithString:initialUrlPref];
+            [[GNConfigPreferences sharedPreferences] setInitialUrl:initialUrlPref];
+        }
+    }
+    if (!self.initialUrl && appConfig.initialURL) {
+        self.initialUrl = appConfig.initialURL;
+    }
+    [self loadUrl:self.initialUrl];
+    
+    // nav title image
+    [self checkNavigationTitleImageForUrl:self.initialUrl];
+}
+
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -262,7 +260,10 @@
 - (void)didReceiveNotification:(NSNotification*)notification
 {
     NSString *name = [notification name];
-    if ([name isEqualToString:kLEANAppConfigNotificationProcessedTabNavigation]) {
+    if ([name isEqualToString:kGoNativeAppConfigNotificationUserAgentReady]) {
+        [self initializeWebview];
+    }
+    else if ([name isEqualToString:kLEANAppConfigNotificationProcessedTabNavigation]) {
         [self checkNavigationForUrl:self.currentRequest.URL];
     }
     else if ([name isEqualToString:UIApplicationDidBecomeActiveNotification]) {
@@ -280,8 +281,7 @@
     }
     else if ([name isEqualToString:kLEANAppConfigNotificationProcessedNavigationTitles]) {
         NSURL *url = nil;
-        if (self.webview) url = self.webview.request.URL;
-        else if (self.wkWebview) url = self.wkWebview.URL;
+        if (self.wkWebview) url = self.wkWebview.URL;
         
         if (url) {
             NSString *newTitle = [LEANWebViewController titleForUrl:url];
@@ -294,8 +294,7 @@
     }
     else if ([name isEqualToString:kLEANAppConfigNotificationProcessedNavigationLevels]) {
         NSURL *url = nil;
-        if (self.webview) url = self.webview.request.URL;
-        else if (self.wkWebview) url = self.wkWebview.URL;
+        if (self.wkWebview) url = self.wkWebview.URL;
         
         if (url) {
             self.urlLevel = [LEANWebViewController urlLevelForUrl:url];
@@ -331,7 +330,6 @@
     if (self.didLoadPage) return;
     
     // return if currently loading a page
-    if (self.webview && self.webview.loading) return;
     if (self.wkWebview && self.wkWebview.isLoading) return;
     
     NetworkStatus status = [((LEANAppDelegate*)[UIApplication sharedApplication].delegate).internetReachability currentReachabilityStatus];
@@ -351,15 +349,12 @@
     }
     
     [self.wkWebview.scrollView addSubview:self.pullRefreshControl];
-    [self.webview.scrollView addSubview:self.pullRefreshControl];
     
     self.wkWebview.scrollView.bounces = YES;
-    self.webview.scrollView.bounces = YES;
 }
 
 - (void)removePullRefresh
 {
-    self.webview.scrollView.bounces = NO;
     self.wkWebview.scrollView.bounces = NO;
     [self.pullRefreshControl removeFromSuperview];
 }
@@ -380,10 +375,7 @@
     
     [self adjustInsets];
     
-    NSURL *url = self.webview.request.URL;
-    if (!url) {
-        url = self.wkWebview.URL;
-    }
+    NSURL *url = self.wkWebview.URL;
     if (url) {
         [self checkNavigationForUrl:url];
     }
@@ -394,8 +386,6 @@
     [self.pullRefreshControl removeFromSuperview];
     
     if (self.isMovingFromParentViewController) {
-        self.webview.delegate = nil;
-        [self.webview stopLoading];
         [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
@@ -601,14 +591,14 @@
     switch ((long)[((UIBarButtonItem*) sender) tag]) {
         case 1:
             // back
-            if (self.webview.canGoBack)
-                [self.webview goBack];
+            if (self.wkWebview.canGoBack)
+                [self.wkWebview goBack];
             break;
             
         case 2:
             // forward
-            if (self.webview.canGoForward)
-                [self.webview goForward];
+            if (self.wkWebview.canGoForward)
+                [self.wkWebview goForward];
             break;
             
         case 3:
@@ -623,8 +613,8 @@
             
         case 5:
             //refresh
-            if ([self.webview.request URL] && ![[[self.webview.request URL] absoluteString] isEqualToString:@""]) {
-                [self.webview reload];
+            if (self.wkWebview.URL && ![[self.wkWebview.URL absoluteString] isEqualToString:@""]) {
+                [self.wkWebview reload];
             }
             else {
                 [self loadRequest:self.currentRequest];
@@ -728,12 +718,10 @@
 - (void)refreshPage
 {
     [self.wkWebview reload];
-    [self.webview reload];
 }
 
 - (void) logout
 {
-    [self.webview stopLoading];
     [self.wkWebview stopLoading];
     // stop webview pools
     [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
@@ -763,9 +751,7 @@
 
 - (BOOL)canGoBack
 {
-    if (self.webview) {
-        return [self.webview canGoBack];
-    } else if (self.wkWebview) {
+    if (self.wkWebview) {
         return [self.wkWebview canGoBack];
     } else {
         return NO;
@@ -774,9 +760,7 @@
 
 - (void)goBack
 {
-    if (self.webview && [self.webview canGoBack]) {
-        [self.webview goBack];
-    } else if (self.wkWebview && [self.wkWebview canGoBack]) {
+    if (self.wkWebview && [self.wkWebview canGoBack]) {
         [self.wkWebview goBack];
     }
 }
@@ -797,6 +781,12 @@
 
 - (void) loadUrl:(NSURL *)url
 {
+    // in case this is called before the user agent stuff has finished
+    if (![GoNativeAppConfig sharedAppConfig].userAgentReady) {
+        self.initialUrl = url;
+        return;
+    }
+    
     [self loadRequest:[NSURLRequest requestWithURL:url]];
 }
 
@@ -804,7 +794,6 @@
 - (void) loadRequest:(NSURLRequest*) request
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
-    [self.webview loadRequest:request];
     [self.wkWebview loadRequest:request];
     self.postLoadJavascript = nil;
     self.postLoadJavascriptForRefresh = nil;
@@ -813,9 +802,7 @@
 - (void) loadUrl:(NSURL *)url andJavascript:(NSString *)js
 {
     NSURL *currentUrl = nil;
-    if (self.webview) {
-        currentUrl = self.webview.request.URL;
-    } else if (self.wkWebview) {
+    if (self.wkWebview) {
         currentUrl = self.wkWebview.URL;
     }
     
@@ -829,7 +816,6 @@
         self.postLoadJavascriptForRefresh = js;
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
         [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
-        [self.webview loadRequest:request];
         [self.wkWebview loadRequest:request];
     }
 }
@@ -839,7 +825,6 @@
     self.postLoadJavascript = js;
     self.postLoadJavascriptForRefresh = js;
     [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserStartedLoading object:self];
-    [self.webview loadRequest:request];
     [self.wkWebview loadRequest:request];
 }
 
@@ -848,11 +833,9 @@
     if (!script || script.length == 0) return;
     
     if ([NSThread isMainThread]) {
-        [self.webview stringByEvaluatingJavaScriptFromString:script];
         [self.wkWebview evaluateJavaScript:script completionHandler:nil];
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.webview stringByEvaluatingJavaScriptFromString:script];
             [self.wkWebview evaluateJavaScript:script completionHandler:nil];
         });
     }
@@ -936,14 +919,7 @@
 }
 
 
-#pragma mark - UIWebViewDelegate
-- (BOOL) webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
-{
-    BOOL isMainFrame = [[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]];
-    BOOL isUserAction = navigationType == UIWebViewNavigationTypeLinkClicked || navigationType ==UIWebViewNavigationTypeFormSubmitted;
-    return [self shouldLoadRequest:request isMainFrame:isMainFrame isUserAction:isUserAction hideWebview:YES];
-}
-
+#pragma mark - WebView Delegate
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
     // is target="_blank" and we are allowing window open? Always accept, skipping logic. This makes
@@ -1108,8 +1084,6 @@
         NSString *currentUrl;
         if (self.wkWebview) {
             currentUrl = self.wkWebview.URL.absoluteString;
-        } else if (self.webview) {
-            currentUrl = self.webview.request.mainDocumentURL.absoluteString;
         }
         if (![LEANUtilities checkNativeBridgeUrl:currentUrl]) {
             NSLog(@"URL not authorized for native bridge: %@", currentUrl);
@@ -1884,7 +1858,6 @@
     
     if (self.isPoolWebview) {
         // if we are here, either the policy is reload and we are reloading the page, or policy is never but we are going to a different page. So take ownership of the webview.
-        [[LEANWebViewPool sharedPool] disownWebview:self.webview];
         [[LEANWebViewPool sharedPool] disownWebview:self.wkWebview];
         self.isPoolWebview = NO;
     }
@@ -1914,10 +1887,6 @@
 - (void)switchToWebView:(UIView*)newView showImmediately:(BOOL)showImmediately
 {
     UIView *oldView;
-    if (self.webview) {
-        oldView = self.webview;
-        ((UIWebView*)oldView).delegate = nil;
-    }
     if (self.wkWebview) {
         oldView = self.wkWebview;
         
@@ -1935,14 +1904,8 @@
     [self removePullRefresh];
     
     UIScrollView *scrollView;
-    if ([newView isKindOfClass:[UIWebView class]]) {
-        self.webview = (UIWebView*)newView;
-        self.wkWebview = nil;
-        self.webview.delegate = self;
-        scrollView = self.webview.scrollView;
-    } else if ([newView isKindOfClass:[NSClassFromString(@"WKWebView") class]]) {
+    if ([newView isKindOfClass:[NSClassFromString(@"WKWebView") class]]) {
         self.wkWebview = (WKWebView*)newView;
-        self.webview = nil;
         self.wkWebview.navigationDelegate = self;
         self.wkWebview.UIDelegate = self;
         scrollView = self.wkWebview.scrollView;
@@ -1960,10 +1923,14 @@
     [scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     
     if (oldView != newView) {
-        newView.frame = oldView.frame;
-        
-        [self.webviewContainer insertSubview:newView aboveSubview:oldView];
-        [oldView removeFromSuperview];
+        if (oldView) {
+            newView.frame = oldView.frame;
+            [self.webviewContainer insertSubview:newView aboveSubview:oldView];
+            [oldView removeFromSuperview];
+        } else {
+            newView.frame = self.webviewContainer.frame;
+            [self.webviewContainer insertSubview:newView atIndex:0];
+        }
         
         // add layout constriants to constainer view
         [self.webviewContainer addConstraint:[NSLayoutConstraint constraintWithItem:newView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.webviewContainer attribute:NSLayoutAttributeTop multiplier:1 constant:0]];
@@ -2016,11 +1983,6 @@
     }
 }
 
-- (void) webViewDidStartLoad:(UIWebView *)webView
-{
-    [self didStartLoad];
-}
-
 - (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation
 {
     [self didStartLoad];
@@ -2052,11 +2014,6 @@
     });
 }
 
-- (void) webViewDidFinishLoad:(UIWebView *)webView
-{
-    [self didFinishLoad];
-}
-
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
     [self didFinishLoad];
@@ -2070,9 +2027,7 @@
         GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
         
         NSURL *url = nil;
-        if (self.webview) {
-            url = self.webview.request.URL;
-        } else if (self.wkWebview) {
+        if (self.wkWebview) {
             url = self.wkWebview.URL;
         }
         
@@ -2090,22 +2045,17 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         [self setNavigationButtonStatus];
 
-        [LEANUtilities overrideGeolocation:self.webview];
         [LEANUtilities overrideGeolocation:self.wkWebview];
         
         // update navigation title
         if (appConfig.useWebpageTitle) {
-            if (self.webview) {
-                NSString *theTitle=[self.webview stringByEvaluatingJavaScriptFromString:@"document.title"];
-                self.nav.title = theTitle;
-            }
-            else if (self.wkWebview) {
+            if (self.wkWebview) {
                 self.nav.title = self.wkWebview.title;
             }
         }
         
         // update menu
-        if (appConfig.loginDetectionURL && (!self.webview || !self.webview.isLoading)) {
+        if (appConfig.loginDetectionURL) {
             [[LEANLoginManager sharedManager] checkLogin];
             
             self.visitedLoginOrSignup = [url matchesPathOf:appConfig.loginURL] ||
@@ -2113,17 +2063,13 @@
         }
         
         // post-load javascript
-        if (appConfig.postLoadJavascript && (!self.webview || !self.webview.isLoading)) {
+        if (appConfig.postLoadJavascript) {
             [self runJavascript:appConfig.postLoadJavascript];
         }
         
         // profile picker
         if (self.profilePickerJs) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (self.webview) {
-                    NSString *json = [self.webview stringByEvaluatingJavaScriptFromString:self.profilePickerJs];
-                    [(LEANMenuViewController*)self.frostedViewController.menuViewController parseProfilePickerJSON:json];
-                }
                 if (self.wkWebview) {
                     [self.wkWebview evaluateJavaScript:self.profilePickerJs completionHandler:^(id response, NSError *error) {
                         if ([response isKindOfClass:[NSString class]]) {
@@ -2143,16 +2089,14 @@
         [self checkActionsForUrl: url];
         
         // post-load js
-        if (self.postLoadJavascript && (!self.webview || !self.webview.isLoading)) {
+        if (self.postLoadJavascript) {
             NSString *js = self.postLoadJavascript;
             self.postLoadJavascript = nil;
             [self runJavascript:js];
         }
         
         // post notification
-        if (!self.webview || !self.webview.isLoading) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
-        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
         
         // document sharing
         if ([[LEANDocumentSharer sharedSharer] isSharableRequest:self.currentRequest]) {
@@ -2249,7 +2193,7 @@
         return nil;
     }
     
-    WKWebView *newWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.webview.frame configuration:configuration];
+    WKWebView *newWebview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.wkWebview.frame configuration:configuration];
     [LEANUtilities configureWebView:newWebview];
     
     LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
@@ -2382,10 +2326,7 @@
         }
     };
     
-    if (self.webview) {
-        NSString *readyState = [self.webview stringByEvaluatingJavaScriptFromString:@"document.readyState"];
-        readyStateBlock(readyState, nil);
-    } else if (self.wkWebview) {
+    if (self.wkWebview) {
         [self.wkWebview evaluateJavaScript:@"document.readyState" completionHandler:readyStateBlock];
     }
 }
@@ -2393,9 +2334,6 @@
 - (void)hideWebview
 {
     if ([GoNativeAppConfig sharedAppConfig].disableAnimations) return;
-    
-    self.webview.alpha = self.hideWebviewAlpha;
-    self.webview.userInteractionEnabled = NO;
     
     self.wkWebview.alpha = self.hideWebviewAlpha;
     self.wkWebview.userInteractionEnabled = NO;
@@ -2416,11 +2354,9 @@
     self.startedLoading = NO;
     [self.timer invalidate];
     self.timer = nil;
-    self.webview.userInteractionEnabled = YES;
     self.wkWebview.userInteractionEnabled = YES;
     
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^(void){
-        self.webview.alpha = 1.0;
         self.wkWebview.alpha = 1.0;
         self.activityIndicator.alpha = 0.0;
     } completion:^(BOOL finished){
@@ -2431,11 +2367,6 @@
 - (void)showWebviewWithDelay:(NSTimeInterval)delay
 {
     [self performSelector:@selector(showWebview) withObject:nil afterDelay:delay];
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-    [self didFailLoadWithError:error];
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
@@ -2461,14 +2392,13 @@
         NSURL *offlineFile = [[NSBundle mainBundle] URLForResource:@"offline" withExtension:@"html"];
         NSString *html = [NSString stringWithContentsOfURL:offlineFile encoding:NSUTF8StringEncoding error:nil];
         [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:@"http://offline/"]];
-        [self.webview loadHTMLString:html baseURL:[NSURL URLWithString:@"http://offline/"]];
     }
 }
 
 - (void) setNavigationButtonStatus
 {
-    self.backButton.enabled = self.webview.canGoBack;
-    self.forwardButton.enabled = self.webview.canGoForward;
+    self.backButton.enabled = self.wkWebview.canGoBack;
+    self.forwardButton.enabled = self.wkWebview.canGoForward;
 }
 
 

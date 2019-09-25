@@ -12,7 +12,7 @@
 #import "LEANUtilities.h"
 #import "LEANLoginManager.h"
 
-@interface LEANWebViewPool () <UIWebViewDelegate, WKNavigationDelegate>
+@interface LEANWebViewPool () <WKNavigationDelegate>
 @property NSMutableDictionary *urlToWebview;
 @property NSMutableDictionary *urlToDisownPolicy;
 @property NSMutableArray *urlSets;
@@ -152,9 +152,7 @@
 
 - (void)stopLoading
 {
-    if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
-        [(UIWebView*)self.currentLoadingWebview stopLoading];
-    } else if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
+    if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
         [(WKWebView*)self.currentLoadingWebview stopLoading];
     }
 }
@@ -162,11 +160,6 @@
 - (void)resumeLoading
 {
     if (self.isViewControllerLoading) {
-        return;
-    }
-    
-    if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]] &&
-        [(UIWebView*)self.currentLoadingWebview isLoading]) {
         return;
     }
     
@@ -178,8 +171,6 @@
     if (self.currentLoadingWebview && self.currentLoadingRequest) {
         if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
             [(WKWebView*)self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
-        } else if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
-            [(UIWebView*)self.currentLoadingWebview loadRequest:self.currentLoadingRequest];
         }
         return;
     }
@@ -192,29 +183,13 @@
         self.currentLoadingRequest = request;
         [self.urlsToLoad removeObject:urlString];
         
-        if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
-            WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
-            config.processPool = [LEANUtilities wkProcessPool];
-            WKWebView *webview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:CGRectZero configuration:config];
-            [LEANUtilities configureWebView:webview];
-            webview.navigationDelegate = self;
-            self.currentLoadingWebview = webview;
-            [webview loadRequest:request];
-        } else {
-            UIWebView *webview = [[UIWebView alloc] init];
-            [LEANUtilities configureWebView:webview];
-            webview.delegate = self;
-            self.currentLoadingWebview = webview;
-            [webview loadRequest:request];
-        }
-        
-    }
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-    if (!webView.isLoading) {
-        [self didFinishLoad];
+        WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
+        config.processPool = [LEANUtilities wkProcessPool];
+        WKWebView *webview = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:CGRectZero configuration:config];
+        [LEANUtilities configureWebView:webview];
+        webview.navigationDelegate = self;
+        self.currentLoadingWebview = webview;
+        [webview loadRequest:request];
     }
 }
 
@@ -226,10 +201,7 @@
 - (void)didFinishLoad
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self.currentLoadingWebview isKindOfClass:[UIWebView class]]) {
-            ((UIWebView*)self.currentLoadingWebview).delegate = nil;
-            self.urlToWebview[self.currentLoadingUrl] = self.currentLoadingWebview;
-        } else if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
+        if ([self.currentLoadingWebview isKindOfClass:NSClassFromString(@"WKWebView")]) {
             ((WKWebView*)self.currentLoadingWebview).navigationDelegate = nil;
             self.urlToWebview[self.currentLoadingUrl] = self.currentLoadingWebview;
         }
@@ -242,7 +214,7 @@
     });
 }
 
-- (UIWebView*)webviewForUrl:(NSURL *)url policy:(LEANWebViewPoolDisownPolicy*)policy
+- (UIView*)webviewForUrl:(NSURL *)url policy:(LEANWebViewPoolDisownPolicy*)policy
 {
     self.lastUrlRequested = url;
     NSString *urlString = [url absoluteString];
@@ -259,7 +231,7 @@
         [self.urlsToLoad unionSet:newUrls];
     }
     
-    UIWebView *webview = self.urlToWebview[urlString];
+    UIView *webview = self.urlToWebview[urlString];
     if (webview) {
         // if the policy pointer is provided, output the policy by writing to the pointer
         if (policy) {

@@ -79,19 +79,7 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GBp-Vo-WtS" userLabel="WebviewContainer">
                                 <rect key="frame" x="0.0" y="88" width="375" height="592"/>
-                                <subviews>
-                                    <webView opaque="NO" contentMode="scaleToFill" scalesPageToFit="YES" allowsInlineMediaPlayback="NO" translatesAutoresizingMaskIntoConstraints="NO" id="21Z-2V-MUj">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="592"/>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                    </webView>
-                                </subviews>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="21Z-2V-MUj" secondAttribute="trailing" id="7EV-kw-jG9"/>
-                                    <constraint firstItem="21Z-2V-MUj" firstAttribute="top" secondItem="GBp-Vo-WtS" secondAttribute="top" id="Yzz-gE-BII"/>
-                                    <constraint firstItem="21Z-2V-MUj" firstAttribute="leading" secondItem="GBp-Vo-WtS" secondAttribute="leading" id="u0c-DR-Cuh"/>
-                                    <constraint firstAttribute="bottom" secondItem="21Z-2V-MUj" secondAttribute="bottom" id="xhp-Hd-J7g"/>
-                                </constraints>
                             </view>
                             <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="vcS-3e-fYP">
                                 <rect key="frame" x="169" y="387.66666666666669" width="37" height="37"/>
@@ -159,7 +147,6 @@
                         <outlet property="toolbar" destination="U7w-yv-4mp" id="Tqf-29-h2S"/>
                         <outlet property="toolbarBottomConstraint" destination="LtD-ts-ptw" id="1Bx-Yf-GMZ"/>
                         <outlet property="topGuideConstraint" destination="NbD-9P-xqX" id="Q9a-bG-f82"/>
-                        <outlet property="webview" destination="21Z-2V-MUj" id="EXY-SC-jQg"/>
                         <outlet property="webviewContainer" destination="GBp-Vo-WtS" id="yGP-OL-uv7"/>
                     </connections>
                 </viewController>
