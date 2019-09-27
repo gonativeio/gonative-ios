@@ -503,6 +503,9 @@
         
         // disable hard press to preview
         webview.allowsLinkPreview = NO;
+        
+        // set user agent
+        webview.customUserAgent = [GoNativeAppConfig sharedAppConfig].userAgent;
     }
 }
 
