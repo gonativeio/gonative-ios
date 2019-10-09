@@ -274,16 +274,10 @@
     }
                               
     // configure text color
-    if ([GoNativeAppConfig sharedAppConfig].iosSidebarTextColor) {
-        label.textColor = [GoNativeAppConfig sharedAppConfig].iosSidebarTextColor;
-        icon.textColor = [GoNativeAppConfig sharedAppConfig].iosSidebarTextColor;
-        cell.tintColor = [GoNativeAppConfig sharedAppConfig].iosSidebarTextColor;
-    }
-    else if ([GoNativeAppConfig sharedAppConfig].tintColor) {
-        label.textColor = [GoNativeAppConfig sharedAppConfig].tintColor;
-        icon.textColor = [GoNativeAppConfig sharedAppConfig].tintColor;
-        cell.tintColor = [GoNativeAppConfig sharedAppConfig].tintColor;
-    }
+    UIColor *sidebarTextColor = [UIColor colorNamed:@"sidebarTextColor"];
+    label.textColor = sidebarTextColor;
+    icon.textColor = sidebarTextColor;
+    cell.tintColor = sidebarTextColor;
     
     // hide separator line from first cell
     if (indexPath.section == 0 && indexPath.row == 0) {

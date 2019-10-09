@@ -55,10 +55,6 @@
     
     self.webViewController = ((UINavigationController*)self.contentViewController).viewControllers[0];
     
-    if (appConfig.tintColor) {
-        self.view.tintColor = appConfig.tintColor;
-    }
-    
     // pre-load the menu view
     [self.menuViewController view];
 }

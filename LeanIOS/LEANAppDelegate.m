@@ -141,7 +141,7 @@
                     NSLog(@"Received error while fetching deferred app link %@", error);
                 }
                 if (url) {
-                    [[UIApplication sharedApplication] openURL:url];
+                    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
                 }
             }];
         }
@@ -186,8 +186,7 @@
 
 - (void)configureApplication
 {
-    UIColor *defaultTintColor = [UIColor colorWithRed:104.0/255 green:104.0/255 blue:112.0/255 alpha:1.0];
-    self.window.tintColor = defaultTintColor;
+    self.window.tintColor = [UIColor colorNamed:@"tintColor"];
 }
 
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {

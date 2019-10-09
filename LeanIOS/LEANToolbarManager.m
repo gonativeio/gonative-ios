@@ -71,10 +71,6 @@
             }
             
             if (item && itemType) {
-                // we should not have to set this, but inheriting the tint color seems
-                // to not work when using the dark theme, i.e. UIBarStyleBlack
-                item.tintColor = [GoNativeAppConfig sharedAppConfig].tintColor;
-                
                 // add item
                 if ([toolbarItems count] > 0) {
                     // add spacer

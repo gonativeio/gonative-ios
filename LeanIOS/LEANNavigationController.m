@@ -21,19 +21,6 @@
     [super viewDidLoad];
     
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-    
-    // theme
-    if ([appConfig.iosTheme isEqualToString:@"dark"]) {
-        self.navigationBar.barStyle = UIBarStyleBlack;
-        self.view.backgroundColor = [UIColor blackColor];
-    } else {
-        self.navigationBar.barStyle = UIBarStyleDefault;
-    }
-    
-    // set title text color
-    if (appConfig.titleTextColor) {
-        self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [GoNativeAppConfig sharedAppConfig].titleTextColor};
-    }
 
     // recognize swipe from left edge
     if (appConfig.showNavigationMenu) {
@@ -50,6 +37,34 @@
     }
     
     self.delegate = self;
+}
+
+-(void)viewDidLayoutSubviews
+{
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    
+    // theme and colors
+    if ([appConfig.iosTheme isEqualToString:@"dark"]) {
+        self.navigationBar.barStyle = UIBarStyleBlack;
+        self.view.backgroundColor = [UIColor blackColor];
+    } else {
+        self.navigationBar.barStyle = UIBarStyleDefault;
+        
+        if (@available(iOS 12.0, *)) {
+            if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                self.view.backgroundColor = [UIColor blackColor];
+            } else {
+                self.view.backgroundColor = [UIColor whiteColor];
+            }
+        } else {
+            self.view.backgroundColor = [UIColor whiteColor];
+        }
+    }
+
+    UIColor *titleColor = [UIColor colorNamed:@"titleColor"];
+    self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: titleColor};
+    
+    [super viewDidLayoutSubviews];
 }
 
 #pragma mark - UINavigationControllerDelegate

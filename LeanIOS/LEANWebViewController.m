@@ -119,20 +119,7 @@
     if ([appConfig.navTitles count] == 0) {
         self.navigationItem.title = appConfig.appName;
     }
-    
-    // dark theme
-    if ([appConfig.iosTheme isEqualToString:@"dark"]) {
-        self.view.backgroundColor = [UIColor blackColor];
-        self.webviewContainer.backgroundColor = [UIColor blackColor];
-        self.tabBar.barStyle = UIBarStyleBlack;
-        self.toolbar.barStyle = UIBarStyleBlack;
-    } else {
-        self.view.backgroundColor = [UIColor whiteColor];
-        self.webviewContainer.backgroundColor = [UIColor whiteColor];
-        self.tabBar.barStyle = UIBarStyleDefault;
-        self.toolbar.barStyle = UIBarStyleDefault;
-    }
-        
+
     // hide button if no native nav
     if (!appConfig.showNavigationMenu) {
         self.navButton.customView = [[UIView alloc] init];
@@ -1116,7 +1103,7 @@
         if ([@"open" isEqualToString:url.host]) {
             if ([@"/app-settings" isEqualToString:url.path]) {
                 NSURL *settingsUrl = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-                [[UIApplication sharedApplication] openURL:settingsUrl];
+                [[UIApplication sharedApplication] openURL:settingsUrl options:@{} completionHandler:nil];
             }
             return NO;
         }
@@ -1503,14 +1490,13 @@
                 
                 NSString *style = query[@"style"];
                 if (style) {
-                    if ([style isEqualToString:@"light"]) {
-                        // light icons and text
-                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
-                        [self setNeedsStatusBarAppearanceUpdate];
-                    }
-                    else if ([style isEqualToString:@"dark"]) {
+                    if ([style isEqualToString:@"dark"]) {
                         // dark icons and text
                         self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
+                        [self setNeedsStatusBarAppearanceUpdate];
+                    } else {
+                        // light icons and text
+                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
                         [self setNeedsStatusBarAppearanceUpdate];
                     }
                 }
@@ -1574,9 +1560,9 @@
         if ([telNumber length] > 0) {
             NSURL *telPromptUrl = [NSURL URLWithString:[NSString stringWithFormat:@"telprompt:%@", telNumber]];
             if ([[UIApplication sharedApplication] canOpenURL:telPromptUrl]) {
-                [[UIApplication sharedApplication] openURL:telPromptUrl];
+                [[UIApplication sharedApplication] openURL:telPromptUrl options:@{} completionHandler:nil];
             } else if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                [[UIApplication sharedApplication] openURL:url];
+                [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
             }
         }
         return NO;
@@ -1619,14 +1605,14 @@
             });
         } else {
             NSLog(@"MFMailComposeViewController cannot send mail. Opening mailto url in mail app");
-            [[UIApplication sharedApplication] openURL:url];
+            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
         }
         return NO;
     }
     
     // sms links
     if ([url.scheme isEqualToString:@"sms"]) {
-        [[UIApplication sharedApplication] openURL:url];
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
         return NO;
     }
     
@@ -1671,10 +1657,11 @@
                                                                               dict[@"via"]]}]];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([[UIApplication sharedApplication] canOpenURL:url])
-                [[UIApplication sharedApplication] openURL:url];
-            else
-                [[UIApplication sharedApplication] openURL:[request URL]];
+            if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+            } else {
+                [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
+            }
         });
         
         return NO;
@@ -1698,7 +1685,7 @@
                 if (![appConfig.regexIsInternal[i] boolValue]) {
                     // external
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [[UIApplication sharedApplication] openURL:[request URL]];
+                        [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
                     });
                     return NO;
                 }
@@ -1711,7 +1698,7 @@
                 ![hostname hasSuffix:[@"." stringByAppendingString:appConfig.initialHost]]) {
                 // open in external web browser
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[UIApplication sharedApplication] openURL:[request URL]];
+                    [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
                 });
                 return NO;
             }
@@ -2634,6 +2621,33 @@
     // fixes issue on iPhone XS Max and iPhone XR where instrinsic content height = 49
     [self.tabBar invalidateIntrinsicContentSize];
     [self.toolbar invalidateIntrinsicContentSize];
+    
+    
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    
+    // theme and colors
+    if ([appConfig.iosTheme isEqualToString:@"dark"]) {
+        self.view.backgroundColor = [UIColor blackColor];
+        self.webviewContainer.backgroundColor = [UIColor blackColor];
+        self.tabBar.barStyle = UIBarStyleBlack;
+        self.toolbar.barStyle = UIBarStyleBlack;
+    } else {
+        self.tabBar.barStyle = UIBarStyleDefault;
+        self.toolbar.barStyle = UIBarStyleDefault;
+        
+        if (@available(iOS 12.0, *)) {
+            if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                self.view.backgroundColor = [UIColor blackColor];
+                self.webviewContainer.backgroundColor = [UIColor blackColor];
+            } else {
+                self.view.backgroundColor = [UIColor whiteColor];
+                self.webviewContainer.backgroundColor = [UIColor whiteColor];
+            }
+        } else {
+            self.view.backgroundColor = [UIColor whiteColor];
+            self.webviewContainer.backgroundColor = [UIColor whiteColor];
+        }
+    }
 }
 
 @end
