@@ -1108,6 +1108,28 @@
             return NO;
         }
         
+        if ([@"webview" isEqualToString:url.host]) {
+            if ([@"/clearCache" isEqualToString:url.path]) {
+                NSLog(@"Clearing webview cache");
+                NSSet *types = [NSSet setWithObjects:WKWebsiteDataTypeDiskCache,
+                                WKWebsiteDataTypeMemoryCache, nil];
+                [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:types modifiedSince:[NSDate dateWithTimeIntervalSince1970:0] completionHandler:^{
+                    // do nothing
+                }];
+            }
+            
+            return NO;
+        }
+        
+        if ([@"run" isEqualToString:url.host]) {
+            if ([@"/gonative_device_info" isEqualToString:url.path]) {
+                [self runGonativeDeviceInfo];
+            } else if ([@"/gonative_onesignal_info" isEqualToString:url.path]) {
+                [self runGonativeOnesignalInfo];
+            }
+            return NO;
+        }
+        
         // config preferences
         if ([@"config" isEqualToString:url.host]) {
             GNConfigPreferences *config = [GNConfigPreferences sharedPreferences];
@@ -2106,40 +2128,9 @@
         
         // send device info
         if (doNativeBridge) {
-            NSDictionary *installation = [LEANInstallation info];
-            LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
-            appDelegate.isFirstLaunch = NO;
-            NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:installation];
-            if (jsCallback) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self runJavascript:jsCallback];
-                });
-            }
-        }
-        
-        // send OneSignal info
-        if ([GoNativeAppConfig sharedAppConfig].oneSignalEnabled && doNativeBridge) {
-            OSPermissionSubscriptionState *state = [OneSignal getPermissionSubscriptionState];
-
-            NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
-            NSDictionary *installation = [LEANInstallation info];
-            [toSend addEntriesFromDictionary:installation];
-            if (state.subscriptionStatus) {
-                if (state.subscriptionStatus.userId) {
-                    toSend[@"oneSignalUserId"] = state.subscriptionStatus.userId;
-                }
-                if (state.subscriptionStatus.pushToken) {
-                    toSend[@"oneSignalPushToken"] = state.subscriptionStatus.pushToken;
-                }
-                toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:state.subscriptionStatus.subscribed];
-                toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
-            }
-            
-            NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_onesignal_info" data:toSend];
-            if (jsCallback) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self runJavascript:jsCallback];
-                });
+            [self runGonativeDeviceInfo];
+            if (appConfig.oneSignalEnabled) {
+                [self runGonativeOnesignalInfo];
             }
         }
         
@@ -2160,6 +2151,47 @@
             }
         }
     });
+}
+
+-(void)runGonativeDeviceInfo {
+    NSDictionary *installation = [LEANInstallation info];
+    LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
+    appDelegate.isFirstLaunch = NO;
+    NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:installation];
+    if (jsCallback) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self runJavascript:jsCallback];
+        });
+    }
+}
+
+-(void)runGonativeOnesignalInfo {
+    if (![GoNativeAppConfig sharedAppConfig].oneSignalEnabled) {
+        return;
+    }
+    
+    OSPermissionSubscriptionState *state = [OneSignal getPermissionSubscriptionState];
+
+    NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
+    NSDictionary *installation = [LEANInstallation info];
+    [toSend addEntriesFromDictionary:installation];
+    if (state.subscriptionStatus) {
+        if (state.subscriptionStatus.userId) {
+            toSend[@"oneSignalUserId"] = state.subscriptionStatus.userId;
+        }
+        if (state.subscriptionStatus.pushToken) {
+            toSend[@"oneSignalPushToken"] = state.subscriptionStatus.pushToken;
+        }
+        toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:state.subscriptionStatus.subscribed];
+        toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
+    }
+    
+    NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_onesignal_info" data:toSend];
+    if (jsCallback) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self runJavascript:jsCallback];
+        });
+    }
 }
 
 - (WKWebView*)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
