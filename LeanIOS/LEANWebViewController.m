@@ -1333,13 +1333,6 @@
                     return NO;
                 }
                 
-                // verify all tags are strings
-                for (id key in tags) {
-                    if (![key isKindOfClass:[NSString class]] || ![tags[key] isKindOfClass:[NSString class]]) {
-                        return NO;
-                    }
-                }
-                
                 // set the tags
                 [OneSignal sendTags:tags onSuccess:^(NSDictionary *result) {
                     if (callback && callback.length > 0) {
