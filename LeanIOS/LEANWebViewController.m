@@ -704,7 +704,16 @@
 
 - (void)refreshPage
 {
-    [self.wkWebview reload];
+    NSString *currentUrl = self.wkWebview.URL.absoluteString;
+    if ([currentUrl isEqualToString:@"http://offline/"]) {
+        if ([self.wkWebview canGoBack]) {
+            [self.wkWebview goBack];
+        } else {
+            [self loadUrl:self.initialUrl];
+        }
+    } else {
+        [self.wkWebview reload];
+    }
 }
 
 - (void) logout
@@ -2390,15 +2399,15 @@
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
-    [self didFailLoadWithError:error];
+    [self didFailLoadWithError:error isProvisional:NO];
 }
 
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error
 {
-    [self didFailLoadWithError:error];
+    [self didFailLoadWithError:error isProvisional:YES];
 }
 
-- (void)didFailLoadWithError:(NSError*)error
+- (void)didFailLoadWithError:(NSError*)error isProvisional:(BOOL)isProvisional
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     
@@ -2407,10 +2416,13 @@
         [self showWebview];
     }
     
-    if ([[error domain] isEqualToString:NSURLErrorDomain] && [error code] == NSURLErrorNotConnectedToInternet) {
-        NSURL *offlineFile = [[NSBundle mainBundle] URLForResource:@"offline" withExtension:@"html"];
-        NSString *html = [NSString stringWithContentsOfURL:offlineFile encoding:NSUTF8StringEncoding error:nil];
-        [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:@"http://offline/"]];
+    if ([[error domain] isEqualToString:NSURLErrorDomain]) {
+        if ([error code] == NSURLErrorNotConnectedToInternet ||
+            (isProvisional && [error code] == NSURLErrorTimedOut)) {
+            NSURL *offlineFile = [[NSBundle mainBundle] URLForResource:@"offline" withExtension:@"html"];
+            NSString *html = [NSString stringWithContentsOfURL:offlineFile encoding:NSUTF8StringEncoding error:nil];
+            [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:@"http://offline/"]];
+        }
     }
 }
 
