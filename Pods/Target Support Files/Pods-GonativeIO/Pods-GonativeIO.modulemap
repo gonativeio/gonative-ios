@@ -1,0 +1,6 @@
+framework module Pods_GonativeIO {
+  umbrella header "Pods-GonativeIO-umbrella.h"
+
+  export *
+  module * { export * }
+}
