@@ -197,7 +197,9 @@
         NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:req completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
             if (error || httpResponse.statusCode != 200 || !location) {
-                button.enabled = YES;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    button.enabled = YES;
+                });
                 return;
             }
             
@@ -208,10 +210,12 @@
             [fileManager removeItemAtURL:destination error:nil];
             [fileManager moveItemAtURL:location toURL:destination error:nil];
             
-            self.interactionController = [UIDocumentInteractionController interactionControllerWithURL:destination];
-            [self.interactionController presentOpenInMenuFromBarButtonItem:button animated:YES];
-            
-            button.enabled = YES;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.interactionController = [UIDocumentInteractionController interactionControllerWithURL:destination];
+                [self.interactionController presentOpenInMenuFromBarButtonItem:button animated:YES];
+                
+                button.enabled = YES;
+            });
         }];
         
         button.enabled = NO;
