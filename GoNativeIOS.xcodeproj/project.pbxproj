@@ -75,6 +75,7 @@
 		2081A2951F33ED8100057E3F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57C1B9757390064D928 /* SystemConfiguration.framework */; };
 		2089662718AC6753007FC34F /* LEANLoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2089662618AC6753007FC34F /* LEANLoginManager.m */; };
 		208A9F42191AEBAD0049E664 /* appConfig.json in Resources */ = {isa = PBXBuildFile; fileRef = 208A9F41191AEBAD0049E664 /* appConfig.json */; };
+		20912D732380DB7600506807 /* GNFileWriterSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20912D722380DB7600506807 /* GNFileWriterSharer.m */; };
 		2092E238205C3E83005E8B71 /* GNConfigPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 2092E237205C3E83005E8B71 /* GNConfigPreferences.m */; };
 		209A7D101D347714005A89C6 /* GoNativeAuthUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */; };
 		209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 209B3218193FA36F0052A7C6 /* LEANUrlCache.m */; };
@@ -236,6 +237,8 @@
 		2089662518AC6753007FC34F /* LEANLoginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANLoginManager.h; sourceTree = "<group>"; };
 		2089662618AC6753007FC34F /* LEANLoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANLoginManager.m; sourceTree = "<group>"; };
 		208A9F41191AEBAD0049E664 /* appConfig.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = appConfig.json; sourceTree = "<group>"; };
+		20912D712380DB7600506807 /* GNFileWriterSharer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNFileWriterSharer.h; sourceTree = "<group>"; };
+		20912D722380DB7600506807 /* GNFileWriterSharer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNFileWriterSharer.m; sourceTree = "<group>"; };
 		2092E236205C3E83005E8B71 /* GNConfigPreferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNConfigPreferences.h; sourceTree = "<group>"; };
 		2092E237205C3E83005E8B71 /* GNConfigPreferences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNConfigPreferences.m; sourceTree = "<group>"; };
 		209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeAuthUrl.swift; sourceTree = "<group>"; };
@@ -451,6 +454,8 @@
 				20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */,
 				2046CAF81BC0790800714F66 /* GNRegistrationManager.h */,
 				2046CAF91BC0790800714F66 /* GNRegistrationManager.m */,
+				20912D712380DB7600506807 /* GNFileWriterSharer.h */,
+				20912D722380DB7600506807 /* GNFileWriterSharer.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
 				2002B4AB18A9991300495B3D /* LEANAppDelegate.m */,
 				20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */,
@@ -949,6 +954,7 @@
 				20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */,
 				204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */,
 				20A13AB31905CB6C00B997DD /* NSString+FontAwesome.m in Sources */,
+				20912D732380DB7600506807 /* GNFileWriterSharer.m in Sources */,
 				2092E238205C3E83005E8B71 /* GNConfigPreferences.m in Sources */,
 				2002B4A818A9991300495B3D /* main.m in Sources */,
 				208184611F9AA00900D55384 /* GNSubscriptionsModel.m in Sources */,

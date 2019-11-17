@@ -14,7 +14,7 @@
 - (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button;
 - (void)receivedRequest:(NSURLRequest*)request;
 - (void)receivedResponse:(NSURLResponse*)response;
-- (void)receviedWebviewResponse:(NSURLResponse*)response;
+- (void)receivedWebviewResponse:(NSURLResponse*)response;
 - (void)receivedData:(NSData*)data;
 - (void)cancel;
 - (void)finish;

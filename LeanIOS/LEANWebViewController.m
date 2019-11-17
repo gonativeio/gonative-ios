@@ -34,6 +34,7 @@
 #import "GNRegistrationManager.h"
 #import "LEANWebViewIntercept.h"
 #import "Subscriptions/GNSubscriptionsController.h"
+#import "GNFileWriterSharer.h"
 #import "GNConfigPreferences.h"
 #import "GonativeIO-Swift.h"
 
@@ -89,6 +90,7 @@
 @property LEANActionManager *actionManager;
 @property LEANToolbarManager *toolbarManager;
 @property CLLocationManager *locationManager;
+@property GNFileWriterSharer *fileWriterSharer;
 @property NSString *connectivityCallback;
 @property BOOL javascriptTabs;
 
@@ -199,6 +201,8 @@
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     
+    self.fileWriterSharer = [[GNFileWriterSharer alloc] init];
+    
     // we will always be loading a page at launch, hide webview here to fix a white flash for dark themed apps
     [self hideWebview];
 }
@@ -209,6 +213,7 @@
     WKWebViewConfiguration *config = [[NSClassFromString(@"WKWebViewConfiguration") alloc] init];
     config.processPool = [LEANUtilities wkProcessPool];
     config.allowsInlineMediaPlayback = YES;
+    
     WKWebView *wv = [[NSClassFromString(@"WKWebView") alloc] initWithFrame:self.wkWebview.frame configuration:config];
     [LEANUtilities configureWebView:wv];
     [self switchToWebView:wv showImmediately:NO];
@@ -946,7 +951,7 @@
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
 {
-    [[LEANDocumentSharer sharedSharer] receviedWebviewResponse:navigationResponse.response];
+    [[LEANDocumentSharer sharedSharer] receivedWebviewResponse:navigationResponse.response];
     
     if (navigationResponse.canShowMIMEType) {
         decisionHandler(WKNavigationResponsePolicyAllow);
@@ -1900,6 +1905,7 @@
     UIView *oldView;
     if (self.wkWebview) {
         oldView = self.wkWebview;
+        [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNFileWriterSharerName];
         
         // remove KVO
         @try {
@@ -1926,6 +1932,8 @@
         [newView addObserver:self forKeyPath:@"canGoBack" options:0 context:nil];
         
         self.wkWebview.allowsBackForwardNavigationGestures = [GoNativeAppConfig sharedAppConfig].swipeGestures;
+        [self.wkWebview.configuration.userContentController addScriptMessageHandler:self.fileWriterSharer name:GNFileWriterSharerName];
+        self.fileWriterSharer.webView = newView;
     } else {
         return;
     }

@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Weiyin He. All rights reserved.
 //
 
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "LEANUtilities.h"
 #import "GoNativeAppConfig.h"
 
@@ -102,6 +103,15 @@
     }
     
     return [NSURL URLWithString:[string stringByAddingPercentEncodingWithAllowedCharacters:myCharacterSet]];
+}
+
++(NSString*)utiFromMimetype:(NSString *)mimeType
+{
+    if (!mimeType) return nil;
+    CFStringRef MIMEType = (__bridge CFStringRef)mimeType;
+    CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, MIMEType, NULL);
+    NSString *utiString = (__bridge_transfer NSString *)UTI;
+    return utiString;
 }
 
 +(BOOL)isValidEmail:(NSString*)email

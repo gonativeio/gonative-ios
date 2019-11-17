@@ -94,7 +94,7 @@
     }
 }
 
-- (void)receviedWebviewResponse:(NSURLResponse *)response
+- (void)receivedWebviewResponse:(NSURLResponse *)response
 {
     self.lastResponse = response;
     self.isFinished = YES;
