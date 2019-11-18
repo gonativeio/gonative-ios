@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
 #import "GoNativeAppConfig.h"
+#import "LEANWebViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,6 +19,8 @@ static NSUInteger GNFileWriterSharerMaxSize = 1024 * 1024 * 1024; // 1 gigabyte
 
 @interface GNFileWriterSharer : NSObject <WKScriptMessageHandler>
 @property (weak) UIView *webView;
+@property (weak) LEANWebViewController *wvc;
+-(void)downloadBlobUrl:(NSString*)url;
 @end
 
 NS_ASSUME_NONNULL_END

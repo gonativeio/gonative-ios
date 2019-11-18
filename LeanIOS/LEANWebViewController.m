@@ -202,6 +202,7 @@
     self.locationManager.delegate = self;
     
     self.fileWriterSharer = [[GNFileWriterSharer alloc] init];
+    self.fileWriterSharer.wvc = self;
     
     // we will always be loading a page at launch, hide webview here to fix a white flash for dark themed apps
     [self hideWebview];
@@ -1043,6 +1044,12 @@
     // local
     if ([url.host isEqualToString:@"offline"]) {
         return YES;
+    }
+    
+    // blob download
+    if ([url.scheme isEqualToString:@"blob"]) {
+        [self.fileWriterSharer downloadBlobUrl:urlString];
+        return NO;
     }
     
     // gonative commands

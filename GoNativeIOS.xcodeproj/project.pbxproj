@@ -73,6 +73,7 @@
 		2081A28E1F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2081A2941F33ED6900057E3F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
 		2081A2951F33ED8100057E3F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57C1B9757390064D928 /* SystemConfiguration.framework */; };
+		20890D872383421900BC9335 /* BlobDownloader.js in Resources */ = {isa = PBXBuildFile; fileRef = 20890D862383421800BC9335 /* BlobDownloader.js */; };
 		2089662718AC6753007FC34F /* LEANLoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2089662618AC6753007FC34F /* LEANLoginManager.m */; };
 		208A9F42191AEBAD0049E664 /* appConfig.json in Resources */ = {isa = PBXBuildFile; fileRef = 208A9F41191AEBAD0049E664 /* appConfig.json */; };
 		20912D732380DB7600506807 /* GNFileWriterSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20912D722380DB7600506807 /* GNFileWriterSharer.m */; };
@@ -234,6 +235,7 @@
 		2081A2881F33ECE900057E3F /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
 		2081A2891F33ECE900057E3F /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
 		2081A28B1F33ECE900057E3F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		20890D862383421800BC9335 /* BlobDownloader.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = BlobDownloader.js; sourceTree = "<group>"; };
 		2089662518AC6753007FC34F /* LEANLoginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANLoginManager.h; sourceTree = "<group>"; };
 		2089662618AC6753007FC34F /* LEANLoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANLoginManager.m; sourceTree = "<group>"; };
 		208A9F41191AEBAD0049E664 /* appConfig.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = appConfig.json; sourceTree = "<group>"; };
@@ -454,6 +456,7 @@
 				20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */,
 				2046CAF81BC0790800714F66 /* GNRegistrationManager.h */,
 				2046CAF91BC0790800714F66 /* GNRegistrationManager.m */,
+				20890D862383421800BC9335 /* BlobDownloader.js */,
 				20912D712380DB7600506807 /* GNFileWriterSharer.h */,
 				20912D722380DB7600506807 /* GNFileWriterSharer.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
@@ -818,6 +821,7 @@
 				2002B4B718A9991300495B3D /* Images.xcassets in Resources */,
 				207577582195BE3500ADD73A /* LaunchScreenNoNav.storyboard in Resources */,
 				20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */,
+				20890D872383421900BC9335 /* BlobDownloader.js in Resources */,
 				2075775A2195D80300ADD73A /* LaunchScreenNav.storyboard in Resources */,
 				209B321D193FB11A0052A7C6 /* localCache.zip in Resources */,
 				2002BA971F9A758600439AD6 /* Subscriptions.storyboard in Resources */,

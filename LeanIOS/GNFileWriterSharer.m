@@ -27,6 +27,7 @@
 @property NSMutableDictionary *idToFileInfo;
 @property UIDocumentInteractionController *documentInteractionController;
 @property GNFileWriterSharerFileInfo *interactingFile;
+@property NSString *nextFileName;
 @end
 
 @implementation GNFileWriterSharer
@@ -65,6 +66,8 @@
         [self receivedFileChunk:message.body];
     } else if ([@"fileEnd" isEqualToString:event]) {
         [self receivedFileEnd:message.body];
+    } else if([@"nextFileInfo" isEqualToString:event]) {
+        [self receivedNextFileInfo:message.body];
     } else {
         NSLog(@"Message to %@ has invalid event %@", message.name, event);
     }
@@ -80,8 +83,12 @@
     
     NSString *fileName = message[@"name"];
     if (![fileName isKindOfClass:[NSString class]] || fileName.length == 0) {
-        NSLog(@"Invalid file name");
-        return;
+        if (self.nextFileName) {
+            fileName = self.nextFileName;
+            self.nextFileName = nil;
+        } else {
+            fileName = @"download";
+        }
     }
     
     NSNumber *fileSize = message[@"size"];
@@ -200,6 +207,27 @@
     });
 }
 
+-(void)receivedNextFileInfo:(NSDictionary*)message
+{
+    NSString *name = message[@"name"];
+    if (![name isKindOfClass:[NSString class]] || name.length == 0) {
+        NSLog(@"Invalid name for nextFileInfo");
+        return;
+    }
+    
+    self.nextFileName = name;
+}
+
+-(void)downloadBlobUrl:(NSString *)url
+{
+    NSURL *jsFile = [[NSBundle mainBundle] URLForResource:@"BlobDownloader" withExtension:@"js"];
+    NSString *js = [NSString stringWithContentsOfURL:jsFile encoding:NSUTF8StringEncoding error:nil];
+    [self.wvc runJavascript:js];
+    js = [NSString stringWithFormat:@"gonativeDownloadBlobUrl(%@)", [LEANUtilities jsWrapString:url]];
+    [self.wvc runJavascript:js];
+}
+
+#pragma mark UIDocumentInteractionControllerDelegate
 -(void)documentInteractionControllerDidDismissOptionsMenu:(UIDocumentInteractionController *)controller
 {
     if (self.documentInteractionController == controller) {
