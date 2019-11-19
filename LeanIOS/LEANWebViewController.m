@@ -1047,6 +1047,10 @@
     }
     
     // blob download
+    if (urlString.length == 0) {
+        // for some reason we will get an empty url before the actual blob url on iOS 11
+        return NO;
+    }
     if ([url.scheme isEqualToString:@"blob"]) {
         [self.fileWriterSharer downloadBlobUrl:urlString];
         return NO;
