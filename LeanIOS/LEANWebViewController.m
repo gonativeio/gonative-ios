@@ -1943,6 +1943,7 @@
         [newView addObserver:self forKeyPath:@"canGoBack" options:0 context:nil];
         
         self.wkWebview.allowsBackForwardNavigationGestures = [GoNativeAppConfig sharedAppConfig].swipeGestures;
+        [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNFileWriterSharerName];
         [self.wkWebview.configuration.userContentController addScriptMessageHandler:self.fileWriterSharer name:GNFileWriterSharerName];
         self.fileWriterSharer.webView = newView;
     } else {
