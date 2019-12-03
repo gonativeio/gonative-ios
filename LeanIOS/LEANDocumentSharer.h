@@ -12,6 +12,7 @@
 + (LEANDocumentSharer*)sharedSharer;
 - (BOOL)isSharableRequest:(NSURLRequest*)req;
 - (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button;
+- (void)shareUrl:(NSURL*)url fromView:(UIView*)view;
 - (void)receivedRequest:(NSURLRequest*)request;
 - (void)receivedResponse:(NSURLResponse*)response;
 - (void)receivedWebviewResponse:(NSURLResponse*)response;

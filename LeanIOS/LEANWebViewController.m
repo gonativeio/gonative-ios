@@ -1481,11 +1481,18 @@
             }
         }
         
-        // Share page
-        if ([@"share" isEqualToString:url.host] && [@"/sharePage" isEqualToString:url.path]) {
+        // Share and download
+        if ([@"share" isEqualToString:url.host]) {
             NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-            NSString *shareUrl = query[@"url"]; // can be nil
-            [self sharePageWithUrl:shareUrl sender:nil];
+            NSString *shareUrl = query[@"url"]; // can be nil for current page
+            
+            if ([@"/sharePage" isEqualToString:url.path]) {
+                [self sharePageWithUrl:shareUrl sender:nil];
+            } else if ([@"/downloadFile" isEqualToString:url.path] && shareUrl) {
+                NSURL *urlToDownload = [NSURL URLWithString:shareUrl relativeToURL:self.currentRequest.URL];
+                [[LEANDocumentSharer sharedSharer] shareUrl:urlToDownload fromView:self.wkWebview];
+            }
+            return NO;
         }
         
         // Geolocation shim

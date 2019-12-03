@@ -8,6 +8,7 @@
 
 #import "LEANDocumentSharer.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "LEANUtilities.h"
 
 @interface LEANDocumentSharer ()
 @property UIDocumentInteractionController *interactionController;
@@ -174,10 +175,33 @@
     && req1.HTTPBodyStream == req2.HTTPBodyStream;
 }
 
-- (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button;
+- (void)shareUrl:(NSURL*)url fromView:(UIView*) view
 {
-    if (![self isSharableRequest:req]) {
+    if (!url) return;
+    
+    NSURLRequest *req = [NSURLRequest requestWithURL:url];
+    [self shareRequest:req from:view force:YES];
+}
+
+- (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button
+{
+    [self shareRequest:req from:button force:NO];
+}
+
+- (void)shareRequest:(NSURLRequest *)req from:(id) buttonOrView force:(BOOL)force;
+{
+    if (!force && ![self isSharableRequest:req]) {
         return;
+    }
+    
+    UIBarButtonItem *button = nil;
+    UIView *view = nil;
+    if (buttonOrView) {
+        if ([buttonOrView isKindOfClass:[UIBarButtonItem class]]) {
+            button = buttonOrView;
+        } else if ([buttonOrView isKindOfClass:[UIView class]]) {
+            view = buttonOrView;
+        }
     }
     
     // is the last request we intercepted
@@ -212,7 +236,14 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.interactionController = [UIDocumentInteractionController interactionControllerWithURL:destination];
-                [self.interactionController presentOpenInMenuFromBarButtonItem:button animated:YES];
+                self.interactionController.UTI = [LEANUtilities utiFromMimetype:response.MIMEType];
+                if (button) {
+                    [self.interactionController presentOpenInMenuFromBarButtonItem:button animated:YES];
+                } else if (view) {
+                    [self.interactionController presentOpenInMenuFromRect:CGRectZero inView:view animated:YES];
+                } else {
+                    [self.interactionController presentOpenInMenuFromRect:CGRectZero inView:[UIApplication sharedApplication].keyWindow animated:YES];
+                }
                 
                 button.enabled = YES;
             });
