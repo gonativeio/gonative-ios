@@ -196,7 +196,6 @@ typedef enum : NSUInteger {
 // Couples
 @property BOOL couplesEnabled;
 @property NSString *couplesLicenseKey;
-@property NSString *couplesPackageKey;
 
 // misc
 @property NSPredicate *forceLandscapeMatch;
