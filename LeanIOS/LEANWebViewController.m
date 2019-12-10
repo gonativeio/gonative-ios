@@ -2137,7 +2137,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kLEANWebViewControllerUserFinishedLoading object:self];
         
         // document sharing
-        if ([[LEANDocumentSharer sharedSharer] isSharableRequest:self.currentRequest]) {
+        if (!appConfig.disableDocumentOpenWith &&
+            [[LEANDocumentSharer sharedSharer] isSharableRequest:self.currentRequest]) {
             if (!self.shareButton) {
                 self.shareButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sharePressed:)];
             }

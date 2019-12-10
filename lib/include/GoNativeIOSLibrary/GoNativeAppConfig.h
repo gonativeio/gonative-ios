@@ -72,6 +72,7 @@ typedef enum : NSUInteger {
 @property BOOL useWebpageTitle;
 @property NSArray *segmentedControlItems;
 @property NSString *customUrlScheme;
+@property BOOL disableDocumentOpenWith;
 
 @property NSMutableDictionary *tabMenus;
 @property NSMutableArray *tabMenuRegexes;
