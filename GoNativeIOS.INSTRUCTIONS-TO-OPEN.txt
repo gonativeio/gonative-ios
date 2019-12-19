@@ -1,0 +1,7 @@
+GoNative.io iOS Instructions to Open Project
+============================================
+
+Please open GoNativeIOS.xcworkspace in Xcode. Do not open the xcodeproj file.
+
+For more information on how to build your app:
+https://support.gonative.io/help/how-do-i-build-the-ios-app-from-source-code
