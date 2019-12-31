@@ -36,6 +36,7 @@
 #import "Subscriptions/GNSubscriptionsController.h"
 #import "GNFileWriterSharer.h"
 #import "GNConfigPreferences.h"
+#import "GNBackgroundAudio.h"
 #import "GonativeIO-Swift.h"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate>
@@ -93,6 +94,7 @@
 @property GNFileWriterSharer *fileWriterSharer;
 @property NSString *connectivityCallback;
 @property BOOL javascriptTabs;
+@property GNBackgroundAudio *backgroundAudio;
 
 @property NSNumber* statusBarStyle; // set via native bridge, only works if no navigation bar
 @property IBOutlet NSLayoutConstraint *topGuideConstraint; // modify constant to place content under status bar
@@ -204,6 +206,8 @@
     self.fileWriterSharer = [[GNFileWriterSharer alloc] init];
     self.fileWriterSharer.wvc = self;
     
+    self.backgroundAudio = [[GNBackgroundAudio alloc] init];
+
     // we will always be loading a page at launch, hide webview here to fix a white flash for dark themed apps
     [self hideWebview];
 }
@@ -1143,6 +1147,15 @@
                 }];
             }
             
+            return NO;
+        }
+        
+        if ([@"backgroundAudio" isEqualToString:url.host]) {
+            if ([@"/start" isEqualToString:url.path]) {
+                [self.backgroundAudio start];
+            } else if ([@"/end" isEqualToString:url.path]) {
+                [self.backgroundAudio end];
+            }
             return NO;
         }
         

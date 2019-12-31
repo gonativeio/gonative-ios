@@ -79,6 +79,8 @@
 		20912D732380DB7600506807 /* GNFileWriterSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20912D722380DB7600506807 /* GNFileWriterSharer.m */; };
 		2092E238205C3E83005E8B71 /* GNConfigPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 2092E237205C3E83005E8B71 /* GNConfigPreferences.m */; };
 		209A7D101D347714005A89C6 /* GoNativeAuthUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */; };
+		209A964323BABF2D001906F1 /* GNBackgroundAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 209A964223BABF2D001906F1 /* GNBackgroundAudio.m */; };
+		209A964523BAC508001906F1 /* appbeep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 209A964423BAC508001906F1 /* appbeep.wav */; };
 		209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 209B3218193FA36F0052A7C6 /* LEANUrlCache.m */; };
 		209B321D193FB11A0052A7C6 /* localCache.zip in Resources */ = {isa = PBXBuildFile; fileRef = 209B321C193FB11A0052A7C6 /* localCache.zip */; };
 		209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B3307193FC4CE0052A7C6 /* libzipzap.a */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -244,6 +246,9 @@
 		2092E236205C3E83005E8B71 /* GNConfigPreferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNConfigPreferences.h; sourceTree = "<group>"; };
 		2092E237205C3E83005E8B71 /* GNConfigPreferences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNConfigPreferences.m; sourceTree = "<group>"; };
 		209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeAuthUrl.swift; sourceTree = "<group>"; };
+		209A964123BABF2D001906F1 /* GNBackgroundAudio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNBackgroundAudio.h; sourceTree = "<group>"; };
+		209A964223BABF2D001906F1 /* GNBackgroundAudio.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNBackgroundAudio.m; sourceTree = "<group>"; };
+		209A964423BAC508001906F1 /* appbeep.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = appbeep.wav; sourceTree = "<group>"; };
 		209B3217193FA36F0052A7C6 /* LEANUrlCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANUrlCache.h; sourceTree = "<group>"; };
 		209B3218193FA36F0052A7C6 /* LEANUrlCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUrlCache.m; sourceTree = "<group>"; };
 		209B321C193FB11A0052A7C6 /* localCache.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = localCache.zip; sourceTree = "<group>"; };
@@ -448,8 +453,11 @@
 				20689023215E9FD900419CB2 /* Localizable.strings */,
 				20A525ED1A7D94EE00936DC5 /* Settings.bundle */,
 				2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */,
+				209A964423BAC508001906F1 /* appbeep.wav */,
 				200F75CF1BCDA6B800C08BB5 /* notification.aff */,
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
+				209A964123BABF2D001906F1 /* GNBackgroundAudio.h */,
+				209A964223BABF2D001906F1 /* GNBackgroundAudio.m */,
 				2092E236205C3E83005E8B71 /* GNConfigPreferences.h */,
 				2092E237205C3E83005E8B71 /* GNConfigPreferences.m */,
 				20B8FFB51EB79D3F000F4CFA /* GNCustomHeaders.h */,
@@ -825,6 +833,7 @@
 				2075775A2195D80300ADD73A /* LaunchScreenNav.storyboard in Resources */,
 				209B321D193FB11A0052A7C6 /* localCache.zip in Resources */,
 				2002BA971F9A758600439AD6 /* Subscriptions.storyboard in Resources */,
+				209A964523BAC508001906F1 /* appbeep.wav in Resources */,
 				208A9F42191AEBAD0049E664 /* appConfig.json in Resources */,
 				2002B4AF18A9991300495B3D /* Main.storyboard in Resources */,
 				2004820518B080DD005FDD9A /* SidebarHeaderView.xib in Resources */,
@@ -948,6 +957,7 @@
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,
 				20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */,
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
+				209A964323BABF2D001906F1 /* GNBackgroundAudio.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
 				20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */,
 				20C8505019CD143100DB208A /* LEANIcons.m in Sources */,
