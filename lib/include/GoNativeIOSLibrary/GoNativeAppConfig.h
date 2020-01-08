@@ -198,6 +198,10 @@ typedef enum : NSUInteger {
 @property BOOL couplesEnabled;
 @property NSString *couplesLicenseKey;
 
+// Episerver
+@property BOOL episerverEnabled;
+@property NSString *episerverAuthToken;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
