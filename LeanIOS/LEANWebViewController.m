@@ -39,6 +39,8 @@
 #import "GNBackgroundAudio.h"
 #import "GonativeIO-Swift.h"
 
+#define OFFLINE_URL @"http://offline/"
+
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate>
 
 @property WKWebView *wkWebview;
@@ -715,7 +717,7 @@
 - (void)refreshPage
 {
     NSString *currentUrl = self.wkWebview.URL.absoluteString;
-    if ([currentUrl isEqualToString:@"http://offline/"]) {
+    if ([currentUrl isEqualToString:OFFLINE_URL]) {
         if ([self.wkWebview canGoBack]) {
             [self.wkWebview goBack];
         } else {
@@ -945,7 +947,9 @@
     [[LEANDocumentSharer sharedSharer] receivedRequest:navigationAction.request];
     
     NSDictionary *customHeaders = [GNCustomHeaders getCustomHeaders];
-    if (navigationAction.targetFrame.isMainFrame && customHeaders && [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
+    if (navigationAction.targetFrame.isMainFrame &&
+        ![OFFLINE_URL isEqualToString:navigationAction.request.URL.absoluteString] &&
+        customHeaders && [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
         decisionHandler(WKNavigationActionPolicyCancel);
         NSURLRequest *modifiedRequest = [GNCustomHeaders modifyRequest:navigationAction.request];
         [self.wkWebview loadRequest:modifiedRequest];
@@ -2455,7 +2459,7 @@
             (isProvisional && [error code] == NSURLErrorTimedOut)) {
             NSURL *offlineFile = [[NSBundle mainBundle] URLForResource:@"offline" withExtension:@"html"];
             NSString *html = [NSString stringWithContentsOfURL:offlineFile encoding:NSUTF8StringEncoding error:nil];
-            [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:@"http://offline/"]];
+            [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:OFFLINE_URL]];
         }
     }
 }
