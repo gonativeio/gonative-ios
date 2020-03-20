@@ -26,7 +26,10 @@
 
 - (void)loadManifestFromUrl:(NSURL*)url;
 {
-    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    config.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
+    config.URLCache = nil;
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
     NSURLSessionDataTask *task = [session dataTaskWithURL:url completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
         if (error) {
