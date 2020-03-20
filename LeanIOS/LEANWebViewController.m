@@ -71,6 +71,7 @@
 
 @property NSURLRequest *currentRequest;
 @property NSInteger urlLevel; // -1 for unknown
+@property BOOL isWindowOpen;
 @property NSString *profilePickerJs;
 @property NSTimer *timer;
 @property BOOL startedLoading; // for transitions, keeps track of whether document.readystate has switched to "loading"
@@ -368,6 +369,8 @@
     
     if ([self isRootWebView]) {
         [self.navigationController setNavigationBarHidden:![GoNativeAppConfig sharedAppConfig].showNavigationBar animated:YES];
+    } else if (self.isWindowOpen && [GoNativeAppConfig sharedAppConfig].windowOpenHideNavbar){
+            [self.navigationController setNavigationBarHidden:YES animated:YES];
     } else if ([GoNativeAppConfig sharedAppConfig].showNavigationBarWithNavigationLevels) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
@@ -2264,6 +2267,7 @@
     
     LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
     newvc.initialWebview = newWebview;
+    newvc.isWindowOpen = YES;
     
     NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
     while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {

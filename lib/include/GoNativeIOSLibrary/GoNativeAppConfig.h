@@ -73,6 +73,7 @@ typedef enum : NSUInteger {
 @property NSArray *segmentedControlItems;
 @property NSString *customUrlScheme;
 @property BOOL disableDocumentOpenWith;
+@property BOOL windowOpenHideNavbar;
 
 @property NSMutableDictionary *tabMenus;
 @property NSMutableArray *tabMenuRegexes;
