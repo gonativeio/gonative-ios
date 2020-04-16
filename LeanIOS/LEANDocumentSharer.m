@@ -63,6 +63,21 @@
                                     @"application/vnd.ms-powerpoint.presentation.macroEnabled.12",
                                     @"application/vnd.ms-powerpoint.slideshow.macroEnabled.12",
                                     
+                                    // Apple pages
+                                    @"application/vnd.iwork.pages.archive",
+                                    @"application/vnd.iwork.pages",
+                                    @"application/x-iwork-pages-sffkey",
+                                    
+                                    // Apple numbers
+                                    @"application/vnd.iwork.numbers.archive",
+                                    @"application/vnd.iwork.numbers",
+                                    @"application/x-iwork-numbers-sffkey",
+                                    
+                                    // Apple keynote
+                                    @"application/vnd.iwork.keynote.archive",
+                                    @"application/vnd.iwork.keynote",
+                                    @"application/x-iwork-keynote-sffkey",
+                                    
                                     @"application/zip"]; // many MS office documents may be auto-detect as zip files
         self.imageMimePrefix = @"image/";
         self.sharableRequests = [NSMutableArray array];
