@@ -203,6 +203,9 @@ typedef enum : NSUInteger {
 @property BOOL episerverEnabled;
 @property NSString *episerverAuthToken;
 
+// Root / Jailbreak detection
+@property BOOL rootDetectEnabled;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
