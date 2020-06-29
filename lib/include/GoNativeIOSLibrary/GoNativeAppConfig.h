@@ -206,6 +206,9 @@ typedef enum : NSUInteger {
 // Root / Jailbreak detection
 @property BOOL rootDetectEnabled;
 
+// Twilio
+@property BOOL twilioEnabled;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
