@@ -226,7 +226,7 @@
 		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		20689024215E9FD900419CB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		20689026215EA28D00419CB2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
 		2075775521957C1600ADD73A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		207577572195BE3500ADD73A /* LaunchScreenNoNav.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreenNoNav.storyboard; sourceTree = "<group>"; };
@@ -780,7 +780,7 @@
 								enabled = 0;
 							};
 							com.apple.SafariKeychain = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -800,7 +800,7 @@
 			knownRegions = (
 				en,
 				Base,
-				fr,
+
 			);
 			mainGroup = 2002B48F18A9991300495B3D;
 			productRefGroup = 2002B49918A9991300495B3D /* Products */;
@@ -1043,7 +1043,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				20689024215E9FD900419CB2 /* en */,
-				20689026215EA28D00419CB2 /* fr */,
+
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1055,7 +1055,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUILD_SETTINGS_APP_NAME = GoNative;
+				BUILD_SETTINGS_APP_NAME = "medGo";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1116,7 +1116,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUILD_SETTINGS_APP_NAME = GoNative;
+				BUILD_SETTINGS_APP_NAME = "medGo";
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1173,6 +1173,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = GonativeIO.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
@@ -1196,7 +1197,7 @@
 					"-ObjC",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.medgo.medgo1;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "LeanIOS/GonativeIO-Bridging-Header.h";
@@ -1214,6 +1215,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = GonativeIO.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = "";
@@ -1237,7 +1239,7 @@
 					"-ObjC",
 					"$(inherited)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.medgo.medgo1;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "LeanIOS/GonativeIO-Bridging-Header.h";
@@ -1312,7 +1314,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev.OneSignalNotificationServiceExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.medgo.medgo1.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -1340,7 +1342,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev.OneSignalNotificationServiceExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.medgo.medgo1.OneSignalNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;

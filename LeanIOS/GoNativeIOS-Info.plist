@@ -4,8 +4,7 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-	<key>CFBundleDisplayName</key>
-	<string>${BUILD_SETTINGS_APP_NAME}</string>
+	<key>CFBundleDisplayName</key><string>medGo</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
