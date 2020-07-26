@@ -209,6 +209,9 @@ typedef enum : NSUInteger {
 // Twilio
 @property BOOL twilioEnabled;
 
+// iBeacons
+@property BOOL beaconEnabled;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
