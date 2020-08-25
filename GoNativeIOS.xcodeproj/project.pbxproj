@@ -1178,7 +1178,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.4.1.1;
+				CURRENT_PROJECT_VERSION = 1.4.1.2;
 				DEVELOPMENT_TEAM = J4R4L8LQ8R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1224,7 +1224,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.4.1.1;
+				CURRENT_PROJECT_VERSION = 1.4.1.2;
 				DEVELOPMENT_TEAM = J4R4L8LQ8R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1314,7 +1314,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.4.1.1;
+				CURRENT_PROJECT_VERSION = 1.4.1.2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = J4R4L8LQ8R;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1346,7 +1346,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1.4.1.1;
+				CURRENT_PROJECT_VERSION = 1.4.1.2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = J4R4L8LQ8R;
 				FRAMEWORK_SEARCH_PATHS = (
