@@ -103,6 +103,11 @@
 		20C8505019CD143100DB208A /* LEANIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C8504F19CD143100DB208A /* LEANIcons.m */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
+		20F1F40D24F969F0004F680B /* custom_sound_1.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40824F969EF004F680B /* custom_sound_1.aff */; };
+		20F1F40E24F969F0004F680B /* custom_sound_4.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40924F969EF004F680B /* custom_sound_4.aff */; };
+		20F1F40F24F969F0004F680B /* custom_sound_3.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40A24F969EF004F680B /* custom_sound_3.aff */; };
+		20F1F41024F969F0004F680B /* custom_sound_5.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40B24F969F0004F680B /* custom_sound_5.aff */; };
+		20F1F41124F969F0004F680B /* custom_sound_2.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40C24F969F0004F680B /* custom_sound_2.aff */; };
 		20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */; };
 		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
@@ -307,6 +312,11 @@
 		20E4720D20B75AE8004E0045 /* ZZFileChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZFileChannel.h; sourceTree = "<group>"; };
 		20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANWebViewPool.h; sourceTree = "<group>"; };
 		20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewPool.m; sourceTree = "<group>"; };
+		20F1F40824F969EF004F680B /* custom_sound_1.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = custom_sound_1.aff; sourceTree = "<group>"; };
+		20F1F40924F969EF004F680B /* custom_sound_4.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = custom_sound_4.aff; sourceTree = "<group>"; };
+		20F1F40A24F969EF004F680B /* custom_sound_3.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = custom_sound_3.aff; sourceTree = "<group>"; };
+		20F1F40B24F969F0004F680B /* custom_sound_5.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = custom_sound_5.aff; sourceTree = "<group>"; };
+		20F1F40C24F969F0004F680B /* custom_sound_2.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = custom_sound_2.aff; sourceTree = "<group>"; };
 		20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANToolbarManager.h; sourceTree = "<group>"; };
 		20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANToolbarManager.m; sourceTree = "<group>"; };
 		20F49C2219C7BE8200B46C5A /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleCast.framework; sourceTree = "<group>"; };
@@ -455,6 +465,11 @@
 				2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */,
 				209A964423BAC508001906F1 /* appbeep.wav */,
 				200F75CF1BCDA6B800C08BB5 /* notification.aff */,
+				20F1F40824F969EF004F680B /* custom_sound_1.aff */,
+				20F1F40C24F969F0004F680B /* custom_sound_2.aff */,
+				20F1F40A24F969EF004F680B /* custom_sound_3.aff */,
+				20F1F40924F969EF004F680B /* custom_sound_4.aff */,
+				20F1F40B24F969F0004F680B /* custom_sound_5.aff */,
 				2002B51118AB091C00495B3D /* jquery-2.1.0.min.js */,
 				209A964123BABF2D001906F1 /* GNBackgroundAudio.h */,
 				209A964223BABF2D001906F1 /* GNBackgroundAudio.m */,
@@ -819,6 +834,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20F1F41024F969F0004F680B /* custom_sound_5.aff in Resources */,
 				2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */,
 				20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */,
 				203ADBAA1C224F0300273067 /* GonativeIO.entitlements in Resources */,
@@ -833,13 +849,17 @@
 				2075775A2195D80300ADD73A /* LaunchScreenNav.storyboard in Resources */,
 				209B321D193FB11A0052A7C6 /* localCache.zip in Resources */,
 				2002BA971F9A758600439AD6 /* Subscriptions.storyboard in Resources */,
+				20F1F40D24F969F0004F680B /* custom_sound_1.aff in Resources */,
 				209A964523BAC508001906F1 /* appbeep.wav in Resources */,
 				208A9F42191AEBAD0049E664 /* appConfig.json in Resources */,
 				2002B4AF18A9991300495B3D /* Main.storyboard in Resources */,
+				20F1F40F24F969F0004F680B /* custom_sound_3.aff in Resources */,
 				2004820518B080DD005FDD9A /* SidebarHeaderView.xib in Resources */,
 				2075775621957C1600ADD73A /* LaunchScreen.storyboard in Resources */,
+				20F1F40E24F969F0004F680B /* custom_sound_4.aff in Resources */,
 				200F75D01BCDA6B800C08BB5 /* notification.aff in Resources */,
 				20A525EE1A7D94EE00936DC5 /* Settings.bundle in Resources */,
+				20F1F41124F969F0004F680B /* custom_sound_2.aff in Resources */,
 				2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */,
 				20689025215E9FD900419CB2 /* Localizable.strings in Resources */,
 				20A13AB21905CB6C00B997DD /* FontAwesome.ttf in Resources */,
