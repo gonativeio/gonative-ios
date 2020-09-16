@@ -230,6 +230,7 @@
 		205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		20639D7E250CF4EF007FE46C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		20689024215E9FD900419CB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		20689026215EA28D00419CB2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
@@ -816,6 +817,7 @@
 				en,
 				Base,
 				fr,
+				de,
 			);
 			mainGroup = 2002B48F18A9991300495B3D;
 			productRefGroup = 2002B49918A9991300495B3D /* Products */;
@@ -1064,6 +1066,7 @@
 			children = (
 				20689024215E9FD900419CB2 /* en */,
 				20689026215EA28D00419CB2 /* fr */,
+				20639D7E250CF4EF007FE46C /* de */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
