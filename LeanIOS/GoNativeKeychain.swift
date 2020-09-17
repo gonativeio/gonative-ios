@@ -141,7 +141,7 @@ open class GoNativeKeychain: NSObject {
             let secretData = secret.data(using: String.Encoding.utf8)
             
             let accessControlError:UnsafeMutablePointer<Unmanaged<CFError>?>? = nil
-            let accessControlRef = SecAccessControlCreateWithFlags(kCFAllocatorDefault, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, SecAccessControlCreateFlags.touchIDAny, accessControlError)
+            let accessControlRef = SecAccessControlCreateWithFlags(kCFAllocatorDefault, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, SecAccessControlCreateFlags.biometryAny, accessControlError)
             
             if accessControlRef == nil || accessControlError != nil {
                 DispatchQueue.main.async(execute: {
