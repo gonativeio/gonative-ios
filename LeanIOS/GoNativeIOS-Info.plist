@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>medGo</string>
+	<string>Hublo</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
@@ -20,8 +20,6 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array/>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAppID</key>
@@ -55,7 +53,7 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>${BUILD_SETTINGS_APP_NAME} needs access to your calendar to retrieve and add events.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>${BUILD_SETTINGS_APP_NAME} needs access to your camera to upload photos.</string>
+	<string>${BUILD_SETTINGS_APP_NAME} needs access to your camera to upload your documents to be reviewed by the institution you are working with.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>${BUILD_SETTINGS_APP_NAME} needs access to your Face ID to authenticate you. </string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -67,9 +65,9 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>${BUILD_SETTINGS_APP_NAME} needs access to your microphone to capture audio.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>${BUILD_SETTINGS_APP_NAME} needs access to your camera roll to upload photos.</string>
+	<string>${BUILD_SETTINGS_APP_NAME} needs access to your camera roll to upload your documents to be reviewed by the institution you are working with.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>${BUILD_SETTINGS_APP_NAME} needs access to your camera roll to upload photos.</string>
+	<string>${BUILD_SETTINGS_APP_NAME} needs access to your camera roll to upload your documents to be reviewed by the institution you are working with.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FontAwesome.ttf</string>
