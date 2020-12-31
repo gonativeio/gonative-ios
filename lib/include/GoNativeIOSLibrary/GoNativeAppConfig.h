@@ -212,6 +212,9 @@ typedef enum : NSUInteger {
 // iBeacons
 @property BOOL beaconEnabled;
 
+// SalesForce MarketingCloud MobilePush
+@property BOOL salesforceMobilepushEnabled;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
