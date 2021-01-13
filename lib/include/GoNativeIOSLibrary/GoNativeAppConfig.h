@@ -214,6 +214,11 @@ typedef enum : NSUInteger {
 
 // SalesForce MarketingCloud MobilePush
 @property BOOL salesforceMobilepushEnabled;
+@property BOOL salesforceRequiresUserPrivacyConsent;
+@property NSString* salesforceAppID;
+@property NSString* salesforceAccessToken;
+@property NSString* salesforceAppEndpoint;
+@property NSString* salesforceMID;
 
 // misc
 @property NSPredicate *forceLandscapeMatch;
