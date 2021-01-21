@@ -219,6 +219,7 @@ typedef enum : NSUInteger {
 @property NSString* salesforceAccessToken;
 @property NSString* salesforceAppEndpoint;
 @property NSString* salesforceMID;
+@property BOOL salesforceDelayRegistrationUntilContactKeyIsSet;
 
 // misc
 @property NSPredicate *forceLandscapeMatch;
