@@ -1,143 +1,233 @@
 {
   "general": {
+    "userAgentRegexes": [],
+    "replaceStrings": [],
+    "languages": [],
     "userAgentAdd": "gonative",
-    "initialUrl": "https://gonative.io/",
-    "appName": "GoNative.io",
-    "useWKWebView": true
+    "useWKWebView": true,
+    "enableWindowOpen": true,
+    "useCrosswalkWebView": false,
+    "forceScreenOrientation": null,
+    "initialUrl": "https://4teamchatphp.ultrastudioltd.repl.co/index.php",
+    "appName": "4TeamChatPHP",
+    "iosBundleId": "ios.ultrastudio.replit.fourteamchatphp",
+    "publicKey": "yyozdr",
+    "deviceRegKey": "3y8du9hagj37qm1aza93j3b4kr"
   },
   "navigation": {
-    "iosPullToRefresh": false,
-    "sidebarNavigation": {
-      "sidebarEnabledRegex": null,
-      "menus": [{
-        "name": "default",
-        "items": [{
-          "url": "https://gonative.io/",
-          "label": "Home",
-          "subLinks": []
-        }, {
-          "url": "https://gonative.io/about/",
-          "label": "About",
-          "subLinks": []
-        }, {
-          "url": "https://gonative.io/examples/",
-          "label": "Examples",
-          "subLinks": []
-        }],
-        "active": true
-      }]
-    },
     "tabNavigation": {
-      "tabSelectionConfig": [{
-        "id": "1",
-        "regex": ".*about.*"
-      }],
-      "tabMenus": [{
-        "id": "1",
-        "items": [{
-          "icon": "fa-cloud",
-          "label": "Tab 1",
-          "url": "javascript:alert('You selected tab 1. These tabs are only shown on the about page')"
-        }, {
-          "icon": "fa-globe",
-          "label": "Tab 2",
-          "url": "javascript:alert('You selected tab 2. These tabs are only shown on the about page')"
-        }, {
-          "icon": "fa-users",
-          "label": "Tab 3",
-          "url": "javascript:alert('You selected tab 3. These tabs are only shown on the about page')"
-        }]
-      }],
-      "active": true
+      "tabSelectionConfig": [
+        {
+          "id": "1",
+          "regex": ""
+        }
+      ],
+      "tabMenus": [
+        {
+          "id": "1",
+          "items": [
+            {
+              "subLinks": []
+            }
+          ]
+        }
+      ]
     },
-    "actionConfig": {
-      "active": true,
-      "actions": [{
-        "id": "exampleActions",
-        "items": [{
-          "label": "Globe",
-          "icon": "fa-globe",
-          "url": "javascript:alert('You tapped the globe! It only appears on the Examples page')"
-        }]
-      }],
-      "actionSelection": [{
-        "regex": ".*/examples.*",
-        "id": "exampleActions"
-      }]
+    "sidebarNavigation": {
+      "menuSelectionConfig": {
+        "testURL": null,
+        "redirectLocations": [
+          {
+            "regex": null,
+            "menuName": "default",
+            "loggedIn": false
+          },
+          {
+            "regex": ".*",
+            "menuName": "default",
+            "loggedIn": true
+          }
+        ]
+      },
+      "menus": [
+        {
+          "name": "default",
+          "items": null,
+          "active": false
+        },
+        {
+          "name": "loggedIn",
+          "items": null,
+          "active": false
+        }
+      ]
     },
     "regexInternalExternal": {
-      "rules": [{
-        "regex": "https?://([-\\w]+\\.)*facebook\\.com/login.php.*",
-        "internal": true
-      }, {
-        "regex": "https?://([-\\w]+\\.)*facebook\\.com/pages/.*",
-        "internal": false
-      }, {
-        "regex": "https?://([-\\w]+\\.)*facebook\\.com/sharer\\.php.*",
-        "internal": false
-      }, {
-        "regex": "https?://([-\\w]+\\.)*plus\\.google\\.com/share.*",
-        "internal": false
-      }, {
-        "regex": "https?://([-\\w]+\\.)*twitter\\.com/intent/.*",
-        "internal": false
-      }, {
-        "regex": "https?://([-\\w]+\\.)*gonative\\.io/?.*",
-        "internal": true
-      }, {
-        "regex": "https?://([-\\w]+\\.)*google\\.com/?.*",
-        "internal": true
-      }],
-      "active": true
-    }
-  },
-  "forms": {
-    "search": {
-      "active": true,
-      "searchTemplateURL": "https://www.google.com/search?q="
-    }
+      "rules": [
+        {
+          "regex": "^(?!https?://).*",
+          "internal": false
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*facebook\\.com/login.php.*",
+          "internal": true
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*facebook\\.com/dialog.*",
+          "internal": true
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*facebook\\.com/v1\\.0/.*",
+          "internal": true
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*facebook\\.com/oauth.*",
+          "internal": true
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*facebook\\.com/v2\\.0/.*",
+          "internal": true
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*facebook\\.com/checkpoint.*",
+          "internal": true
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*facebook\\.com.*",
+          "internal": true
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*plus\\.google\\.com/share.*",
+          "internal": false
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*twitter\\.com/.*",
+          "internal": false
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*instagram\\.com/.*",
+          "internal": false
+        },
+        {
+          "regex": "https?://maps\\.google\\.com.*",
+          "internal": false
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*linkedin\\.com/.*",
+          "internal": false
+        },
+        {
+          "regex": "https?://([-\\w]+\\.)*google\\.com/maps/search/.*",
+          "internal": false
+        },
+        {
+          "regex": ".*",
+          "internal": true
+        }
+      ]
+    },
+    "iosPullToRefresh": true,
+    "navigationTitles": {
+      "titles": [
+        {}
+      ]
+    },
+    "ignorePageFinishedRegexes": [],
+    "iosShowRefreshButton": false,
+    "deepLinkDomains": [],
+    "navigationLevels": {
+      "levels": [
+        {}
+      ]
+    },
+    "toolbarNavigation": {
+      "visibility": "anyItemEnabled",
+      "items": [
+        {
+          "system": "back"
+        }
+      ]
+    },
+    "redirects": []
   },
   "styling": {
-    "showActionBar": true,
-    "showNavigationBar": true,
-    "iosTheme": "light",
-    "iosTitleColor": "#333333",
-    "iosTintColor": "#0091fe",
-    "androidTheme": "Light.DarkActionBar",
-    "androidSidebarBackgroundColor": "#111111",
-    "androidSidebarForegroundColor": "#d0d0d0",
-    "androidHideTitleInActionBar": false,
-    "disableAnimations": false,
+    "iosLaunchScreen": {
+      "backgroundColor": "#FFFFFF",
+      "backgroundImage": "https://s3.amazonaws.com/gonativeio/public/ios_launch_screen_background_default_FFFFFF_1_2x2.png"
+    },
+    "transitionInteractiveDelayMax": 0.2,
     "menuAnimationDuration": 0.15,
-    "transitionInteractiveDelayMax": 0.2
+    "disableAnimations": false,
+    "hideWebviewAlpha": 0.5,
+    "icon": "images/logo1_white_padded.png",
+    "iosHeaderImage": "images/logo1.png",
+    "showActionBar": false,
+    "showNavigationBar": false,
+    "iosSidebarFont": "Default",
+    "navigationTitleImage": false,
+    "iosTheme": "default"
+  },
+  "forms": {
+    "interceptForms": {
+      "forms": []
+    },
+    "loginConfig": {
+      "formSelector": null,
+      "loginIsFirstPage": false,
+      "formInputs": []
+    },
+    "signupConfig": {
+      "active": false,
+      "formSelector": null,
+      "formInputs": []
+    }
+  },
+  "permissions": {
+    "usesGeolocation": true,
+    "enableWebRTC": false
+  },
+  "performance": {
+    "webviewPools": [
+      {
+        "urls": [
+          {
+            "disown": "reload"
+          }
+        ]
+      }
+    ]
   },
   "services": {
-    "parse": {
-      "active": false,
-      "applicationId": "",
-      "clientKey": "",
-      "pushEnabled": false
-    },
-    "oneSignal": {
-      "active": false,
-      "applicationId": "",
-      "requiresUserPrivacyConsent": false
-    },
-    "facebook": {
-      "active": false,
-      "appId": "",
-      "displayName": ""
-    },
     "push": {
       "active": false
     },
+    "analytics": {
+      "active": false
+    },
+    "parse": {
+      "active": false,
+      "pushEnabled": false
+    },
+    "facebook": {
+      "active": false
+    },
+    "oneSignal": {
+      "active": false,
+      "notificationExtension": false
+    },
     "registration": {
       "active": false,
-      "endpoints": [{
-        "url": "https://gonative.io/example_push_endpoint",
-        "dataType": "push",
-        "urlRegex": ".*/loginfinished"
-      }]
+      "endpoints": [
+        {
+          "url": null,
+          "urlRegex": null,
+          "dataType": [
+            "parse",
+            "oneSignal",
+            "xtremepush"
+          ]
+        }
+      ]
     }
   }
 }
