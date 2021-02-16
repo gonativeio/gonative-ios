@@ -209,6 +209,18 @@ typedef enum : NSUInteger {
 // Twilio
 @property BOOL twilioEnabled;
 
+// iBeacons
+@property BOOL beaconEnabled;
+
+// SalesForce MarketingCloud MobilePush
+@property BOOL salesforceMobilepushEnabled;
+@property BOOL salesforceRequiresUserPrivacyConsent;
+@property NSString* salesforceAppID;
+@property NSString* salesforceAccessToken;
+@property NSString* salesforceAppEndpoint;
+@property NSString* salesforceMID;
+@property BOOL salesforceDelayRegistrationUntilContactKeyIsSet;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
