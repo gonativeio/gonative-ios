@@ -8,7 +8,7 @@
     "enableWindowOpen": true,
     "useCrosswalkWebView": false,
     "forceScreenOrientation": "portrait",
-    "initialUrl": "https://www.medgo.fr/mobile",
+    "initialUrl": "https://m.hublo.com/mobile",
     "appName": "medGo",
     "iosBundleId": "fr.medgo.medgo1",
     "androidPackageName": "fr.medgo.medgo1",
@@ -131,9 +131,7 @@
     "androidPullToRefresh": false,
     "iosPullToRefresh": true,
     "navigationTitles": {
-      "titles": [
-        {}
-      ]
+      "titles": [{}]
     },
     "ignorePageFinishedRegexes": [],
     "androidShowRefreshButton": false,
@@ -147,9 +145,7 @@
       "app.hublo.com"
     ],
     "navigationLevels": {
-      "levels": [
-        {}
-      ]
+      "levels": [{}]
     },
     "toolbarNavigation": null,
     "redirects": []
@@ -251,11 +247,7 @@
         {
           "url": null,
           "urlRegex": "gonative_nevermatch",
-          "dataType": [
-            "parse",
-            "oneSignal",
-            "xtremepush"
-          ]
+          "dataType": ["parse", "oneSignal", "xtremepush"]
         }
       ]
     }
