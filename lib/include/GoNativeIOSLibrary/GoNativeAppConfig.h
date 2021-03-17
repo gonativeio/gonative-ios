@@ -221,6 +221,12 @@ typedef enum : NSUInteger {
 @property NSString* salesforceMID;
 @property BOOL salesforceDelayRegistrationUntilContactKeyIsSet;
 
+// Kaltura
+@property BOOL kalturaEnabled;
+@property NSNumber* kalturaPartnerId;
+@property NSString* kalturaCastReceiverAppId;
+@property NSString* kalturaServerUrl;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
