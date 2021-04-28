@@ -12,12 +12,11 @@
 #import "LEANRootViewController.h"
 #import "GoNativeAppConfig.h"
 #import "LEANLoginManager.h"
-#import "FontAwesome/NSString+FontAwesome.h"
-#import "FontAwesome/UIFont+FontAwesome.h"
 #import "LEANUrlInspector.h"
 #import "LEANTabManager.h"
 #import "LEANProfilePicker.h"
 #import "LEANUtilities.h"
+#import "GonativeIO-Swift.h"
 
 @interface LEANMenuViewController ()
 
@@ -256,12 +255,12 @@
     // icon
     UILabel *icon;
     if (menuItem[@"icon"] && [menuItem[@"icon"] isKindOfClass:[NSString class]]) {
-        if ([menuItem[@"icon"] hasPrefix:@"fa-"]) {
+        if ([menuItem[@"icon"] hasPrefix:@"fas fa-"] || [menuItem[@"icon"] hasPrefix:@"fab fa-"]) {
             // add fontawesome icon to imageView
             icon = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageView.bounds.size.width, imageView.bounds.size.height)];
             icon.textAlignment = NSTextAlignmentCenter;
-            icon.font = [UIFont fontAwesomeFontOfSize:[UIFont systemFontSize]];
-            icon.text = [NSString fontAwesomeIconStringForIconIdentifier:menuItem[@"icon"]];
+            icon.font = [LEANIcons fontAwesomeFontOfNameAndSize:menuItem[@"icon"] size:[UIFont systemFontSize]];
+            icon.text = [LEANIcons fontAwesomeIconStringForIconIdentifier:menuItem[@"icon"]];
             [imageView addSubview:icon];
         } else {
             UIImage *image = [UIImage imageNamed:menuItem[@"icon"]];

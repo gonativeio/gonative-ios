@@ -81,10 +81,6 @@
 		209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B3307193FC4CE0052A7C6 /* libzipzap.a */; settings = {ATTRIBUTES = (Required, ); }; };
 		20A0B6ED1A363EFB00D9C3F2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */; };
 		20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AA71905A43C00B997DD /* MenuGroupIcon.xib */; };
-		20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A13AAB1905CB6C00B997DD /* FAImageView.m */; };
-		20A13AB21905CB6C00B997DD /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AAC1905CB6C00B997DD /* FontAwesome.ttf */; };
-		20A13AB31905CB6C00B997DD /* NSString+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A13AAE1905CB6C00B997DD /* NSString+FontAwesome.m */; };
-		20A13AB41905CB6C00B997DD /* UIFont+FontAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A13AB01905CB6C00B997DD /* UIFont+FontAwesome.m */; };
 		20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AB51905DED100B997DD /* MenuChildIcon.xib */; };
 		20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AB71905DFFC00B997DD /* MenuGroupNoIcon.xib */; };
 		20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */; };
@@ -94,7 +90,6 @@
 		20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */; };
 		20B8FFB71EB79D3F000F4CFA /* GNCustomHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */; };
 		20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */; };
-		20C8505019CD143100DB208A /* LEANIcons.m in Sources */ = {isa = PBXBuildFile; fileRef = 20C8504F19CD143100DB208A /* LEANIcons.m */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20F1F40D24F969F0004F680B /* custom_sound_1.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40824F969EF004F680B /* custom_sound_1.aff */; };
@@ -108,6 +103,7 @@
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
 		37603BBC19BAB5D18A6D3869 /* Pods_OneSignalNotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E14A3DDFB9CBC01A6B4DD895 /* Pods_OneSignalNotificationServiceExtension.framework */; };
 		8F8E3DF28CCE41C11B42815F /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */; };
+		BB9A3B012631D2A7002C38F1 /* LEANIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -250,13 +246,6 @@
 		209B3307193FC4CE0052A7C6 /* libzipzap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzipzap.a; sourceTree = "<group>"; };
 		20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		20A13AA71905A43C00B997DD /* MenuGroupIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuGroupIcon.xib; sourceTree = "<group>"; };
-		20A13AAA1905CB6C00B997DD /* FAImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAImageView.h; sourceTree = "<group>"; };
-		20A13AAB1905CB6C00B997DD /* FAImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAImageView.m; sourceTree = "<group>"; };
-		20A13AAC1905CB6C00B997DD /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
-		20A13AAD1905CB6C00B997DD /* NSString+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+FontAwesome.h"; sourceTree = "<group>"; };
-		20A13AAE1905CB6C00B997DD /* NSString+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+FontAwesome.m"; sourceTree = "<group>"; };
-		20A13AAF1905CB6C00B997DD /* UIFont+FontAwesome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+FontAwesome.h"; sourceTree = "<group>"; };
-		20A13AB01905CB6C00B997DD /* UIFont+FontAwesome.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+FontAwesome.m"; sourceTree = "<group>"; };
 		20A13AB51905DED100B997DD /* MenuChildIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuChildIcon.xib; sourceTree = "<group>"; };
 		20A13AB71905DFFC00B997DD /* MenuGroupNoIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuGroupNoIcon.xib; sourceTree = "<group>"; };
 		20A13ABB1905FAA600B997DD /* MenuChildNoIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuChildNoIcon.xib; sourceTree = "<group>"; };
@@ -270,8 +259,6 @@
 		20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GNCustomHeaders.m; sourceTree = "<group>"; };
 		20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GonativeIO-Bridging-Header.h"; sourceTree = "<group>"; };
 		20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeKeychain.swift; sourceTree = "<group>"; };
-		20C8504E19CD143100DB208A /* LEANIcons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANIcons.h; sourceTree = "<group>"; };
-		20C8504F19CD143100DB208A /* LEANIcons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANIcons.m; sourceTree = "<group>"; };
 		20D77B6E1A2547E5008A938D /* LEANActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANActionManager.h; sourceTree = "<group>"; };
 		20D77B6F1A2547E5008A938D /* LEANActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANActionManager.m; sourceTree = "<group>"; };
 		20E471F520B75AE6004E0045 /* ZZFileChannelOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZFileChannelOutput.h; sourceTree = "<group>"; };
@@ -317,6 +304,7 @@
 		9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA648B71089D4E82EFE99D9A /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		B0DD6F5AF68831471D7D5C41 /* Pods-GonativeIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.release.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.release.xcconfig"; sourceTree = "<group>"; };
+		BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEANIcons.swift; sourceTree = "<group>"; };
 		E0B679687E21B6AD6F123F5C /* Pods_GoNativeIOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoNativeIOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E14A3DDFB9CBC01A6B4DD895 /* Pods_OneSignalNotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneSignalNotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -424,7 +412,6 @@
 			children = (
 				203ADBA91C224F0300273067 /* GonativeIO.entitlements */,
 				20C23645193E32EA00F6ADF0 /* Config */,
-				20A13AA91905CB6C00B997DD /* FontAwesome */,
 				20A13AA61905A3EC00B997DD /* Menus */,
 				2002BA911F9A758500439AD6 /* Subscriptions */,
 				204D783D18F9A4F7005DD37E /* GTMNSString+HTML.h */,
@@ -463,8 +450,6 @@
 				20A7FF04197F6DDE006FDF44 /* LEANConfigUpdater.m */,
 				20B6B55319AC4C2E004019C4 /* LEANDocumentSharer.h */,
 				20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */,
-				20C8504E19CD143100DB208A /* LEANIcons.h */,
-				20C8504F19CD143100DB208A /* LEANIcons.m */,
 				201AB2D41996AD66008C31BF /* LEANInstallation.h */,
 				201AB2D51996AD66008C31BF /* LEANInstallation.m */,
 				2089662518AC6753007FC34F /* LEANLoginManager.h */,
@@ -501,6 +486,7 @@
 				2002B4D818A99A9900495B3D /* REFrostedViewController */,
 				2002B4A218A9991300495B3D /* Supporting Files */,
 				20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */,
+				BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */,
 			);
 			path = LeanIOS;
 			sourceTree = "<group>";
@@ -651,20 +637,6 @@
 			name = Menus;
 			sourceTree = "<group>";
 		};
-		20A13AA91905CB6C00B997DD /* FontAwesome */ = {
-			isa = PBXGroup;
-			children = (
-				20A13AAA1905CB6C00B997DD /* FAImageView.h */,
-				20A13AAB1905CB6C00B997DD /* FAImageView.m */,
-				20A13AAC1905CB6C00B997DD /* FontAwesome.ttf */,
-				20A13AAD1905CB6C00B997DD /* NSString+FontAwesome.h */,
-				20A13AAE1905CB6C00B997DD /* NSString+FontAwesome.m */,
-				20A13AAF1905CB6C00B997DD /* UIFont+FontAwesome.h */,
-				20A13AB01905CB6C00B997DD /* UIFont+FontAwesome.m */,
-			);
-			path = FontAwesome;
-			sourceTree = "<group>";
-		};
 		20C23645193E32EA00F6ADF0 /* Config */ = {
 			isa = PBXGroup;
 			children = (
@@ -700,7 +672,7 @@
 				2002B49518A9991300495B3D /* Frameworks */,
 				2002B49618A9991300495B3D /* Resources */,
 				2081A2921F33ECE900057E3F /* Embed App Extensions */,
-				7F278EF5DC0C3D0EC6A35ED9 /* [CP] Embed Pods Frameworks */,
+				02501B20EBA56C59B844D39A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -839,7 +811,6 @@
 				20F1F41124F969F0004F680B /* custom_sound_2.aff in Resources */,
 				2002B4A618A9991300495B3D /* InfoPlist.strings in Resources */,
 				20689025215E9FD900419CB2 /* Localizable.strings in Resources */,
-				20A13AB21905CB6C00B997DD /* FontAwesome.ttf in Resources */,
 				20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -862,6 +833,26 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		02501B20EBA56C59B844D39A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftIconFont/SwiftIconFont.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftIconFont.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		7A8AB074D8C136555547A298 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -882,24 +873,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7F278EF5DC0C3D0EC6A35ED9 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		ACD24F2BA1AEF31890E39907 /* [CP] Check Pods Manifest.lock */ = {
@@ -965,24 +938,21 @@
 				20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */,
 				2002BA981F9A758600439AD6 /* GNSubscriptionsController.m in Sources */,
 				2046CAFA1BC0790800714F66 /* GNRegistrationManager.m in Sources */,
-				20A13AB41905CB6C00B997DD /* UIFont+FontAwesome.m in Sources */,
 				20F38BAE1B0D5AC700E90B4D /* LEANToolbarManager.m in Sources */,
 				204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */,
 				2002BA991F9A758600439AD6 /* GNSubscriptionsTableViewController.m in Sources */,
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,
-				20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */,
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
 				209A964323BABF2D001906F1 /* GNBackgroundAudio.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
 				20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */,
-				20C8505019CD143100DB208A /* LEANIcons.m in Sources */,
 				2002B4E518A99A9900495B3D /* RECommonFunctions.m in Sources */,
 				201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */,
+				BB9A3B012631D2A7002C38F1 /* LEANIcons.swift in Sources */,
 				2002B4AC18A9991300495B3D /* LEANAppDelegate.m in Sources */,
 				209A7D101D347714005A89C6 /* GoNativeAuthUrl.swift in Sources */,
 				20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */,
 				204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */,
-				20A13AB31905CB6C00B997DD /* NSString+FontAwesome.m in Sources */,
 				20912D732380DB7600506807 /* GNFileWriterSharer.m in Sources */,
 				2092E238205C3E83005E8B71 /* GNConfigPreferences.m in Sources */,
 				2002B4A818A9991300495B3D /* main.m in Sources */,

@@ -9,8 +9,8 @@
 #import "LEANTabManager.h"
 #import "LEANWebViewController.h"
 #import "GoNativeAppConfig.h"
-#import "LEANIcons.h"
 #import "LEANUtilities.h"
+#import "GonativeIO-Swift.h"
 
 #define TAB_IMAGE_SIZE_REGULAR 23
 #define TAB_IMAGE_SIZE_COMPACT 17

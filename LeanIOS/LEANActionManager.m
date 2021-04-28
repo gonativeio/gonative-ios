@@ -8,7 +8,7 @@
 
 #import "LEANActionManager.h"
 #import "GoNativeAppConfig.h"
-#import "LEANIcons.h"
+#import "GonativeIO-Swift.h"
 
 @interface LEANActionManager ()
 @property (weak, nonatomic) LEANWebViewController *wvc;
