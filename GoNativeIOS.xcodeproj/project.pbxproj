@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0922E3ED22F233A88E744B78 /* Pods_GoNativeIOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0211DB8B9BD3C65A93E8774 /* Pods_GoNativeIOSTests.framework */; };
+		1B33718AD717A57FA400EB95 /* Pods_GoNativeIOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0B679687E21B6AD6F123F5C /* Pods_GoNativeIOSTests.framework */; };
 		2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49B18A9991300495B3D /* Foundation.framework */; };
 		2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49D18A9991300495B3D /* CoreGraphics.framework */; };
 		2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
@@ -17,7 +17,6 @@
 		2002B4AF18A9991300495B3D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4AD18A9991300495B3D /* Main.storyboard */; };
 		2002B4B518A9991300495B3D /* LEANWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2002B4B418A9991300495B3D /* LEANWebViewController.m */; };
 		2002B4B718A9991300495B3D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4B618A9991300495B3D /* Images.xcassets */; };
-		2002B4BE18A9991300495B3D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B4BD18A9991300495B3D /* XCTest.framework */; };
 		2002B4BF18A9991300495B3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49B18A9991300495B3D /* Foundation.framework */; };
 		2002B4C018A9991300495B3D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
 		2002B4C818A9991300495B3D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2002B4C618A9991300495B3D /* InfoPlist.strings */; };
@@ -48,7 +47,6 @@
 		202BE5771B9757240064D928 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5761B9757240064D928 /* QuartzCore.framework */; };
 		202BE5791B97572C0064D928 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5781B97572C0064D928 /* Security.framework */; };
 		202BE57D1B9757390064D928 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57C1B9757390064D928 /* SystemConfiguration.framework */; };
-		202BE57F1B9757450064D928 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57E1B9757450064D928 /* libsqlite3.dylib */; };
 		202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5801B97574E0064D928 /* Accounts.framework */; };
 		202BE5831B9757530064D928 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5821B9757530064D928 /* Social.framework */; };
 		202E989519EF30C8009C28AD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 202E989419EF30C8009C28AD /* Reachability.m */; };
@@ -59,9 +57,6 @@
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
 		205141F51C3F54D40087DEB2 /* libGoNativeIOSLibrary.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */; };
-		205650A21C6ED77400F0B663 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */; };
-		205650A31C6ED77400F0B663 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */; };
-		205650A41C6ED77400F0B663 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */; };
 		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
 		20689025215E9FD900419CB2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 20689023215E9FD900419CB2 /* Localizable.strings */; };
 		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
@@ -84,7 +79,6 @@
 		209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 209B3218193FA36F0052A7C6 /* LEANUrlCache.m */; };
 		209B321D193FB11A0052A7C6 /* localCache.zip in Resources */ = {isa = PBXBuildFile; fileRef = 209B321C193FB11A0052A7C6 /* localCache.zip */; };
 		209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B3307193FC4CE0052A7C6 /* libzipzap.a */; settings = {ATTRIBUTES = (Required, ); }; };
-		209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 209B330A193FC5BD0052A7C6 /* libz.dylib */; };
 		20A0B6ED1A363EFB00D9C3F2 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */; };
 		20A13AA81905A43C00B997DD /* MenuGroupIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20A13AA71905A43C00B997DD /* MenuGroupIcon.xib */; };
 		20A13AB11905CB6C00B997DD /* FAImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 20A13AAB1905CB6C00B997DD /* FAImageView.m */; };
@@ -164,7 +158,6 @@
 		2002B4B418A9991300495B3D /* LEANWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewController.m; sourceTree = "<group>"; };
 		2002B4B618A9991300495B3D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2002B4BC18A9991300495B3D /* GoNativeIOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoNativeIOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2002B4BD18A9991300495B3D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		2002B4C518A9991300495B3D /* GoNativeIOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoNativeIOSTests-Info.plist"; sourceTree = "<group>"; };
 		2002B4C718A9991300495B3D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2002B4C918A9991300495B3D /* LeanIOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LeanIOSTests.m; sourceTree = "<group>"; };
@@ -210,7 +203,6 @@
 		202BE5761B9757240064D928 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		202BE5781B97572C0064D928 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		202BE57C1B9757390064D928 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		202BE57E1B9757450064D928 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		202BE5801B97574E0064D928 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		202BE5821B9757530064D928 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		202E989319EF30C8009C28AD /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -225,9 +217,6 @@
 		204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		205141F31C3F54C00087DEB2 /* GoNativeAppConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoNativeAppConfig.h; sourceTree = "<group>"; };
 		205141F41C3F54D40087DEB2 /* libGoNativeIOSLibrary.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoNativeIOSLibrary.a; sourceTree = "<group>"; };
-		2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
-		205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
-		205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
 		20580E021B2E53730061943C /* offline.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = offline.html; sourceTree = "<group>"; };
 		205EF30219BF84AF002AE261 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		20639D7E250CF4EF007FE46C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -259,7 +248,6 @@
 		209B3218193FA36F0052A7C6 /* LEANUrlCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUrlCache.m; sourceTree = "<group>"; };
 		209B321C193FB11A0052A7C6 /* localCache.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = localCache.zip; sourceTree = "<group>"; };
 		209B3307193FC4CE0052A7C6 /* libzipzap.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzipzap.a; sourceTree = "<group>"; };
-		209B330A193FC5BD0052A7C6 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		20A13AA71905A43C00B997DD /* MenuGroupIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuGroupIcon.xib; sourceTree = "<group>"; };
 		20A13AAA1905CB6C00B997DD /* FAImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAImageView.h; sourceTree = "<group>"; };
@@ -320,7 +308,6 @@
 		20F1F40C24F969F0004F680B /* custom_sound_2.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = custom_sound_2.aff; sourceTree = "<group>"; };
 		20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANToolbarManager.h; sourceTree = "<group>"; };
 		20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANToolbarManager.m; sourceTree = "<group>"; };
-		20F49C2219C7BE8200B46C5A /* GoogleCast.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleCast.framework; sourceTree = "<group>"; };
 		20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaAccessibility.framework; path = System/Library/Frameworks/MediaAccessibility.framework; sourceTree = SDKROOT; };
 		20F49C2619C7BE9100B46C5A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANTabManager.h; sourceTree = "<group>"; };
@@ -328,9 +315,9 @@
 		2AA9195813550BD85883FBBE /* Pods-GonativeIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.debug.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.debug.xcconfig"; sourceTree = "<group>"; };
 		95A160ACACAE73AB3E15EAD9 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A0211DB8B9BD3C65A93E8774 /* Pods_GoNativeIOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoNativeIOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA648B71089D4E82EFE99D9A /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		B0DD6F5AF68831471D7D5C41 /* Pods-GonativeIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.release.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.release.xcconfig"; sourceTree = "<group>"; };
+		E0B679687E21B6AD6F123F5C /* Pods_GoNativeIOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoNativeIOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E14A3DDFB9CBC01A6B4DD895 /* Pods_OneSignalNotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneSignalNotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -341,20 +328,15 @@
 			files = (
 				202BE5831B9757530064D928 /* Social.framework in Frameworks */,
 				202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */,
-				202BE57F1B9757450064D928 /* libsqlite3.dylib in Frameworks */,
-				205650A41C6ED77400F0B663 /* FBSDKShareKit.framework in Frameworks */,
 				202BE57D1B9757390064D928 /* SystemConfiguration.framework in Frameworks */,
 				202BE5791B97572C0064D928 /* Security.framework in Frameworks */,
-				205650A31C6ED77400F0B663 /* FBSDKLoginKit.framework in Frameworks */,
 				202BE5771B9757240064D928 /* QuartzCore.framework in Frameworks */,
 				202BE5751B97571B0064D928 /* CoreLocation.framework in Frameworks */,
 				202BE5731B97570D0064D928 /* CFNetwork.framework in Frameworks */,
 				202BE5711B9757070064D928 /* AudioToolbox.framework in Frameworks */,
 				20A0B6ED1A363EFB00D9C3F2 /* MessageUI.framework in Frameworks */,
-				205650A21C6ED77400F0B663 /* FBSDKCoreKit.framework in Frameworks */,
 				20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */,
 				20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */,
-				209B330B193FC5BD0052A7C6 /* libz.dylib in Frameworks */,
 				209B3309193FC5570052A7C6 /* libzipzap.a in Frameworks */,
 				205141F51C3F54D40087DEB2 /* libGoNativeIOSLibrary.a in Frameworks */,
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
@@ -368,10 +350,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2002B4BE18A9991300495B3D /* XCTest.framework in Frameworks */,
 				2002B4C018A9991300495B3D /* UIKit.framework in Frameworks */,
 				2002B4BF18A9991300495B3D /* Foundation.framework in Frameworks */,
-				0922E3ED22F233A88E744B78 /* Pods_GoNativeIOSTests.framework in Frameworks */,
+				1B33718AD717A57FA400EB95 /* Pods_GoNativeIOSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,12 +397,8 @@
 		2002B49A18A9991300495B3D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2056509F1C6ED77400F0B663 /* FBSDKCoreKit.framework */,
-				205650A01C6ED77400F0B663 /* FBSDKLoginKit.framework */,
-				205650A11C6ED77400F0B663 /* FBSDKShareKit.framework */,
 				202BE5821B9757530064D928 /* Social.framework */,
 				202BE5801B97574E0064D928 /* Accounts.framework */,
-				202BE57E1B9757450064D928 /* libsqlite3.dylib */,
 				202BE57C1B9757390064D928 /* SystemConfiguration.framework */,
 				202BE5781B97572C0064D928 /* Security.framework */,
 				202BE5761B9757240064D928 /* QuartzCore.framework */,
@@ -431,16 +408,13 @@
 				20A0B6EC1A363EFB00D9C3F2 /* MessageUI.framework */,
 				20F49C2619C7BE9100B46C5A /* CoreText.framework */,
 				20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */,
-				20F49C2219C7BE8200B46C5A /* GoogleCast.framework */,
 				205EF30219BF84AF002AE261 /* WebKit.framework */,
-				209B330A193FC5BD0052A7C6 /* libz.dylib */,
 				2002B49B18A9991300495B3D /* Foundation.framework */,
 				2002B49D18A9991300495B3D /* CoreGraphics.framework */,
 				2002B49F18A9991300495B3D /* UIKit.framework */,
-				2002B4BD18A9991300495B3D /* XCTest.framework */,
-				A0211DB8B9BD3C65A93E8774 /* Pods_GoNativeIOSTests.framework */,
 				9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */,
 				E14A3DDFB9CBC01A6B4DD895 /* Pods_OneSignalNotificationServiceExtension.framework */,
+				E0B679687E21B6AD6F123F5C /* Pods_GoNativeIOSTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -726,6 +700,7 @@
 				2002B49518A9991300495B3D /* Frameworks */,
 				2002B49618A9991300495B3D /* Resources */,
 				2081A2921F33ECE900057E3F /* Embed App Extensions */,
+				7F278EF5DC0C3D0EC6A35ED9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -907,6 +882,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7F278EF5DC0C3D0EC6A35ED9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		ACD24F2BA1AEF31890E39907 /* [CP] Check Pods Manifest.lock */ = {
