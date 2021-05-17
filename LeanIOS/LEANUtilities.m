@@ -626,30 +626,40 @@
 
 +(NSString*)createJsForCallback:(NSString*)functionName data:(NSDictionary*)data
 {
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:0 error:nil];
-    if (!jsonData) {
-        return nil;
+    NSString *parameters;
+    NSString *callingParameters;
+    NSString *parseJSONStatement;
+    NSString *callbackParamater;
+    NSData *jsonData;
+    NSString *jsonString;
+    if (data == nil) {
+        parameters = @"functionName";
+        callingParameters = @"(%@);";
+        parseJSONStatement = @"";
+        callbackParamater = @"return callbackFunction();";
+    } else {
+        jsonData = [NSJSONSerialization dataWithJSONObject:data options:0 error:nil];
+        if (!jsonData) {
+            return nil;
+        }
+        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        parameters = @"functionName, jsonString";
+        callingParameters = @"(%@, %@);";
+        parseJSONStatement = @"var data = JSON.parse(jsonString);";
+        callbackParamater = @"callbackFunction(data);";
     }
     
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
-    
-    NSString *template = @"function gonative_do_callback(functionName, jsonString) { "
-    "    if (typeof window[functionName] !== 'function') return; "
-    " "
-    "    try { "
-    "        var data = JSON.parse(jsonString); "
-    "        var callbackFunction = window[functionName]; "
-    "        callbackFunction(data); "
-    "    } catch (ignored) { "
-    " "
-    "    } "
-    "} "
-    " "
-    "gonative_do_callback(%@, %@);";
+    NSString *template = [[NSArray arrayWithObjects:@"function gonative_do_callback(",
+                        parameters, @") { ", @"if (typeof window[functionName] !== 'function') return; ",
+                           @"try { ", parseJSONStatement, @"var callbackFunction = window[functionName]; ", callbackParamater,
+                           @"} catch (ignored) { ", @"} ",
+                        @"} ",
+                        @"gonative_do_callback", callingParameters, nil] componentsJoinedByString:@""];
 
-    
-    return [NSString stringWithFormat:template, [self jsWrapString:functionName], [self jsWrapString:jsonString]];
+
+    if(jsonString == nil){
+        return [NSString stringWithFormat:template, [self jsWrapString:functionName]];
+    } else return [NSString stringWithFormat:template, [self jsWrapString:functionName], [self jsWrapString:jsonString]];
     
     return @"";
 }
