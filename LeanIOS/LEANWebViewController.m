@@ -38,6 +38,7 @@
 #import "GNConfigPreferences.h"
 #import "GNBackgroundAudio.h"
 #import "GonativeIO-Swift.h"
+#import <AppTrackingTransparency/ATTrackingManager.h>
 
 #define OFFLINE_URL @"http://offline/"
 
@@ -1615,6 +1616,35 @@
                 }
             } else if ([@"/unsubscribe" isEqualToString:url.path]) {
                 self.connectivityCallback = nil;
+            }
+        }
+        
+        // tracking consent
+        
+        if ([@"ios" isEqualToString:url.host]) {
+            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+            NSString *callback = query[@"callback"];
+            if ([@"/attconsent/request" isEqualToString:url.path]) {
+                if (@available(iOS 14.5, *)) {
+                    [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                        NSString *js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(status == ATTrackingManagerAuthorizationStatusAuthorized)}];
+                        [self runJavascript:js];
+                    }];
+                } else {
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(YES)}];
+                    [self runJavascript:js];
+                }
+            }
+            
+            if ([@"/attconsent/status" isEqualToString:url.path]) {
+                NSString *js;
+                if (@available(iOS 14.5, *)) {
+                    js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized)}];
+                }else {
+                    js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(YES)}];
+                }
+                
+                [self runJavascript:js];
             }
         }
         

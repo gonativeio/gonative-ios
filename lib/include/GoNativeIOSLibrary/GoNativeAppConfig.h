@@ -54,6 +54,9 @@ typedef enum : NSUInteger {
 @property NSDictionary *customHeaders;
 @property NSArray<NSPredicate*> *nativeBridgeUrls;
 
+// permissions
+@property BOOL iOSRequestATTConsentOnLoad;
+
 // navigation
 @property NSMutableDictionary *menus;
 @property NSURL *loginDetectionURL;

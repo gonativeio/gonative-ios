@@ -18,6 +18,7 @@
 #import "GNRegistrationManager.h"
 #import "GNConfigPreferences.h"
 #import "GonativeIO-Swift.h"
+#import <AppTrackingTransparency/ATTrackingManager.h>
 
 @interface LEANAppDelegate() <OSSubscriptionObserver>
 @end
@@ -144,6 +145,16 @@
                     [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
                 }
             }];
+        }
+    }
+    
+    if (appConfig.iOSRequestATTConsentOnLoad || appConfig.facebookEnabled) {
+        if (@available(iOS 14.5, *)) {
+            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                [FBSDKSettings setAdvertiserTrackingEnabled:status == ATTrackingManagerAuthorizationStatusAuthorized];
+            }];
+        } else {
+            [FBSDKSettings setAdvertiserTrackingEnabled:YES];
         }
     }
     
