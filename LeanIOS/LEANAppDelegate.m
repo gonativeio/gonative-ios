@@ -152,6 +152,7 @@
         if (@available(iOS 14.5, *)) {
             [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
                 [FBSDKSettings setAdvertiserTrackingEnabled:status == ATTrackingManagerAuthorizationStatusAuthorized];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationAppTrackingStatusChanged object:nil];
             }];
         } else {
             [FBSDKSettings setAdvertiserTrackingEnabled:YES];

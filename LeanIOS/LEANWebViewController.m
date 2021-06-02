@@ -1627,6 +1627,7 @@
             if ([@"/attconsent/request" isEqualToString:url.path]) {
                 if (@available(iOS 14.5, *)) {
                     [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationAppTrackingStatusChanged object:nil];
                         NSString *js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(status == ATTrackingManagerAuthorizationStatusAuthorized)}];
                         [self runJavascript:js];
                     }];

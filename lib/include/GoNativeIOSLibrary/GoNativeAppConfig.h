@@ -16,6 +16,7 @@ static NSString *kLEANAppConfigNotificationProcessedWebViewPools = @"io.gonative
 static NSString *kLEANAppConfigNotificationProcessedSegmented = @"io.gonative.ios.LEANAppConfig.processedSegmented";
 static NSString *kLEANAppConfigNotificationProcessedNavigationTitles = @"io.gonative.ios.LEANAppConfig.processedNavigationTitles";
 static NSString *kLEANAppConfigNotificationProcessedNavigationLevels = @"io.gonative.ios.LEANAppConfig.processedNavigationLevels";
+static NSString *kLEANAppConfigNotificationAppTrackingStatusChanged = @"io.gonative.ios.LEANAppConfig.appTrackingStatusChanged";
 
 typedef enum : NSUInteger {
     LEANToolbarVisibilityAlways,
@@ -156,6 +157,7 @@ typedef enum : NSUInteger {
 @property BOOL facebookEnabled;
 @property NSString *facebookAppId;
 @property NSString *facebookDisplayName;
+@property BOOL facebookAutoLogging;
 
 // Adjust SDK
 @property BOOL adjustEnabled;
