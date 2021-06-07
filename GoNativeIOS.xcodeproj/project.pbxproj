@@ -103,6 +103,7 @@
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
 		37603BBC19BAB5D18A6D3869 /* Pods_OneSignalNotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E14A3DDFB9CBC01A6B4DD895 /* Pods_OneSignalNotificationServiceExtension.framework */; };
 		8F8E3DF28CCE41C11B42815F /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */; };
+		A02BE0AB266E21BD00B3CF50 /* LEANJsCustomCodeExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = A02BE0AA266E21BD00B3CF50 /* LEANJsCustomCodeExecutor.m */; };
 		BB9A3B012631D2A7002C38F1 /* LEANIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */; };
 /* End PBXBuildFile section */
 
@@ -302,6 +303,8 @@
 		2AA9195813550BD85883FBBE /* Pods-GonativeIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.debug.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.debug.xcconfig"; sourceTree = "<group>"; };
 		95A160ACACAE73AB3E15EAD9 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A02BE0A9266E21BD00B3CF50 /* LEANJsCustomCodeExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LEANJsCustomCodeExecutor.h; sourceTree = "<group>"; };
+		A02BE0AA266E21BD00B3CF50 /* LEANJsCustomCodeExecutor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LEANJsCustomCodeExecutor.m; sourceTree = "<group>"; };
 		AA648B71089D4E82EFE99D9A /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		B0DD6F5AF68831471D7D5C41 /* Pods-GonativeIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.release.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.release.xcconfig"; sourceTree = "<group>"; };
 		BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEANIcons.swift; sourceTree = "<group>"; };
@@ -487,6 +490,8 @@
 				2002B4A218A9991300495B3D /* Supporting Files */,
 				20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */,
 				BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */,
+				A02BE0A9266E21BD00B3CF50 /* LEANJsCustomCodeExecutor.h */,
+				A02BE0AA266E21BD00B3CF50 /* LEANJsCustomCodeExecutor.m */,
 			);
 			path = LeanIOS;
 			sourceTree = "<group>";
@@ -965,6 +970,7 @@
 				20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */,
 				209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */,
 				2002B4F918A99C4100495B3D /* LEANMenuViewController.m in Sources */,
+				A02BE0AB266E21BD00B3CF50 /* LEANJsCustomCodeExecutor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
