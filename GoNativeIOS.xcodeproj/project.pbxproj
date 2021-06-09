@@ -90,6 +90,7 @@
 		20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */; };
 		20B8FFB71EB79D3F000F4CFA /* GNCustomHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */; };
 		20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */; };
+		20CC06A72671191C00C794F2 /* LEANJsCustomCodeExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE931907671A00EC5312 /* LEANJsCustomCodeExecutor.m */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20F1F40D24F969F0004F680B /* custom_sound_1.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40824F969EF004F680B /* custom_sound_1.aff */; };
@@ -188,6 +189,8 @@
 		2004AF7A18F8F936001E01E9 /* LEANWebViewIntercept.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANWebViewIntercept.m; sourceTree = "<group>"; };
 		200F75CF1BCDA6B800C08BB5 /* notification.aff */ = {isa = PBXFileReference; lastKnownFileType = file; path = notification.aff; sourceTree = "<group>"; };
 		2018EE931907671A00EC4311 /* LEANUrlInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANUrlInspector.h; sourceTree = "<group>"; };
+		2018EE931907671A00EC5311 /* LEANJsCustomCodeExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANJsCustomCodeExecutor.h; sourceTree = "<group>"; };
+		2018EE931907671A00EC5312 /* LEANJsCustomCodeExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANJsCustomCodeExecutor.m; sourceTree = "<group>"; };
 		2018EE941907671A00EC4311 /* LEANUrlInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANUrlInspector.m; sourceTree = "<group>"; };
 		20191C451923DF6400BF1549 /* LEANProfilePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANProfilePicker.h; sourceTree = "<group>"; };
 		20191C461923DF6400BF1549 /* LEANProfilePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANProfilePicker.m; sourceTree = "<group>"; };
@@ -468,6 +471,8 @@
 				209B3218193FA36F0052A7C6 /* LEANUrlCache.m */,
 				2018EE931907671A00EC4311 /* LEANUrlInspector.h */,
 				2018EE941907671A00EC4311 /* LEANUrlInspector.m */,
+				2018EE931907671A00EC5311 /* LEANJsCustomCodeExecutor.h */,
+				2018EE931907671A00EC5312 /* LEANJsCustomCodeExecutor.m */,
 				2002B4F618A99C4100495B3D /* LEANUtilities.h */,
 				2002B4F718A99C4100495B3D /* LEANUtilities.m */,
 				2002B4B318A9991300495B3D /* LEANWebViewController.h */,
@@ -926,6 +931,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20CC06A72671191C00C794F2 /* LEANJsCustomCodeExecutor.m in Sources */,
 				2004AF7B18F8F936001E01E9 /* LEANWebViewIntercept.m in Sources */,
 				2002B4EA18A99A9900495B3D /* UIViewController+REFrostedViewController.m in Sources */,
 				2002B4FA18A99C4100495B3D /* LEANNavigationController.m in Sources */,

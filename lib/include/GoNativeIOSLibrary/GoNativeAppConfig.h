@@ -92,6 +92,7 @@ typedef enum : NSUInteger {
 
 @property BOOL pullToRefresh;
 @property BOOL swipeGestures;
+@property NSInteger maxWindows;
 
 // styling
 @property NSString *iosTheme;
@@ -260,6 +261,7 @@ typedef enum : NSUInteger {
 - (void)setSidebarNavigation:(NSArray*)items;
 - (void)setNavigationTitles:(NSDictionary*)navigationTitles persist:(BOOL)persist;
 - (void)setNavigationLevels:(NSDictionary*)navigationLevels persist:(BOOL)persist;
+- (void)setMaxWindows:(NSInteger)maxWindows persist:(BOOL)persist;
 
 - (BOOL)shouldShowNavigationTitleImageForUrl:(NSString*)url;
 -(NSString*)userAgentForUrl:(NSURL*)url;

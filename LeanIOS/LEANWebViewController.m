@@ -21,6 +21,7 @@
 #import "LEANMenuViewController.h"
 #import "LEANNavigationController.h"
 #import "LEANRootViewController.h"
+#import "LEANJsCustomCodeExecutor.h"
 #import "NSURL+LEANUtilities.h"
 #import "LEANUrlInspector.h"
 #import "LEANProfilePicker.h"
@@ -1131,6 +1132,18 @@
                     if (!u) continue;
                     if (![@"gonative" isEqualToString:u.scheme]) continue;
                     [self shouldLoadRequest:[NSURLRequest requestWithURL:u] isMainFrame:isMainFrame isUserAction:isUserAction hideWebview:hideWebview];
+                }
+            } else if([@"/custom" isEqualToString:url.path]) {
+                NSDictionary *params = [LEANUtilities parseQueryParamsWithUrl:url];
+
+                // execute code defined by the CustomCodeHandler
+                // call LEANJsCustomCodeExecutor#setHandler to override this default handler
+                NSDictionary *data = [LEANJsCustomCodeExecutor execute:params];
+
+                NSString *callback = params[@"callback"];
+                if (callback && callback.length > 0) {
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:data];
+                    [self runJavascript:js];
                 }
             }
             return NO;
