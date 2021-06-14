@@ -59,19 +59,22 @@
     
     // OneSignal
     if (appConfig.oneSignalEnabled) {
+        
+        // init OneSignal
         [OneSignal setRequiresUserPrivacyConsent:appConfig.oneSignalRequiresUserPrivacyConsent];
-        [OneSignal initWithLaunchOptions:launchOptions appId:appConfig.oneSignalAppId handleNotificationReceived:^(OSNotification *notification) {
-
-            OSNotificationPayload *payload = notification.payload;
-            NSString *message = [payload.body copy];
-            NSString *title = notification.payload.title;
-            
+        [OneSignal initWithLaunchOptions:launchOptions];
+        [OneSignal setAppId:appConfig.oneSignalAppId];
+        
+        // set notification displayed in foreground handler
+        id notifWillShowInForegroundHandler = ^(OSNotification *notification, OSNotificationDisplayResponse completion) {
+            NSString *message = [notification.body copy];
+            NSString *title = notification.title;
             NSString *urlString;
             NSURL *url;
-            if (payload.additionalData) {
-                urlString = payload.additionalData[@"u"];
+            if (notification.additionalData) {
+                urlString = notification.additionalData[@"u"];
                 if (![urlString isKindOfClass:[NSString class]]) {
-                    urlString = payload.additionalData[@"targetUrl"];
+                    urlString = notification.additionalData[@"targetUrl"];
                 }
                 if ([urlString isKindOfClass:[NSString class]]) {
                     url = [LEANUtilities urlWithString:urlString];
@@ -86,7 +89,7 @@
                 webviewOnTop = [rvc webviewOnTop];
             }
             
-            if (notification.isAppInFocus && ![@"none" isEqualToString:appConfig.oneSignalInFocusDisplay] &&
+            if (![@"none" isEqualToString:appConfig.oneSignalInFocusDisplay] &&
                 (title || message || url)) {
                 // Show an alert, and include a "view" button if there is a url and the webview is currently the top view.
                 
@@ -100,17 +103,25 @@
                 
                 [rvc presentAlert:alert];
             }
-        } handleNotificationAction:^(OSNotificationOpenedResult *result) {
-            OSNotificationPayload *payload = result.notification.payload;
-            if (payload.additionalData) {
-                [self handlePushNotificationData:payload.additionalData];
-            }
-            
-        } settings:@{kOSSettingsKeyAutoPrompt: @false,
-                     kOSSettingsKeyInFocusDisplayOption: [NSNumber numberWithInteger:OSNotificationDisplayTypeNone]}];
+        };
+        [OneSignal setNotificationWillShowInForegroundHandler:notifWillShowInForegroundHandler];
         
-        if (appConfig.oneSignalAutoRegister && ![OneSignal requiresUserPrivacyConsent]) {
-            [OneSignal promptForPushNotificationsWithUserResponse:nil];
+        // set notification opened handler
+        id notificationOpenedBlock = ^(OSNotificationOpenedResult *result) {
+          OSNotification* notification = result.notification;
+          if (notification.additionalData) {
+              [self handlePushNotificationData:notification.additionalData];
+          }
+        };
+        [OneSignal setNotificationOpenedHandler:notificationOpenedBlock];
+        
+        // check autoregister
+        if (appConfig.oneSignalAutoRegister && ![OneSignal requiresUserPrivacyConsent]){
+            if(appConfig.oneSignalIosSoftPrompt){
+                OSDeviceState *deviceState = [OneSignal getDeviceState];
+                // if device not subscribed, trigger the soft prompt
+                if (!deviceState.isSubscribed) [OneSignal addTrigger:@"prompt_ios" withValue:@"true"];
+            } else [OneSignal promptForPushNotificationsWithUserResponse:nil];
         }
     }
     
@@ -119,8 +130,8 @@
     [registration processConfig:appConfig.registrationEndpoints];
     if (appConfig.oneSignalEnabled) {
         [OneSignal addSubscriptionObserver:self];
-        OSPermissionSubscriptionState *state = [OneSignal getPermissionSubscriptionState];
-        [registration setOneSignalUserId:state.subscriptionStatus.userId pushToken:state.subscriptionStatus.pushToken subscribed:state.subscriptionStatus.subscribed];
+        OSDeviceState *state = [OneSignal getDeviceState];
+        [registration setOneSignalUserId:state.userId pushToken:state.pushToken subscribed:state.isSubscribed];
     }
     
     [self configureApplication];
@@ -319,7 +330,7 @@
 {
     GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
     OSSubscriptionState *state = stateChanges.to;
-    [registration setOneSignalUserId:state.userId pushToken:state.pushToken subscribed:state.subscribed];
+    [registration setOneSignalUserId:state.userId pushToken:state.pushToken subscribed:state.isSubscribed];
 }
 
 @end

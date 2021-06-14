@@ -91,6 +91,7 @@
 		20B8FFB71EB79D3F000F4CFA /* GNCustomHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */; };
 		20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */; };
 		20CC06A72671191C00C794F2 /* LEANJsCustomCodeExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE931907671A00EC5312 /* LEANJsCustomCodeExecutor.m */; };
+		20CC8EFE2677BE470083982E /* WindowsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC8EFD2677BE470083982E /* WindowsController.swift */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20F1F40D24F969F0004F680B /* custom_sound_1.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40824F969EF004F680B /* custom_sound_1.aff */; };
@@ -262,6 +263,7 @@
 		20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GNCustomHeaders.m; sourceTree = "<group>"; };
 		20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GonativeIO-Bridging-Header.h"; sourceTree = "<group>"; };
 		20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeKeychain.swift; sourceTree = "<group>"; };
+		20CC8EFD2677BE470083982E /* WindowsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowsController.swift; sourceTree = "<group>"; };
 		20D77B6E1A2547E5008A938D /* LEANActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANActionManager.h; sourceTree = "<group>"; };
 		20D77B6F1A2547E5008A938D /* LEANActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANActionManager.m; sourceTree = "<group>"; };
 		20E471F520B75AE6004E0045 /* ZZFileChannelOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZFileChannelOutput.h; sourceTree = "<group>"; };
@@ -492,6 +494,7 @@
 				2002B4A218A9991300495B3D /* Supporting Files */,
 				20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */,
 				BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */,
+				20CC8EFD2677BE470083982E /* WindowsController.swift */,
 			);
 			path = LeanIOS;
 			sourceTree = "<group>";
@@ -935,6 +938,7 @@
 				2004AF7B18F8F936001E01E9 /* LEANWebViewIntercept.m in Sources */,
 				2002B4EA18A99A9900495B3D /* UIViewController+REFrostedViewController.m in Sources */,
 				2002B4FA18A99C4100495B3D /* LEANNavigationController.m in Sources */,
+				20CC8EFE2677BE470083982E /* WindowsController.swift in Sources */,
 				2002B4B518A9991300495B3D /* LEANWebViewController.m in Sources */,
 				2002B4E618A99A9900495B3D /* REFrostedContainerViewController.m in Sources */,
 				20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */,

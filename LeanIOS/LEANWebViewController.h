@@ -21,6 +21,7 @@ static NSString *kLEANWebViewControllerClearPools = @"io.gonative.ios.WebViewCon
 @property LEANTabManager *tabManager;
 @property NSURL *initialUrl;
 @property UIView *initialWebview;
+@property (class, nonatomic, readonly) NSInteger currentWindows;
 
 - (IBAction) showMenu;
 - (void) loadUrlString:(NSString*)url;

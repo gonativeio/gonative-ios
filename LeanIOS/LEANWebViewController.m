@@ -108,9 +108,21 @@
 
 @implementation LEANWebViewController
 
+static NSInteger _currentWindows = 0;
+
++ (NSInteger)currentWindows {
+  return _currentWindows;
+}
+
++ (void)setCurrentWindows:(NSInteger) currentWindows {
+    _currentWindows = currentWindows;
+    [WindowsController windowCountChanged];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    LEANWebViewController.currentWindows += 1;
     self.checkLoginSignup = YES;
     
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
@@ -257,6 +269,7 @@
         @catch (NSException * __unused exception) {
         }
     }
+    LEANWebViewController.currentWindows -= 1;
 }
 
 - (void)didReceiveNotification:(NSNotification*)notification
@@ -1414,6 +1427,70 @@
 
                 return NO;
             }
+            
+            if([@"/iam/addTrigger" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *key = query[@"key"];
+                if ([key length] == 0) return NO;
+                NSString *value = query[@"value"];
+                if([value length] == 0) return NO;
+                [OneSignal addTrigger:key withValue:value];
+                return NO;
+            }
+            
+            if([@"/iam/addTriggers" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *map = query[@"map"];
+                if ([map length] == 0) return NO;
+                NSString *jsonString = [map stringByRemovingPercentEncoding];
+                NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+                id triggers = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                [OneSignal addTriggers:triggers];
+                return NO;
+            }
+            
+            if([@"/iam/removeTriggerForKey" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *key = query[@"key"];
+                if ([key length] == 0) return NO;
+                [OneSignal removeTriggerForKey:key];
+                return NO;
+            }
+            
+            if([@"/iam/getTriggerValueForKey" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *key = query[@"key"];
+                if ([key length] == 0) return NO;
+                NSString *value = [OneSignal getTriggerValueForKey:key];
+                if(value == nil) return NO;
+                NSDictionary *key_value_pair = [NSDictionary dictionaryWithObject:value forKey:key];
+                [self runJavascript:[LEANUtilities createJsForCallback:@"gonative_iam_trigger_value" data:key_value_pair]];
+                return NO;
+            }
+            
+            if([@"/iam/pauseInAppMessages" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *pause = query[@"pause"];
+                if ([pause length] == 0) return NO;
+                [OneSignal pauseInAppMessages:[pause boolValue]];
+                return NO;
+            }
+            
+            if([@"/iam/setInAppMessageClickHandler" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSString *handler = query[@"handler"];
+                if ([handler length] == 0) return NO;
+                id inAppMessageClickHandler = ^(OSInAppMessageAction *action) {
+                    NSString *clickName = action.clickName ? action.clickName : @"";
+                    NSString *clickUrl = [action.clickUrl absoluteString];
+                    NSString *firstClick = action.firstClick ? @"true" : @"false";
+                    NSString *closesMessage = action.closesMessage ? @"true" : @"false";
+                    NSDictionary *action_data = [NSDictionary dictionaryWithObjectsAndKeys:clickName, @"clickName", clickUrl, @"clickUrl", firstClick, @"firstClick", closesMessage, @"closesMessage", nil];
+                    [self runJavascript:[LEANUtilities createJsForCallback:handler data:action_data]];
+                };
+                [OneSignal setInAppMessageClickHandler:inAppMessageClickHandler];
+                return NO;
+            }
 
             return NO;
         }
@@ -1659,6 +1736,19 @@
                 }
                 
                 [self runJavascript:js];
+            }
+        }
+        
+//    gonative://navigationMaxWindows/set?data=5&persist=true%7Cfalse
+        
+        if ([@"navigationMaxWindows" isEqualToString:url.host]) {
+            if ([@"/set" isEqualToString:url.path]) {
+                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
+                NSInteger value = [query[@"data"] integerValue];
+                BOOL persist = [@"true" isEqualToString:query[@"persist"]];
+                GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+                [appConfig setMaxWindows:value persist:persist];
+                [WindowsController windowCountChanged];
             }
         }
         
@@ -2264,19 +2354,19 @@
         return;
     }
     
-    OSPermissionSubscriptionState *state = [OneSignal getPermissionSubscriptionState];
+    OSDeviceState *state = [OneSignal getDeviceState];
 
     NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
     NSDictionary *installation = [LEANInstallation info];
     [toSend addEntriesFromDictionary:installation];
-    if (state.subscriptionStatus) {
-        if (state.subscriptionStatus.userId) {
-            toSend[@"oneSignalUserId"] = state.subscriptionStatus.userId;
+    if (state) {
+        if (state.userId) {
+            toSend[@"oneSignalUserId"] = state.userId;
         }
-        if (state.subscriptionStatus.pushToken) {
-            toSend[@"oneSignalPushToken"] = state.subscriptionStatus.pushToken;
+        if (state.pushToken) {
+            toSend[@"oneSignalPushToken"] = state.pushToken;
         }
-        toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:state.subscriptionStatus.subscribed];
+        toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:state.isSubscribed];
         toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
     }
     

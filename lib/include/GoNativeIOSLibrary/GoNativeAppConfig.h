@@ -139,6 +139,7 @@ typedef enum : NSUInteger {
 @property NSURL *oneSignalTagsJsonUrl;
 @property NSString *oneSignalInFocusDisplay;
 @property BOOL oneSignalRequiresUserPrivacyConsent;
+@property BOOL oneSignalIosSoftPrompt;
 
 // Xtremepush integration
 @property BOOL xtremepushEnabled;

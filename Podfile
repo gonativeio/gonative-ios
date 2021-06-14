@@ -6,7 +6,7 @@ target 'GonativeIO' do
   use_frameworks!
 
   # Pods for GonativeIO
-  pod 'OneSignal', '>= 2.11.2', '< 3.0'
+  pod 'OneSignal', '>= 3.0.0', '< 4.0'
   pod 'SwiftIconFont'
   pod 'FBSDKCoreKit'
 
@@ -22,7 +22,7 @@ target 'OneSignalNotificationServiceExtension' do
   use_frameworks!
 
   # Pods for OneSignalNotificationServiceExtension
-  pod 'OneSignal', '>= 2.11.2', '< 3.0'
+  pod 'OneSignal', '>= 3.0.0', '< 4.0'
 end
 
 post_install do |installer|
