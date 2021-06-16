@@ -38,4 +38,7 @@ static NSString *kLEANWebViewControllerClearPools = @"io.gonative.ios.WebViewCon
 - (void) sharePageWithUrl:(NSString*)url sender:(id)sender;
 - (BOOL) canGoBack;
 - (void) goBack;
+- (BOOL) canGoForward;
+- (void) goForward;
+- (void) refreshPage;
 @end

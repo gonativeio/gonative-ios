@@ -1,0 +1,11 @@
+/* Button: Cancel */
+"button-cancel" = "ביטול";
+
+/* Button: OK */
+"button-ok" = "אישור";
+
+/* Button: View */
+"button-view" = "הצג";
+
+/* Button: Menu */
+"button-menu" = "תפריט";

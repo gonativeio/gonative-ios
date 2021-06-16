@@ -265,6 +265,7 @@ static NSInteger _currentWindows = 0;
         @try {
             [self.wkWebview removeObserver:self forKeyPath:@"URL"];
             [self.wkWebview removeObserver:self forKeyPath:@"canGoBack"];
+            [self.wkWebview removeObserver:self forKeyPath:@"canGoForward"];
         }
         @catch (NSException * __unused exception) {
         }
@@ -788,6 +789,29 @@ static NSInteger _currentWindows = 0;
 {
     if (self.wkWebview && [self.wkWebview canGoBack]) {
         [self.wkWebview goBack];
+    }
+}
+
+- (BOOL)canGoForward
+{
+    if (self.wkWebview) {
+        return [self.wkWebview canGoForward];
+    } else {
+        return NO;
+    }
+}
+
+- (void)goForward
+{
+    if (self.wkWebview && [self.wkWebview canGoForward]) {
+        [self.wkWebview goForward];
+    }
+}
+
+- (void)refresh
+{
+    if (self.wkWebview) {
+        [self.wkWebview reload];
     }
 }
 
@@ -2083,6 +2107,7 @@ static NSInteger _currentWindows = 0;
         @try {
             [oldView removeObserver:self forKeyPath:@"URL"];
             [oldView removeObserver:self forKeyPath:@"canGoBack"];
+            [oldView removeObserver:self forKeyPath:@"canGoForward"];
         }
         @catch (NSException * __unused exception) {
         }
@@ -2102,6 +2127,7 @@ static NSInteger _currentWindows = 0;
         // add KVO for single-page app url changes
         [newView addObserver:self forKeyPath:@"URL" options:0 context:nil];
         [newView addObserver:self forKeyPath:@"canGoBack" options:0 context:nil];
+        [newView addObserver:self forKeyPath:@"canGoForward" options:0 context:nil];
         
         self.wkWebview.allowsBackForwardNavigationGestures = [GoNativeAppConfig sharedAppConfig].swipeGestures;
         [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNFileWriterSharerName];
@@ -2170,6 +2196,10 @@ static NSInteger _currentWindows = 0;
         }
         if ([keyPath isEqualToString:@"canGoBack"]) {
             // we need a separate observe canGoBack because it seems to update after URL
+            [self.toolbarManager didLoadUrl:url];
+        }
+        if ([keyPath isEqualToString:@"canGoForward"]) {
+            // we need a separate observe canGoForward because it seems to update after URL
             [self.toolbarManager didLoadUrl:url];
         }
     }

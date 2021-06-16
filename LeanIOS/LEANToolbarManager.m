@@ -10,6 +10,7 @@
 #import "LEANWebViewController.h"
 #import "GoNativeAppConfig.h"
 #import "LEANUtilities.h"
+#import "GonativeIO-Swift.h"
 
 @interface LEANToolbarManager()
 @property UIToolbar *toolbar;
@@ -39,7 +40,15 @@
     NSMutableArray *toolbarItems = [NSMutableArray array];
     NSMutableArray *toolbarItemTypes = [NSMutableArray array];
     NSMutableArray *toolbarItemUrlRegexes = [NSMutableArray array];
-    
+    // add spacer
+    void (^addSpacer)(void) =
+        ^{
+            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+            spacer.enabled = NO;
+            [toolbarItems addObject:spacer];
+            [toolbarItemTypes addObject:@"spacer"];
+            [toolbarItemUrlRegexes addObject:[NSNull null]];
+        };
     if ([GoNativeAppConfig sharedAppConfig].toolbarItems) {
         for (NSDictionary *entry in [GoNativeAppConfig sharedAppConfig].toolbarItems) {
             if (![entry isKindOfClass:[NSDictionary class]]) continue;
@@ -51,38 +60,55 @@
             
             UIImage *iconImage;
             if ([icon isEqualToString:@"left"]) {
-                iconImage = [UIImage imageNamed:@"leftImage"];
+                iconImage = [LEANIcons imageForIconIdentifier:@"fas fa-arrow-left" size:23];
+            } else if([icon isEqualToString:@"right"]){
+                iconImage = [LEANIcons imageForIconIdentifier:@"fas fa-arrow-right" size:23];
+            } else if([icon isEqualToString:@"refresh"]){
+                iconImage = [LEANIcons imageForIconIdentifier:@"fas fa-redo-alt" size:23];
             }
             
             // process items
             UIBarButtonItem *item = nil;
             NSString *itemType = nil;
             NSArray *itemRegexes = [LEANUtilities createRegexArrayFromStrings:urlRegex];
-            if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"back"]) {
-                if (iconImage) {
-                    item = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(backPressed:)];
-                } else {
-                    if (!title) title = @"Back";
-                    item = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(backPressed:)];
+            if ([system isKindOfClass:[NSString class]] && ([system isEqualToString:@"back"] || [system isEqualToString:@"forward"] || [system isEqualToString:@"refresh"])) {
+                if ([system isEqualToString:@"back"]) {
+                    if(iconImage){
+                        item = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(backPressed:)];
+                    } else {
+                        if (!title) title = @"Back";
+                        item = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(backPressed:)];
+                    }
+                    itemType = @"back";
+                } else if ([system isEqualToString:@"forward"]){
+                    if(iconImage){
+                        item = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(forwardPressed:)];
+                    } else {
+                        if (!title) title = @"Forward";
+                        item = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(forwardPressed:)];
+                    }
+                    itemType = @"forward";
+                } else if([system isEqualToString:@"refresh"]){
+                    if(iconImage){
+                        item = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(refreshPressed:)];
+                    } else {
+                        if (!title) title = @"Refresh";
+                        item = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(refreshPressed:)];
+                        
+                    }
+                    itemType = @"refresh";
                 }
                 
                 item.enabled = NO;
-                itemType = @"back";
             }
             
             if (item && itemType) {
                 // add item
-                if ([toolbarItems count] > 0) {
-                    // add spacer
-                    UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-                    spacer.enabled = NO;
-                    [toolbarItems addObject:spacer];
-                    [toolbarItemTypes addObject:@"spacer"];
-                    [toolbarItemUrlRegexes addObject:[NSNull null]];
-                }
+                if ([toolbarItems count] == 0) addSpacer();
                 [toolbarItems addObject:item];
                 [toolbarItemTypes addObject:itemType];
                 [toolbarItemUrlRegexes addObject:itemRegexes];
+                addSpacer();
             }
         }
     }
@@ -96,12 +122,18 @@
 - (void)didLoadUrl:(NSURL*)url
 {
     NSString *urlString = [url absoluteString];
-    // update back buttons
+    // update toolbar buttons
     for (NSInteger i = 0; i < [self.toolbarItems count]; i++) {
-        if ([self.toolbarItemTypes[i] isEqualToString:@"back"]) {
+        if ([self.toolbarItemTypes[i] isEqualToString:@"back"] || [self.toolbarItemTypes[i] isEqualToString:@"forward"] || [self.toolbarItemTypes[i] isEqualToString:@"refresh"]) {
             UIBarButtonItem *item = self.toolbarItems[i];
-            item.enabled = [self.wvc canGoBack];
-        
+            if([self.toolbarItemTypes[i] isEqualToString:@"back"]){
+                item.enabled = [self.wvc canGoBack];
+            } else if([self.toolbarItemTypes[i] isEqualToString:@"forward"]){
+                item.enabled = [self.wvc canGoForward];
+            } else {
+                item.enabled = YES;
+            }
+            
             // check regex array
             BOOL regexMatches = YES;
             NSArray *regexArray = self.toolbarItemUrlRegexes[i];
@@ -149,6 +181,16 @@
 - (void)backPressed:(id)sender
 {
     [self.wvc goBack];
+}
+
+- (void)forwardPressed:(id)sender
+{
+    [self.wvc goForward];
+}
+
+- (void)refreshPressed:(id)sender
+{
+    [self.wvc refreshPage];
 }
 
 @end

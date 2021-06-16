@@ -234,6 +234,9 @@ typedef enum : NSUInteger {
 @property NSString* kalturaCastReceiverAppId;
 @property NSString* kalturaServerUrl;
 
+// firebase analytics
+@property BOOL firebaseAnalyticsEnabled;
+
 // misc
 @property NSPredicate *forceLandscapeMatch;
 @property BOOL showShareButton;
