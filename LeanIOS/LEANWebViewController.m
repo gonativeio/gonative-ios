@@ -478,6 +478,8 @@ static NSInteger _currentWindows = 0;
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.toolbarManager didLoadUrl:url];
+        // toolbar may need to adjust its background to fill in behind home indicator
+        [self.toolbar layoutSubviews];
     });
 }
 
