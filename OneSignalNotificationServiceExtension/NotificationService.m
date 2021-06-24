@@ -17,7 +17,7 @@
     self.contentHandler = contentHandler;
     self.bestAttemptContent = [request.content mutableCopy];
     
-    [OneSignal didReceiveNotificationExtensionRequest:self.receivedRequest withMutableNotificationContent:self.bestAttemptContent];
+    [OneSignal didReceiveNotificationExtensionRequest:self.receivedRequest withMutableNotificationContent:self.bestAttemptContent withContentHandler:self.contentHandler];
     
     self.contentHandler(self.bestAttemptContent);
 }

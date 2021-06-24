@@ -103,6 +103,7 @@
                 
                 [rvc presentAlert:alert];
             }
+            completion(notification);
         };
         [OneSignal setNotificationWillShowInForegroundHandler:notifWillShowInForegroundHandler];
         
@@ -159,7 +160,7 @@
         }
     }
     
-    if (appConfig.iOSRequestATTConsentOnLoad || appConfig.facebookEnabled) {
+    if ([self hasTrackingDescription] && (appConfig.iOSRequestATTConsentOnLoad || appConfig.facebookEnabled)) {
         if (@available(iOS 14.5, *)) {
             [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
                 [FBSDKSettings setAdvertiserTrackingEnabled:status == ATTrackingManagerAuthorizationStatusAuthorized];
@@ -331,6 +332,12 @@
     GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
     OSSubscriptionState *state = stateChanges.to;
     [registration setOneSignalUserId:state.userId pushToken:state.pushToken subscribed:state.isSubscribed];
+}
+
+#pragma mark -
+
+-(BOOL)hasTrackingDescription {
+    return [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSUserTrackingUsageDescription"] isKindOfClass:[NSString class]];
 }
 
 @end
