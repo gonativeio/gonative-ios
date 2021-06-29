@@ -175,16 +175,19 @@
     }
     
     // check for toolbar regex match
-    BOOL toolbarRegexMatches = NO;
+    BOOL toolbarRegexEnabled = YES;
     for (RegexEnabled *toolbarRegexObject in [[GoNativeAppConfig sharedAppConfig] toolbarRegexes]) {
-        if (toolbarRegexObject.enabled) {
-            @try {
-                toolbarRegexMatches = [toolbarRegexObject.regex evaluateWithObject:urlString];
-            }
-            @catch (NSException* exception) {
-                NSLog(@"Error in toolbar regexes: %@", exception);
-            }
-            if (toolbarRegexMatches) break;
+        toolbarRegexEnabled = NO;
+        BOOL matches = NO;
+        @try {
+            matches = [toolbarRegexObject.regex evaluateWithObject:urlString];
+        }
+        @catch (NSException* exception) {
+            NSLog(@"Error in toolbar regexes: %@", exception);
+        }
+        if (matches) {
+            toolbarRegexEnabled = toolbarRegexObject.enabled;
+            break;
         }
     }
     
@@ -192,7 +195,7 @@
     BOOL makeVisible = NO;
     if (self.visibility == LEANToolbarVisibilityAlways) {
         makeVisible = YES;
-    } else if(backEnabled && (backRegexMatches || toolbarRegexMatches)){
+    } else if(backEnabled && (backRegexMatches || toolbarRegexEnabled)){
         makeVisible = YES;
     }
 
