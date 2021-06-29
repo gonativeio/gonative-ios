@@ -111,9 +111,9 @@
                 iconImage = [UIImage imageNamed:iconName];
             } else {
                 if (self.wvc.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
-                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT];
+                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT systemBlueColor:NO];
                 } else {
-                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_REGULAR];
+                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_REGULAR systemBlueColor:NO];
                 }
             }
         }
@@ -147,9 +147,9 @@
                 continue;
             } else {
                 if (self.wvc.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
-                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT];
+                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT systemBlueColor:NO];
                 } else {
-                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_REGULAR];
+                    iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_REGULAR systemBlueColor:NO];
                 }
                 
                 if (self.tabBar.items.count > i) {

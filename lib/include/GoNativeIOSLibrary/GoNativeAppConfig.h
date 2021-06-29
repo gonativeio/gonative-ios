@@ -29,6 +29,11 @@ typedef enum : NSUInteger {
     GoNativeScreenOrientationLandscape
 } GoNativeScreenOrientation;
 
+@interface RegexEnabled : NSObject
+@property NSPredicate *regex;
+@property BOOL enabled;
+@end
+
 @interface GoNativeAppConfig : NSObject
 
 // general
@@ -89,6 +94,7 @@ typedef enum : NSUInteger {
 
 @property LEANToolbarVisibility toolbarVisibility;
 @property NSArray *toolbarItems;
+@property NSMutableArray<RegexEnabled*> *toolbarRegexes;
 
 @property BOOL pullToRefresh;
 @property BOOL swipeGestures;

@@ -56,6 +56,8 @@
 @property IBOutlet UIToolbar *toolbar;
 @property IBOutlet NSLayoutConstraint *tabBarBottomConstraint;
 @property IBOutlet NSLayoutConstraint *toolbarBottomConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *toolbarTopWebviewBottomConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *tabbarTopWebviewBottomConstraint;
 @property IBOutlet UIView *webviewContainer;
 @property NSArray *defaultLeftNavBarItems;
 @property NSArray *defaultToolbarItems;
@@ -472,6 +474,8 @@ static NSInteger _currentWindows = 0;
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.tabManager didLoadUrl:url];
+                // toolbar may need to adjust its background to fill in behind home indicator
+                [self.toolbar layoutSubviews];
             });
         }
     }
@@ -523,21 +527,25 @@ static NSInteger _currentWindows = 0;
 
 - (void)hideTabBarAnimated:(BOOL)animated
 {
+    self.tabbarTopWebviewBottomConstraint.active = NO;
     [self hideBottomBar:self.tabBar constraint:self.tabBarBottomConstraint animated:animated];
 }
 
 - (void)hideToolbarAnimated:(BOOL)animated
 {
+    self.toolbarTopWebviewBottomConstraint.active = NO;
     [self hideBottomBar:self.toolbar constraint:self.toolbarBottomConstraint animated:animated];
 }
 
 - (void)showTabBarAnimated:(BOOL)animated
 {
+    self.tabbarTopWebviewBottomConstraint.active = YES;
     [self showBottomBar:self.tabBar constraint:self.tabBarBottomConstraint animated:animated];
 }
 
 - (void)showToolbarAnimated:(BOOL)animated
 {
+    self.toolbarTopWebviewBottomConstraint.active = YES;
     [self showBottomBar:self.toolbar constraint:self.toolbarBottomConstraint animated:animated];
 }
 
