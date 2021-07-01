@@ -89,7 +89,7 @@
             NSString *label = entry[@"label"];
             NSString *iconName = entry[@"icon"];
             NSString *url = entry[@"url"];
-            UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:21 systemBlueColor:NO];
+            UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:21 color:[UIColor blackColor]];
             
             UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(itemWasSelected:)];
             button.accessibilityLabel = label;

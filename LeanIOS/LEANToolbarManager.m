@@ -43,16 +43,19 @@
 
     // loop through items from appConfig
     if ([GoNativeAppConfig sharedAppConfig].toolbarItems) {
+        
         // fill the toolbar with spaces first
-        
-        // fill the left portion with fixed spaces to set the center button to the center of the toolbar
-        UIBarButtonItem *fixedSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-        fixedSpacer.width = 50;
-        
-        // fill the right portion with flexible spaces to place the forward button to the right with the exact margin as Back
         UIBarButtonItem *flexibleSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        toolbarItems = [NSMutableArray arrayWithObjects:fixedSpacer, fixedSpacer, fixedSpacer, fixedSpacer, flexibleSpacer, flexibleSpacer, flexibleSpacer, nil];
-        toolbarItemTypes = [NSMutableArray arrayWithObjects:@"spacer", @"spacer", @"spacer", @"spacer", @"spacer", @"spacer", @"spacer", nil];
+        toolbarItems = [NSMutableArray arrayWithObjects:flexibleSpacer, flexibleSpacer, flexibleSpacer, flexibleSpacer, flexibleSpacer, nil];
+        toolbarItemTypes = [NSMutableArray arrayWithObjects:@"spacer", @"spacer", @"spacer", @"spacer", @"spacer", nil];
+        BOOL refreshButtonEnabled = NO;
+        
+        void (^addToolbarItemAndRemove) (int, NSObject*, NSString*) = ^(int toolbarIndex, NSObject* item, NSString *itemType){
+            [toolbarItems removeObjectAtIndex:toolbarIndex];
+            [toolbarItems insertObject:item atIndex:toolbarIndex];
+            [toolbarItemTypes removeObjectAtIndex:toolbarIndex];
+            [toolbarItemTypes insertObject:itemType atIndex:toolbarIndex];
+        };
         
         // loop through items to add to
         for (NSDictionary *entry in [GoNativeAppConfig sharedAppConfig].toolbarItems) {
@@ -67,7 +70,7 @@
 
             if ([system isEqualToString:@"back"]) {
                 if(!title) title = @"Back";
-                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:title forButton:@"Back" andIcon:@"fas fa-chevron-left"]];
+                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:title forButton:@"Back" andIcon:@"fas fa-chevron-left" centerRefresh:NO]];
                 itemType = @"back";
                 toolbarIndex = 0;
                 if([system isEqualToString:@"back"]){
@@ -75,22 +78,37 @@
                     [toolbarItemUrlRegexes addObject:itemRegexes];
                 }
             } else if([system isEqualToString:@"refresh"]){
-                item = [[UIBarButtonItem alloc] initWithImage:[LEANIcons imageForIconIdentifier:@"fas fa-redo-alt" size:23 systemBlueColor:YES] style:UIBarButtonItemStylePlain target:nil action:@selector(refreshPressed:)];
-                itemType = @"refresh";
-                toolbarIndex = 3;
+                // to be added later below
+                refreshButtonEnabled = YES;
             } else if ([system isEqualToString:@"forward"]){
                 if(!title) title = @"Forward";
-                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:title forButton:@"Forward" andIcon:@"fas fa-chevron-right"]];
+                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:title forButton:@"Forward" andIcon:@"fas fa-chevron-right" centerRefresh:NO]];
                 itemType = @"forward";
-                toolbarIndex = 6;
+                toolbarIndex = 4;
             } else return;
             item.enabled = NO;
             
-            // add items
-            [toolbarItems removeObjectAtIndex:toolbarIndex];
-            [toolbarItems insertObject:item atIndex:toolbarIndex];
-            [toolbarItemTypes removeObjectAtIndex:toolbarIndex];
-            [toolbarItemTypes insertObject:itemType atIndex:toolbarIndex];
+            // add items except refresh for now
+            if(![system isEqualToString:@"refresh"]) addToolbarItemAndRemove(toolbarIndex, item, itemType);
+        }
+        
+        // refresh button needs different positioning based on the presence of Forward button
+        if(refreshButtonEnabled){
+            // center refresh button if forward button is not present
+            UIBarButtonItem *item;
+            if([toolbarItemTypes.lastObject isEqualToString:@"spacer"]){
+                // remove extra space from the toolbar
+                [toolbarItems removeObjectAtIndex:4];
+                [toolbarItemTypes removeObjectAtIndex:4];
+                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:nil forButton:@"Refresh" andIcon:@"fas fa-redo-alt" centerRefresh:YES]];
+            } else {
+                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:nil forButton:@"Refresh" andIcon:@"fas fa-redo-alt" centerRefresh:NO]];
+            }
+            // insert refresh button
+            [toolbarItems insertObject:item atIndex:2];
+            [toolbarItemTypes insertObject:@"refresh" atIndex:2];
+            [toolbarItems removeObjectAtIndex:3];
+            [toolbarItemTypes removeObjectAtIndex:3];
         }
     }
     
@@ -100,22 +118,26 @@
     [self.toolbar setItems:self.toolbarItems animated:YES];
 }
 
-- (UIButton*)createButtonWithTitle:(NSString*)title forButton:(NSString*)buttonType andIcon:(NSString*)icon{
+- (UIButton*)createButtonWithTitle:(NSString*)title forButton:(NSString*)buttonType andIcon:(NSString*)icon centerRefresh:(BOOL)centerRefreshBool{
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     
     // title
     if(title) [button setTitle:title forState:UIControlStateNormal];
-    if(title) [button setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+    if(title) [button setTitleColor:[GoNativeAppConfig sharedAppConfig].tintColor forState:UIControlStateNormal];
     
     // image
-    [button setImage:[LEANIcons imageForIconIdentifier:icon size:23 systemBlueColor:YES] forState:UIControlStateNormal];
+    [button setImage:[LEANIcons imageForIconIdentifier:icon size:23 color:[GoNativeAppConfig sharedAppConfig].tintColor] forState:UIControlStateNormal];
     
     // action
-    if([title isEqualToString:@"Back"]){
+    if([buttonType isEqualToString:@"Back"]){
         [button addTarget:self action:@selector(backPressed:) forControlEvents:UIControlEventTouchUpInside];
-    } else {
+    } else if([buttonType isEqualToString:@"Forward"]){
         [button setSemanticContentAttribute:UISemanticContentAttributeForceRightToLeft];
         [button addTarget:self action:@selector(forwardPressed:) forControlEvents:UIControlEventTouchUpInside];
+    } else {
+        [button addTarget:self action:@selector(refreshPressed:) forControlEvents:UIControlEventTouchUpInside];
+        // position refresh to 15 units left
+        if(centerRefreshBool) button.imageEdgeInsets = UIEdgeInsetsMake(0, -15, 0, 0);
     }
     return button;
 }
