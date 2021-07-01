@@ -89,6 +89,7 @@
             NSString *label = entry[@"label"];
             NSString *iconName = entry[@"icon"];
             NSString *url = entry[@"url"];
+            // the tint color is automatically applied to the button, so a black icon is enough
             UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:21 color:[UIColor blackColor]];
             
             UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(itemWasSelected:)];

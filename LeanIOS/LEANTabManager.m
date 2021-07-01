@@ -110,6 +110,7 @@
             if (iconName && [iconName hasPrefix:@"gonative-"]) {
                 iconImage = [UIImage imageNamed:iconName];
             } else {
+                // the tint color is automatically applied to the button, so a black icon is enough
                 if (self.wvc.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
                     iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT color:[UIColor blackColor]];
                 } else {
@@ -146,6 +147,7 @@
                 // no change in image
                 continue;
             } else {
+                // the tint color is automatically applied to the button, so a black icon is enough
                 if (self.wvc.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
                     iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT color:[UIColor blackColor]];
                 } else {

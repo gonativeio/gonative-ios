@@ -123,10 +123,10 @@
     
     // title
     if(title) [button setTitle:title forState:UIControlStateNormal];
-    if(title) [button setTitleColor:[GoNativeAppConfig sharedAppConfig].tintColor forState:UIControlStateNormal];
+    if(title) [button setTitleColor:[UIColor colorNamed:@"tintColor"] forState:UIControlStateNormal];
     
     // image
-    [button setImage:[LEANIcons imageForIconIdentifier:icon size:23 color:[GoNativeAppConfig sharedAppConfig].tintColor] forState:UIControlStateNormal];
+    [button setImage:[LEANIcons imageForIconIdentifier:icon size:23 color:[UIColor colorNamed:@"tintColor"]] forState:UIControlStateNormal];
     
     // action
     if([buttonType isEqualToString:@"Back"]){
