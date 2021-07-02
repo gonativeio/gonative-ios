@@ -309,6 +309,7 @@
 		9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA648B71089D4E82EFE99D9A /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		B0DD6F5AF68831471D7D5C41 /* Pods-GonativeIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.release.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.release.xcconfig"; sourceTree = "<group>"; };
+		BB182FAF2683478900DC8EAA /* LEANDlogDefinition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LEANDlogDefinition.h; sourceTree = "<group>"; };
 		BB8BE4AD265CACCC00716F79 /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEANIcons.swift; sourceTree = "<group>"; };
 		BBCD25272665AB91000CEE11 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -504,6 +505,7 @@
 				20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */,
 				BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */,
 				20CC8EFD2677BE470083982E /* WindowsController.swift */,
+				BB182FAF2683478900DC8EAA /* LEANDlogDefinition.h */,
 			);
 			path = LeanIOS;
 			sourceTree = "<group>";
