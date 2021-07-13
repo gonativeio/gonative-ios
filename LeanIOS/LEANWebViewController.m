@@ -1852,7 +1852,7 @@ static NSInteger _currentWindows = 0;
     }
     
     // always allow iframes to load
-    if (![urlString isEqualToString:[[request mainDocumentURL] absoluteString]]) {
+    if (!isMainFrame && ![urlString isEqualToString:[[request mainDocumentURL] absoluteString]]) {
         return YES;
     }
     
