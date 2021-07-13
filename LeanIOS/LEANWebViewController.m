@@ -87,6 +87,7 @@
 @property BOOL statusBarOverlay;
 @property CGFloat savedScreenBrightness;
 @property BOOL restoreBrightnessOnNavigation;
+@property BOOL sidebarItemsEnabled;
 
 @property NSString *postLoadJavascript;
 @property NSString *postLoadJavascriptForRefresh;
@@ -133,6 +134,7 @@ static NSInteger _currentWindows = 0;
     self.statusBarOverlay = NO;
     self.savedScreenBrightness = -1;
     self.restoreBrightnessOnNavigation = NO;
+    self.sidebarItemsEnabled = YES;
     
     self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
     self.javascriptTabs = NO;
@@ -660,7 +662,7 @@ static NSInteger _currentWindows = 0;
     self.navigationItem.titleView = self.searchBar;
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"button-cancel", @"Button: Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(searchCanceled)];
     
-    [self.navigationItem setLeftBarButtonItems:nil animated:YES];
+    [self hideLeftBarButtonItems:YES];
     [self.navigationItem setRightBarButtonItems:@[cancelButton] animated:YES];
     [self.searchBar becomeFirstResponder];
 }
@@ -670,10 +672,22 @@ static NSInteger _currentWindows = 0;
     [[LEANDocumentSharer sharedSharer] shareRequest:self.currentRequest fromButton:sender];
 }
 
+- (void) showLeftBarButtonItems:(BOOL)animated
+{
+    if (self.sidebarItemsEnabled) {
+        [self.navigationItem setLeftBarButtonItems:self.defaultLeftNavBarItems animated:animated];
+    }
+}
+
+- (void) hideLeftBarButtonItems:(BOOL)animated
+{
+    [self.navigationItem setLeftBarButtonItems:nil animated:animated];
+}
+
 - (void) showNavigationItemButtonsAnimated:(BOOL)animated
 {
     //left
-    [self.navigationItem setLeftBarButtonItems:self.defaultLeftNavBarItems animated:animated];
+    [self showLeftBarButtonItems:animated];
     
     NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:4];
     
@@ -1595,6 +1609,18 @@ static NSInteger _currentWindows = 0;
                 if (itemsString) {
                     id items = [NSJSONSerialization JSONObjectWithData:[itemsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
                     [appConfig setSidebarNavigation:items];
+                }
+                
+                NSString *enabledString = query[@"enabled"];
+                if (enabledString) {
+                    BOOL enabled = [@"1" isEqualToString:enabledString] || [@"true" isEqualToString:enabledString];
+                    
+                    self.sidebarItemsEnabled = enabled;
+                    if (enabled) {
+                        [self showLeftBarButtonItems:NO];
+                    } else {
+                        [self hideLeftBarButtonItems:NO];
+                    }
                 }
             }
         }
