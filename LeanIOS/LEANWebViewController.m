@@ -227,8 +227,6 @@ static NSInteger _currentWindows = 0;
     self.fileWriterSharer = [[GNFileWriterSharer alloc] init];
     self.fileWriterSharer.wvc = self;
     
-    self.backgroundAudio = [[GNBackgroundAudio alloc] init];
-
     // we will always be loading a page at launch, hide webview here to fix a white flash for dark themed apps
     [self hideWebview];
 }
@@ -1233,6 +1231,10 @@ static NSInteger _currentWindows = 0;
         }
         
         if ([@"backgroundAudio" isEqualToString:url.host]) {
+            if (!self.backgroundAudio) {
+                self.backgroundAudio = [[GNBackgroundAudio alloc] init];
+            }
+            
             if ([@"/start" isEqualToString:url.path]) {
                 [self.backgroundAudio start];
             } else if ([@"/end" isEqualToString:url.path]) {

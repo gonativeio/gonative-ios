@@ -240,6 +240,12 @@ typedef enum : NSUInteger {
 @property NSString* kalturaCastReceiverAppId;
 @property NSString* kalturaServerUrl;
 
+// Cordial
+@property BOOL cordialEnabled;
+@property NSString* cordialAccountKey;
+@property NSString* cordialChannelKey;
+@property BOOL cordialPushNotificationsEnabled;
+
 // firebase analytics
 @property BOOL firebaseAnalyticsEnabled;
 
