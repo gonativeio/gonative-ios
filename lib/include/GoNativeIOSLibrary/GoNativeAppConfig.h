@@ -103,6 +103,7 @@ typedef enum : NSUInteger {
 // styling
 @property NSString *iosTheme;
 @property NSString *customCss;
+@property NSString *iosCustomCss;
 @property NSNumber *forceViewportWidth;
 @property NSString *stringViewport;
 @property UIColor *tintColor;

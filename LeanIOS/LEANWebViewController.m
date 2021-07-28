@@ -1512,7 +1512,7 @@ static NSInteger _currentWindows = 0;
                 NSString *key = query[@"key"];
                 if ([key length] == 0) return NO;
                 NSString *value = [OneSignal getTriggerValueForKey:key];
-                if(value == nil) return NO;
+                if(value == nil) value = @"";
                 NSDictionary *key_value_pair = [NSDictionary dictionaryWithObject:value forKey:key];
                 [self runJavascript:[LEANUtilities createJsForCallback:@"gonative_iam_trigger_value" data:key_value_pair]];
                 return NO;
@@ -1532,7 +1532,7 @@ static NSInteger _currentWindows = 0;
                 if ([handler length] == 0) return NO;
                 id inAppMessageClickHandler = ^(OSInAppMessageAction *action) {
                     NSString *clickName = action.clickName ? action.clickName : @"";
-                    NSString *clickUrl = [action.clickUrl absoluteString];
+                    NSString *clickUrl = [action.clickUrl absoluteString] ?: @"";
                     NSString *firstClick = action.firstClick ? @"true" : @"false";
                     NSString *closesMessage = action.closesMessage ? @"true" : @"false";
                     NSDictionary *action_data = [NSDictionary dictionaryWithObjectsAndKeys:clickName, @"clickName", clickUrl, @"clickUrl", firstClick, @"firstClick", closesMessage, @"closesMessage", nil];

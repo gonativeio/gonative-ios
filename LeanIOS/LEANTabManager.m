@@ -106,6 +106,7 @@
         }
         
         UIImage *iconImage;
+        float titleOffSetBy = 0;
         if ([iconName isKindOfClass:[NSString class]]) {
             if (iconName && [iconName hasPrefix:@"gonative-"]) {
                 iconImage = [UIImage imageNamed:iconName];
@@ -113,13 +114,18 @@
                 // the tint color is automatically applied to the button, so a black icon is enough
                 if (self.wvc.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
                     iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT color:[UIColor blackColor]];
+                    titleOffSetBy = -15;
                 } else {
                     iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_REGULAR color:[UIColor blackColor]];
+                    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+                        titleOffSetBy = -7.5;
+                    }
                 }
             }
         }
-        
-        [items addObject:[[UITabBarItem alloc] initWithTitle:label image:iconImage tag:i]];
+        UITabBarItem *item = [[UITabBarItem alloc] initWithTitle:label image:iconImage tag:i];
+        [item setTitlePositionAdjustment:UIOffsetMake(0, titleOffSetBy)];
+        [items addObject:item];
         
         if ([menu[i][@"selected"] boolValue]) {
             selectedItem = [items lastObject];
@@ -150,8 +156,10 @@
                 // the tint color is automatically applied to the button, so a black icon is enough
                 if (self.wvc.traitCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
                     iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_COMPACT color:[UIColor blackColor]];
+                    [self.tabBar.items[i] setTitlePositionAdjustment:UIOffsetMake(0, -15)];
                 } else {
                     iconImage = [LEANIcons imageForIconIdentifier:iconName size:TAB_IMAGE_SIZE_REGULAR color:[UIColor blackColor]];
+                    [self.tabBar.items[i] setTitlePositionAdjustment:UIOffsetMake(0, 0)];
                 }
                 
                 if (self.tabBar.items.count > i) {
