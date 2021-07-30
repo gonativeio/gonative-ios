@@ -57,6 +57,7 @@ typedef enum : NSUInteger {
 @property BOOL enableWindowOpen;
 @property GoNativeScreenOrientation forceScreenOrientation;
 @property BOOL keepScreenOn;
+@property BOOL iosFullScreenWebview;
 @property NSDictionary *customHeaders;
 @property NSArray<NSPredicate*> *nativeBridgeUrls;
 

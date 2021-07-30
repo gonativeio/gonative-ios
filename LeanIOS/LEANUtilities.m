@@ -489,6 +489,15 @@
             [webview.configuration.userContentController addUserScript:userScript];
         }
         
+        // user script for ios specific customCSS
+        NSString *iosCustomCss = [GoNativeAppConfig sharedAppConfig].iosCustomCss;
+        if ([iosCustomCss length] > 0) {
+            NSString *scriptSource = [NSString stringWithFormat:@" if(!gonative_styleElement) { var gonative_styleElement = document.createElement('style'); document.documentElement.appendChild(gonative_styleElement); gonative_styleElement.textContent = ' ';} gonative_styleElement.textContent += %@;", [LEANUtilities jsWrapString:iosCustomCss]];
+            
+            WKUserScript *userScript = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+            [webview.configuration.userContentController addUserScript:userScript];
+        }
+        
         // user script for viewport
         {
             NSString *stringViewport = [GoNativeAppConfig sharedAppConfig].stringViewport;
