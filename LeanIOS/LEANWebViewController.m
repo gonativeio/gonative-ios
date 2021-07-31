@@ -58,6 +58,12 @@
 @property IBOutlet NSLayoutConstraint *toolbarBottomConstraint;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *toolbarTopWebviewBottomConstraint;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *tabbarTopWebviewBottomConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *webviewLeftSafeAreaLeft;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *webviewRightSafeAreaRight;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *toolbarLeftSafeAreaLeft;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *toolbarRightSafeAreaRight;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *tabbarLeftSafeAreaLeft;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *tabbarRightSafeAreaRight;
 @property IBOutlet UIView *webviewContainer;
 @property NSArray *defaultLeftNavBarItems;
 @property NSArray *defaultToolbarItems;
@@ -229,6 +235,19 @@ static NSInteger _currentWindows = 0;
     
     // we will always be loading a page at launch, hide webview here to fix a white flash for dark themed apps
     [self hideWebview];
+    
+    // enable full screen webview i.e turn off safe area constraints
+    if(appConfig.iosFullScreenWebview){
+        // webview
+        [self.webviewLeftSafeAreaLeft setActive:NO];
+        [self.webviewRightSafeAreaRight setActive:NO];
+        // tab Bar
+        [self.tabbarLeftSafeAreaLeft setActive:NO];
+        [self.tabbarRightSafeAreaRight setActive:NO];
+        // toolbar
+        [self.toolbarLeftSafeAreaLeft setActive:NO];
+        [self.toolbarRightSafeAreaRight setActive:NO];
+    }
 }
 
 -(void)initializeWebview
