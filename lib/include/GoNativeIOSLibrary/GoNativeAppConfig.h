@@ -169,6 +169,10 @@ typedef enum : NSUInteger {
 @property NSString *facebookDisplayName;
 @property BOOL facebookAutoLogging;
 
+// Google Sign-In
+@property BOOL googleSignInEnabled;
+@property NSString *googleClientID;
+
 // Adjust SDK
 @property BOOL adjustEnabled;
 @property NSString *adjustAppToken;

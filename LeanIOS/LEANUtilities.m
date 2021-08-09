@@ -489,6 +489,14 @@
             [webview.configuration.userContentController addUserScript:userScript];
         }
         
+        // inject GoNative JS Bridge Library (disabling native bridge is taken care by the webview controller)
+        NSURL *GNJSBridgeFile = [[NSBundle mainBundle] URLForResource:@"GoNativeJSBridgeLibrary" withExtension:@"js"];
+        if (GNJSBridgeFile){
+            NSString *JSBridgeScript = [NSString stringWithContentsOfURL:GNJSBridgeFile encoding:NSUTF8StringEncoding error:nil];
+            WKUserScript *GNJSBridgeLibrary = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:JSBridgeScript injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+            [webview.configuration.userContentController addUserScript:GNJSBridgeLibrary];
+        }
+            
         // user script for ios specific customCSS
         NSString *iosCustomCss = [GoNativeAppConfig sharedAppConfig].iosCustomCss;
         if ([iosCustomCss length] > 0) {
