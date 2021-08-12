@@ -243,7 +243,7 @@
             else if ([javascript length] > 0) {
                 [self.wvc loadUrl:[LEANUtilities urlWithString:url] andJavascript:javascript];
             } else {
-                [self.wvc loadUrl:[LEANUtilities urlWithString:url]];
+                [self.wvc loadUrlAfterFilter:[LEANUtilities urlWithString:url] sender:nil]; // no sender as we use touch location for tab items
             }
         }
     }

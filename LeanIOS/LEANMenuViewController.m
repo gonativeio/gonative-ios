@@ -332,7 +332,10 @@
             if ([javascript length] > 0) {
                 [self.wvc loadUrl:[LEANUtilities urlWithString:url] andJavascript:javascript];
             } else {
-                [self.wvc loadUrl:[LEANUtilities urlWithString:url]];
+                if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+                    [self.wvc setSharePopOverRect:[tableView rectForRowAtIndexPath:indexPath]]; // save touch location
+                }
+                [self.wvc loadUrlAfterFilter:[LEANUtilities urlWithString:url] sender:nil]; // sender is nil as we are using location of selected item
             }
         }
         [self.frostedViewController hideMenuViewController];
@@ -423,7 +426,7 @@
             if ([javascript isKindOfClass:[NSString class]] && [javascript length] > 0) {
                 [self.wvc loadUrl:[NSURL URLWithString:url] andJavascript:javascript];
             } else {
-                [self.wvc loadUrl:[NSURL URLWithString:url]];
+                [self.wvc loadUrlAfterFilter:[NSURL URLWithString:url] sender:nil];
             }
         }
     }

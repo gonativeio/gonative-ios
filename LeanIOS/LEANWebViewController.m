@@ -117,6 +117,7 @@
 
 @implementation LEANWebViewController
 
+static CGRect sharePopOverRect; // last touch coordinates in CGRect
 static NSInteger _currentWindows = 0;
 
 + (NSInteger)currentWindows {
@@ -135,6 +136,17 @@ static NSInteger _currentWindows = 0;
     self.checkLoginSignup = YES;
     
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    
+    // enable touch listener only for iPads
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        UITapGestureRecognizer *coordinateListener =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:nil];
+        coordinateListener.delegate = self;
+        // Set required taps and number of touches
+        [coordinateListener setNumberOfTapsRequired:1];
+        [coordinateListener setNumberOfTouchesRequired:1];
+        [[self view] addGestureRecognizer:coordinateListener];
+    }
     
     self.hideWebviewAlpha = [appConfig.hideWebviewAlpha floatValue];
     self.statusBarOverlay = NO;
@@ -248,6 +260,20 @@ static NSInteger _currentWindows = 0;
         [self.toolbarLeftSafeAreaLeft setActive:NO];
         [self.toolbarRightSafeAreaRight setActive:NO];
     }
+}
+
+// called when screen touched
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    CGPoint point = [touch locationInView:touch.view];
+    CGPoint pointOnScreen = [touch.view convertPoint:point toView:nil];
+    sharePopOverRect = CGRectMake(pointOnScreen.x, pointOnScreen.y, 0, 0);
+    return NO;
+}
+
+// set share dialog popover location in CGRect
+- (void)setSharePopOverRect:(CGRect)rect
+{
+    sharePopOverRect = rect;
 }
 
 -(void)initializeWebview
@@ -756,6 +782,9 @@ static NSInteger _currentWindows = 0;
         } else if ([sender isKindOfClass:[UIView class]]) {
             avc.popoverPresentationController.sourceView = sender;
         } else {
+            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+                avc.popoverPresentationController.sourceRect = sharePopOverRect;
+            }
             avc.popoverPresentationController.sourceView = self.view;
         }
     }
@@ -868,6 +897,18 @@ static NSInteger _currentWindows = 0;
     } else {
         [self loadUrl:[NSURL URLWithString:url]];
     }
+}
+
+// currently, sender is used to receive a selected UIBarButtonItem from the action bar
+// checks url if js bridge command -> pass to shouldLoadRequest || otherwise load the url. This prevents webview.URL to accept js bridge url
+- (void) loadUrlAfterFilter:(NSURL *)url sender:(id)sender
+{
+    if([url.scheme isEqualToString:@"gonative"]){
+        [self shouldLoadRequest:[NSURLRequest requestWithURL:url] isMainFrame:YES isUserAction:NO hideWebview:NO sender:sender];
+    } else {
+        [self loadUrl:url];
+    }
+    
 }
 
 - (void) loadUrl:(NSURL *)url
@@ -1021,7 +1062,7 @@ static NSInteger _currentWindows = 0;
     }
     
     BOOL isUserAction = navigationAction.navigationType == WKNavigationTypeLinkActivated || navigationAction.navigationType == WKNavigationTypeFormSubmitted;
-    BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:navigationAction.targetFrame.isMainFrame isUserAction:isUserAction hideWebview:YES];
+    BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:navigationAction.targetFrame.isMainFrame isUserAction:isUserAction hideWebview:YES sender:nil];
     if (!shouldLoad) {
         decisionHandler(WKNavigationActionPolicyCancel);
         return;
@@ -1118,7 +1159,8 @@ static NSInteger _currentWindows = 0;
     }
 }
 
-- (BOOL)shouldLoadRequest:(NSURLRequest*)request isMainFrame:(BOOL)isMainFrame isUserAction:(BOOL)isUserAction hideWebview:(BOOL)hideWebview
+// currently, sender is used to receive a selected UIBarButtonItem from the action bar
+- (BOOL)shouldLoadRequest:(NSURLRequest*)request isMainFrame:(BOOL)isMainFrame isUserAction:(BOOL)isUserAction hideWebview:(BOOL)hideWebview sender:(id)sender
 {
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     NSURL *url = [request URL];
@@ -1209,7 +1251,7 @@ static NSInteger _currentWindows = 0;
                     NSURL *u = [NSURL URLWithString:s];
                     if (!u) continue;
                     if (![@"gonative" isEqualToString:u.scheme]) continue;
-                    [self shouldLoadRequest:[NSURLRequest requestWithURL:u] isMainFrame:isMainFrame isUserAction:isUserAction hideWebview:hideWebview];
+                    [self shouldLoadRequest:[NSURLRequest requestWithURL:u] isMainFrame:isMainFrame isUserAction:isUserAction hideWebview:hideWebview sender:nil];
                 }
             } else if([@"/custom" isEqualToString:url.path]) {
                 NSDictionary *params = [LEANUtilities parseQueryParamsWithUrl:url];
@@ -1655,7 +1697,7 @@ static NSInteger _currentWindows = 0;
                     // need to set mainDocumentURL to properly handle external links in shouldLoadRequest:
                     requestToOpen.mainDocumentURL = urlToOpen;
                     if (requestToOpen) {
-                        BOOL shouldLoad = [self shouldLoadRequest:requestToOpen isMainFrame:YES isUserAction:YES hideWebview:NO];
+                        BOOL shouldLoad = [self shouldLoadRequest:requestToOpen isMainFrame:YES isUserAction:YES hideWebview:NO sender:nil];
                         if (shouldLoad) {
                             LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
                             newvc.initialUrl = urlToOpen;
@@ -1679,7 +1721,7 @@ static NSInteger _currentWindows = 0;
             NSString *shareUrl = query[@"url"]; // can be nil for current page
             
             if ([@"/sharePage" isEqualToString:url.path]) {
-                [self sharePageWithUrl:shareUrl sender:nil];
+                [self sharePageWithUrl:shareUrl sender:sender];
             } else if ([@"/downloadFile" isEqualToString:url.path] && shareUrl) {
                 NSURL *urlToDownload = [NSURL URLWithString:shareUrl relativeToURL:self.currentRequest.URL];
                 [[LEANDocumentSharer sharedSharer] shareUrl:urlToDownload fromView:self.wkWebview];
@@ -2470,7 +2512,7 @@ static NSInteger _currentWindows = 0;
     // createWebView is called before shouldLoadRequest is called. To avoid creating an extra
     // WebViewController for an external link, we check shouldLoadRequest here.
     if (navigationAction.request) {
-        BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:YES isUserAction:YES hideWebview:NO];
+        BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:YES isUserAction:YES hideWebview:NO sender:nil];
         if (!shouldLoad) {
             return nil;
         }
