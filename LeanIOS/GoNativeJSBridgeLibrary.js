@@ -76,7 +76,11 @@ gonative.tabNavigation = {
 
 gonative.share = {
     sharePage: function (shareURL){
-        addCommand("gonative://share/sharePage?url=" + shareURL);
+        if(shareURL === undefined){
+            addCommand("gonative://share/sharePage");
+        } else {
+            addCommand("gonative://share/sharePage?url=" + shareURL);
+        }
     },
     downloadFile: function (downloadURL){
         addCommand("gonative://share/downloadFile?url=" + downloadURL);

@@ -1773,8 +1773,11 @@ static NSInteger _currentWindows = 0;
                 if (style) {
                     if ([style isEqualToString:@"dark"]) {
                         // dark icons and text
-                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
-                        [self setNeedsStatusBarAppearanceUpdate];
+                        if (@available(iOS 13.0, *)) {
+                            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDarkContent];
+                        } else {
+                            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
+                        }
                     } else {
                         // light icons and text
                         self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
