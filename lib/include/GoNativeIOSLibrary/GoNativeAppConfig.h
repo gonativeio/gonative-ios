@@ -99,6 +99,7 @@ typedef enum : NSUInteger {
 
 @property BOOL pullToRefresh;
 @property BOOL swipeGestures;
+@property BOOL swipeGesturesEdge;
 @property NSInteger maxWindows;
 
 // styling
@@ -168,10 +169,13 @@ typedef enum : NSUInteger {
 @property NSString *facebookAppId;
 @property NSString *facebookDisplayName;
 @property BOOL facebookAutoLogging;
+@property BOOL facebookIosLogin;
+@property NSString* facebookClientToken;
 
 // Google Sign-In
 @property BOOL googleSignInEnabled;
 @property NSString *googleClientID;
+@property NSString *googleUrlScheme;
 
 // Adjust SDK
 @property BOOL adjustEnabled;
@@ -251,6 +255,11 @@ typedef enum : NSUInteger {
 @property NSString* cordialAccountKey;
 @property NSString* cordialChannelKey;
 @property BOOL cordialPushNotificationsEnabled;
+
+// Appsflyer
+@property BOOL appsflyerEnabled;
+@property NSString* appsflyerDevKey;
+@property NSString* appsflyerAppleId;
 
 // firebase analytics
 @property BOOL firebaseAnalyticsEnabled;
