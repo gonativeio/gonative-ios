@@ -261,6 +261,9 @@ typedef enum : NSUInteger {
 @property NSString* appsflyerDevKey;
 @property NSString* appsflyerAppleId;
 
+// local settings
+@property BOOL localSettingsEnabled;
+
 // firebase analytics
 @property BOOL firebaseAnalyticsEnabled;
 
