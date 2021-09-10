@@ -7,7 +7,6 @@
 //
 
 #import "LEANInstallation.h"
-#import "GoNativeAppConfig.h"
 #import "LEANAppDelegate.h"
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <CoreTelephony/CTCarrier.h>

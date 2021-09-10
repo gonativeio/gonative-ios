@@ -9,7 +9,6 @@
 #import "GNRegistrationManager.h"
 #import "LEANUtilities.h"
 #import "LEANInstallation.h"
-#import "GoNativeAppConfig.h"
 #import <OneSignal/OneSignal.h>
 
 #pragma mark Registration Data

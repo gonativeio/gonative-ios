@@ -1,29 +1,25 @@
 PODS:
-  - FBSDKCoreKit (9.1.0):
-    - FBSDKCoreKit/Basics (= 9.1.0)
-    - FBSDKCoreKit/Core (= 9.1.0)
-  - FBSDKCoreKit/Basics (9.1.0)
-  - FBSDKCoreKit/Core (9.1.0):
-    - FBSDKCoreKit/Basics
+  - GoNativeCore (1.1.5)
   - OneSignal (3.5.1)
   - SwiftIconFont (6.1.1)
 
 DEPENDENCIES:
-  - FBSDKCoreKit
+  - GoNativeCore
   - OneSignal (< 4.0, >= 3.0.0)
   - SwiftIconFont
 
 SPEC REPOS:
+  "git@github.com:gonativeio/gonative-specs.git":
+    - GoNativeCore
   trunk:
-    - FBSDKCoreKit
     - OneSignal
     - SwiftIconFont
 
 SPEC CHECKSUMS:
-  FBSDKCoreKit: a00fe2efd780c195a5e09201bf51c56106245b40
+  GoNativeCore: b9b882df0383b638745675aadd8a59de7dac537a
   OneSignal: 2dd4d106620808303fe9661350bec931e218ee91
   SwiftIconFont: 0a772c5ac65a40c9b0675efa37b4928158bd8e43
 
-PODFILE CHECKSUM: 7f0ef46628e292dd4d7dda29a21bf65af3044451
+PODFILE CHECKSUM: 46e99f378b8cc1dbb95969fa43b9fb6dcec3bc4c
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.0

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Reachability.h"
+@import GoNativeCore;
 
 @interface LEANAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -15,6 +16,7 @@
 @property Reachability *internetReachability;
 @property BOOL isFirstLaunch;
 @property NSString *previousInitialUrl;
+@property (strong, nonatomic) GNBridge *bridge;
 
 - (void)configureApplication;
 

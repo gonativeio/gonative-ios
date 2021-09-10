@@ -7,9 +7,7 @@
 //
 
 #import <OneSignal/OneSignal.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "LEANAppDelegate.h"
-#import "GoNativeAppConfig.h"
 #import "LEANWebViewIntercept.h"
 #import "LEANUrlCache.h"
 #import "LEANRootViewController.h"
@@ -24,6 +22,8 @@
 @end
 
 @implementation LEANAppDelegate
+
+@synthesize bridge;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -141,33 +141,11 @@
     self.internetReachability = [Reachability reachabilityForInternetConnection];
     [self.internetReachability startNotifier];
     
-    // Facebook SDK
-    if (appConfig.facebookEnabled) {
-        [FBSDKSettings setAppID:appConfig.facebookAppId];
-        [FBSDKSettings setDisplayName:appConfig.facebookDisplayName];
-        
-        [[FBSDKApplicationDelegate sharedInstance] application:application
-                                 didFinishLaunchingWithOptions:launchOptions];
-        if (launchOptions[UIApplicationLaunchOptionsURLKey] == nil) {
-            [FBSDKAppLinkUtility fetchDeferredAppLink:^(NSURL *url, NSError *error) {
-                if (error) {
-                    NSLog(@"Received error while fetching deferred app link %@", error);
-                }
-                if (url) {
-                    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-                }
-            }];
-        }
-    }
-    
     if ([self hasTrackingDescription] && (appConfig.iOSRequestATTConsentOnLoad || appConfig.facebookEnabled)) {
         if (@available(iOS 14.5, *)) {
             [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-                [FBSDKSettings setAdvertiserTrackingEnabled:status == ATTrackingManagerAuthorizationStatusAuthorized];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationAppTrackingStatusChanged object:nil];
             }];
-        } else {
-            [FBSDKSettings setAdvertiserTrackingEnabled:YES];
         }
     }
     
@@ -175,6 +153,10 @@
     if (appConfig.keepScreenOn) {
         application.idleTimerDisabled = YES;
     }
+    
+    self.bridge = [GNBridge new];
+    
+    [bridge application:application didFinishLaunchingWithOptions:launchOptions];
     
     return YES;
 }
@@ -236,20 +218,14 @@
         return YES;
     }
     
-    // Facebook SDK
-    if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
-        return [[FBSDKApplicationDelegate sharedInstance] application:app openURL:url options:options];
-    }
+    [bridge application:app openURL:url options:options];
     
     return NO;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    if ([GoNativeAppConfig sharedAppConfig].facebookEnabled) {
-        [FBSDKAppEvents activateApp];
-    }
-    
+    [bridge applicationDidBecomeActive:application];
     if (self.previousInitialUrl) {
         NSString *initialUrl = [[GNConfigPreferences sharedPreferences] getInitialUrl];
         if (![self.previousInitialUrl isEqualToString:initialUrl]) {
@@ -292,24 +268,22 @@
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    [bridge applicationWillResignActive:application];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [bridge applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [bridge applicationWillEnterForeground:application];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    [bridge applicationWillTerminate:application];
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler

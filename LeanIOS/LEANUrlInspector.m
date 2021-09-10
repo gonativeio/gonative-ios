@@ -7,7 +7,6 @@
 //
 
 #import "LEANUrlInspector.h"
-#import "GoNativeAppConfig.h"
 
 @interface LEANUrlInspector ()
 @property NSRegularExpression *userIdRegex;

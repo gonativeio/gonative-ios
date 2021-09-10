@@ -9,7 +9,6 @@
 #import "LEANNavigationController.h"
 #import "LEANWebViewController.h"
 #import "LEANRootViewController.h"
-#import "GoNativeAppConfig.h"
 
 @interface LEANNavigationController () <UINavigationControllerDelegate>
 @end

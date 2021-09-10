@@ -8,7 +8,7 @@
 
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "LEANUtilities.h"
-#import "GoNativeAppConfig.h"
+#import "LEANAppDelegate.h"
 
 @implementation LEANUtilities
 
@@ -524,6 +524,8 @@
             WKUserScript *userScript = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
             [webview.configuration.userContentController addUserScript:userScript];
         }
+        
+        [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge loadUserScriptsForContentController:webview.configuration.userContentController];
         
         // for our faux content-inset
         webview.scrollView.layer.masksToBounds = NO;

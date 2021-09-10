@@ -10,7 +10,6 @@
 #import "LEANNavigationController.h"
 #import "LEANWebViewController.h"
 #import "LEANRootViewController.h"
-#import "GoNativeAppConfig.h"
 #import "LEANLoginManager.h"
 #import "LEANUrlInspector.h"
 #import "LEANTabManager.h"

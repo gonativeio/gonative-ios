@@ -8,7 +8,6 @@
 
 #import "LEANWebViewIntercept.h"
 #import "LEANAppDelegate.h"
-#import "GoNativeAppConfig.h"
 #import "GTMNSString+HTML.h"
 #import "LEANWebViewPool.h"
 #import "LEANDocumentSharer.h"

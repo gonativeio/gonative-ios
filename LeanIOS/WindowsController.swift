@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import GoNativeCore
 
 @objc class WindowsController: NSObject {
     @objc class public func windowCountChanged() {

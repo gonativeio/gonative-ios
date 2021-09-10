@@ -8,7 +8,6 @@
 
 #import "LEANLoginManager.h"
 #import "LEANUtilities.h"
-#import "GoNativeAppConfig.h"
 #import "NSURL+LEANUtilities.h"
 #import "LEANUrlInspector.h"
 #import <WebKit/WebKit.h>

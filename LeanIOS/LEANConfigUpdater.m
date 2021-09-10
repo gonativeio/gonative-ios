@@ -7,7 +7,6 @@
 //
 
 #import "LEANConfigUpdater.h"
-#import "GoNativeAppConfig.h"
 #import "LEANInstallation.h"
 
 @interface LEANConfigUpdater ()

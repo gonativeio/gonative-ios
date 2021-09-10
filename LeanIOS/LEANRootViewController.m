@@ -8,7 +8,6 @@
 
 #import "LEANRootViewController.h"
 #import "LEANMenuViewController.h"
-#import "GoNativeAppConfig.h"
 #import "LEANWebViewController.h"
 #import "LEANUtilities.h"
 

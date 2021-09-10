@@ -7,7 +7,6 @@
 //
 
 #import "LEANWebViewPool.h"
-#import "GoNativeAppConfig.h"
 #import "LEANWebViewController.h"
 #import "LEANUtilities.h"
 #import "LEANLoginManager.h"

@@ -7,7 +7,6 @@
 //
 
 #import "GNCustomHeaders.h"
-#import "GoNativeAppConfig.h"
 
 static NSString * kOurRequestProperty = @"io.gonative.ios.GNCustomHeaders";
 

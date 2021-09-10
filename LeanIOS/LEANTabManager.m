@@ -8,7 +8,6 @@
 
 #import "LEANTabManager.h"
 #import "LEANWebViewController.h"
-#import "GoNativeAppConfig.h"
 #import "LEANUtilities.h"
 #import "GonativeIO-Swift.h"
 

@@ -7,7 +7,6 @@
 //
 
 #import "LEANActionManager.h"
-#import "GoNativeAppConfig.h"
 #import "GonativeIO-Swift.h"
 
 @interface LEANActionManager ()

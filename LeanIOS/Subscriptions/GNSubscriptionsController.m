@@ -9,7 +9,6 @@
 #import "GNSubscriptionsController.h"
 #import "GNSubscriptionsTableViewController.h"
 #import "GNSubscriptionsModel.h"
-#import "GoNativeAppConfig.h"
 #import <OneSignal/OneSignal.h>
 
 @interface GNSubscriptionsController ()
