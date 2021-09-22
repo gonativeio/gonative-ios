@@ -39,7 +39,20 @@
     } else {
         self.isFirstLaunch = NO;
     }
-       
+    
+    /*
+    UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert |
+              UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
+
+    [[UNUserNotificationCenter currentNotificationCenter]
+        requestAuthorizationWithOptions:authOptions
+        completionHandler:^(BOOL granted, NSError * _Nullable error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[UIApplication sharedApplication] registerForRemoteNotifications];
+            });
+    }];
+    */
+    
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     if (appConfig.configError) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -195,8 +208,14 @@
     self.window.tintColor = [UIColor colorNamed:@"tintColor"];
 }
 
+-(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    NSLog(@"Successfully registered for push notifications");
+    [self setApnsToken:[deviceToken base64EncodedStringWithOptions:0]];
+}
+
 - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
     NSLog(@"Error registering for push notifications: %@", err);
+    [self setApnsToken:nil];
 }
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options

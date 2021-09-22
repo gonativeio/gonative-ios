@@ -2423,10 +2423,16 @@ static NSInteger _currentWindows = 0;
 }
 
 -(void)runGonativeDeviceInfo {
+    NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
     NSDictionary *installation = [LEANInstallation info];
+    [toSend addEntriesFromDictionary:installation];
+    
     LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
     appDelegate.isFirstLaunch = NO;
-    NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:installation];
+    
+    if(appDelegate.apnsToken) toSend[@"apnsToken"] = appDelegate.apnsToken;
+    
+    NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:toSend];
     if (jsCallback) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self runJavascript:jsCallback];

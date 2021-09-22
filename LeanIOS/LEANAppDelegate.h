@@ -16,6 +16,7 @@
 @property Reachability *internetReachability;
 @property BOOL isFirstLaunch;
 @property NSString *previousInitialUrl;
+@property NSString *apnsToken;
 @property (strong, nonatomic) GNBridge *bridge;
 
 - (void)configureApplication;
