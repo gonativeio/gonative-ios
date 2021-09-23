@@ -40,19 +40,6 @@
         self.isFirstLaunch = NO;
     }
     
-    /*
-    UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert |
-              UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
-
-    [[UNUserNotificationCenter currentNotificationCenter]
-        requestAuthorizationWithOptions:authOptions
-        completionHandler:^(BOOL granted, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[UIApplication sharedApplication] registerForRemoteNotifications];
-            });
-    }];
-    */
-    
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     if (appConfig.configError) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
