@@ -1731,6 +1731,7 @@ static NSInteger _currentWindows = 0;
                         } else {
                             self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
                         }
+                        [self setNeedsStatusBarAppearanceUpdate];
                     } else {
                         // light icons and text
                         self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
