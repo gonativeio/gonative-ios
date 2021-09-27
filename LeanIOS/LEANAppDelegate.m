@@ -41,15 +41,6 @@
     }
     
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-    if (appConfig.configError) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSString *message = @"Invalid appConfig json";
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-ok", @"Button: OK") style:UIAlertActionStyleCancel handler:nil]];
-            LEANRootViewController *rvc = (LEANRootViewController*) self.window.rootViewController;
-            [rvc presentAlert:alert];
-        });
-    }
     
     // Register launch
     [LEANConfigUpdater registerEvent:@"launch" data:nil];
@@ -141,14 +132,6 @@
     self.internetReachability = [Reachability reachabilityForInternetConnection];
     [self.internetReachability startNotifier];
     
-    if ([self hasTrackingDescription] && (appConfig.iOSRequestATTConsentOnLoad || appConfig.facebookEnabled)) {
-        if (@available(iOS 14.5, *)) {
-            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationAppTrackingStatusChanged object:nil];
-            }];
-        }
-    }
-    
     // disable sleep if requested
     if (appConfig.keepScreenOn) {
         application.idleTimerDisabled = YES;
@@ -231,6 +214,17 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    if (appConfig.configError) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSString *message = @"Invalid appConfig json";
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-ok", @"Button: OK") style:UIAlertActionStyleCancel handler:nil]];
+            LEANRootViewController *rvc = (LEANRootViewController*) self.window.rootViewController;
+            [rvc presentAlert:alert];
+        });
+    }
+    
     [bridge applicationDidBecomeActive:application];
     if (self.previousInitialUrl) {
         NSString *initialUrl = [[GNConfigPreferences sharedPreferences] getInitialUrl];
@@ -246,6 +240,14 @@
                 }
                 self.previousInitialUrl = initialUrl;
             }
+        }
+    }
+    
+    if ([self hasTrackingDescription] && (appConfig.iOSRequestATTConsentOnLoad || appConfig.facebookEnabled)) {
+        if (@available(iOS 14.5, *)) {
+            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationAppTrackingStatusChanged object:nil];
+            }];
         }
     }
 }
