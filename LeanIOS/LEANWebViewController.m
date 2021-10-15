@@ -2419,6 +2419,22 @@ static NSInteger _currentWindows = 0;
                     [cookieStore setCookie:newCookie];
                 }
             }
+            
+            // do same for wkwebview
+            WKHTTPCookieStore *wkCookieStore = self.wkWebview.configuration.websiteDataStore.httpCookieStore;
+            [wkCookieStore getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull arrCookies) {
+                for (NSHTTPCookie *cookie in arrCookies) {
+                    if(cookie.expiresDate == nil || cookie.sessionOnly){
+                        NSMutableDictionary *cookieProperties = [cookie.properties mutableCopy];
+                        cookieProperties[NSHTTPCookieExpires] = [[NSDate date] dateByAddingTimeInterval:forceSessionCookieExpiry];
+                        cookieProperties[NSHTTPCookieMaximumAge] = [NSString stringWithFormat:@"%lu", (unsigned long)forceSessionCookieExpiry];
+                        [cookieProperties removeObjectForKey:@"Created"];
+                        [cookieProperties removeObjectForKey:NSHTTPCookieDiscard];
+                        NSHTTPCookie *newCookie = [NSHTTPCookie cookieWithProperties:cookieProperties];
+                        [wkCookieStore setCookie:newCookie completionHandler:nil];
+                    }
+                }
+            }];
         }
     });
 }
