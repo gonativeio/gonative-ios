@@ -15,6 +15,34 @@ function setNextTimeout() {
               }, 0);
 }
 
+// this function returns a promise and also supports callback as params.callback
+function addCommandCallback(command, params) {
+    var tempFunctionName = '_gonative_temp_' + Math.random().toString(36).slice(2);
+    var callback;
+    if(params) callback = params.callback;
+    else {
+        params = {
+            'callback': tempFunctionName
+        };
+    }
+    return new Promise(function(resolve, reject) {
+        // declare a temporary function
+        window[tempFunctionName] = function(data) {
+            resolve(data);
+            if (typeof callback === 'function') {
+                callback(data);
+            } else if (typeof callback === 'string' &&
+                typeof window[callback] === 'function'){
+                window[callback](data);
+            }
+            // delete this temporary function when done
+            delete window[tempFunctionName];
+        }
+        // execute command
+        addCommand(command, params);
+    });
+}
+
 function addCallbackFunction(callbackFunction){
     var callbackName;
     if(typeof callbackFunction === 'string'){
@@ -156,13 +184,13 @@ gonative.navigationMaxWindows = {
 
 gonative.connectivity = {
     get: function (params){
-        addCommand("gonative://connectivity/get", params);
+        return addCommandCallback("gonative://connectivity/get", params);
     },
     subscribe: function (params){
-        addCommand("gonative://connectivity/subscribe", params);
+        return addCommandCallback("gonative://connectivity/subscribe", params);
     },
-    unsubscribe: function (params){
-        addCommand("gonative://connectivity/unsubscribe", params);
+    unsubscribe: function (){
+        addCommand("gonative://connectivity/unsubscribe");
     }
 };
 
@@ -190,7 +218,7 @@ gonative.onesignal = {
     },
     tags: {
         getTags: function(params){
-            addCommand("gonative://onesignal/tags/get", params);
+            return addCommandCallback("gonative://onesignal/tags/get", params);
         },
         setTags: function (params){
             addCommand("gonative://onesignal/tags/set", params);
@@ -265,10 +293,10 @@ gonative.ios.geoLocation = {
 
 gonative.ios.attconsent = {
     request: function (params){
-        addCommand("gonative://ios/attconsent/request", params);
+        return addCommandCallback("gonative://ios/attconsent/request", params);
     },
     status: function (params){
-        addCommand("gonative://ios/attconsent/status", params);
+        return addCommandCallback("gonative://ios/attconsent/status", params);
     }
 };
 

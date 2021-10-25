@@ -304,8 +304,16 @@
             return YES;
         }
     }
-
+    
+    if ([bridge application:application continueUserActivity:userActivity]) {
+        return YES;
+    }
+    
     return NO;
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [bridge application:application didReceiveRemoteNotification:userInfo];
 }
 
 #pragma mark OneSignalSubscriptionObserver

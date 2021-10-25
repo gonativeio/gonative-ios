@@ -140,7 +140,7 @@ static NSInteger _currentWindows = 0;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
         UITapGestureRecognizer *coordinateListener =
         [[UITapGestureRecognizer alloc] initWithTarget:self action:nil];
-        coordinateListener.delegate = self;
+        coordinateListener.delegate = (id)self;
         // Set required taps and number of touches
         [coordinateListener setNumberOfTapsRequired:1];
         [coordinateListener setNumberOfTouchesRequired:1];
@@ -259,6 +259,8 @@ static NSInteger _currentWindows = 0;
         [self.toolbarLeftSafeAreaLeft setActive:NO];
         [self.toolbarRightSafeAreaRight setActive:NO];
     }
+    
+    [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runnerDidLoad:self];
 }
 
 // called when screen touched
@@ -443,6 +445,8 @@ static NSInteger _currentWindows = 0;
     if (url) {
         [self checkNavigationForUrl:url];
     }
+    
+    [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runnerWillAppear:self];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -454,6 +458,8 @@ static NSInteger _currentWindows = 0;
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
     [super viewWillDisappear:animated];
+    
+    [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runnerWillDisappear:self];
 }
 
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
@@ -2436,6 +2442,7 @@ static NSInteger _currentWindows = 0;
                 }
             }];
         }
+        [self runJavascript:[LEANUtilities createJsForCallback:@"gonative_library_ready" data:nil]];
     });
 }
 
