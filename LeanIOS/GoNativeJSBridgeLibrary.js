@@ -152,11 +152,9 @@ gonative.navigationTitles = {
 
 gonative.navigationLevels = {
     set: function (params){
-        var json = JSON.stringify(params);
         addCommand("gonative://navigationLevels/set", params);
     },
     setCurrent: function(params){
-        var json = JSON.stringify(params);
         addCommand("gonative://navigationLevels/set", params);
     },
     revert: function(){
