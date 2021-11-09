@@ -71,7 +71,6 @@
 		208A9F42191AEBAD0049E664 /* appConfig.json in Resources */ = {isa = PBXBuildFile; fileRef = 208A9F41191AEBAD0049E664 /* appConfig.json */; };
 		20912D732380DB7600506807 /* GNFileWriterSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20912D722380DB7600506807 /* GNFileWriterSharer.m */; };
 		2092E238205C3E83005E8B71 /* GNConfigPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 2092E237205C3E83005E8B71 /* GNConfigPreferences.m */; };
-		209A7D101D347714005A89C6 /* GoNativeAuthUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */; };
 		209A964323BABF2D001906F1 /* GNBackgroundAudio.m in Sources */ = {isa = PBXBuildFile; fileRef = 209A964223BABF2D001906F1 /* GNBackgroundAudio.m */; };
 		209A964523BAC508001906F1 /* appbeep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 209A964423BAC508001906F1 /* appbeep.wav */; };
 		209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 209B3218193FA36F0052A7C6 /* LEANUrlCache.m */; };
@@ -237,7 +236,6 @@
 		20912D722380DB7600506807 /* GNFileWriterSharer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNFileWriterSharer.m; sourceTree = "<group>"; };
 		2092E236205C3E83005E8B71 /* GNConfigPreferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNConfigPreferences.h; sourceTree = "<group>"; };
 		2092E237205C3E83005E8B71 /* GNConfigPreferences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNConfigPreferences.m; sourceTree = "<group>"; };
-		209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeAuthUrl.swift; sourceTree = "<group>"; };
 		209A964123BABF2D001906F1 /* GNBackgroundAudio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNBackgroundAudio.h; sourceTree = "<group>"; };
 		209A964223BABF2D001906F1 /* GNBackgroundAudio.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNBackgroundAudio.m; sourceTree = "<group>"; };
 		209A964423BAC508001906F1 /* appbeep.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = appbeep.wav; sourceTree = "<group>"; };
@@ -491,7 +489,6 @@
 				20E49F8019A2C30C00B9343E /* LEANWebViewPool.h */,
 				20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */,
 				20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */,
-				209A7D0F1D347714005A89C6 /* GoNativeAuthUrl.swift */,
 				204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */,
 				204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */,
 				202E989319EF30C8009C28AD /* Reachability.h */,
@@ -970,7 +967,6 @@
 				201AB2D61996AD66008C31BF /* LEANInstallation.m in Sources */,
 				BB9A3B012631D2A7002C38F1 /* LEANIcons.swift in Sources */,
 				2002B4AC18A9991300495B3D /* LEANAppDelegate.m in Sources */,
-				209A7D101D347714005A89C6 /* GoNativeAuthUrl.swift in Sources */,
 				20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */,
 				204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */,
 				20912D732380DB7600506807 /* GNFileWriterSharer.m in Sources */,

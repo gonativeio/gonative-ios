@@ -112,6 +112,8 @@
 @property NSNumber* statusBarStyle; // set via native bridge, only works if no navigation bar
 @property IBOutlet NSLayoutConstraint *topGuideConstraint; // modify constant to place content under status bar
 
+@property IBOutlet UIView *pluginView;
+
 @end
 
 @implementation LEANWebViewController
@@ -1362,35 +1364,6 @@ static NSInteger _currentWindows = 0;
             [UIScreen mainScreen].brightness = newBrightness;
         }
         
-        // touchid authentication
-        if ([@"auth" isEqualToString:url.host]) {
-            GoNativeAuthUrl *authUrl = [[GoNativeAuthUrl alloc] init];
-            authUrl.currentUrl = self.currentRequest.URL;
-            [authUrl handleUrl:url callback:^(NSString * _Nullable postUrl, NSDictionary<NSString *,id> * _Nullable postData, NSString * _Nullable callbackFunction) {
-                
-                if (callbackFunction) {
-                    NSString *jsCallback = [LEANUtilities createJsForCallback:callbackFunction data:postData];
-                    if (jsCallback) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self runJavascript:jsCallback];
-                        });
-                    }
-                }
-                
-                if (postUrl) {
-                    NSString *jsPost = [LEANUtilities createJsForPostTo:postUrl data:postData];
-                    if (jsPost) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self runJavascript:jsPost];
-                        });
-                    }
-                    
-                }
-            }];
-            
-            return NO;
-        }
-        
         // registration info
         if ([@"registration" isEqualToString:url.host] && [@"/send" isEqualToString:url.path]) {
             NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
@@ -2241,6 +2214,8 @@ static NSInteger _currentWindows = 0;
     if ([GoNativeAppConfig sharedAppConfig].pullToRefresh) {
         [self addPullToRefresh];
     }
+    
+    [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge switchToWebView:newView withRunner:self];
 }
 
 // To detect single-page app navigation in WKWebView
@@ -2652,6 +2627,8 @@ static NSInteger _currentWindows = 0;
 
 - (void)hideWebview
 {
+    [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge hideWebViewWithRunner:self];
+    
     if ([GoNativeAppConfig sharedAppConfig].disableAnimations) return;
     
     self.wkWebview.alpha = self.hideWebviewAlpha;
@@ -2915,6 +2892,8 @@ static NSInteger _currentWindows = 0;
         [self.toolbar invalidateIntrinsicContentSize];
     } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
     }];
+    
+    [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runner:self willTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 - (void)viewWillLayoutSubviews
