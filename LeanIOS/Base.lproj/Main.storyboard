@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Bg2-kp-iGG">
-    <device id="retina5_9" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Bg2-kp-iGG">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -16,9 +18,9 @@
                     <view key="view" contentMode="scaleToFill" id="YFt-P8-pQK">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <viewLayoutGuide key="safeArea" id="RwE-eZ-xog"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" name="tintColor"/>
+                        <viewLayoutGuide key="safeArea" id="RwE-eZ-xog"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="K0j-qO-WEI" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -51,10 +53,10 @@
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="temp" id="MMv-Cq-aAD">
-                                <rect key="frame" x="0.0" y="49" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="55.333333333333336" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MMv-Cq-aAD" id="CkX-sC-tmm">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -78,7 +80,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GBp-Vo-WtS" userLabel="WebviewContainer">
-                                <rect key="frame" x="0.0" y="88" width="375" height="583"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="592"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                             <activityIndicatorView hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="vcS-3e-fYP">
@@ -93,25 +95,18 @@
                                 </constraints>
                             </view>
                             <toolbar hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U7w-yv-4mp">
-                                <rect key="frame" x="0.0" y="671" width="375" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="jsG-72-JAt"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="680" width="375" height="49"/>
                                 <items/>
                             </toolbar>
                             <tabBar hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d6i-vM-zFn">
-                                <rect key="frame" x="0.0" y="715" width="375" height="63"/>
+                                <rect key="frame" x="0.0" y="729" width="375" height="83"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="63" id="kt9-cF-e77"/>
-                                </constraints>
                                 <items/>
                                 <connections>
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="yYL-xc-I9N"/>
                                 </connections>
                             </tabBar>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="v69-wv-2wg"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="GBp-Vo-WtS" secondAttribute="bottom" priority="100" id="4Ot-bB-Mmh"/>
@@ -120,25 +115,20 @@
                             <constraint firstItem="U7w-yv-4mp" firstAttribute="leading" secondItem="v69-wv-2wg" secondAttribute="leading" id="BNH-59-vhV"/>
                             <constraint firstItem="v69-wv-2wg" firstAttribute="trailing" secondItem="U7w-yv-4mp" secondAttribute="trailing" id="Fp8-P1-Qn4"/>
                             <constraint firstItem="d6i-vM-zFn" firstAttribute="top" secondItem="U7w-yv-4mp" secondAttribute="bottom" id="LtD-ts-ptw"/>
-                            <constraint firstItem="U7w-yv-4mp" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" priority="100" id="MeI-bm-A4R"/>
                             <constraint firstItem="GBp-Vo-WtS" firstAttribute="top" secondItem="v69-wv-2wg" secondAttribute="top" id="NbD-9P-xqX"/>
                             <constraint firstItem="v69-wv-2wg" firstAttribute="right" secondItem="GBp-Vo-WtS" secondAttribute="right" id="SkF-oL-iej"/>
                             <constraint firstItem="mys-1p-egd" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="Upi-kY-dfd"/>
-                            <constraint firstItem="d6i-vM-zFn" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailing" priority="100" id="UCK-34-wn8"/>
                             <constraint firstItem="v69-wv-2wg" firstAttribute="centerX" secondItem="vcS-3e-fYP" secondAttribute="centerX" id="VrM-Hx-sWZ"/>
-                            <constraint firstItem="d6i-vM-zFn" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" priority="100" id="W8O-BX-SCJ"/>
                             <constraint firstItem="v69-wv-2wg" firstAttribute="trailing" secondItem="d6i-vM-zFn" secondAttribute="trailing" id="XII-eu-6QS"/>
-                            <constraint firstItem="GBp-Vo-WtS" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" priority="100" id="Xie-qJ-KQM"/>
                             <constraint firstItem="GBp-Vo-WtS" firstAttribute="left" secondItem="v69-wv-2wg" secondAttribute="left" id="Zc9-Bq-KNj"/>
                             <constraint firstAttribute="centerY" secondItem="vcS-3e-fYP" secondAttribute="centerY" id="f2R-cs-BzY"/>
                             <constraint firstItem="U7w-yv-4mp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="GBp-Vo-WtS" secondAttribute="bottom" id="hdN-1h-CmV"/>
-                            <constraint firstItem="GBp-Vo-WtS" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailing" priority="100" id="jac-eP-PoV"/>
-                            <constraint firstItem="v69-wv-2wg" firstAttribute="bottom" secondItem="d6i-vM-zFn" secondAttribute="bottom" id="kRQ-0d-WHK"/>
+                            <constraint firstAttribute="bottom" secondItem="d6i-vM-zFn" secondAttribute="bottom" id="kRQ-0d-WHK"/>
                             <constraint firstItem="d6i-vM-zFn" firstAttribute="leading" secondItem="v69-wv-2wg" secondAttribute="leading" id="lJu-bT-CBi"/>
                             <constraint firstItem="mys-1p-egd" firstAttribute="top" relation="greaterThanOrEqual" secondItem="GBp-Vo-WtS" secondAttribute="bottom" id="rKL-ve-3qe"/>
                             <constraint firstItem="U7w-yv-4mp" firstAttribute="top" secondItem="mys-1p-egd" secondAttribute="bottom" id="rga-GP-fFt"/>
-                            <constraint firstItem="U7w-yv-4mp" firstAttribute="trailing" secondItem="kh9-bI-dsS" secondAttribute="trailing" priority="100" id="zCf-dx-rZF"/>
                         </constraints>
+                        <viewLayoutGuide key="safeArea" id="v69-wv-2wg"/>
                     </view>
                     <toolbarItems>
                         <barButtonItem tag="1" image="leftImage" id="0CQ-TP-1mv">
@@ -168,18 +158,10 @@
                         <outlet property="nav" destination="3CK-Lb-JmW" id="Fo1-9P-tsj"/>
                         <outlet property="tabBar" destination="d6i-vM-zFn" id="KEs-Jo-xGg"/>
                         <outlet property="tabBarBottomConstraint" destination="kRQ-0d-WHK" id="WpI-F2-Bzs"/>
-                        <outlet property="tabbarLeftSafeAreaLeft" destination="lJu-bT-CBi" id="cqc-NN-3iL"/>
-                        <outlet property="tabbarRightSafeAreaRight" destination="XII-eu-6QS" id="hOP-1T-Vzp"/>
-                        <outlet property="tabbarTopWebviewBottomConstraint" destination="9k8-Z1-cNF" id="E1Q-bz-n0X"/>
                         <outlet property="toolbar" destination="U7w-yv-4mp" id="Tqf-29-h2S"/>
                         <outlet property="toolbarBottomConstraint" destination="LtD-ts-ptw" id="1Bx-Yf-GMZ"/>
-                        <outlet property="toolbarLeftSafeAreaLeft" destination="BNH-59-vhV" id="mme-fC-8hy"/>
-                        <outlet property="toolbarRightSafeAreaRight" destination="Fp8-P1-Qn4" id="Su5-zV-w04"/>
-                        <outlet property="toolbarTopWebviewBottomConstraint" destination="hdN-1h-CmV" id="BWt-mV-50V"/>
                         <outlet property="topGuideConstraint" destination="NbD-9P-xqX" id="Q9a-bG-f82"/>
                         <outlet property="webviewContainer" destination="GBp-Vo-WtS" id="yGP-OL-uv7"/>
-                        <outlet property="webviewLeftSafeAreaLeft" destination="Zc9-Bq-KNj" id="8U9-PO-SiN"/>
-                        <outlet property="webviewRightSafeAreaRight" destination="SkF-oL-iej" id="Ut5-OF-eP0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
@@ -191,7 +173,7 @@
         <image name="leftImage" width="36" height="36"/>
         <image name="rightImage" width="36" height="36"/>
         <namedColor name="tintColor">
-            <color red="0.0" green="0.56862745098039214" blue="0.99607843137254903" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.4779999852180481" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
