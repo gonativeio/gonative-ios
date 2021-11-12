@@ -10,7 +10,7 @@ def use_plugins!
   services = services.select { |_service_name, service| %w[source binary].include? service['plugin'] }
 
   services.each do |service_name, service|
-    pod_name = "#{service_name.camelize}Plugin"
+    pod_name = service['iosPluginName']
     variant = service['plugin'].camelize
 
     pod "#{pod_name}/#{variant}"
