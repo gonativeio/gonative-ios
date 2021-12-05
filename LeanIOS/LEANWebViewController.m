@@ -1604,6 +1604,10 @@ static NSInteger _currentWindows = 0;
                 if (itemsString) {
                     id items = [NSJSONSerialization JSONObjectWithData:[itemsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
                     [appConfig setSidebarNavigation:items];
+                    
+                    // Set showNavigationBar to true to display
+                    [GoNativeAppConfig sharedAppConfig].showNavigationBar = YES;
+                    [self.navigationController setNavigationBarHidden:NO animated:YES];
                 }
                 
                 NSString *enabledString = query[@"enabled"];
@@ -1812,7 +1816,7 @@ static NSInteger _currentWindows = 0;
         }
         
         return NO;
-    }
+    } 
     
     // tel links
     if ([url.scheme isEqualToString:@"tel"]) {

@@ -1,0 +1,11 @@
+/* Button: Cancel */
+"button-cancel" = "Cancelar";
+
+/* Button: OK */
+"button-ok" = "Aceitar";
+
+/* Button: View */
+"button-view" = "Assistir";
+
+/* Button: Menu */
+"button-menu" = "Menu";

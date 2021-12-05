@@ -1,11 +1,11 @@
-/* iOS Button: Cancel */
+/* Button: Cancel */
 "button-cancel" = "Cancelar";
 
-/* iOS Button: OK */
+/* Button: OK */
 "button-ok" = "Aceptar";
 
-/* iOS Button: View */
+/* Button: View */
 "button-view" = "Ver";
 
-/* iOS Button: Menu */
+/* Button: Menu */
 "button-menu" = "Menú";
