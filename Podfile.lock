@@ -1,5 +1,5 @@
 PODS:
-  - GoNativeCore (1.2.6)
+  - GoNativeCore (1.2.8)
   - OneSignal (3.8.1)
   - SwiftIconFont (6.1.1)
 
@@ -16,7 +16,7 @@ SPEC REPOS:
     - SwiftIconFont
 
 SPEC CHECKSUMS:
-  GoNativeCore: 11d39104986112baf88b346a1cc01a100d1665ba
+  GoNativeCore: b7b4d5a95b1138852ae4432f83858c48e5529131
   OneSignal: b44755cd425704bdef8d8912030ed26619446773
   SwiftIconFont: 0a772c5ac65a40c9b0675efa37b4928158bd8e43
 

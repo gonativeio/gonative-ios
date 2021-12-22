@@ -16,6 +16,6 @@
 - (void)autoSelectTabForUrl:(NSURL*)url;
 - (void)selectTabNumber:(NSUInteger)number;
 - (void)deselectTabs;
-- (void)setTabsWithJson:(NSString*)json;
+- (void)setTabsWithJson:(NSDictionary*)json;
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection;
 @end

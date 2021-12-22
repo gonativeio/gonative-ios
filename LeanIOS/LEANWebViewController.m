@@ -38,6 +38,7 @@
 #import "GNBackgroundAudio.h"
 #import "GonativeIO-Swift.h"
 #import <AppTrackingTransparency/ATTrackingManager.h>
+#import "GNJSBridgeInterface.h"
 @import GoNativeCore;
 
 #define OFFLINE_URL @"http://offline/"
@@ -113,6 +114,8 @@
 @property IBOutlet NSLayoutConstraint *topGuideConstraint; // modify constant to place content under status bar
 
 @property IBOutlet UIView *pluginView;
+@property GNJSBridgeInterface *JSBridgeInterface;
+@property NSString *JSBridgeScript;
 
 @end
 
@@ -210,6 +213,14 @@ static NSInteger _currentWindows = 0;
         [self.view addSubview:self.statusBarBackground];
     }
     
+    if (appConfig.iosStatusBarBackgroundColor) {
+        UIView *background = [[UIView alloc] init];
+        background.backgroundColor = appConfig.iosStatusBarBackgroundColor;
+        [self.statusBarBackground removeFromSuperview];
+        self.statusBarBackground = background;
+        [self.view addSubview:self.statusBarBackground];
+    }
+    
     if (appConfig.searchTemplateURL) {
         self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchPressed:)];
         self.searchBar = [[UISearchBar alloc] init];
@@ -245,6 +256,9 @@ static NSInteger _currentWindows = 0;
     
     self.fileWriterSharer = [[GNFileWriterSharer alloc] init];
     self.fileWriterSharer.wvc = self;
+    
+    self.JSBridgeInterface = [[GNJSBridgeInterface alloc] init];
+    self.JSBridgeInterface.wvc = self;
     
     // we will always be loading a page at launch, hide webview here to fix a white flash for dark themed apps
     [self hideWebview];
@@ -507,9 +521,7 @@ static NSInteger _currentWindows = 0;
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self checkNavigationTitleImageForUrl:url];
-        if (!self.javascriptTabs) {
-            [self.tabManager autoSelectTabForUrl:url];
-        }
+        [self.tabManager autoSelectTabForUrl:url];
         
         GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
         [self setSidebarEnabled:[appConfig shouldShowSidebarForUrl:[url absoluteString]]];
@@ -1166,6 +1178,610 @@ static NSInteger _currentWindows = 0;
     }
 }
 
+- (void) handleJSBridgeFunctions:(id)data{
+    NSString *currentUrl;
+    if (self.wkWebview) {
+        currentUrl = self.wkWebview.URL.absoluteString;
+    }
+    if (![LEANUtilities checkNativeBridgeUrl:currentUrl]) {
+        NSLog(@"URL not authorized for native bridge: %@", currentUrl);
+        return;
+    }
+    
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    NSURL *url;
+    NSDictionary *query;
+    if([data isKindOfClass:[NSURL class]]){
+        url = data;
+        query = [LEANUtilities parseQueryParamsWithUrl:url];
+    } else if([data isKindOfClass:[NSDictionary class]]) {
+        url = [NSURL URLWithString:data[@"gonativeCommand"]];
+        if(!url) return;
+        if([data[@"data"] isKindOfClass:[NSDictionary class]]) query = data[@"data"];
+    } else return;
+    
+    // multi
+    if ([@"nativebridge" isEqualToString:url.host]) {
+        if ([@"/multi" isEqualToString:url.path]) {
+            NSString *data = query[@"data"];
+            if (!data) return;
+            NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+            if (![dict isKindOfClass:[NSDictionary class]]) return;
+            NSArray *urls = dict[@"urls"];
+            if (![urls isKindOfClass:[NSArray class]]) return;
+            for (NSString *s in urls) {
+                if (![s isKindOfClass:[NSString class]]) continue;
+                NSURL *u = [NSURL URLWithString:s];
+                if (!u) continue;
+                if (![@"gonative" isEqualToString:u.scheme]) continue;
+                [self handleJSBridgeFunctions:u];
+            }
+        } else if([@"/custom" isEqualToString:url.path]) {
+            // execute code defined by the CustomCodeHandler
+            // call LEANJsCustomCodeExecutor#setHandler to override this default handler
+            NSDictionary *data = [LEANJsCustomCodeExecutor execute:query];
+
+            NSString *callback = query[@"callback"];
+            if (callback && callback.length > 0) {
+                NSString *js = [LEANUtilities createJsForCallback:callback data:data];
+                [self runJavascript:js];
+            }
+        }
+        return;
+    }
+    
+    // open settings
+    if ([@"open" isEqualToString:url.host]) {
+        if ([@"/app-settings" isEqualToString:url.path]) {
+            NSURL *settingsUrl = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            [[UIApplication sharedApplication] openURL:settingsUrl options:@{} completionHandler:nil];
+        }
+        return;
+    }
+    
+    if ([@"webview" isEqualToString:url.host]) {
+        if ([@"/clearCache" isEqualToString:url.path]) {
+            NSLog(@"Clearing webview cache");
+            NSSet *types = [NSSet setWithObjects:WKWebsiteDataTypeDiskCache,
+                            WKWebsiteDataTypeMemoryCache, nil];
+            [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:types modifiedSince:[NSDate dateWithTimeIntervalSince1970:0] completionHandler:^{
+                // do nothing
+            }];
+        }
+        
+        return;
+    }
+    
+    if ([@"backgroundAudio" isEqualToString:url.host]) {
+        if (!self.backgroundAudio) {
+            self.backgroundAudio = [[GNBackgroundAudio alloc] init];
+        }
+        
+        if ([@"/start" isEqualToString:url.path]) {
+            [self.backgroundAudio start];
+        } else if ([@"/end" isEqualToString:url.path]) {
+            [self.backgroundAudio end];
+        }
+        return;
+    }
+    
+    if ([@"run" isEqualToString:url.host]) {
+        if ([@"/gonative_device_info" isEqualToString:url.path]) {
+            [self runGonativeDeviceInfo];
+        } else if ([@"/gonative_onesignal_info" isEqualToString:url.path]) {
+            [self runGonativeOnesignalInfo];
+        }
+        return;
+    }
+    
+    // config preferences
+    if ([@"config" isEqualToString:url.host]) {
+        GNConfigPreferences *config = [GNConfigPreferences sharedPreferences];
+        [config handleUrl:url withJSData:query];
+        return;
+    }
+    
+    // brightness
+    if ([@"screen" isEqualToString:url.host]) {
+        id brightness = query[@"brightness"];
+        if (!brightness) {
+            NSLog(@"Brightness not specified in %@", [url absoluteString]);
+            return;
+        }
+
+        if ([brightness isKindOfClass:[NSString class]] && [brightness isEqualToString:@"default"]) {
+            if (self.savedScreenBrightness >= 0) {
+                [UIScreen mainScreen].brightness = self.savedScreenBrightness;
+            }
+            self.restoreBrightnessOnNavigation = NO;
+            return;
+        }
+        
+        CGFloat newBrightness = [brightness floatValue];
+
+        if (newBrightness > 1.0 || newBrightness < 0) {
+            NSLog(@"Invalid brightness value in %@", [url absoluteString]);
+            return;
+        }
+        
+        id restoreString = query[@"restoreOnNavigation"];
+        BOOL restoreOnNavigation = NO;
+        if([restoreString isKindOfClass:[NSNumber class]]){
+            restoreOnNavigation = [restoreString isEqualToNumber:[NSNumber numberWithBool:YES]];
+        } else {
+            restoreOnNavigation = [restoreString isEqualToString:@"true"] || [restoreString isEqualToString:@"1"];
+        }
+        
+        self.savedScreenBrightness = [UIScreen mainScreen].brightness;
+        self.restoreBrightnessOnNavigation = restoreOnNavigation;
+        [UIScreen mainScreen].brightness = newBrightness;
+    }
+    
+    // registration info
+    if ([@"registration" isEqualToString:url.host] && [@"/send" isEqualToString:url.path]) {
+        id customData = query[@"customData"];
+        if (customData) {
+            if([customData isKindOfClass:[NSString class]]){
+                customData = [NSJSONSerialization JSONObjectWithData:[customData dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+            }
+            if ([customData isKindOfClass:[NSDictionary class]]) {
+                [[GNRegistrationManager sharedManager] setCustomData:customData];
+                [[GNRegistrationManager sharedManager] sendToAllEndpoints];
+            } else {
+                NSLog(@"Gonative registration error: customData is not JSON object");
+            }
+        } else {
+            [[GNRegistrationManager sharedManager] sendToAllEndpoints];
+        }
+        
+        return;
+    }
+    
+    // OneSignal registration
+    if ([@"onesignal" isEqualToString:url.host]) {
+        if (appConfig.oneSignalEnabled) {
+            return;
+        }
+        
+        if ([@"/register" isEqualToString:url.path]) {
+            [OneSignal promptForPushNotificationsWithUserResponse:nil];
+            return;
+        }
+        
+        if ([@"/userPrivacyConsent/grant" isEqualToString:url.path]) {
+            [OneSignal consentGranted:YES];
+            if (appConfig.oneSignalAutoRegister) {
+                [OneSignal promptForPushNotificationsWithUserResponse:nil];
+            }
+            return;
+        }
+
+        if ([@"/userPrivacyConsent/revoke" isEqualToString:url.path]) {
+            [OneSignal consentGranted:NO];
+            return;
+        }
+
+        if ([@"/tags/get" isEqualToString:url.path]) {
+            NSString *callback = query[@"callback"];
+            if (!callback || callback.length == 0) {
+                return;
+            }
+            
+            [OneSignal getTags:^(NSDictionary *result) {
+                NSDictionary *results = @{
+                                          @"success": @YES,
+                                          @"tags": result
+                                          };
+                NSString *js = [LEANUtilities createJsForCallback:callback data:results];
+                [self runJavascript:js];
+            } onFailure:^(NSError *error) {
+                NSDictionary *results = @{
+                                          @"success": @NO,
+                                          };
+                NSString *js = [LEANUtilities createJsForCallback:callback data:results];
+                [self runJavascript:js];
+            }];
+            return;
+        }
+        if ([@"/tags/set" isEqualToString:url.path]) {
+            NSString *callback = query[@"callback"];
+            id tags = query[@"tags"];
+            if([tags isKindOfClass:[NSString class]]){
+                tags = [NSJSONSerialization JSONObjectWithData:[tags dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+            }
+            
+            if (![tags isKindOfClass:[NSDictionary class]]) {
+                return;
+            }
+            
+            // set the tags
+            [OneSignal sendTags:tags onSuccess:^(NSDictionary *result) {
+                if (callback && callback.length > 0) {
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:@{
+                          @"success": @YES
+                                                                                      }];
+                    [self runJavascript:js];
+                }
+            } onFailure:^(NSError *error) {
+                if (callback && callback.length > 0) {
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:@{
+                           @"success": @NO
+                                                                                      }];
+                    [self runJavascript:js];
+                }
+            }];
+            return;
+        }
+        
+        if (([@"/promptLocation" isEqualToString:url.path])) {
+            [OneSignal promptLocation];
+            return;
+        }
+
+        if (([@"/showTagsUI" isEqualToString:url.path])) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Subscriptions" bundle:nil];
+            UIViewController *vc = [storyboard instantiateInitialViewController];
+            [self presentViewController:vc animated:YES completion:nil];
+
+            return;
+        }
+        
+        if([@"/iam/addTrigger" isEqualToString:url.path]) {
+            NSString *key = query[@"key"];
+            if ([key length] == 0) return;
+            NSString *value = query[@"value"];
+            if([value length] == 0) return;
+            [OneSignal addTrigger:key withValue:value];
+            return;
+        }
+        
+        if([@"/iam/addTriggers" isEqualToString:url.path]) {
+            NSString *map = query[@"map"];
+            id triggers;
+            if ([map length] != 0) {
+                NSString *jsonString = [map stringByRemovingPercentEncoding];
+                NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+                triggers = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            } else {
+                triggers = query;
+            }
+            
+            [OneSignal addTriggers:triggers];
+            return;
+        }
+        
+        if([@"/iam/removeTriggerForKey" isEqualToString:url.path]) {
+            NSString *key = query[@"key"];
+            if ([key length] == 0) return;
+            [OneSignal removeTriggerForKey:key];
+            return;
+        }
+        
+        if([@"/iam/getTriggerValueForKey" isEqualToString:url.path]) {
+            NSString *key = query[@"key"];
+            if ([key length] == 0) return;
+            NSString *value = [OneSignal getTriggerValueForKey:key];
+            if(value == nil) value = @"";
+            NSDictionary *key_value_pair = [NSDictionary dictionaryWithObject:value forKey:key];
+            [self runJavascript:[LEANUtilities createJsForCallback:@"gonative_iam_trigger_value" data:key_value_pair]];
+            return;
+        }
+        
+        if([@"/iam/pauseInAppMessages" isEqualToString:url.path]) {
+            NSString *pause = query[@"pause"];
+            if ([pause length] == 0) return;
+            [OneSignal pauseInAppMessages:[pause boolValue]];
+            return;
+        }
+        
+        if([@"/iam/setInAppMessageClickHandler" isEqualToString:url.path]) {
+            NSString *handler = query[@"handler"];
+            if ([handler length] == 0) return;
+            id inAppMessageClickHandler = ^(OSInAppMessageAction *action) {
+                NSString *clickName = action.clickName ? action.clickName : @"";
+                NSString *clickUrl = [action.clickUrl absoluteString] ?: @"";
+                NSString *firstClick = action.firstClick ? @"true" : @"false";
+                NSString *closesMessage = action.closesMessage ? @"true" : @"false";
+                NSDictionary *action_data = [NSDictionary dictionaryWithObjectsAndKeys:clickName, @"clickName", clickUrl, @"clickUrl", firstClick, @"firstClick", closesMessage, @"closesMessage", nil];
+                [self runJavascript:[LEANUtilities createJsForCallback:handler data:action_data]];
+            };
+            [OneSignal setInAppMessageClickHandler:inAppMessageClickHandler];
+            return;
+        }
+
+        return;
+    }
+    
+    // Navigation titles and levels
+    if ([@"navigationTitles" isEqualToString:url.host]) {
+        if ([@"/set" isEqualToString:url.path]) {
+            id data = query[@"data"];
+            id persistString = query[@"persist"];
+            BOOL persist = NO;
+            
+            if (data) {
+                if([data isKindOfClass:[NSString class]] && ((NSString*)data).length > 0){
+                    NSError *error = nil;
+                    data = [NSJSONSerialization JSONObjectWithData:[data dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+                    if (error) {
+                        NSLog(@"Error parsing navigationTitles: %@", error);
+                        return;
+                    }
+                }
+            }
+            if([persistString isKindOfClass:[NSNumber class]]){
+                persist = [persistString isEqualToNumber:[NSNumber numberWithBool:YES]];
+            } else {
+                persist = [@"1" isEqualToString:persistString] || [@"true" isEqualToString:persistString];
+            }
+            [appConfig setNavigationTitles:data persist:persist];
+        } else if ([@"/setCurrent" isEqualToString:url.path]) {
+            NSString *title = query[@"title"];
+            if (title) {
+                self.navigationItem.title = title;
+            } else {
+                self.navigationItem.title = appConfig.appName;
+            }
+        }
+        return;
+    }
+    
+    if ([@"navigationLevels" isEqualToString:url.host]) {
+        if ([@"/set" isEqualToString:url.path]) {
+            id data = query[@"data"];
+            id persistString = query[@"persist"];
+            BOOL persist = NO;
+            
+            if (data) {
+                if([data isKindOfClass:[NSString class]] && ((NSString*)data).length > 0){
+                    NSError *error = nil;
+                    data = [NSJSONSerialization JSONObjectWithData:[data dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
+                    if (error) {
+                        NSLog(@"Error parsing navigationLevels: %@", error);
+                        return;
+                    }
+                }
+            }
+            if([persistString isKindOfClass:[NSNumber class]]){
+                persist = [persistString isEqualToNumber:[NSNumber numberWithBool:YES]];
+            } else {
+                persist = [@"1" isEqualToString:persistString] || [@"true" isEqualToString:persistString];
+            }
+            [appConfig setNavigationLevels:data persist:persist];
+        }
+        
+        return;
+    }
+    
+    // Sidebar
+    if ([@"sidebar" isEqualToString:url.host]) {
+        if ([@"/setItems" isEqualToString:url.path]) {
+            id items;
+            if([query[@"items"] isKindOfClass:[NSString class]]){
+                NSString *itemsString = query[@"items"];
+                if (itemsString) {
+                    items = [NSJSONSerialization JSONObjectWithData:[itemsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+                }
+            } else if([query[@"items"] isKindOfClass:[NSArray class]]) items = query[@"items"];
+            
+            if(!items) return;
+            [appConfig setSidebarNavigation:items];
+            
+            id enabledString = query[@"enabled"];
+            if (enabledString) {
+                BOOL enabled = NO;
+                if([enabledString isKindOfClass:[NSNumber class]]){
+                    enabled = [enabledString isEqualToNumber:[NSNumber numberWithBool:YES]];
+                } else {
+                    enabled = [@"1" isEqualToString:enabledString] || [@"true" isEqualToString:enabledString];
+                }
+                
+                self.sidebarItemsEnabled = enabled;
+                if (enabled) {
+                    [self showLeftBarButtonItems:NO];
+                } else {
+                    [self hideLeftBarButtonItems:NO];
+                }
+            }
+        }
+    }
+    
+    if ([@"window" isEqualToString:url.host]) {
+        if ([@"/open" isEqualToString:url.path]) {
+            NSURL *urlToOpen = [NSURL URLWithString:query[@"url"]];
+            if (urlToOpen) {
+                NSMutableURLRequest *requestToOpen = [NSMutableURLRequest requestWithURL:urlToOpen];
+                // need to set mainDocumentURL to properly handle external links in shouldLoadRequest:
+                requestToOpen.mainDocumentURL = urlToOpen;
+                if (requestToOpen) {
+                    BOOL shouldLoad = [self shouldLoadRequest:requestToOpen isMainFrame:YES isUserAction:YES hideWebview:NO sender:nil];
+                    if (shouldLoad) {
+                        LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
+                        newvc.initialUrl = urlToOpen;
+                        NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
+                        while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
+                            [controllers removeLastObject];
+                        }
+                        [controllers addObject:newvc];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self.navigationController setViewControllers:controllers animated:YES];
+                        });
+                    }
+                }
+            }
+        }
+    }
+    
+    // Share and download
+    if ([@"share" isEqualToString:url.host]) {
+        NSString *shareUrl = query[@"url"]; // can be nil for current page
+        
+        if ([@"/sharePage" isEqualToString:url.path]) {
+            [self sharePageWithUrl:shareUrl sender:nil];
+        } else if ([@"/downloadFile" isEqualToString:url.path] && shareUrl) {
+            NSURL *urlToDownload = [NSURL URLWithString:shareUrl relativeToURL:self.currentRequest.URL];
+            [[LEANDocumentSharer sharedSharer] shareUrl:urlToDownload fromView:self.wkWebview];
+        }
+        return;
+    }
+    
+    // Geolocation shim
+    if ([@"geolocationShim" isEqualToString:url.host]) {
+        if ([@"/requestLocation" isEqualToString:url.path]) {
+            [self requestLocation];
+        } else if ([@"/startWatchingLocation" isEqualToString:url.path]) {
+            [self startWatchingLocation];
+        } else if ([@"/stopWatchingLocation" isEqualToString:url.path]) {
+            [self stopWatchingLocation];
+        }
+        return;
+    }
+    
+    // Tabs
+    if ([@"tabs" isEqualToString:url.host]) {
+        if ([url.path hasPrefix:@"/select/"]) {
+            NSArray *components = url.pathComponents;
+            if (components.count == 3 ) {
+                NSString *tabNumberString = components[2];
+                NSInteger tabNumber = [tabNumberString integerValue];
+                if (tabNumberString >= 0) {
+                    [self.tabManager selectTabNumber:tabNumber];
+                }
+            }
+        } else if ([@"/deselect" isEqualToString:url.path]) {
+            [self.tabManager deselectTabs];
+        } else if ([@"/setTabs" isEqualToString:url.path]) {
+            NSDictionary *tabsJson;
+            NSError *jsonError;
+            if([query[@"tabs"] isKindOfClass:[NSString class]]){
+                tabsJson = [NSJSONSerialization JSONObjectWithData:[query[@"tabs"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&jsonError];
+                if (jsonError) {
+                    NSLog(@"Error parsing JSON: %@", jsonError);
+                    return;
+                }
+                if (![tabsJson isKindOfClass:[NSDictionary class]]) {
+                    NSLog(@"Not JSON object");
+                    return;
+                }
+            } else tabsJson = query[@"tabs"];
+            if(!tabsJson) return;
+            [self.tabManager setTabsWithJson:tabsJson];
+            self.javascriptTabs = YES;
+        }
+    }
+    
+    // Status bar
+    if ([@"statusbar" isEqualToString:url.host]) {
+        if ([url.path isEqualToString:@"/set"]) {
+            
+            NSString *style = query[@"style"];
+            if (style) {
+                if ([style isEqualToString:@"dark"]) {
+                    // dark icons and text
+                    if (@available(iOS 13.0, *)) {
+                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDarkContent];
+                    } else {
+                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
+                    }
+                    [self setNeedsStatusBarAppearanceUpdate];
+                } else {
+                    // light icons and text
+                    self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
+                    [self setNeedsStatusBarAppearanceUpdate];
+                }
+            }
+            
+            NSString *color = query[@"color"];
+            if (color) {
+                UIColor *parsedColor = [LEANUtilities colorWithAlphaFromHexString:color];
+                if (parsedColor) {
+                    UIView *background = [[UIView alloc] init];
+                    background.backgroundColor = parsedColor;
+                    [self.statusBarBackground removeFromSuperview];
+                    self.statusBarBackground = background;
+                    [self.view addSubview:self.statusBarBackground];
+                }
+            }
+            
+            id overlayString = query[@"overlay"];
+            if([overlayString isKindOfClass:[NSString class]] || [overlayString isKindOfClass:[NSNumber class]]){
+                bool overlay = NO;
+                if([overlayString isKindOfClass:[NSNumber class]]){
+                    overlay = [overlayString isEqualToNumber:[NSNumber numberWithBool:YES]];
+                } else {
+                    overlay = [overlayString isEqualToString:@"true"] || [overlayString isEqualToString:@"1"];
+                }
+                self.statusBarOverlay = overlay;
+                [self applyStatusBarOverlay];
+            }
+        }
+    }
+    
+    // connectivity
+    if ([@"connectivity" isEqualToString:url.host]) {
+        NSString *callback = query[@"callback"];
+        NSDictionary *status = [self getConnectivity];
+
+        if ([@"/get" isEqualToString:url.path]) {
+            if ([callback isKindOfClass:[NSString class]] && callback.length > 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:status];
+                    [self runJavascript:js];
+                });
+            }
+        } else if ([@"/subscribe" isEqualToString:url.path]) {
+            if ([callback isKindOfClass:[NSString class]] && callback.length > 0) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:status];
+                    [self runJavascript:js];
+                });
+                self.connectivityCallback = callback;
+            }
+        } else if ([@"/unsubscribe" isEqualToString:url.path]) {
+            self.connectivityCallback = nil;
+        }
+    }
+    
+    // tracking consent
+    if ([@"ios" isEqualToString:url.host]) {
+        NSString *callback = query[@"callback"];
+        if ([@"/attconsent/request" isEqualToString:url.path]) {
+            if (@available(iOS 14.5, *)) {
+                [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationAppTrackingStatusChanged object:nil];
+                    NSString *js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(status == ATTrackingManagerAuthorizationStatusAuthorized)}];
+                    [self runJavascript:js];
+                }];
+            } else {
+                NSString *js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(YES)}];
+                [self runJavascript:js];
+            }
+        }
+        
+        if ([@"/attconsent/status" isEqualToString:url.path]) {
+            NSString *js;
+            if (@available(iOS 14.5, *)) {
+                js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized)}];
+            }else {
+                js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(YES)}];
+            }
+            
+            [self runJavascript:js];
+        }
+    }
+    
+    if ([@"navigationMaxWindows" isEqualToString:url.host]) {
+        if ([@"/set" isEqualToString:url.path]) {
+            NSInteger value = [query[@"data"] integerValue];
+            BOOL persist = [@"true" isEqualToString:query[@"persist"]] || [query[@"persist"] isEqualToNumber:[NSNumber numberWithBool:YES]];
+            GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+            [appConfig setMaxWindows:value persist:persist];
+            [WindowsController windowCountChanged];
+        }
+    }
+}
+
 // currently, sender is used to receive a selected UIBarButtonItem from the action bar
 - (BOOL)shouldLoadRequest:(NSURLRequest*)request isMainFrame:(BOOL)isMainFrame isUserAction:(BOOL)isUserAction hideWebview:(BOOL)hideWebview sender:(id)sender
 {
@@ -1196,11 +1812,27 @@ static NSInteger _currentWindows = 0;
         return NO;
     }
     
+    // inject GoNative JS Bridge Library if regex matches
+    if([LEANUtilities checkNativeBridgeUrl:urlString]){
+        if(!self.JSBridgeScript){
+            NSURL *GNJSBridgeFile = [[NSBundle mainBundle] URLForResource:@"GoNativeJSBridgeLibrary" withExtension:@"js"];
+            if(GNJSBridgeFile)
+                self.JSBridgeScript = [NSString stringWithContentsOfURL:GNJSBridgeFile encoding:NSUTF8StringEncoding error:nil];
+        }
+        if(self.JSBridgeScript){
+            WKUserScript *GNJSBridgeLibrary = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:self.JSBridgeScript injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+            [self.wkWebview.configuration.userContentController addUserScript:GNJSBridgeLibrary];
+        }
+    } else {
+        NSString *emptyJSBridgeScript = @"gonative = null";
+        WKUserScript *GNJSBridgeLibrary = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:emptyJSBridgeScript injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+        [self.wkWebview.configuration.userContentController addUserScript:GNJSBridgeLibrary];
+    }
+    
     if (![((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runner:self shouldLoadRequestWithURL:url]) {
         return NO;
     }
     
-    // gonative commands
     if ([url.scheme isEqualToString:@"gonative-bridge"]) {
         NSString *queryString = url.query;
         if (!queryString) return NO;
@@ -1232,585 +1864,11 @@ static NSInteger _currentWindows = 0;
                 }
             }
         }
-        
-        return NO;
     }
     
+    // JS Bridge Commands
     if ([@"gonative" isEqualToString:url.scheme]) {
-        NSString *currentUrl;
-        if (self.wkWebview) {
-            currentUrl = self.wkWebview.URL.absoluteString;
-        }
-        if (![LEANUtilities checkNativeBridgeUrl:currentUrl]) {
-            NSLog(@"URL not authorized for native bridge: %@", currentUrl);
-            return NO;
-        }
-        
-        // multi
-        if ([@"nativebridge" isEqualToString:url.host]) {
-            if ([@"/multi" isEqualToString:url.path]) {
-                NSDictionary *params = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *data = params[@"data"];
-                if (!data) return NO;
-                NSData *jsonData = [data dataUsingEncoding:NSUTF8StringEncoding];
-                NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
-                if (![dict isKindOfClass:[NSDictionary class]]) return NO;
-                NSArray *urls = dict[@"urls"];
-                if (![urls isKindOfClass:[NSArray class]]) return NO;
-                for (NSString *s in urls) {
-                    if (![s isKindOfClass:[NSString class]]) continue;
-                    NSURL *u = [NSURL URLWithString:s];
-                    if (!u) continue;
-                    if (![@"gonative" isEqualToString:u.scheme]) continue;
-                    [self shouldLoadRequest:[NSURLRequest requestWithURL:u] isMainFrame:isMainFrame isUserAction:isUserAction hideWebview:hideWebview sender:nil];
-                }
-            } else if([@"/custom" isEqualToString:url.path]) {
-                NSDictionary *params = [LEANUtilities parseQueryParamsWithUrl:url];
-
-                // execute code defined by the CustomCodeHandler
-                // call LEANJsCustomCodeExecutor#setHandler to override this default handler
-                NSDictionary *data = [LEANJsCustomCodeExecutor execute:params];
-
-                NSString *callback = params[@"callback"];
-                if (callback && callback.length > 0) {
-                    NSString *js = [LEANUtilities createJsForCallback:callback data:data];
-                    [self runJavascript:js];
-                }
-            }
-            return NO;
-        }
-        
-        // open settings
-        if ([@"open" isEqualToString:url.host]) {
-            if ([@"/app-settings" isEqualToString:url.path]) {
-                NSURL *settingsUrl = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
-                [[UIApplication sharedApplication] openURL:settingsUrl options:@{} completionHandler:nil];
-            }
-            return NO;
-        }
-        
-        if ([@"webview" isEqualToString:url.host]) {
-            if ([@"/clearCache" isEqualToString:url.path]) {
-                NSLog(@"Clearing webview cache");
-                NSSet *types = [NSSet setWithObjects:WKWebsiteDataTypeDiskCache,
-                                WKWebsiteDataTypeMemoryCache, nil];
-                [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:types modifiedSince:[NSDate dateWithTimeIntervalSince1970:0] completionHandler:^{
-                    // do nothing
-                }];
-            }
-            
-            return NO;
-        }
-        
-        if ([@"backgroundAudio" isEqualToString:url.host]) {
-            if (!self.backgroundAudio) {
-                self.backgroundAudio = [[GNBackgroundAudio alloc] init];
-            }
-            
-            if ([@"/start" isEqualToString:url.path]) {
-                [self.backgroundAudio start];
-            } else if ([@"/end" isEqualToString:url.path]) {
-                [self.backgroundAudio end];
-            }
-            return NO;
-        }
-        
-        if ([@"run" isEqualToString:url.host]) {
-            if ([@"/gonative_device_info" isEqualToString:url.path]) {
-                [self runGonativeDeviceInfo];
-            } else if ([@"/gonative_onesignal_info" isEqualToString:url.path]) {
-                [self runGonativeOnesignalInfo];
-            }
-            return NO;
-        }
-        
-        // config preferences
-        if ([@"config" isEqualToString:url.host]) {
-            GNConfigPreferences *config = [GNConfigPreferences sharedPreferences];
-            [config handleUrl:url];
-            return NO;
-        }
-        
-        // brightness
-        if ([@"screen" isEqualToString:url.host]) {
-            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-            NSString *brightnessString = query[@"brightness"];
-            if (!brightnessString) {
-                NSLog(@"Brightness not specified in %@", [url absoluteString]);
-                return NO;
-            }
-
-            if ([brightnessString isEqualToString:@"default"]) {
-                if (self.savedScreenBrightness >= 0) {
-                    [UIScreen mainScreen].brightness = self.savedScreenBrightness;
-                }
-                self.restoreBrightnessOnNavigation = NO;
-                return NO;
-            }
-            
-            CGFloat newBrightness = [brightnessString floatValue];
-
-            if (newBrightness > 1.0 || newBrightness < 0) {
-                NSLog(@"Invalid brightness value in %@", [url absoluteString]);
-                return NO;
-            }
-            
-            NSString *restoreString = query[@"restoreOnNavigation"];
-            BOOL restoreOnNavigation = [restoreString isEqualToString:@"true"] ||
-                [restoreString isEqualToString:@"1"];
-            
-            self.savedScreenBrightness = [UIScreen mainScreen].brightness;
-            self.restoreBrightnessOnNavigation = restoreOnNavigation;
-            [UIScreen mainScreen].brightness = newBrightness;
-        }
-        
-        // registration info
-        if ([@"registration" isEqualToString:url.host] && [@"/send" isEqualToString:url.path]) {
-            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-            NSString *customDataString = query[@"customData"];
-            if (customDataString) {
-                NSDictionary *customData = [NSJSONSerialization JSONObjectWithData:[customDataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-                if ([customData isKindOfClass:[NSDictionary class]]) {
-                    [[GNRegistrationManager sharedManager] setCustomData:customData];
-                    [[GNRegistrationManager sharedManager] sendToAllEndpoints];
-                } else {
-                    NSLog(@"Gonative registration error: customData is not JSON object");
-                }
-            } else {
-                [[GNRegistrationManager sharedManager] sendToAllEndpoints];
-            }
-            
-            return NO;
-        }
-        
-        // OneSignal registration
-        if ([@"onesignal" isEqualToString:url.host]) {
-            if (!appConfig.oneSignalEnabled) {
-                return NO;
-            }
-            
-            if ([@"/register" isEqualToString:url.path]) {
-                [OneSignal promptForPushNotificationsWithUserResponse:nil];
-                return NO;
-            }
-            
-            if ([@"/userPrivacyConsent/grant" isEqualToString:url.path]) {
-                [OneSignal consentGranted:YES];
-                if (appConfig.oneSignalAutoRegister) {
-                    [OneSignal promptForPushNotificationsWithUserResponse:nil];
-                }
-                return NO;
-            }
-
-            if ([@"/userPrivacyConsent/revoke" isEqualToString:url.path]) {
-                [OneSignal consentGranted:NO];
-                return NO;
-            }
-
-            if ([@"/tags/get" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *callback = query[@"callback"];
-                if (!callback || callback.length == 0) {
-                    return NO;
-                }
-                
-                [OneSignal getTags:^(NSDictionary *result) {
-                    NSDictionary *results = @{
-                                              @"success": @YES,
-                                              @"tags": result
-                                              };
-                    NSString *js = [LEANUtilities createJsForCallback:callback data:results];
-                    [self runJavascript:js];
-                } onFailure:^(NSError *error) {
-                    NSDictionary *results = @{
-                                              @"success": @NO,
-                                              };
-                    NSString *js = [LEANUtilities createJsForCallback:callback data:results];
-                    [self runJavascript:js];
-                }];
-                return NO;
-            }
-            if ([@"/tags/set" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *callback = query[@"callback"];
-                NSString *tagsString = query[@"tags"];
-                NSDictionary *tags = [NSJSONSerialization JSONObjectWithData:[tagsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-                if (![tags isKindOfClass:[NSDictionary class]]) {
-                    return NO;
-                }
-                
-                // set the tags
-                [OneSignal sendTags:tags onSuccess:^(NSDictionary *result) {
-                    if (callback && callback.length > 0) {
-                        NSString *js = [LEANUtilities createJsForCallback:callback data:@{
-                              @"success": @YES
-                                                                                          }];
-                        [self runJavascript:js];
-                    }
-                } onFailure:^(NSError *error) {
-                    if (callback && callback.length > 0) {
-                        NSString *js = [LEANUtilities createJsForCallback:callback data:@{
-                               @"success": @NO
-                                                                                          }];
-                        [self runJavascript:js];
-                    }
-                }];
-                return NO;
-            }
-            
-            if (([@"/promptLocation" isEqualToString:url.path])) {
-                [OneSignal promptLocation];
-                return NO;
-            }
-
-            if (([@"/showTagsUI" isEqualToString:url.path])) {
-                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Subscriptions" bundle:nil];
-                UIViewController *vc = [storyboard instantiateInitialViewController];
-                [self presentViewController:vc animated:YES completion:nil];
-
-                return NO;
-            }
-            
-            if([@"/iam/addTrigger" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *key = query[@"key"];
-                if ([key length] == 0) return NO;
-                NSString *value = query[@"value"];
-                if([value length] == 0) return NO;
-                [OneSignal addTrigger:key withValue:value];
-                return NO;
-            }
-            
-            if([@"/iam/addTriggers" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *map = query[@"map"];
-                if ([map length] == 0) return NO;
-                NSString *jsonString = [map stringByRemovingPercentEncoding];
-                NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-                id triggers = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                [OneSignal addTriggers:triggers];
-                return NO;
-            }
-            
-            if([@"/iam/removeTriggerForKey" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *key = query[@"key"];
-                if ([key length] == 0) return NO;
-                [OneSignal removeTriggerForKey:key];
-                return NO;
-            }
-            
-            if([@"/iam/getTriggerValueForKey" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *key = query[@"key"];
-                if ([key length] == 0) return NO;
-                NSString *value = [OneSignal getTriggerValueForKey:key];
-                if(value == nil) value = @"";
-                NSDictionary *key_value_pair = [NSDictionary dictionaryWithObject:value forKey:key];
-                [self runJavascript:[LEANUtilities createJsForCallback:@"gonative_iam_trigger_value" data:key_value_pair]];
-                return NO;
-            }
-            
-            if([@"/iam/pauseInAppMessages" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *pause = query[@"pause"];
-                if ([pause length] == 0) return NO;
-                [OneSignal pauseInAppMessages:[pause boolValue]];
-                return NO;
-            }
-            
-            if([@"/iam/setInAppMessageClickHandler" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *handler = query[@"handler"];
-                if ([handler length] == 0) return NO;
-                id inAppMessageClickHandler = ^(OSInAppMessageAction *action) {
-                    NSString *clickName = action.clickName ? action.clickName : @"";
-                    NSString *clickUrl = [action.clickUrl absoluteString] ?: @"";
-                    NSString *firstClick = action.firstClick ? @"true" : @"false";
-                    NSString *closesMessage = action.closesMessage ? @"true" : @"false";
-                    NSDictionary *action_data = [NSDictionary dictionaryWithObjectsAndKeys:clickName, @"clickName", clickUrl, @"clickUrl", firstClick, @"firstClick", closesMessage, @"closesMessage", nil];
-                    [self runJavascript:[LEANUtilities createJsForCallback:handler data:action_data]];
-                };
-                [OneSignal setInAppMessageClickHandler:inAppMessageClickHandler];
-                return NO;
-            }
-
-            return NO;
-        }
-        
-        // Navigation titles and levels
-        if ([@"navigationTitles" isEqualToString:url.host]) {
-            if ([@"/set" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *dataString = query[@"data"];
-                NSString *persistString = query[@"persist"];
-                
-                NSDictionary *data = nil;
-                BOOL persist = NO;
-                
-                if (dataString && dataString.length > 0) {
-                    NSError *error = nil;
-                    data = [NSJSONSerialization JSONObjectWithData:[dataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
-                    if (error) {
-                        NSLog(@"Error parsing navigationTitles: %@", error);
-                        return NO;
-                    }
-                }
-                
-                persist = [@"1" isEqualToString:persistString] || [@"true" isEqualToString:persistString];
-                [appConfig setNavigationTitles:data persist:persist];
-            } else if ([@"/setCurrent" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *title = query[@"title"];
-                if (title) {
-                    self.navigationItem.title = title;
-                } else {
-                    self.navigationItem.title = appConfig.appName;
-                }
-            }
-            return NO;
-        }
-        
-        if ([@"navigationLevels" isEqualToString:url.host]) {
-            if ([@"/set" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *dataString = query[@"data"];
-                NSString *persistString = query[@"persist"];
-                
-                NSDictionary *data = nil;
-                BOOL persist = NO;
-                
-                if (dataString && dataString.length > 0) {
-                    NSError *error = nil;
-                    data = [NSJSONSerialization JSONObjectWithData:[dataString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
-                    if (error) {
-                        NSLog(@"Error parsing navigationLevels: %@", error);
-                        return NO;
-                    }
-                }
-                
-                persist = [@"1" isEqualToString:persistString] || [@"true" isEqualToString:persistString];
-                [appConfig setNavigationLevels:data persist:persist];
-            }
-            
-            return NO;
-        }
-        
-        // Sidebar
-        if ([@"sidebar" isEqualToString:url.host]) {
-            if ([@"/setItems" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *itemsString = query[@"items"];
-                if (itemsString) {
-                    id items = [NSJSONSerialization JSONObjectWithData:[itemsString dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-                    [appConfig setSidebarNavigation:items];
-                }
-                
-                NSString *enabledString = query[@"enabled"];
-                if (enabledString) {
-                    BOOL enabled = [@"1" isEqualToString:enabledString] || [@"true" isEqualToString:enabledString];
-                    
-                    self.sidebarItemsEnabled = enabled;
-                    if (enabled) {
-                        [self showLeftBarButtonItems:NO];
-                    } else {
-                        [self hideLeftBarButtonItems:NO];
-                    }
-                }
-            }
-        }
-        
-        if ([@"window" isEqualToString:url.host]) {
-            if ([@"/open" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSURL *urlToOpen = [NSURL URLWithString:query[@"url"]];
-                if (urlToOpen) {
-                    NSMutableURLRequest *requestToOpen = [NSMutableURLRequest requestWithURL:urlToOpen];
-                    // need to set mainDocumentURL to properly handle external links in shouldLoadRequest:
-                    requestToOpen.mainDocumentURL = urlToOpen;
-                    if (requestToOpen) {
-                        BOOL shouldLoad = [self shouldLoadRequest:requestToOpen isMainFrame:YES isUserAction:YES hideWebview:NO sender:nil];
-                        if (shouldLoad) {
-                            LEANWebViewController *newvc = [self.storyboard instantiateViewControllerWithIdentifier:@"webviewController"];
-                            newvc.initialUrl = urlToOpen;
-                            NSMutableArray *controllers = [self.navigationController.viewControllers mutableCopy];
-                            while (![[controllers lastObject] isKindOfClass:[LEANWebViewController class]]) {
-                                [controllers removeLastObject];
-                            }
-                            [controllers addObject:newvc];
-                            dispatch_async(dispatch_get_main_queue(), ^{
-                                [self.navigationController setViewControllers:controllers animated:YES];
-                            });
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Share and download
-        if ([@"share" isEqualToString:url.host]) {
-            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-            NSString *shareUrl = query[@"url"]; // can be nil for current page
-            
-            if ([@"/sharePage" isEqualToString:url.path]) {
-                [self sharePageWithUrl:shareUrl sender:sender];
-            } else if ([@"/downloadFile" isEqualToString:url.path] && shareUrl) {
-                NSURL *urlToDownload = [NSURL URLWithString:shareUrl relativeToURL:self.currentRequest.URL];
-                [[LEANDocumentSharer sharedSharer] shareUrl:urlToDownload fromView:self.wkWebview];
-            }
-            return NO;
-        }
-        
-        // Geolocation shim
-        if ([@"geolocationShim" isEqualToString:url.host]) {
-            if ([@"/requestLocation" isEqualToString:url.path]) {
-                [self requestLocation];
-            } else if ([@"/startWatchingLocation" isEqualToString:url.path]) {
-                [self startWatchingLocation];
-            } else if ([@"/stopWatchingLocation" isEqualToString:url.path]) {
-                [self stopWatchingLocation];
-            }
-            return NO;
-        }
-        
-        // Tabs
-        if ([@"tabs" isEqualToString:url.host]) {
-            if ([url.path hasPrefix:@"/select/"]) {
-                NSArray *components = url.pathComponents;
-                if (components.count == 3 ) {
-                    NSString *tabNumberString = components[2];
-                    NSInteger tabNumber = [tabNumberString integerValue];
-                    if (tabNumberString >= 0) {
-                        [self.tabManager selectTabNumber:tabNumber];
-                    }
-                }
-            } else if ([@"/deselect" isEqualToString:url.path]) {
-                [self.tabManager deselectTabs];
-            } else if ([@"/setTabs" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSString *tabsJson = query[@"tabs"];
-                if (tabsJson && tabsJson.length) {
-                    [self.tabManager setTabsWithJson:tabsJson];
-                    self.javascriptTabs = YES;
-                }
-            }
-        }
-        
-        // Status bar
-        if ([@"statusbar" isEqualToString:url.host]) {
-            if ([url.path isEqualToString:@"/set"]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                
-                NSString *style = query[@"style"];
-                if (style) {
-                    if ([style isEqualToString:@"dark"]) {
-                        // dark icons and text
-                        if (@available(iOS 13.0, *)) {
-                            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDarkContent];
-                        } else {
-                            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
-                        }
-                        [self setNeedsStatusBarAppearanceUpdate];
-                    } else {
-                        // light icons and text
-                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
-                        [self setNeedsStatusBarAppearanceUpdate];
-                    }
-                }
-                
-                NSString *color = query[@"color"];
-                if (color) {
-                    UIColor *parsedColor = [LEANUtilities colorWithAlphaFromHexString:color];
-                    if (parsedColor) {
-                        UIView *background = [[UIView alloc] init];
-                        background.backgroundColor = parsedColor;
-                        [self.statusBarBackground removeFromSuperview];
-                        self.statusBarBackground = background;
-                        [self.view addSubview:self.statusBarBackground];
-                    }
-                }
-                
-                NSString *overlay = query[@"overlay"];
-                if (overlay) {
-                    if ([overlay isEqualToString:@"true"] || [overlay isEqualToString:@"1"]) {
-                        self.statusBarOverlay = YES;
-                    } else {
-                        self.statusBarOverlay = NO;
-                    }
-                    [self applyStatusBarOverlay];
-                }
-            }
-        }
-        
-        // connectivity
-        if ([@"connectivity" isEqualToString:url.host]) {
-            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-            NSString *callback = query[@"callback"];
-            NSDictionary *status = [self getConnectivity];
-
-            if ([@"/get" isEqualToString:url.path]) {
-                if ([callback isKindOfClass:[NSString class]] && callback.length > 0) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSString *js = [LEANUtilities createJsForCallback:callback data:status];
-                        [self runJavascript:js];
-                    });
-                }
-            } else if ([@"/subscribe" isEqualToString:url.path]) {
-                if ([callback isKindOfClass:[NSString class]] && callback.length > 0) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSString *js = [LEANUtilities createJsForCallback:callback data:status];
-                        [self runJavascript:js];
-                    });
-                    self.connectivityCallback = callback;
-                }
-            } else if ([@"/unsubscribe" isEqualToString:url.path]) {
-                self.connectivityCallback = nil;
-            }
-        }
-        
-        // tracking consent
-        
-        if ([@"ios" isEqualToString:url.host]) {
-            NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-            NSString *callback = query[@"callback"];
-            if ([@"/attconsent/request" isEqualToString:url.path]) {
-                if (@available(iOS 14.5, *)) {
-                    [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kLEANAppConfigNotificationAppTrackingStatusChanged object:nil];
-                        NSString *js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(status == ATTrackingManagerAuthorizationStatusAuthorized)}];
-                        [self runJavascript:js];
-                    }];
-                } else {
-                    NSString *js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(YES)}];
-                    [self runJavascript:js];
-                }
-            }
-            
-            if ([@"/attconsent/status" isEqualToString:url.path]) {
-                NSString *js;
-                if (@available(iOS 14.5, *)) {
-                    js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(ATTrackingManager.trackingAuthorizationStatus == ATTrackingManagerAuthorizationStatusAuthorized)}];
-                }else {
-                    js = [LEANUtilities createJsForCallback:callback data:@{@"granted": @(YES)}];
-                }
-                
-                [self runJavascript:js];
-            }
-        }
-        
-//    gonative://navigationMaxWindows/set?data=5&persist=true%7Cfalse
-        
-        if ([@"navigationMaxWindows" isEqualToString:url.host]) {
-            if ([@"/set" isEqualToString:url.path]) {
-                NSDictionary *query = [LEANUtilities parseQueryParamsWithUrl:url];
-                NSInteger value = [query[@"data"] integerValue];
-                BOOL persist = [@"true" isEqualToString:query[@"persist"]];
-                GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-                [appConfig setMaxWindows:value persist:persist];
-                [WindowsController windowCountChanged];
-            }
-        }
-        
+        [self handleJSBridgeFunctions:url];
         return NO;
     }
     
@@ -2137,6 +2195,7 @@ static NSInteger _currentWindows = 0;
     if (self.wkWebview) {
         oldView = self.wkWebview;
         [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNFileWriterSharerName];
+        [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNJSBridgeName];
         
         // remove KVO
         @try {
@@ -2167,6 +2226,8 @@ static NSInteger _currentWindows = 0;
         self.wkWebview.allowsBackForwardNavigationGestures = [GoNativeAppConfig sharedAppConfig].swipeGestures;
         [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNFileWriterSharerName];
         [self.wkWebview.configuration.userContentController addScriptMessageHandler:self.fileWriterSharer name:GNFileWriterSharerName];
+        [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNJSBridgeName];
+        [self.wkWebview.configuration.userContentController addScriptMessageHandler:self.JSBridgeInterface name:GNJSBridgeName];
         self.fileWriterSharer.webView = newView;
     } else {
         return;
@@ -2276,6 +2337,8 @@ static NSInteger _currentWindows = 0;
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
     [self didFinishLoad];
+    
+    [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge webView:webView didFinishNavigation:navigation withRunner:self];
 }
 
 - (void)didFinishLoad

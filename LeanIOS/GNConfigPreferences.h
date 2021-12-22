@@ -11,7 +11,7 @@
 @interface GNConfigPreferences : NSObject
 +(instancetype)sharedPreferences;
 
--(BOOL)handleUrl:(NSURL*)url;
+-(BOOL)handleUrl:(NSURL*)url withJSData:(NSDictionary*)jsData;
 -(void)setInitialUrl:(NSString*)url;
 -(NSString*)getInitialUrl;
 @end

@@ -280,27 +280,16 @@
     self.tabBar.selectedItem = nil;
 }
 
-- (void)setTabsWithJson:(NSString*)json
+- (void)setTabsWithJson:(NSDictionary*)json
 {
-    NSError *jsonError;
-    NSDictionary *tabConfig = [NSJSONSerialization JSONObjectWithData:[json dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&jsonError];
-    if (jsonError) {
-        NSLog(@"Error parsing JSON: %@", jsonError);
-        return;
-    }
-    if (![tabConfig isKindOfClass:[NSDictionary class]]) {
-        NSLog(@"Not JSON object");
-        return;
-    }
-
     self.useJavascript = YES;
     
-    NSArray *menu = tabConfig[@"items"];
+    NSArray *menu = json[@"items"];
     if ([menu isKindOfClass:[NSArray class]]) {
         [self setTabBarItems:menu];
     }
     
-    NSNumber *showTabBar = tabConfig[@"enabled"];
+    NSNumber *showTabBar = json[@"enabled"];
     if ([showTabBar isKindOfClass:[NSNumber class]]) {
         if ([showTabBar boolValue]) {
             [self.wvc showTabBarAnimated:YES];

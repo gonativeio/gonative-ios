@@ -24,19 +24,14 @@
     }
 }
 
--(BOOL)handleUrl:(NSURL *)url
+-(BOOL)handleUrl:(NSURL *)url withJSData:(NSDictionary*)jsData
 {
     if (![@"gonative" isEqualToString:url.scheme] || ![@"config" isEqualToString:url.host]) {
         return NO;
     }
     
-    if ([@"/set" isEqualToString:url.path]) {
-        NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
-        for (NSURLQueryItem *item in urlComponents.queryItems) {
-            if ([item.name isEqualToString:@"initialUrl"]) {
-                [self setInitialUrl:item.value];
-            }
-        }
+    if ([@"/set" isEqualToString:url.path] && jsData) {
+        [self setInitialUrl:jsData[@"initialUrl"]];
     }
     
     return YES;

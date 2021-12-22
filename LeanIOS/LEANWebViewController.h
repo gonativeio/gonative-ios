@@ -43,4 +43,5 @@ static NSString *kLEANWebViewControllerClearPools = @"io.gonative.ios.WebViewCon
 - (void) goForward;
 - (void) refreshPage;
 - (void) setSharePopOverRect:(CGRect)rect;
+- (void) handleJSBridgeFunctions:(id)data;
 @end
