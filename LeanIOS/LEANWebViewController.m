@@ -1340,7 +1340,7 @@ static NSInteger _currentWindows = 0;
     
     // OneSignal registration
     if ([@"onesignal" isEqualToString:url.host]) {
-        if (appConfig.oneSignalEnabled) {
+        if (!appConfig.oneSignalEnabled) {
             return;
         }
         
