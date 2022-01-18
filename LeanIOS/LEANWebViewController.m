@@ -1200,6 +1200,10 @@ static NSInteger _currentWindows = 0;
         if([data[@"data"] isKindOfClass:[NSDictionary class]]) query = data[@"data"];
     } else return;
     
+    if (![((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runner:self shouldLoadRequestWithURL:url withData:query]) {
+        return;
+    }
+    
     // multi
     if ([@"nativebridge" isEqualToString:url.host]) {
         if ([@"/multi" isEqualToString:url.path]) {
@@ -1827,10 +1831,6 @@ static NSInteger _currentWindows = 0;
         NSString *emptyJSBridgeScript = @"gonative = null";
         WKUserScript *GNJSBridgeLibrary = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:emptyJSBridgeScript injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
         [self.wkWebview.configuration.userContentController addUserScript:GNJSBridgeLibrary];
-    }
-    
-    if (![((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runner:self shouldLoadRequestWithURL:url]) {
-        return NO;
     }
     
     if ([url.scheme isEqualToString:@"gonative-bridge"]) {
