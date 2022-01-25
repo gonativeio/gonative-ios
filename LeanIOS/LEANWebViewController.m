@@ -1826,6 +1826,9 @@ static NSInteger _currentWindows = 0;
         if(self.JSBridgeScript){
             WKUserScript *GNJSBridgeLibrary = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:self.JSBridgeScript injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
             [self.wkWebview.configuration.userContentController addUserScript:GNJSBridgeLibrary];
+            
+            // load plugins' js script
+            [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge loadUserScriptsForContentController:self.wkWebview.configuration.userContentController];
         }
     } else {
         NSString *emptyJSBridgeScript = @"gonative = null";
