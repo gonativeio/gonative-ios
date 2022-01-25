@@ -87,7 +87,13 @@
         
         NSString *key = [[pairComponents firstObject] stringByRemovingPercentEncoding];
         NSString *value = [[pairComponents lastObject] stringByRemovingPercentEncoding];
-        result[key] = value;
+        
+        // parse boolean string to boolean
+        if([value isEqualToString:@"true"] || [value isEqualToString:@"false"]){
+            result[key] = [NSNumber numberWithBool:[value isEqualToString:@"true"]];
+        } else { // if not boolean, assign the string value as it is
+            result[key] = value;
+        }
     }
     
     return result;

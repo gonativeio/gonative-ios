@@ -150,7 +150,7 @@
     
     NSString *urlString = [url absoluteString];
     BOOL backEnabled = NO;
-    BOOL backRegexMatches = YES;
+    BOOL backRegexMatches = NO;
     
     // update toolbar buttons
     for (NSInteger i = 0; i < [self.toolbarItems count]; i++) {
@@ -175,19 +175,16 @@
             if([self.toolbarItemTypes[i] isEqualToString:@"back"]){
                 NSArray *regexArray = self.toolbarItemUrlRegexes[i];
                 if ([regexArray isKindOfClass:[NSArray class]] && [regexArray count] > 0) {
-                    backRegexMatches = NO;
                     for (NSPredicate *predicate in regexArray) {
-                        BOOL matches = NO;
                         @try {
-                            matches = [predicate evaluateWithObject:urlString];
+                            BOOL matches = [predicate evaluateWithObject:urlString];
+                            if (matches) {
+                                backRegexMatches = YES;
+                                break;
+                            }
                         }
                         @catch (NSException* exception) {
                             NSLog(@"Error in toolbar regexes: %@", exception);
-                        }
-
-                        if (matches) {
-                            backRegexMatches = YES;
-                            break;
                         }
                     }
                 }
@@ -196,19 +193,17 @@
     }
     
     // check for toolbar regex match
-    BOOL toolbarRegexEnabled = YES;
+    BOOL toolbarRegexMatches = NO;
     for (RegexEnabled *toolbarRegexObject in [[GoNativeAppConfig sharedAppConfig] toolbarRegexes]) {
-        toolbarRegexEnabled = NO;
-        BOOL matches = NO;
         @try {
-            matches = [toolbarRegexObject.regex evaluateWithObject:urlString];
+            BOOL matches = [toolbarRegexObject.regex evaluateWithObject:urlString];
+            if (matches) {
+                toolbarRegexMatches = toolbarRegexObject.enabled;
+                break;
+            };
         }
         @catch (NSException* exception) {
             NSLog(@"Error in toolbar regexes: %@", exception);
-        }
-        if (matches) {
-            toolbarRegexEnabled = toolbarRegexObject.enabled;
-            break;
         }
     }
     
@@ -216,7 +211,7 @@
     BOOL makeVisible = NO;
     if (self.visibility == LEANToolbarVisibilityAlways) {
         makeVisible = YES;
-    } else if(backEnabled && (backRegexMatches || toolbarRegexEnabled)){
+    } else if(backEnabled && (backRegexMatches || toolbarRegexMatches)){
         makeVisible = YES;
     }
 

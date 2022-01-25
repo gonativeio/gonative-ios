@@ -47,6 +47,12 @@ function addCommand(command, params){
         if(params.callback && typeof params.callback === 'function'){
             params.callback = addCallbackFunction(params.callback);
         }
+        if(params.callbackFunction && typeof params.callbackFunction === 'function'){
+            params.callbackFunction = addCallbackFunction(params.callbackFunction);
+        }
+        if(params.statuscallback && typeof params.statuscallback === 'function'){
+            params.statuscallback = addCallbackFunction(params.statuscallback);
+        }
         commandObject.gonativeCommand = command;
         commandObject.data = params;
     } else commandObject = command;

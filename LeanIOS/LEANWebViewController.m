@@ -56,6 +56,7 @@
 @property IBOutlet UIToolbar *toolbar;
 @property IBOutlet NSLayoutConstraint *tabBarBottomConstraint;
 @property IBOutlet NSLayoutConstraint *toolbarBottomConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *pluginViewTopWebviewBottomConstraint;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *toolbarTopWebviewBottomConstraint;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *tabbarTopWebviewBottomConstraint;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *webviewLeftSafeAreaLeft;
@@ -202,6 +203,9 @@ static NSInteger _currentWindows = 0;
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:kGoNativeAppConfigNotificationUserAgentReady object:nil];
         }
     }
+    
+    // hide ad banner view initially
+    self.pluginViewTopWebviewBottomConstraint.active = NO;
     
     // hidden nav bar
     if (!appConfig.showNavigationBar && [self isRootWebView]) {
@@ -1309,13 +1313,7 @@ static NSInteger _currentWindows = 0;
             return;
         }
         
-        id restoreString = query[@"restoreOnNavigation"];
-        BOOL restoreOnNavigation = NO;
-        if([restoreString isKindOfClass:[NSNumber class]]){
-            restoreOnNavigation = [restoreString isEqualToNumber:[NSNumber numberWithBool:YES]];
-        } else {
-            restoreOnNavigation = [restoreString isEqualToString:@"true"] || [restoreString isEqualToString:@"1"];
-        }
+        BOOL restoreOnNavigation = [NSNumber numberWithBool:query[@"restoreOnNavigation"]];
         
         self.savedScreenBrightness = [UIScreen mainScreen].brightness;
         self.restoreBrightnessOnNavigation = restoreOnNavigation;
@@ -1501,8 +1499,7 @@ static NSInteger _currentWindows = 0;
     if ([@"navigationTitles" isEqualToString:url.host]) {
         if ([@"/set" isEqualToString:url.path]) {
             id data = query[@"data"];
-            id persistString = query[@"persist"];
-            BOOL persist = NO;
+            BOOL persist = [NSNumber numberWithBool:query[@"persist"]];
             
             if (data) {
                 if([data isKindOfClass:[NSString class]] && ((NSString*)data).length > 0){
@@ -1514,11 +1511,7 @@ static NSInteger _currentWindows = 0;
                     }
                 }
             }
-            if([persistString isKindOfClass:[NSNumber class]]){
-                persist = [persistString isEqualToNumber:[NSNumber numberWithBool:YES]];
-            } else {
-                persist = [@"1" isEqualToString:persistString] || [@"true" isEqualToString:persistString];
-            }
+            
             [appConfig setNavigationTitles:data persist:persist];
         } else if ([@"/setCurrent" isEqualToString:url.path]) {
             NSString *title = query[@"title"];
@@ -1534,8 +1527,7 @@ static NSInteger _currentWindows = 0;
     if ([@"navigationLevels" isEqualToString:url.host]) {
         if ([@"/set" isEqualToString:url.path]) {
             id data = query[@"data"];
-            id persistString = query[@"persist"];
-            BOOL persist = NO;
+            BOOL persist = [NSNumber numberWithBool:query[@"persist"]];
             
             if (data) {
                 if([data isKindOfClass:[NSString class]] && ((NSString*)data).length > 0){
@@ -1547,11 +1539,7 @@ static NSInteger _currentWindows = 0;
                     }
                 }
             }
-            if([persistString isKindOfClass:[NSNumber class]]){
-                persist = [persistString isEqualToNumber:[NSNumber numberWithBool:YES]];
-            } else {
-                persist = [@"1" isEqualToString:persistString] || [@"true" isEqualToString:persistString];
-            }
+            
             [appConfig setNavigationLevels:data persist:persist];
         }
         
@@ -1572,21 +1560,12 @@ static NSInteger _currentWindows = 0;
             if(!items) return;
             [appConfig setSidebarNavigation:items];
             
-            id enabledString = query[@"enabled"];
-            if (enabledString) {
-                BOOL enabled = NO;
-                if([enabledString isKindOfClass:[NSNumber class]]){
-                    enabled = [enabledString isEqualToNumber:[NSNumber numberWithBool:YES]];
-                } else {
-                    enabled = [@"1" isEqualToString:enabledString] || [@"true" isEqualToString:enabledString];
-                }
-                
-                self.sidebarItemsEnabled = enabled;
-                if (enabled) {
-                    [self showLeftBarButtonItems:NO];
-                } else {
-                    [self hideLeftBarButtonItems:NO];
-                }
+            BOOL enabled = [NSNumber numberWithBool:query[@"enabled"]];
+            self.sidebarItemsEnabled = enabled;
+            if (enabled) {
+                [self showLeftBarButtonItems:NO];
+            } else {
+                [self hideLeftBarButtonItems:NO];
             }
         }
     }
@@ -1708,17 +1687,9 @@ static NSInteger _currentWindows = 0;
                 }
             }
             
-            id overlayString = query[@"overlay"];
-            if([overlayString isKindOfClass:[NSString class]] || [overlayString isKindOfClass:[NSNumber class]]){
-                bool overlay = NO;
-                if([overlayString isKindOfClass:[NSNumber class]]){
-                    overlay = [overlayString isEqualToNumber:[NSNumber numberWithBool:YES]];
-                } else {
-                    overlay = [overlayString isEqualToString:@"true"] || [overlayString isEqualToString:@"1"];
-                }
-                self.statusBarOverlay = overlay;
-                [self applyStatusBarOverlay];
-            }
+            bool overlay = [NSNumber numberWithBool:query[@"overlay"]];
+            self.statusBarOverlay = overlay;
+            [self applyStatusBarOverlay];
         }
     }
     
