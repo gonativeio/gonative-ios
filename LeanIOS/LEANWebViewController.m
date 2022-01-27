@@ -1313,7 +1313,7 @@ static NSInteger _currentWindows = 0;
             return;
         }
         
-        BOOL restoreOnNavigation = [NSNumber numberWithBool:query[@"restoreOnNavigation"]];
+        BOOL restoreOnNavigation = [query[@"restoreOnNavigation"] boolValue];
         
         self.savedScreenBrightness = [UIScreen mainScreen].brightness;
         self.restoreBrightnessOnNavigation = restoreOnNavigation;
@@ -1499,7 +1499,7 @@ static NSInteger _currentWindows = 0;
     if ([@"navigationTitles" isEqualToString:url.host]) {
         if ([@"/set" isEqualToString:url.path]) {
             id data = query[@"data"];
-            BOOL persist = [NSNumber numberWithBool:query[@"persist"]];
+            BOOL persist = [query[@"persist"] boolValue];
             
             if (data) {
                 if([data isKindOfClass:[NSString class]] && ((NSString*)data).length > 0){
@@ -1527,7 +1527,7 @@ static NSInteger _currentWindows = 0;
     if ([@"navigationLevels" isEqualToString:url.host]) {
         if ([@"/set" isEqualToString:url.path]) {
             id data = query[@"data"];
-            BOOL persist = [NSNumber numberWithBool:query[@"persist"]];
+            BOOL persist = [query[@"persist"] boolValue];
             
             if (data) {
                 if([data isKindOfClass:[NSString class]] && ((NSString*)data).length > 0){
@@ -1560,7 +1560,7 @@ static NSInteger _currentWindows = 0;
             if(!items) return;
             [appConfig setSidebarNavigation:items];
             
-            BOOL enabled = [NSNumber numberWithBool:query[@"enabled"]];
+            BOOL enabled = [query[@"enabled"] boolValue];
             self.sidebarItemsEnabled = enabled;
             if (enabled) {
                 [self showLeftBarButtonItems:NO];
@@ -1687,7 +1687,7 @@ static NSInteger _currentWindows = 0;
                 }
             }
             
-            bool overlay = [NSNumber numberWithBool:query[@"overlay"]];
+            BOOL overlay = [query[@"overlay"] boolValue];
             self.statusBarOverlay = overlay;
             [self applyStatusBarOverlay];
         }
@@ -1749,7 +1749,7 @@ static NSInteger _currentWindows = 0;
     if ([@"navigationMaxWindows" isEqualToString:url.host]) {
         if ([@"/set" isEqualToString:url.path]) {
             NSInteger value = [query[@"data"] integerValue];
-            BOOL persist = [@"true" isEqualToString:query[@"persist"]] || [query[@"persist"] isEqualToNumber:[NSNumber numberWithBool:YES]];
+            BOOL persist = [query[@"persist"] boolValue];
             GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
             [appConfig setMaxWindows:value persist:persist];
             [WindowsController windowCountChanged];
