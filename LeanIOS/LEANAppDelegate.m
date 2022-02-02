@@ -93,8 +93,8 @@
                 }
                 
                 [rvc presentAlert:alert];
-            }
-            completion(notification);
+                completion(notification);
+            } else completion(nil);
         };
         [OneSignal setNotificationWillShowInForegroundHandler:notifWillShowInForegroundHandler];
         
