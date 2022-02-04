@@ -150,7 +150,7 @@
     
     NSString *urlString = [url absoluteString];
     BOOL backEnabled = NO;
-    BOOL backRegexMatches = NO;
+    BOOL backRegexMatches = YES;
     
     // update toolbar buttons
     for (NSInteger i = 0; i < [self.toolbarItems count]; i++) {
@@ -175,6 +175,7 @@
             if([self.toolbarItemTypes[i] isEqualToString:@"back"]){
                 NSArray *regexArray = self.toolbarItemUrlRegexes[i];
                 if ([regexArray isKindOfClass:[NSArray class]] && [regexArray count] > 0) {
+                    backRegexMatches = NO;
                     for (NSPredicate *predicate in regexArray) {
                         @try {
                             BOOL matches = [predicate evaluateWithObject:urlString];
@@ -193,8 +194,9 @@
     }
     
     // check for toolbar regex match
-    BOOL toolbarRegexMatches = NO;
+    BOOL toolbarRegexMatches = YES;
     for (RegexEnabled *toolbarRegexObject in [[GoNativeAppConfig sharedAppConfig] toolbarRegexes]) {
+        toolbarRegexMatches = NO;
         @try {
             BOOL matches = [toolbarRegexObject.regex evaluateWithObject:urlString];
             if (matches) {
