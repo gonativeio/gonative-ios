@@ -25,7 +25,7 @@ static NSString *kLEANWebViewControllerClearPools = @"io.gonative.ios.WebViewCon
 
 - (IBAction) showMenu;
 - (void) loadUrlString:(NSString*)url;
-- (void) loadUrlAfterFilter:(NSURL*) url sender:(id)sender;
+- (void) loadUrlAfterFilter:(NSURL*) url;
 - (void) loadUrl:(NSURL*) url;
 - (void) loadRequest:(NSURLRequest*) request;
 - (void) loadUrl:(NSURL *)url andJavascript:(NSString*)js;

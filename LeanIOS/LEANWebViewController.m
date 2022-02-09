@@ -918,16 +918,14 @@ static NSInteger _currentWindows = 0;
         NSString *js = [url substringFromIndex: [@"javascript:" length]];
         [self runJavascript:js];
     } else {
-        [self loadUrl:[NSURL URLWithString:url]];
+        [self loadUrlAfterFilter:[NSURL URLWithString:url]];
     }
 }
 
-// currently, sender is used to receive a selected UIBarButtonItem from the action bar
-// checks url if js bridge command -> pass to shouldLoadRequest || otherwise load the url. This prevents webview.URL to accept js bridge url
-- (void) loadUrlAfterFilter:(NSURL *)url sender:(id)sender
+- (void) loadUrlAfterFilter:(NSURL *)url
 {
     if([url.scheme isEqualToString:@"gonative"]){
-        [self shouldLoadRequest:[NSURLRequest requestWithURL:url] isMainFrame:YES isUserAction:NO hideWebview:NO sender:sender];
+        [self handleJSBridgeFunctions:url];
     } else {
         [self loadUrl:url];
     }

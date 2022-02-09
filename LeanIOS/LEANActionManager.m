@@ -109,7 +109,7 @@
     NSUInteger index = [self.items indexOfObject:sender];
     if (index != NSNotFound && index < [self.urls count]) {
         NSString *url = self.urls[index];
-        [self.wvc loadUrlAfterFilter:[NSURL URLWithString:url] sender:sender];
+        [self.wvc loadUrlString:url];
     }
 }
 
