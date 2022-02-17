@@ -261,9 +261,6 @@ static NSInteger _currentWindows = 0;
     self.fileWriterSharer = [[GNFileWriterSharer alloc] init];
     self.fileWriterSharer.wvc = self;
     
-    self.JSBridgeInterface = [[GNJSBridgeInterface alloc] init];
-    self.JSBridgeInterface.wvc = self;
-    
     // we will always be loading a page at launch, hide webview here to fix a white flash for dark themed apps
     [self hideWebview];
     
@@ -1178,6 +1175,16 @@ static NSInteger _currentWindows = 0;
             }
         });
     }
+}
+
+-(void)initializeJSInterfaceInWebView:(WKWebView*) wkWebview
+{
+    if(!self.JSBridgeInterface){
+        self.JSBridgeInterface = [[GNJSBridgeInterface alloc] init];
+        self.JSBridgeInterface.wvc = self;
+    }
+    [wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNJSBridgeName];
+    [wkWebview.configuration.userContentController addScriptMessageHandler:self.JSBridgeInterface name:GNJSBridgeName];
 }
 
 - (void) handleJSBridgeFunctions:(id)data{
@@ -2198,9 +2205,8 @@ static NSInteger _currentWindows = 0;
         self.wkWebview.allowsBackForwardNavigationGestures = [GoNativeAppConfig sharedAppConfig].swipeGestures;
         [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNFileWriterSharerName];
         [self.wkWebview.configuration.userContentController addScriptMessageHandler:self.fileWriterSharer name:GNFileWriterSharerName];
-        [self.wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNJSBridgeName];
-        [self.wkWebview.configuration.userContentController addScriptMessageHandler:self.JSBridgeInterface name:GNJSBridgeName];
         self.fileWriterSharer.webView = newView;
+        [self initializeJSInterfaceInWebView:self.wkWebview]; // initialize JS Interface
     } else {
         return;
     }
