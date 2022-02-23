@@ -754,14 +754,9 @@ static NSInteger _currentWindows = 0;
     
     NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:4];
     
-    // right: actions
-    if (self.actionManager) {
-        [buttons addObjectsFromArray:self.actionManager.items];
-    }
-    
-    // right: search button
-    if (self.searchButton) {
-        [buttons addObject:self.searchButton];
+    // right: document share button
+    if (self.shareButton) {
+        [buttons addObject:self.shareButton];
     }
     
     // right: refresh button
@@ -769,11 +764,15 @@ static NSInteger _currentWindows = 0;
         [buttons addObject:self.refreshButton];
     }
     
-    // right: document share button
-    if (self.shareButton) {
-        [buttons addObject:self.shareButton];
+    // right: search button
+    if (self.searchButton) {
+        [buttons addObject:self.searchButton];
     }
     
+    // right: actions
+    if (self.actionManager) {
+        [buttons addObjectsFromArray:self.actionManager.items];
+    }
     
     [self.navigationItem setRightBarButtonItems:buttons animated:animated];
 }

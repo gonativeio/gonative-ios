@@ -82,8 +82,8 @@
         NSString *system = entry[@"system"];
         if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"share"]) {
             UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self.wvc action:@selector(sharePage:)];
-            [newButtonItems addObject:button];
-            [self.urls addObject:@""];
+            [newButtonItems insertObject:button atIndex:0];
+            [self.urls insertObject:@"" atIndex:0];
         } else {
             NSString *label = entry[@"label"];
             NSString *iconName = entry[@"icon"];
@@ -93,11 +93,11 @@
             
             UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(itemWasSelected:)];
             button.accessibilityLabel = label;
-            [newButtonItems addObject:button];
+            [newButtonItems insertObject:button atIndex:0];
             if (!url) {
                 url = @"";
             }
-            [self.urls addObject:url];
+            [self.urls insertObject:url atIndex:0];
         }
     }
     
