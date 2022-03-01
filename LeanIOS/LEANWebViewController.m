@@ -1280,9 +1280,9 @@ static NSInteger _currentWindows = 0;
     
     if ([@"run" isEqualToString:url.host]) {
         if ([@"/gonative_device_info" isEqualToString:url.path]) {
-            [self runGonativeDeviceInfo];
+            [self runGonativeDeviceInfoWithCallback:query[@"callback"]];
         } else if ([@"/gonative_onesignal_info" isEqualToString:url.path]) {
-            [self runGonativeOnesignalInfo];
+            [self runGonativeOnesignalInfoWithCallback:query[@"callback"]];
         }
         return;
     }
@@ -1571,6 +1571,15 @@ static NSInteger _currentWindows = 0;
             } else {
                 [self hideLeftBarButtonItems:NO];
             }
+        } else if ([@"/getItems" isEqualToString:url.path]) {
+            NSMutableDictionary *menus = [appConfig getSidebarNavigation];
+            NSString *callback = query[@"callback"];
+            if (!callback || callback.length == 0) {
+                return;
+            }
+            NSString *js = [LEANUtilities createJsForCallback:callback data:menus];
+            [self runJavascript:js];
+            return;
         }
     }
     
@@ -2419,9 +2428,9 @@ static NSInteger _currentWindows = 0;
         
         // send device info
         if (doNativeBridge) {
-            [self runGonativeDeviceInfo];
+            [self runGonativeDeviceInfoWithCallback:@"gonative_device_info"];
             if (appConfig.oneSignalEnabled) {
-                [self runGonativeOnesignalInfo];
+                [self runGonativeOnesignalInfoWithCallback:@"gonative_onesignal_info"];
             }
         }
         
@@ -2461,17 +2470,18 @@ static NSInteger _currentWindows = 0;
     });
 }
 
--(void)runGonativeDeviceInfo {
+-(void)runGonativeDeviceInfoWithCallback:(NSString*)callback {
     NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
     NSDictionary *installation = [LEANInstallation info];
     [toSend addEntriesFromDictionary:installation];
+    if(!callback) callback = @"gonative_device_info";
     
     LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
     appDelegate.isFirstLaunch = NO;
     
     if(appDelegate.apnsToken) toSend[@"apnsToken"] = appDelegate.apnsToken;
     
-    NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_device_info" data:toSend];
+    NSString *jsCallback = [LEANUtilities createJsForCallback:callback data:toSend];
     if (jsCallback) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self runJavascript:jsCallback];
@@ -2479,7 +2489,7 @@ static NSInteger _currentWindows = 0;
     }
 }
 
--(void)runGonativeOnesignalInfo {
+-(void)runGonativeOnesignalInfoWithCallback:(NSString*)callback {
     if (![GoNativeAppConfig sharedAppConfig].oneSignalEnabled) {
         return;
     }
@@ -2489,6 +2499,8 @@ static NSInteger _currentWindows = 0;
     NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
     NSDictionary *installation = [LEANInstallation info];
     [toSend addEntriesFromDictionary:installation];
+    if(!callback) callback = @"gonative_onesignal_info";
+    
     if (state) {
         if (state.userId) {
             toSend[@"oneSignalUserId"] = state.userId;
@@ -2500,7 +2512,7 @@ static NSInteger _currentWindows = 0;
         toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
     }
     
-    NSString *jsCallback = [LEANUtilities createJsForCallback:@"gonative_onesignal_info" data:toSend];
+    NSString *jsCallback = [LEANUtilities createJsForCallback:callback data:toSend];
     if (jsCallback) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self runJavascript:jsCallback];

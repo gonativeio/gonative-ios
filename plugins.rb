@@ -4,7 +4,7 @@ require 'cocoapods'
 require 'active_support/inflector'
 
 def use_plugins!
-  app_config = JSON.parse(File.read('LeanIOS/appConfig.json'))
+  app_config = JSON.parse(File.read(__dir__ + '/LeanIOS/appConfig.json'))
   services = app_config['services']
 
   services = services.select { |_service_name, service| %w[source binary].include? service['plugin'] }
