@@ -42,6 +42,7 @@
 @import GoNativeCore;
 
 #define OFFLINE_URL @"http://offline/"
+#define LOCAL_FILE_URL @"http://localFile/"
 
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate, GNJavascriptRunner>
 
@@ -936,7 +937,32 @@ static NSInteger _currentWindows = 0;
         return;
     }
     
-    [self loadRequest:[NSURLRequest requestWithURL:url]];
+    // local file url
+    if ([url.scheme isEqualToString:@"file"]) {
+        NSArray *components = [url.path componentsSeparatedByString:@"."];
+        NSString *filePath;
+        if (components.count == 2 && [components[components.count - 1] isEqualToString:@"html"]) {
+            filePath = components[0];
+        }
+        NSURL *localUrl = [[NSBundle mainBundle] URLForResource:filePath withExtension:@"html"];
+        if (localUrl) {
+            NSString *html = [NSString stringWithContentsOfURL:localUrl encoding:NSUTF8StringEncoding error:nil];
+            [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:LOCAL_FILE_URL]];
+        } else {
+            [self showOfflinePage];
+        }
+        return;
+    }
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    /*
+    TODO: Use appConfig value for timeout interval
+    NSNumber *timeout = [GoNativeAppConfig sharedAppConfig].iosConnectionOfflineTime;
+    if (timeout) {
+        request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:[timeout doubleValue]];
+    }
+     */
+    [self loadRequest:request];
 }
 
 
@@ -2737,13 +2763,23 @@ static NSInteger _currentWindows = 0;
     }
     
     if ([[error domain] isEqualToString:NSURLErrorDomain]) {
-        if ([error code] == NSURLErrorNotConnectedToInternet ||
+        /*
+        TODO: check appConfig value if the showing of offline page is enabled/disabled
+        if (![GoNativeAppConfig sharedAppConfig].iosShowOfflinePage)
+            return;
+        */
+        if ([error code] == NSURLErrorCannotFindHost || [error code] == NSURLErrorNotConnectedToInternet ||
             (isProvisional && [error code] == NSURLErrorTimedOut)) {
-            NSURL *offlineFile = [[NSBundle mainBundle] URLForResource:@"offline" withExtension:@"html"];
-            NSString *html = [NSString stringWithContentsOfURL:offlineFile encoding:NSUTF8StringEncoding error:nil];
-            [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:OFFLINE_URL]];
+            [self showOfflinePage];
         }
     }
+}
+
+- (void) showOfflinePage
+{
+    NSURL *offlineFile = [[NSBundle mainBundle] URLForResource:@"offline" withExtension:@"html"];
+    NSString *html = [NSString stringWithContentsOfURL:offlineFile encoding:NSUTF8StringEncoding error:nil];
+    [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:OFFLINE_URL]];
 }
 
 - (void) setNavigationButtonStatus
