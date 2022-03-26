@@ -154,6 +154,7 @@
       ],
       "active": false
     },
+    "iosShowOfflinePage": true,
     "androidPullToRefresh": false,
     "iosPullToRefresh": true,
     "navigationTitles": {

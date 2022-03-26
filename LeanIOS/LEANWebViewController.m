@@ -955,13 +955,10 @@ static NSInteger _currentWindows = 0;
     }
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    /*
-    TODO: Use appConfig value for timeout interval
     NSNumber *timeout = [GoNativeAppConfig sharedAppConfig].iosConnectionOfflineTime;
     if (timeout) {
         request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:[timeout doubleValue]];
     }
-     */
     [self loadRequest:request];
 }
 
@@ -2763,11 +2760,9 @@ static NSInteger _currentWindows = 0;
     }
     
     if ([[error domain] isEqualToString:NSURLErrorDomain]) {
-        /*
-        TODO: check appConfig value if the showing of offline page is enabled/disabled
         if (![GoNativeAppConfig sharedAppConfig].iosShowOfflinePage)
             return;
-        */
+        
         if ([error code] == NSURLErrorCannotFindHost || [error code] == NSURLErrorNotConnectedToInternet ||
             (isProvisional && [error code] == NSURLErrorTimedOut)) {
             [self showOfflinePage];
