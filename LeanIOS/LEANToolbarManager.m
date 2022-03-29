@@ -143,6 +143,9 @@
 
 - (void)didLoadUrl:(NSURL*)url
 {
+    if (![GoNativeAppConfig sharedAppConfig].toolbarEnabled)
+        return;
+    
     // 1. Check canGoBack
     // 2. Check toolbarNavigation.urlRegex (if exist)
     // 3. Check Back button regex (if exists)

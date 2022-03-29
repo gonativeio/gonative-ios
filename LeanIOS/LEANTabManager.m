@@ -11,7 +11,7 @@
 #import "LEANUtilities.h"
 #import "GonativeIO-Swift.h"
 
-#define TAB_IMAGE_SIZE_REGULAR 23
+#define TAB_IMAGE_SIZE_REGULAR 34
 #define TAB_IMAGE_SIZE_COMPACT 17
 
 @interface LEANTabManager() <UITabBarDelegate>

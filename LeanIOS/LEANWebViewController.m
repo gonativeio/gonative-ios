@@ -564,8 +564,24 @@ static NSInteger _currentWindows = 0;
 
 - (void)checkNavigationTitleImageForUrl:(NSURL*)url
 {
+    // check if navbar titles has regex match
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    BOOL showImageView = [appConfig shouldShowNavigationTitleImageForUrl:[url absoluteString]];
+    NSArray *entries = appConfig.navTitles;
+    
+    if (!showImageView && entries) {
+        NSString *urlString = [url absoluteString];
+        for (NSDictionary *entry in entries) {
+            NSPredicate *predicate = entry[@"predicate"];
+            if ([predicate evaluateWithObject:urlString]) {
+                showImageView = [entry[@"showImage"] boolValue];
+                break;
+            }
+        }
+    }
+    
     // show logo in navigation bar
-    if ([[GoNativeAppConfig sharedAppConfig] shouldShowNavigationTitleImageForUrl:[url absoluteString]]) {
+    if (showImageView) {
         // create the view if necesary
         if (!self.navigationTitleImageView) {
             UIImage *im = [GoNativeAppConfig sharedAppConfig].navigationTitleIcon;
@@ -1547,6 +1563,9 @@ static NSInteger _currentWindows = 0;
             } else {
                 self.navigationItem.title = appConfig.appName;
             }
+            // hide titleView
+            self.defaultTitleView = nil;
+            self.navigationItem.titleView = nil;
         }
         return;
     }
@@ -1586,8 +1605,7 @@ static NSInteger _currentWindows = 0;
             
             if(!items) return;
             [appConfig setSidebarNavigation:items];
-            
-            BOOL enabled = [query[@"enabled"] boolValue];
+            BOOL enabled = query[@"enabled"] == nil || [query[@"enabled"] boolValue];
             self.sidebarItemsEnabled = enabled;
             if (enabled) {
                 [self showLeftBarButtonItems:NO];
