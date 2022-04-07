@@ -190,7 +190,7 @@
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-    if ([url.scheme hasSuffix:@".https"] || [url.scheme hasSuffix:@".http"]) {
+    if (([url.scheme hasSuffix:@".https"] || [url.scheme hasSuffix:@".http"]) && ![url.scheme hasPrefix:[GoNativeAppConfig sharedAppConfig].customUrlScheme]) {
         UIViewController *rvc = self.window.rootViewController;
         
         NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
@@ -207,7 +207,8 @@
         return YES;
     }
     
-    [bridge application:app openURL:url options:options];
+    if ([bridge application:app openURL:url options:options])
+        return YES;
     
     return NO;
 }

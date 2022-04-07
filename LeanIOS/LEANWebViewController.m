@@ -44,6 +44,8 @@
 #define OFFLINE_URL @"http://offline/"
 #define LOCAL_FILE_URL @"http://localFile/"
 
+#define NAV_BUTTON_SIZE 36
+
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate, GNJavascriptRunner>
 
 @property WKWebView *wkWebview;
@@ -67,7 +69,6 @@
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *tabbarLeftSafeAreaLeft;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *tabbarRightSafeAreaRight;
 @property IBOutlet UIView *webviewContainer;
-@property NSArray *defaultLeftNavBarItems;
 @property NSArray *defaultToolbarItems;
 @property UIBarButtonItem *customActionButton;
 @property NSArray *customActions;
@@ -168,20 +169,11 @@ static NSInteger _currentWindows = 0;
     if ([appConfig.navTitles count] == 0) {
         self.navigationItem.title = appConfig.appName;
     }
-
-    // hide button if no native nav
-    if (!appConfig.showNavigationMenu) {
-        self.navButton.customView = [[UIView alloc] init];
-    }
     
     // add nav button
     if (appConfig.showNavigationMenu &&  [self isRootWebView]) {
-        self.navButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navImage"] style:UIBarButtonItemStylePlain target:self action:@selector(showMenu)];
-        self.navButton.accessibilityLabel = NSLocalizedString(@"button-menu", @"Button: Menu");
-        self.navigationItem.leftBarButtonItems = @[self.navButton];
-        
+        [self showSidebarNavButton];
     }
-    self.defaultLeftNavBarItems = self.navigationItem.leftBarButtonItems;
     
     // profile picker
     if (appConfig.profilePickerJS && [appConfig.profilePickerJS length] > 0) {
@@ -227,16 +219,36 @@ static NSInteger _currentWindows = 0;
     }
     
     if (appConfig.searchTemplateURL) {
-        self.searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchPressed:)];
+        UIImage *iconImage;
+        if (@available(iOS 13.0, *)) {
+            iconImage = [UIImage systemImageNamed:@"magnifyingglass"];
+        } else {
+            iconImage = [LEANIcons imageForIconIdentifier:@"fas fa-search" size:28 color:[UIColor blackColor]];
+        }
+        
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button setImage:iconImage forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(searchPressed:)
+            forControlEvents:UIControlEventTouchUpInside];
+        [button setFrame:CGRectMake(0, 0, NAV_BUTTON_SIZE, 30)];
+        
+        self.searchButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+        
         self.searchBar = [[UISearchBar alloc] init];
         self.searchBar.showsCancelButton = NO;
         self.searchBar.delegate = self;
     }
     
     if (appConfig.showRefreshButton) {
-        self.refreshButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"refresh"] style:UIBarButtonItemStylePlain target:self action:@selector(refreshPressed:)];
+        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [button setImage:[UIImage imageNamed:@"refresh"] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(refreshPressed:)
+            forControlEvents:UIControlEventTouchUpInside];
+        [button setFrame:CGRectMake(0, 0, NAV_BUTTON_SIZE, 30)];
+        self.refreshButton = [[UIBarButtonItem alloc] initWithCustomView:button];
     }
     
+    self.sidebarItemsEnabled = appConfig.showNavigationMenu && [self isRootWebView];
     [self showNavigationItemButtonsAnimated:NO];
     [self buildDefaultToobar];
     self.keyboardVisible = NO;
@@ -510,11 +522,9 @@ static NSInteger _currentWindows = 0;
     [navController setSidebarEnabled:enabled];
     
     if (enabled) {
-        if (self.navButton.customView) {
-            self.navButton.customView = nil;
-        }
+        [self showSidebarNavButton];
     } else {
-        self.navButton.customView = [[UIView alloc] init];
+        self.navButton = nil;
         [navController.frostedViewController hideMenuViewController];
     }
 }
@@ -742,7 +752,7 @@ static NSInteger _currentWindows = 0;
     self.navigationItem.titleView = self.searchBar;
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"button-cancel", @"Button: Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(searchCanceled)];
     
-    [self hideLeftBarButtonItems:YES];
+    [self.navigationItem setLeftBarButtonItems:nil animated:YES];
     [self.navigationItem setRightBarButtonItems:@[cancelButton] animated:YES];
     [self.searchBar becomeFirstResponder];
 }
@@ -752,46 +762,52 @@ static NSInteger _currentWindows = 0;
     [[LEANDocumentSharer sharedSharer] shareRequest:self.currentRequest fromButton:sender];
 }
 
-- (void) showLeftBarButtonItems:(BOOL)animated
-{
-    if (self.sidebarItemsEnabled) {
-        [self.navigationItem setLeftBarButtonItems:self.defaultLeftNavBarItems animated:animated];
-    }
-}
-
-- (void) hideLeftBarButtonItems:(BOOL)animated
-{
-    [self.navigationItem setLeftBarButtonItems:nil animated:animated];
-}
-
 - (void) showNavigationItemButtonsAnimated:(BOOL)animated
 {
-    //left
-    [self showLeftBarButtonItems:animated];
-    
     NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:4];
     
-    // right: document share button
-    if (self.shareButton) {
-        [buttons addObject:self.shareButton];
-    }
-    
-    // right: refresh button
-    if (self.refreshButton) {
+    if (self.refreshButton)
         [buttons addObject:self.refreshButton];
-    }
     
-    // right: search button
-    if (self.searchButton) {
-        [buttons addObject:self.searchButton];
-    }
+    if (self.shareButton)
+        [buttons addObject:self.shareButton];
     
-    // right: actions
-    if (self.actionManager) {
+    if (self.actionManager)
         [buttons addObjectsFromArray:self.actionManager.items];
+    
+    if (self.searchButton)
+        [buttons addObject:self.searchButton];
+    
+    BOOL showSidebarNav = self.sidebarItemsEnabled && self.navButton;
+    if (showSidebarNav)
+        [buttons addObject:self.navButton];
+    
+    NSMutableArray *leftButtons = [[NSMutableArray alloc] initWithCapacity:4];
+    NSMutableArray *rightButtons = [[NSMutableArray alloc] initWithCapacity:4];
+    
+    // if it's only the sidebar nav button, put it in the left navigation
+    if ([buttons count] == 1 && showSidebarNav) {
+        [leftButtons insertObject:self.navButton atIndex:0];
+    }
+    // if there are 2 buttons, put them in the right corner
+    else if ([buttons count] == 2 && !showSidebarNav) {
+        [rightButtons addObject:buttons[0]];
+        [rightButtons addObject:buttons[1]];
+    }
+    // split buttons between the left and right navigation items
+    else {
+        float halfIndex = (float)[buttons count] / 2;
+        for (NSInteger i = 0; i < [buttons count]; i++) {
+            if (i < halfIndex) {
+                [rightButtons addObject:buttons[i]];
+            } else {
+                [leftButtons insertObject:buttons[i] atIndex:0];
+            }
+        }
     }
     
-    [self.navigationItem setRightBarButtonItems:buttons animated:animated];
+    [self.navigationItem setLeftBarButtonItems:leftButtons animated:animated];
+    [self.navigationItem setRightBarButtonItems:rightButtons animated:animated];
 }
 
 - (void) sharePage:(id)sender
@@ -1607,11 +1623,8 @@ static NSInteger _currentWindows = 0;
             [appConfig setSidebarNavigation:items];
             BOOL enabled = query[@"enabled"] == nil || [query[@"enabled"] boolValue];
             self.sidebarItemsEnabled = enabled;
-            if (enabled) {
-                [self showLeftBarButtonItems:NO];
-            } else {
-                [self hideLeftBarButtonItems:NO];
-            }
+            self.navigationItem.titleView = self.defaultTitleView;
+            [self showNavigationItemButtonsAnimated:NO];
         } else if ([@"/getItems" isEqualToString:url.path]) {
             NSMutableDictionary *menus = [appConfig getSidebarNavigation];
             NSString *callback = query[@"callback"];
@@ -2795,12 +2808,21 @@ static NSInteger _currentWindows = 0;
     [self.wkWebview loadHTMLString:html baseURL:[NSURL URLWithString:OFFLINE_URL]];
 }
 
+- (void) showSidebarNavButton {
+    UIButton *favButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [favButton setImage:[UIImage imageNamed:@"navImage"] forState:UIControlStateNormal];
+    [favButton addTarget:self action:@selector(showMenu)
+        forControlEvents:UIControlEventTouchUpInside];
+    [favButton setFrame:CGRectMake(0, 0, 36, 30)];
+    self.navButton = [[UIBarButtonItem alloc] initWithCustomView:favButton];
+    self.navButton.accessibilityLabel = NSLocalizedString(@"button-menu", @"Button: Menu");
+}
+
 - (void) setNavigationButtonStatus
 {
     self.backButton.enabled = self.wkWebview.canGoBack;
     self.forwardButton.enabled = self.wkWebview.canGoForward;
 }
-
 
 - (void)didReceiveMemoryWarning
 {

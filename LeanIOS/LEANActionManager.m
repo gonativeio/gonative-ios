@@ -13,6 +13,7 @@
 @property (weak, nonatomic) LEANWebViewController *wvc;
 @property NSString *currentMenuID;
 @property NSMutableArray *urls;
+@property NSMutableArray *buttons;
 @end
 
 @implementation LEANActionManager
@@ -76,6 +77,7 @@
     
     NSMutableArray *newButtonItems = [NSMutableArray array];
     self.urls = [NSMutableArray array];
+    self.buttons = [NSMutableArray array];
     
     NSArray *menu = [GoNativeAppConfig sharedAppConfig].actions[self.currentMenuID];
     for (NSDictionary *entry in menu) {
@@ -83,17 +85,24 @@
         if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"share"]) {
             UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self.wvc action:@selector(sharePage:)];
             [newButtonItems insertObject:button atIndex:0];
-            [self.urls insertObject:@"" atIndex:0];
         } else {
             NSString *label = entry[@"label"];
             NSString *iconName = entry[@"icon"];
             NSString *url = entry[@"url"];
             // the tint color is automatically applied to the button, so a black icon is enough
-            UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:21 color:[UIColor blackColor]];
+            UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:28 color:[UIColor blackColor]];
             
-            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:self action:@selector(itemWasSelected:)];
-            button.accessibilityLabel = label;
-            [newButtonItems insertObject:button atIndex:0];
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            [button setImage:iconImage forState:UIControlStateNormal];
+            [button addTarget:self action:@selector(itemWasSelected:)
+                forControlEvents:UIControlEventTouchUpInside];
+            [button setFrame:CGRectMake(0, 0, 36, 30)];
+            
+            UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+            
+            barButtonItem.accessibilityLabel = label;
+            [newButtonItems insertObject:barButtonItem atIndex:0];
+            [self.buttons insertObject:button atIndex:0];
             if (!url) {
                 url = @"";
             }
@@ -106,7 +115,7 @@
 
 - (void)itemWasSelected:(id)sender
 {
-    NSUInteger index = [self.items indexOfObject:sender];
+    NSUInteger index = [self.buttons indexOfObject:sender];
     if (index != NSNotFound && index < [self.urls count]) {
         NSString *url = self.urls[index];
         [self.wvc loadUrlString:url];
