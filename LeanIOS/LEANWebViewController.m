@@ -1162,6 +1162,8 @@ static NSInteger _currentWindows = 0;
         decisionHandler(WKNavigationResponsePolicyAllow);
         return;
     }
+    
+    [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge webView:webView handleURL:navigationResponse.response.URL];
 
     decisionHandler(WKNavigationResponsePolicyCancel);
     
