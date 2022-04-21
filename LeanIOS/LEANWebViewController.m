@@ -806,7 +806,10 @@ static NSInteger _currentWindows = 0;
         }
     }
     
-    [self.navigationItem setLeftBarButtonItems:leftButtons animated:animated];
+    // do not override the back button
+    if (self.urlLevel <= 1)
+        [self.navigationItem setLeftBarButtonItems:leftButtons animated:animated];
+    
     [self.navigationItem setRightBarButtonItems:rightButtons animated:animated];
 }
 
