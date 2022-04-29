@@ -752,6 +752,7 @@ static NSInteger _currentWindows = 0;
     self.navigationItem.titleView = self.searchBar;
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"button-cancel", @"Button: Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(searchCanceled)];
     
+    [self.navigationItem setHidesBackButton:YES animated:YES];
     [self.navigationItem setLeftBarButtonItems:nil animated:YES];
     [self.navigationItem setRightBarButtonItems:@[cancelButton] animated:YES];
     [self.searchBar becomeFirstResponder];
@@ -811,6 +812,7 @@ static NSInteger _currentWindows = 0;
         [self.navigationItem setLeftBarButtonItems:leftButtons animated:animated];
     
     [self.navigationItem setRightBarButtonItems:rightButtons animated:animated];
+    [self.navigationItem setHidesBackButton:NO animated:animated];
 }
 
 - (void) sharePage:(id)sender
