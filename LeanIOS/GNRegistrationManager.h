@@ -13,6 +13,7 @@
 -(void)processConfig:(NSArray*)endpoints;
 -(void)checkUrl:(NSURL*)url;
 -(void)setOneSignalUserId:(NSString *)userId pushToken:(NSString*)pushToken subscribed:(BOOL)subscribed;
+-(void)setOneSignalRequiresPrivacyConsent:(BOOL)requiresPrivacyConsent;
 -(void)setCustomData:(NSDictionary*)data;
 -(void)sendToAllEndpoints;
 @end

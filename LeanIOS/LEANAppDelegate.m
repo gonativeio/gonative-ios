@@ -6,20 +6,15 @@
 // Copyright (c) 2014 GoNative.io LLC. All rights reserved.
 //
 
-#import <OneSignal/OneSignal.h>
 #import "LEANAppDelegate.h"
 #import "LEANWebViewIntercept.h"
 #import "LEANUrlCache.h"
 #import "LEANRootViewController.h"
 #import "LEANConfigUpdater.h"
 #import "LEANUtilities.h"
-#import "GNRegistrationManager.h"
 #import "GNConfigPreferences.h"
 #import "GonativeIO-Swift.h"
 #import <AppTrackingTransparency/ATTrackingManager.h>
-
-@interface LEANAppDelegate() <OSSubscriptionObserver>
-@end
 
 @implementation LEANAppDelegate
 
@@ -48,83 +43,10 @@
     // proxy handler to intercept HTML for custom CSS and viewport
     [LEANWebViewIntercept register];
     
-    // OneSignal
-    if (appConfig.oneSignalEnabled) {
-        
-        // init OneSignal
-        [OneSignal setRequiresUserPrivacyConsent:appConfig.oneSignalRequiresUserPrivacyConsent];
-        [OneSignal initWithLaunchOptions:launchOptions];
-        [OneSignal setAppId:appConfig.oneSignalAppId];
-        
-        // set notification displayed in foreground handler
-        id notifWillShowInForegroundHandler = ^(OSNotification *notification, OSNotificationDisplayResponse completion) {
-            NSString *message = [notification.body copy];
-            NSString *title = notification.title;
-            NSString *urlString;
-            NSURL *url;
-            if (notification.additionalData) {
-                urlString = notification.additionalData[@"u"];
-                if (![urlString isKindOfClass:[NSString class]]) {
-                    urlString = notification.additionalData[@"targetUrl"];
-                }
-                if ([urlString isKindOfClass:[NSString class]]) {
-                    url = [LEANUtilities urlWithString:urlString];
-                }
-            }
-            
-            BOOL webviewOnTop = NO;
-            LEANRootViewController *rvc = (LEANRootViewController*) self.window.rootViewController;
-            if (![rvc isKindOfClass:[LEANRootViewController class]]) {
-                rvc = nil;
-            } else {
-                webviewOnTop = [rvc webviewOnTop];
-            }
-            
-            if (![@"none" isEqualToString:appConfig.oneSignalInFocusDisplay] &&
-                (title || message || url)) {
-                // Show an alert, and include a "view" button if there is a url and the webview is currently the top view.
-                
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-ok", @"Button: OK") style:UIAlertActionStyleCancel handler:nil]];
-                if (url && webviewOnTop) {
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"button-view", @"Button: View") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                        [rvc loadUrl:url];
-                    }]];
-                }
-                
-                [rvc presentAlert:alert];
-                completion(notification);
-            } else completion(nil);
-        };
-        [OneSignal setNotificationWillShowInForegroundHandler:notifWillShowInForegroundHandler];
-        
-        // set notification opened handler
-        id notificationOpenedBlock = ^(OSNotificationOpenedResult *result) {
-          OSNotification* notification = result.notification;
-          if (notification.additionalData) {
-              [self handlePushNotificationData:notification.additionalData];
-          }
-        };
-        [OneSignal setNotificationOpenedHandler:notificationOpenedBlock];
-        
-        // check autoregister
-        if (appConfig.oneSignalAutoRegister && ![OneSignal requiresUserPrivacyConsent]){
-            if(appConfig.oneSignalIosSoftPrompt){
-                OSDeviceState *deviceState = [OneSignal getDeviceState];
-                // if device not subscribed, trigger the soft prompt
-                if (!deviceState.isSubscribed) [OneSignal addTrigger:@"prompt_ios" withValue:@"true"];
-            } else [OneSignal promptForPushNotificationsWithUserResponse:nil];
-        }
-    }
-    
     // registration service
-    GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
-    [registration processConfig:appConfig.registrationEndpoints];
-    if (appConfig.oneSignalEnabled) {
-        [OneSignal addSubscriptionObserver:self];
-        OSDeviceState *state = [OneSignal getDeviceState];
-        [registration setOneSignalUserId:state.userId pushToken:state.pushToken subscribed:state.isSubscribed];
-    }
+    self.registration = [GNRegistrationManager sharedManager];
+    [self.registration processConfig:appConfig.registrationEndpoints];
+    
     
     [self configureApplication];
     
@@ -142,35 +64,6 @@
     [bridge application:application didFinishLaunchingWithOptions:launchOptions];
     
     return YES;
-}
-
--(void)handlePushNotificationData:(NSDictionary*)data
-{
-    if (!data) return;
-    
-    NSString *urlString;
-    NSURL *url;
-    urlString = data[@"u"];
-    if (![urlString isKindOfClass:[NSString class]]) {
-        urlString = data[@"targetUrl"];
-    }
-    if ([urlString isKindOfClass:[NSString class]]) {
-        url = [LEANUtilities urlWithString:urlString];
-    }
-    
-    BOOL webviewOnTop = NO;
-    UIViewController *rvc = self.window.rootViewController;
-    if ([rvc isKindOfClass:[LEANRootViewController class]]) {
-        webviewOnTop = [(LEANRootViewController*)rvc webviewOnTop];
-    }
-    
-    if (url && webviewOnTop) {
-        // for when the app is launched from scratch from a push notification
-        [(LEANRootViewController*)rvc setInitialUrl:url];
-        
-        // for when the app was backgrounded
-        [(LEANRootViewController*)rvc loadUrl:url];
-    }
 }
 
 - (void)configureApplication
@@ -315,14 +208,6 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     [bridge application:application didReceiveRemoteNotification:userInfo];
-}
-
-#pragma mark OneSignalSubscriptionObserver
--(void)onOSSubscriptionChanged:(OSSubscriptionStateChanges *)stateChanges
-{
-    GNRegistrationManager *registration = [GNRegistrationManager sharedManager];
-    OSSubscriptionState *state = stateChanges.to;
-    [registration setOneSignalUserId:state.userId pushToken:state.pushToken subscribed:state.isSubscribed];
 }
 
 #pragma mark -

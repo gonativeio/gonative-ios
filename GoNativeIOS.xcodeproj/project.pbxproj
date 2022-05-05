@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1B33718AD717A57FA400EB95 /* Pods_GoNativeIOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0B679687E21B6AD6F123F5C /* Pods_GoNativeIOSTests.framework */; };
+		0C09BC7A225A3986BFA87855 /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8890E2BBEF17B6220BC9926B /* Pods_GonativeIO.framework */; };
 		2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49B18A9991300495B3D /* Foundation.framework */; };
 		2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49D18A9991300495B3D /* CoreGraphics.framework */; };
 		2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
@@ -50,8 +50,6 @@
 		202BE5811B97574E0064D928 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5801B97574E0064D928 /* Accounts.framework */; };
 		202BE5831B9757530064D928 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE5821B9757530064D928 /* Social.framework */; };
 		202E989519EF30C8009C28AD /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 202E989419EF30C8009C28AD /* Reachability.m */; };
-		2041B6022321BEB400DBDF5F /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 205EF30219BF84AF002AE261 /* WebKit.framework */; };
-		2041B6032329880E00DBDF5F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49D18A9991300495B3D /* CoreGraphics.framework */; };
 		2046CAFA1BC0790800714F66 /* GNRegistrationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2046CAF91BC0790800714F66 /* GNRegistrationManager.m */; };
 		204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 204AE86218D4D60D009AF272 /* NSURL+LEANUtilities.m */; };
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
@@ -62,10 +60,6 @@
 		207577582195BE3500ADD73A /* LaunchScreenNoNav.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 207577572195BE3500ADD73A /* LaunchScreenNoNav.storyboard */; };
 		2075775A2195D80300ADD73A /* LaunchScreenNav.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 207577592195D80300ADD73A /* LaunchScreenNav.storyboard */; };
 		208184611F9AA00900D55384 /* GNSubscriptionsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 208184601F9AA00900D55384 /* GNSubscriptionsModel.m */; };
-		2081A28A1F33ECE900057E3F /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 2081A2891F33ECE900057E3F /* NotificationService.m */; };
-		2081A28E1F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		2081A2941F33ED6900057E3F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
-		2081A2951F33ED8100057E3F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 202BE57C1B9757390064D928 /* SystemConfiguration.framework */; };
 		20890D872383421900BC9335 /* BlobDownloader.js in Resources */ = {isa = PBXBuildFile; fileRef = 20890D862383421800BC9335 /* BlobDownloader.js */; };
 		2089662718AC6753007FC34F /* LEANLoginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2089662618AC6753007FC34F /* LEANLoginManager.m */; };
 		208A9F42191AEBAD0049E664 /* appConfig.json in Resources */ = {isa = PBXBuildFile; fileRef = 208A9F41191AEBAD0049E664 /* appConfig.json */; };
@@ -100,12 +94,11 @@
 		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
-		37603BBC19BAB5D18A6D3869 /* Pods_OneSignalNotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E14A3DDFB9CBC01A6B4DD895 /* Pods_OneSignalNotificationServiceExtension.framework */; };
-		8F8E3DF28CCE41C11B42815F /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */; };
 		BB3C460E26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js in Resources */ = {isa = PBXBuildFile; fileRef = BB3C460D26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js */; };
 		BB6E68A9273C731E004846A3 /* GNJSBridgeInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6E68A8273C731E004846A3 /* GNJSBridgeInterface.m */; };
 		BB9A3B012631D2A7002C38F1 /* LEANIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */; };
 		BBD972F227AF17C500AD4FC0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBD972F127AF17C500AD4FC0 /* GoogleService-Info.plist */; };
+		CFD5D5D922B3ACAEC5D51409 /* Pods_GoNativeIOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78876735F56F7A0B2F189019 /* Pods_GoNativeIOSTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,13 +109,6 @@
 			remoteGlobalIDString = 2002B49718A9991300495B3D;
 			remoteInfo = LeanIOS;
 		};
-		2081A28C1F33ECE900057E3F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2002B49018A9991300495B3D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2081A2851F33ECE900057E3F;
-			remoteInfo = OneSignalNotificationServiceExtension;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -132,7 +118,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				2081A28E1F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -140,7 +125,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		13D929647309B5830618D579 /* Pods-GoNativeIOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.debug.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0C7DB840C5C868C16F32E637 /* Pods-GonativeIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.debug.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.debug.xcconfig"; sourceTree = "<group>"; };
+		19CA02271DB94B823691D9F8 /* Pods-GoNativeIOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.release.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		1F8FE6763E25BB9C4B38FEB4 /* Pods_OneSignalNotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneSignalNotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2002B49818A9991300495B3D /* GonativeIO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GonativeIO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2002B49B18A9991300495B3D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2002B49D18A9991300495B3D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -208,7 +195,6 @@
 		202E989319EF30C8009C28AD /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		202E989419EF30C8009C28AD /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		203E19DC26DE45C3006F0E6C /* GonativeIO.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = GonativeIO.entitlements; sourceTree = SOURCE_ROOT; };
-		2041135F2E7DFC592DD219DA /* Pods-GoNativeIOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.release.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		2046CAF81BC0790800714F66 /* GNRegistrationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNRegistrationManager.h; sourceTree = "<group>"; };
 		2046CAF91BC0790800714F66 /* GNRegistrationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GNRegistrationManager.m; sourceTree = "<group>"; };
 		204AE86118D4D60D009AF272 /* NSURL+LEANUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+LEANUtilities.h"; sourceTree = "<group>"; };
@@ -226,10 +212,6 @@
 		207577592195D80300ADD73A /* LaunchScreenNav.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreenNav.storyboard; sourceTree = "<group>"; };
 		2081845F1F9AA00900D55384 /* GNSubscriptionsModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNSubscriptionsModel.h; sourceTree = "<group>"; };
 		208184601F9AA00900D55384 /* GNSubscriptionsModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNSubscriptionsModel.m; sourceTree = "<group>"; };
-		2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		2081A2881F33ECE900057E3F /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
-		2081A2891F33ECE900057E3F /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
-		2081A28B1F33ECE900057E3F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		20890D862383421800BC9335 /* BlobDownloader.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = BlobDownloader.js; sourceTree = "<group>"; };
 		2089662518AC6753007FC34F /* LEANLoginManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANLoginManager.h; sourceTree = "<group>"; };
 		2089662618AC6753007FC34F /* LEANLoginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANLoginManager.m; sourceTree = "<group>"; };
@@ -301,15 +283,14 @@
 		20F49C2619C7BE9100B46C5A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANTabManager.h; sourceTree = "<group>"; };
 		20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANTabManager.m; sourceTree = "<group>"; };
-		2AA9195813550BD85883FBBE /* Pods-GonativeIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.debug.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.debug.xcconfig"; sourceTree = "<group>"; };
+		31F0E4C64BF4301E509E549B /* Pods-GonativeIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.release.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.release.xcconfig"; sourceTree = "<group>"; };
 		39A2444327F1F29A00A6D222 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Localizable.strings; sourceTree = "<group>"; };
 		39A2444427F1F2DB00A6D222 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		39A2444727F1F33400A6D222 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
 		39A2444927F1F4D400A6D222 /* nn-NO */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "nn-NO"; path = "nn-NO.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		95A160ACACAE73AB3E15EAD9 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
-		9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA648B71089D4E82EFE99D9A /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
-		B0DD6F5AF68831471D7D5C41 /* Pods-GonativeIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.release.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.release.xcconfig"; sourceTree = "<group>"; };
+		5F73A1FB3A20E35B94078BCF /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		78876735F56F7A0B2F189019 /* Pods_GoNativeIOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoNativeIOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8890E2BBEF17B6220BC9926B /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B816044C27480DB900D1CA9C /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B816044D27480E6800D1CA9C /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B816044E27480EA500D1CA9C /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -328,8 +309,8 @@
 		BBCD252D2665ADBA000CEE11 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BBCD252E2665ADD7000CEE11 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BBD972F127AF17C500AD4FC0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E0B679687E21B6AD6F123F5C /* Pods_GoNativeIOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoNativeIOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E14A3DDFB9CBC01A6B4DD895 /* Pods_OneSignalNotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneSignalNotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D66F266924630849AFD26040 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
+		EAA67CABDEB525BD0A6DC7D6 /* Pods-GoNativeIOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.debug.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -352,7 +333,7 @@
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
 				2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */,
 				2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */,
-				8F8E3DF28CCE41C11B42815F /* Pods_GonativeIO.framework in Frameworks */,
+				0C09BC7A225A3986BFA87855 /* Pods_GonativeIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,19 +343,7 @@
 			files = (
 				2002B4C018A9991300495B3D /* UIKit.framework in Frameworks */,
 				2002B4BF18A9991300495B3D /* Foundation.framework in Frameworks */,
-				1B33718AD717A57FA400EB95 /* Pods_GoNativeIOSTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2081A2831F33ECE900057E3F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2041B6032329880E00DBDF5F /* CoreGraphics.framework in Frameworks */,
-				2041B6022321BEB400DBDF5F /* WebKit.framework in Frameworks */,
-				2081A2951F33ED8100057E3F /* SystemConfiguration.framework in Frameworks */,
-				2081A2941F33ED6900057E3F /* UIKit.framework in Frameworks */,
-				37603BBC19BAB5D18A6D3869 /* Pods_OneSignalNotificationServiceExtension.framework in Frameworks */,
+				CFD5D5D922B3ACAEC5D51409 /* Pods_GoNativeIOSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,7 +357,6 @@
 				209B32FF193FC4CE0052A7C6 /* lib */,
 				2002B4A118A9991300495B3D /* LeanIOS */,
 				2002B4C318A9991300495B3D /* LeanIOSTests */,
-				2081A2871F33ECE900057E3F /* OneSignalNotificationServiceExtension */,
 				2002B49A18A9991300495B3D /* Frameworks */,
 				2002B49918A9991300495B3D /* Products */,
 				94421A86163F4578AAF865FD /* Pods */,
@@ -400,7 +368,6 @@
 			children = (
 				2002B49818A9991300495B3D /* GonativeIO.app */,
 				2002B4BC18A9991300495B3D /* GoNativeIOSTests.xctest */,
-				2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -423,9 +390,9 @@
 				2002B49B18A9991300495B3D /* Foundation.framework */,
 				2002B49D18A9991300495B3D /* CoreGraphics.framework */,
 				2002B49F18A9991300495B3D /* UIKit.framework */,
-				9E719C7B8DD8E912B06801D6 /* Pods_GonativeIO.framework */,
-				E14A3DDFB9CBC01A6B4DD895 /* Pods_OneSignalNotificationServiceExtension.framework */,
-				E0B679687E21B6AD6F123F5C /* Pods_GoNativeIOSTests.framework */,
+				78876735F56F7A0B2F189019 /* Pods_GoNativeIOSTests.framework */,
+				8890E2BBEF17B6220BC9926B /* Pods_GonativeIO.framework */,
+				1F8FE6763E25BB9C4B38FEB4 /* Pods_OneSignalNotificationServiceExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -582,16 +549,6 @@
 			path = Subscriptions;
 			sourceTree = "<group>";
 		};
-		2081A2871F33ECE900057E3F /* OneSignalNotificationServiceExtension */ = {
-			isa = PBXGroup;
-			children = (
-				2081A2881F33ECE900057E3F /* NotificationService.h */,
-				2081A2891F33ECE900057E3F /* NotificationService.m */,
-				2081A28B1F33ECE900057E3F /* Info.plist */,
-			);
-			path = OneSignalNotificationServiceExtension;
-			sourceTree = "<group>";
-		};
 		209B32FF193FC4CE0052A7C6 /* lib */ = {
 			isa = PBXGroup;
 			children = (
@@ -669,12 +626,12 @@
 		94421A86163F4578AAF865FD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				13D929647309B5830618D579 /* Pods-GoNativeIOSTests.debug.xcconfig */,
-				2041135F2E7DFC592DD219DA /* Pods-GoNativeIOSTests.release.xcconfig */,
-				2AA9195813550BD85883FBBE /* Pods-GonativeIO.debug.xcconfig */,
-				B0DD6F5AF68831471D7D5C41 /* Pods-GonativeIO.release.xcconfig */,
-				AA648B71089D4E82EFE99D9A /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
-				95A160ACACAE73AB3E15EAD9 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
+				EAA67CABDEB525BD0A6DC7D6 /* Pods-GoNativeIOSTests.debug.xcconfig */,
+				19CA02271DB94B823691D9F8 /* Pods-GoNativeIOSTests.release.xcconfig */,
+				0C7DB840C5C868C16F32E637 /* Pods-GonativeIO.debug.xcconfig */,
+				31F0E4C64BF4301E509E549B /* Pods-GonativeIO.release.xcconfig */,
+				5F73A1FB3A20E35B94078BCF /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
+				D66F266924630849AFD26040 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -686,17 +643,16 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2002B4CD18A9991300495B3D /* Build configuration list for PBXNativeTarget "GonativeIO" */;
 			buildPhases = (
-				ACD24F2BA1AEF31890E39907 /* [CP] Check Pods Manifest.lock */,
+				8AF39AB08E6CAADDF41749E3 /* [CP] Check Pods Manifest.lock */,
 				2002B49418A9991300495B3D /* Sources */,
 				2002B49518A9991300495B3D /* Frameworks */,
 				2002B49618A9991300495B3D /* Resources */,
 				2081A2921F33ECE900057E3F /* Embed App Extensions */,
-				02501B20EBA56C59B844D39A /* [CP] Embed Pods Frameworks */,
+				64CC36DB99FD3CBD7BF9DD93 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				2081A28D1F33ECE900057E3F /* PBXTargetDependency */,
 			);
 			name = GonativeIO;
 			productName = LeanIOS;
@@ -707,7 +663,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2002B4D018A9991300495B3D /* Build configuration list for PBXNativeTarget "GoNativeIOSTests" */;
 			buildPhases = (
-				7A8AB074D8C136555547A298 /* [CP] Check Pods Manifest.lock */,
+				C8B8D4F5B93214BAAE19689C /* [CP] Check Pods Manifest.lock */,
 				2002B4B818A9991300495B3D /* Sources */,
 				2002B4B918A9991300495B3D /* Frameworks */,
 				2002B4BA18A9991300495B3D /* Resources */,
@@ -721,24 +677,6 @@
 			productName = LeanIOSTests;
 			productReference = 2002B4BC18A9991300495B3D /* GoNativeIOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		2081A2851F33ECE900057E3F /* OneSignalNotificationServiceExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2081A2911F33ECE900057E3F /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
-			buildPhases = (
-				B3AB49DEBF95FFC468330C5D /* [CP] Check Pods Manifest.lock */,
-				2081A2821F33ECE900057E3F /* Sources */,
-				2081A2831F33ECE900057E3F /* Frameworks */,
-				2081A2841F33ECE900057E3F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = OneSignalNotificationServiceExtension;
-			productName = OneSignalNotificationServiceExtension;
-			productReference = 2081A2861F33ECE900057E3F /* OneSignalNotificationServiceExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -768,10 +706,6 @@
 					};
 					2002B4BB18A9991300495B3D = {
 						TestTargetID = 2002B49718A9991300495B3D;
-					};
-					2081A2851F33ECE900057E3F = {
-						CreatedOnToolsVersion = 8.3;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -808,7 +742,6 @@
 			targets = (
 				2002B49718A9991300495B3D /* GonativeIO */,
 				2002B4BB18A9991300495B3D /* GoNativeIOSTests */,
-				2081A2851F33ECE900057E3F /* OneSignalNotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -859,17 +792,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2081A2841F33ECE900057E3F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		02501B20EBA56C59B844D39A /* [CP] Embed Pods Frameworks */ = {
+		64CC36DB99FD3CBD7BF9DD93 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -891,29 +817,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7A8AB074D8C136555547A298 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-GoNativeIOSTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		ACD24F2BA1AEF31890E39907 /* [CP] Check Pods Manifest.lock */ = {
+		8AF39AB08E6CAADDF41749E3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -935,7 +839,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B3AB49DEBF95FFC468330C5D /* [CP] Check Pods Manifest.lock */ = {
+		C8B8D4F5B93214BAAE19689C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -950,7 +854,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-OneSignalNotificationServiceExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-GoNativeIOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1016,14 +920,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2081A2821F33ECE900057E3F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2081A28A1F33ECE900057E3F /* NotificationService.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1031,11 +927,6 @@
 			isa = PBXTargetDependency;
 			target = 2002B49718A9991300495B3D /* GonativeIO */;
 			targetProxy = 2002B4C118A9991300495B3D /* PBXContainerItemProxy */;
-		};
-		2081A28D1F33ECE900057E3F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2081A2851F33ECE900057E3F /* OneSignalNotificationServiceExtension */;
-			targetProxy = 2081A28C1F33ECE900057E3F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1214,7 +1105,7 @@
 		};
 		2002B4CE18A9991300495B3D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2AA9195813550BD85883FBBE /* Pods-GonativeIO.debug.xcconfig */;
+			baseConfigurationReference = 0C7DB840C5C868C16F32E637 /* Pods-GonativeIO.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1255,7 +1146,7 @@
 		};
 		2002B4CF18A9991300495B3D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B0DD6F5AF68831471D7D5C41 /* Pods-GonativeIO.release.xcconfig */;
+			baseConfigurationReference = 31F0E4C64BF4301E509E549B /* Pods-GonativeIO.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1295,7 +1186,7 @@
 		};
 		2002B4D118A9991300495B3D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 13D929647309B5830618D579 /* Pods-GoNativeIOSTests.debug.xcconfig */;
+			baseConfigurationReference = EAA67CABDEB525BD0A6DC7D6 /* Pods-GoNativeIOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GonativeIO.app/GonativeIO";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1319,7 +1210,7 @@
 		};
 		2002B4D218A9991300495B3D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2041135F2E7DFC592DD219DA /* Pods-GoNativeIOSTests.release.xcconfig */;
+			baseConfigurationReference = 19CA02271DB94B823691D9F8 /* Pods-GoNativeIOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GonativeIO.app/GonativeIO";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1334,61 +1225,6 @@
 				PRODUCT_NAME = GoNativeIOSTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
-		2081A28F1F33ECE900057E3F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AA648B71089D4E82EFE99D9A /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
-					"$(inherited)",
-				);
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev.OneSignalNotificationServiceExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		2081A2901F33ECE900057E3F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 95A160ACACAE73AB3E15EAD9 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(PROJECT_DIR)",
-					"$(inherited)",
-				);
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = io.gonative.ios.dev.OneSignalNotificationServiceExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -1418,15 +1254,6 @@
 			buildConfigurations = (
 				2002B4D118A9991300495B3D /* Debug */,
 				2002B4D218A9991300495B3D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		2081A2911F33ECE900057E3F /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2081A28F1F33ECE900057E3F /* Debug */,
-				2081A2901F33ECE900057E3F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

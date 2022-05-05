@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "Reachability.h"
+#import "GNRegistrationManager.h"
 @import GoNativeCore;
 
 @interface LEANAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) GNRegistrationManager *registration;
 @property Reachability *internetReachability;
 @property BOOL isFirstLaunch;
 @property NSString *previousInitialUrl;

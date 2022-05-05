@@ -10,8 +10,6 @@
 #import <MessageUI/MessageUI.h>
 #import <CoreLocation/CoreLocation.h>
 
-#import <OneSignal/OneSignal.h>
-
 #import "LEANWebViewController.h"
 #import "LEANAppDelegate.h"
 #import "LEANUtilities.h"
@@ -32,7 +30,6 @@
 #import "LEANActionManager.h"
 #import "GNRegistrationManager.h"
 #import "LEANWebViewIntercept.h"
-#import "Subscriptions/GNSubscriptionsController.h"
 #import "GNFileWriterSharer.h"
 #import "GNConfigPreferences.h"
 #import "GNBackgroundAudio.h"
@@ -1343,8 +1340,6 @@ static NSInteger _currentWindows = 0;
     if ([@"run" isEqualToString:url.host]) {
         if ([@"/gonative_device_info" isEqualToString:url.path]) {
             [self runGonativeDeviceInfoWithCallback:query[@"callback"]];
-        } else if ([@"/gonative_onesignal_info" isEqualToString:url.path]) {
-            [self runGonativeOnesignalInfoWithCallback:query[@"callback"]];
         }
         return;
     }
@@ -1403,161 +1398,6 @@ static NSInteger _currentWindows = 0;
             [[GNRegistrationManager sharedManager] sendToAllEndpoints];
         }
         
-        return;
-    }
-    
-    // OneSignal registration
-    if ([@"onesignal" isEqualToString:url.host]) {
-        if (!appConfig.oneSignalEnabled) {
-            return;
-        }
-        
-        if ([@"/register" isEqualToString:url.path]) {
-            [OneSignal promptForPushNotificationsWithUserResponse:nil];
-            return;
-        }
-        
-        if ([@"/userPrivacyConsent/grant" isEqualToString:url.path]) {
-            [OneSignal consentGranted:YES];
-            if (appConfig.oneSignalAutoRegister) {
-                [OneSignal promptForPushNotificationsWithUserResponse:nil];
-            }
-            return;
-        }
-
-        if ([@"/userPrivacyConsent/revoke" isEqualToString:url.path]) {
-            [OneSignal consentGranted:NO];
-            return;
-        }
-
-        if ([@"/tags/get" isEqualToString:url.path]) {
-            NSString *callback = query[@"callback"];
-            if (!callback || callback.length == 0) {
-                return;
-            }
-            
-            [OneSignal getTags:^(NSDictionary *result) {
-                NSDictionary *results = @{
-                                          @"success": @YES,
-                                          @"tags": result
-                                          };
-                NSString *js = [LEANUtilities createJsForCallback:callback data:results];
-                [self runJavascript:js];
-            } onFailure:^(NSError *error) {
-                NSDictionary *results = @{
-                                          @"success": @NO,
-                                          };
-                NSString *js = [LEANUtilities createJsForCallback:callback data:results];
-                [self runJavascript:js];
-            }];
-            return;
-        }
-        if ([@"/tags/set" isEqualToString:url.path]) {
-            NSString *callback = query[@"callback"];
-            id tags = query[@"tags"];
-            if([tags isKindOfClass:[NSString class]]){
-                tags = [NSJSONSerialization JSONObjectWithData:[tags dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-            }
-            
-            if (![tags isKindOfClass:[NSDictionary class]]) {
-                return;
-            }
-            
-            // set the tags
-            [OneSignal sendTags:tags onSuccess:^(NSDictionary *result) {
-                if (callback && callback.length > 0) {
-                    NSString *js = [LEANUtilities createJsForCallback:callback data:@{
-                          @"success": @YES
-                                                                                      }];
-                    [self runJavascript:js];
-                }
-            } onFailure:^(NSError *error) {
-                if (callback && callback.length > 0) {
-                    NSString *js = [LEANUtilities createJsForCallback:callback data:@{
-                           @"success": @NO
-                                                                                      }];
-                    [self runJavascript:js];
-                }
-            }];
-            return;
-        }
-        
-        if (([@"/promptLocation" isEqualToString:url.path])) {
-            [OneSignal promptLocation];
-            return;
-        }
-
-        if (([@"/showTagsUI" isEqualToString:url.path])) {
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Subscriptions" bundle:nil];
-            UIViewController *vc = [storyboard instantiateInitialViewController];
-            [self presentViewController:vc animated:YES completion:nil];
-
-            return;
-        }
-        
-        if([@"/iam/addTrigger" isEqualToString:url.path]) {
-            NSString *key = query[@"key"];
-            if ([key length] == 0) return;
-            NSString *value = query[@"value"];
-            if([value length] == 0) return;
-            [OneSignal addTrigger:key withValue:value];
-            return;
-        }
-        
-        if([@"/iam/addTriggers" isEqualToString:url.path]) {
-            NSString *map = query[@"map"];
-            id triggers;
-            if ([map length] != 0) {
-                NSString *jsonString = [map stringByRemovingPercentEncoding];
-                NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-                triggers = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            } else {
-                triggers = query;
-            }
-            
-            [OneSignal addTriggers:triggers];
-            return;
-        }
-        
-        if([@"/iam/removeTriggerForKey" isEqualToString:url.path]) {
-            NSString *key = query[@"key"];
-            if ([key length] == 0) return;
-            [OneSignal removeTriggerForKey:key];
-            return;
-        }
-        
-        if([@"/iam/getTriggerValueForKey" isEqualToString:url.path]) {
-            NSString *key = query[@"key"];
-            if ([key length] == 0) return;
-            NSString *value = [OneSignal getTriggerValueForKey:key];
-            if(value == nil) value = @"";
-            NSDictionary *key_value_pair = [NSDictionary dictionaryWithObject:value forKey:key];
-            [self runJavascript:[LEANUtilities createJsForCallback:@"gonative_iam_trigger_value" data:key_value_pair]];
-            return;
-        }
-        
-        if([@"/iam/pauseInAppMessages" isEqualToString:url.path]) {
-            NSString *pause = query[@"pause"];
-            if ([pause length] == 0) return;
-            [OneSignal pauseInAppMessages:[pause boolValue]];
-            return;
-        }
-        
-        if([@"/iam/setInAppMessageClickHandler" isEqualToString:url.path]) {
-            NSString *handler = query[@"handler"];
-            if ([handler length] == 0) return;
-            id inAppMessageClickHandler = ^(OSInAppMessageAction *action) {
-                NSString *clickName = action.clickName ? action.clickName : @"";
-                NSString *clickUrl = [action.clickUrl absoluteString] ?: @"";
-                NSString *firstClick = action.firstClick ? @"true" : @"false";
-                NSString *closesMessage = action.closesMessage ? @"true" : @"false";
-                NSDictionary *action_data = [NSDictionary dictionaryWithObjectsAndKeys:clickName, @"clickName", clickUrl, @"clickUrl", firstClick, @"firstClick", closesMessage, @"closesMessage", nil];
-                [self runJavascript:[LEANUtilities createJsForCallback:handler data:action_data]];
-            };
-            [OneSignal setInAppMessageClickHandler:inAppMessageClickHandler];
-            return;
-        }
-
         return;
     }
     
@@ -2490,9 +2330,6 @@ static NSInteger _currentWindows = 0;
         // send device info
         if (doNativeBridge) {
             [self runGonativeDeviceInfoWithCallback:@"gonative_device_info"];
-            if (appConfig.oneSignalEnabled) {
-                [self runGonativeOnesignalInfoWithCallback:@"gonative_onesignal_info"];
-            }
         }
         
         // save session cookies as persistent
@@ -2532,46 +2369,24 @@ static NSInteger _currentWindows = 0;
 }
 
 -(void)runGonativeDeviceInfoWithCallback:(NSString*)callback {
-    NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
-    NSDictionary *installation = [LEANInstallation info];
-    [toSend addEntriesFromDictionary:installation];
     if(!callback) callback = @"gonative_device_info";
     
     LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
     appDelegate.isFirstLaunch = NO;
     
-    if(appDelegate.apnsToken) toSend[@"apnsToken"] = appDelegate.apnsToken;
+    NSMutableDictionary *additionalData = [NSMutableDictionary dictionary];
+    if(appDelegate.apnsToken)
+        additionalData[@"apnsToken"] = appDelegate.apnsToken;
     
-    NSString *jsCallback = [LEANUtilities createJsForCallback:callback data:toSend];
-    if (jsCallback) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self runJavascript:jsCallback];
-        });
-    }
+    [self runGonativeInfoWithCallback:callback additionalData:additionalData];
 }
 
--(void)runGonativeOnesignalInfoWithCallback:(NSString*)callback {
-    if (![GoNativeAppConfig sharedAppConfig].oneSignalEnabled) {
-        return;
-    }
-    
-    OSDeviceState *state = [OneSignal getDeviceState];
-
+-(void)runGonativeInfoWithCallback:(NSString*)callback additionalData:(NSDictionary *)additionalData {
     NSMutableDictionary *toSend = [NSMutableDictionary dictionary];
     NSDictionary *installation = [LEANInstallation info];
     [toSend addEntriesFromDictionary:installation];
-    if(!callback) callback = @"gonative_onesignal_info";
-    
-    if (state) {
-        if (state.userId) {
-            toSend[@"oneSignalUserId"] = state.userId;
-        }
-        if (state.pushToken) {
-            toSend[@"oneSignalPushToken"] = state.pushToken;
-        }
-        toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:state.isSubscribed];
-        toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
-    }
+    if (additionalData)
+        [toSend addEntriesFromDictionary:additionalData];
     
     NSString *jsCallback = [LEANUtilities createJsForCallback:callback data:toSend];
     if (jsCallback) {

@@ -9,7 +9,6 @@
 #import "GNRegistrationManager.h"
 #import "LEANUtilities.h"
 #import "LEANInstallation.h"
-#import <OneSignal/OneSignal.h>
 
 #pragma mark Registration Data
 
@@ -17,6 +16,7 @@
 @property NSString *oneSignalUserId;
 @property NSString *oneSignalPushToken;
 @property BOOL oneSignalSubscribed;
+@property BOOL oneSignalRequiresPrivacyConsent;
 @property NSDictionary *customData;
 @end
 @implementation GNRegistrationInfo
@@ -73,7 +73,7 @@
             toSend[@"oneSignalPushToken"] = info.oneSignalPushToken;
         }
         toSend[@"oneSignalSubscribed"] = [NSNumber numberWithBool:info.oneSignalSubscribed];
-        toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:[OneSignal requiresUserPrivacyConsent]];
+        toSend[@"oneSignalRequiresUserPrivacyConsent"] = [NSNumber numberWithBool:info.oneSignalRequiresPrivacyConsent];
     }
     
     if (info.customData) {
@@ -224,6 +224,10 @@
             });
         }
     }
+}
+
+-(void)setOneSignalRequiresPrivacyConsent:(BOOL)requiresPrivacyConsent {
+    self.registrationInfo.oneSignalRequiresPrivacyConsent = requiresPrivacyConsent;
 }
 
 @end

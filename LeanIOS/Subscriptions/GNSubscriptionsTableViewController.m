@@ -7,7 +7,6 @@
 //
 
 #import "GNSubscriptionsTableViewController.h"
-#import <OneSignal/OneSignal.h>
 
 @interface GNSubscriptionsTableViewController ()
 @property GNSubscriptionsModel *model;
@@ -76,11 +75,12 @@
         return;
     }
     
+    /*
     if (switchView.isOn) {
         [OneSignal sendTag:item.identifier value:@"1"];
     } else {
         [OneSignal deleteTag:item.identifier];
-    }
+    }*/
 }
 
 @end

@@ -9,7 +9,6 @@
 #import "GNSubscriptionsController.h"
 #import "GNSubscriptionsTableViewController.h"
 #import "GNSubscriptionsModel.h"
-#import <OneSignal/OneSignal.h>
 
 @interface GNSubscriptionsController ()
 @property IBOutlet UIActivityIndicatorView *activityIndicator;
@@ -57,6 +56,7 @@
             return;
         }
         
+        /*
         // get onesignal info
         [OneSignal getTags:^(NSDictionary *result) {
             for (GNSubscriptionsSection *section in model.sections) {
@@ -77,6 +77,7 @@
             NSLog(@"Error getting OneSignal tags: %@", error);
             [self failedWithUserMessage:@"Error retrieving tags"];
         }];
+         */
 
     }];
     [task resume];

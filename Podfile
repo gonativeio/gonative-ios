@@ -14,8 +14,6 @@ target 'GonativeIO' do
   pod 'GoNativeCore'
   pod 'SwiftIconFont'
   
-  pod 'OneSignal', '>= 3.0.0', '< 4.0'
-
   use_plugins!
 
   target 'GoNativeIOSTests' do
@@ -23,14 +21,6 @@ target 'GonativeIO' do
     # Pods for testing
   end
 
-end
-
-target 'OneSignalNotificationServiceExtension' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for OneSignalNotificationServiceExtension
-  pod 'OneSignal', '>= 3.0.0', '< 4.0'
 end
 
 post_install do |installer|
