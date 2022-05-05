@@ -8,7 +8,7 @@
     "enableWindowOpen": true,
     "useCrosswalkWebView": false,
     "forceScreenOrientation": "portrait",
-    "initialUrl": "https://m.hublo.com/mobile",
+    "initialUrl": "https://ng.hublo.com/front/worker/availabilities",
     "appName": "Hublo",
     "iosBundleId": "fr.medgo.medgo1",
     "androidPackageName": "fr.medgo.medgo1",
@@ -140,6 +140,8 @@
       "www.medgo.fr",
       "medgo.fr",
       "www.hublo.com",
+      "https://ng.hublo.com/front",
+      "ng.hublo.com/front",
       "hublo.com",
       "m.hublo.com",
       "app.hublo.com"
