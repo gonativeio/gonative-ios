@@ -1211,7 +1211,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.5.3.1;
+				CURRENT_PROJECT_VERSION = 1.5.6.0;
 				DEVELOPMENT_TEAM = J4R4L8LQ8R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1227,7 +1227,7 @@
 					"$(PROJECT_DIR)/lib",
 					"$(PROJECT_DIR)/lib/include",
 				);
-				MARKETING_VERSION = 1.5.3;
+				MARKETING_VERSION = 1.5.6;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"$(inherited)",
@@ -1255,7 +1255,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.5.3.1;
+				CURRENT_PROJECT_VERSION = 1.5.6.0;
 				DEVELOPMENT_TEAM = J4R4L8LQ8R;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1271,7 +1271,7 @@
 					"$(PROJECT_DIR)/lib",
 					"$(PROJECT_DIR)/lib/include",
 				);
-				MARKETING_VERSION = 1.5.3;
+				MARKETING_VERSION = 1.5.6;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"$(inherited)",
@@ -1342,7 +1342,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.5.3.1;
+				CURRENT_PROJECT_VERSION = 1.5.6.0;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = J4R4L8LQ8R;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1353,7 +1353,7 @@
 				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.5.3;
+				MARKETING_VERSION = 1.5.6;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.medgo.medgo1.OneSignalNotificationServiceExtension;
@@ -1374,7 +1374,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1.5.3.1;
+				CURRENT_PROJECT_VERSION = 1.5.6.0;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = J4R4L8LQ8R;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1385,7 +1385,7 @@
 				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MARKETING_VERSION = 1.5.3;
+				MARKETING_VERSION = 1.5.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = fr.medgo.medgo1.OneSignalNotificationServiceExtension;
