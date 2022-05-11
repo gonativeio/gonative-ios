@@ -6,6 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
+		<string>applinks:ng.hublo.com</string>
 		<string>applinks:app.hublo.com</string>
 		<string>applinks:www.medgo.fr</string>
 		<string>applinks:medgo.fr</string>
