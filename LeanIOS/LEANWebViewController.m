@@ -43,7 +43,7 @@
 
 #define NAV_BUTTON_SIZE 36
 
-@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate, GNJavascriptRunner>
+@interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, WKDownloadDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate, GNJavascriptRunner>
 
 @property WKWebView *wkWebview;
 
@@ -70,6 +70,7 @@
 @property UIBarButtonItem *customActionButton;
 @property NSArray *customActions;
 @property UIBarButtonItem *searchButton;
+
 @property UISearchBar *searchBar;
 @property UIView *statusBarBackground;
 @property UIBarButtonItem *shareButton;
@@ -1126,19 +1127,18 @@ static NSInteger _currentWindows = 0;
 
 
 #pragma mark - WebView Delegate
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
-{
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction preferences:(nonnull WKWebpagePreferences *)preferences decisionHandler:(nonnull void (^)(WKNavigationActionPolicy, WKWebpagePreferences * _Nonnull))decisionHandler  API_AVAILABLE(ios(13.0)) {
     // is target="_blank" and we are allowing window open? Always accept, skipping logic. This makes
     // target="_blank" behave like window.open
     if (navigationAction.targetFrame == nil && [GoNativeAppConfig sharedAppConfig].enableWindowOpen) {
-        decisionHandler(WKNavigationActionPolicyAllow);
+        decisionHandler(WKNavigationActionPolicyAllow, preferences);
         return;
     }
     
     BOOL isUserAction = navigationAction.navigationType == WKNavigationTypeLinkActivated || navigationAction.navigationType == WKNavigationTypeFormSubmitted;
     BOOL shouldLoad = [self shouldLoadRequest:navigationAction.request isMainFrame:navigationAction.targetFrame.isMainFrame isUserAction:isUserAction hideWebview:YES sender:nil];
     if (!shouldLoad) {
-        decisionHandler(WKNavigationActionPolicyCancel);
+        decisionHandler(WKNavigationActionPolicyCancel, preferences);
         return;
     }
     
@@ -1148,11 +1148,18 @@ static NSInteger _currentWindows = 0;
     if (navigationAction.targetFrame.isMainFrame &&
         ![OFFLINE_URL isEqualToString:navigationAction.request.URL.absoluteString] &&
         customHeaders && [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
-        decisionHandler(WKNavigationActionPolicyCancel);
+        decisionHandler(WKNavigationActionPolicyCancel, preferences);
         NSURLRequest *modifiedRequest = [GNCustomHeaders modifyRequest:navigationAction.request];
         [self.wkWebview loadRequest:modifiedRequest];
     } else {
-        decisionHandler(WKNavigationActionPolicyAllow);
+        if (@available(iOS 15.0, *)) {
+            if (navigationAction.shouldPerformDownload) {
+                decisionHandler(WKNavigationActionPolicyDownload, preferences);
+                return;
+            }
+        }
+        
+        decisionHandler(WKNavigationActionPolicyAllow, preferences);
     }
 }
 
@@ -1232,7 +1239,26 @@ static NSInteger _currentWindows = 0;
                 downloadPass();
             }
         });
+        return;
     }
+    
+    if (@available(iOS 15.0, *)) {
+        decisionHandler(WKNavigationResponsePolicyDownload);
+        return;
+    }
+}
+
+- (void)webView:(WKWebView *)webView navigationAction:(WKNavigationAction *)navigationAction didBecomeDownload:(WKDownload *)download  API_AVAILABLE(ios(15.0)) {
+    download.delegate = self;
+}
+
+- (void)webView:(WKWebView *)webView navigationResponse:(WKNavigationResponse *)navigationResponse didBecomeDownload:(WKDownload *)download  API_AVAILABLE(ios(15.0)) {
+    download.delegate = self;
+}
+
+- (void)download:(nonnull WKDownload *)download decideDestinationUsingResponse:(nonnull NSURLResponse *)response suggestedFilename:(nonnull NSString *)suggestedFilename completionHandler:(nonnull void (^)(NSURL * _Nullable))completionHandler  API_AVAILABLE(ios(15.0)) {
+    NSURL *url = [NSFileManager.defaultManager.temporaryDirectory URLByAppendingPathComponent:suggestedFilename isDirectory:YES];
+    completionHandler(url);
 }
 
 -(void)initializeJSInterfaceInWebView:(WKWebView*) wkWebview

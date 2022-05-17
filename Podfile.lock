@@ -1,5 +1,5 @@
 PODS:
-  - GoNativeCore (1.3.6)
+  - GoNativeCore (1.3.7)
   - SwiftIconFont (6.1.1)
 
 DEPENDENCIES:
@@ -13,9 +13,9 @@ SPEC REPOS:
     - SwiftIconFont
 
 SPEC CHECKSUMS:
-  GoNativeCore: a0984ea5b54bac9e7d1d4f394dc2fd88e4d4b130
+  GoNativeCore: 4f2f947b4024a859a220c72f846c55122d5c9aec
   SwiftIconFont: 0a772c5ac65a40c9b0675efa37b4928158bd8e43
 
 PODFILE CHECKSUM: 7ef086e400a7fd95b98da931f95c2690fee92a81
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
