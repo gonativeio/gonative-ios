@@ -166,17 +166,18 @@
     "toolbarNavigation": {
       "items": [
         {
-          "system": "back",
-          "title": "Back"
+            "system": "back"
         },
         {
-          "system": "forward",
-          "title": "Forward"
+            "system": "refresh",
+            "enabled": true
         },
         {
-          "system": "refresh"
+            "system": "forward",
+            "enabled": true
         }
-      ]
+      ],
+      "regexes": []
     },
     "androidShowRefreshButton": false,
     "iosShowRefreshButton": false,

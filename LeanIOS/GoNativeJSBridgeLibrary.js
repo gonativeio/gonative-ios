@@ -167,6 +167,12 @@ gonative.statusbar = {
     }
 };
 
+gonative.toolbar = {
+    set: function (params){
+        addCommand("gonative://toolbar/set", params);
+    }
+};
+
 gonative.screen = {
     setBrightness: function(data){
         var params = data;

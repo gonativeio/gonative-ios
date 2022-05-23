@@ -1633,6 +1633,13 @@ static NSInteger _currentWindows = 0;
         }
     }
     
+    if ([@"toolbar" isEqualToString:url.host]) {
+        if ([url.path isEqualToString:@"/set"]) {
+            [self.toolbarManager setToolbarEnabled:[query[@"enabled"] boolValue]];
+        }
+        return;
+    }
+    
     // connectivity
     if ([@"connectivity" isEqualToString:url.host]) {
         NSString *callback = query[@"callback"];

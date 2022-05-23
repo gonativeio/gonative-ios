@@ -12,4 +12,5 @@
 @interface LEANToolbarManager : NSObject
 - (instancetype)initWithToolbar:(UIToolbar*)toolbar webviewController:(LEANWebViewController*)wvc;
 - (void)didLoadUrl:(NSURL*)url;
+- (void)setToolbarEnabled:(BOOL)enabled;
 @end

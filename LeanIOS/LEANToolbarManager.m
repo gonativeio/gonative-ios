@@ -11,13 +11,23 @@
 #import "LEANUtilities.h"
 #import "GonativeIO-Swift.h"
 
+@interface LEANToolbarItem : NSObject
+@property BOOL enabled;
+@property NSArray<RegexEnabled *> *regexes;
+@property NSString *visibility;
+@property UIBarButtonItem *item;
+@end
+
+@implementation LEANToolbarItem
+@end
+
 @interface LEANToolbarManager()
-@property UIToolbar *toolbar;
-@property NSArray *toolbarItems;
-@property NSArray *toolbarItemTypes;
-@property NSArray *toolbarItemUrlRegexes;
 @property (weak, nonatomic) LEANWebViewController *wvc;
-@property LEANToolbarVisibility visibility;
+@property UIToolbar *toolbar;
+@property LEANToolbarItem *backButton;
+@property LEANToolbarItem *refreshButton;
+@property LEANToolbarItem *forwardButton;
+@property NSURL *currentUrl;
 @end
 
 @implementation LEANToolbarManager
@@ -28,6 +38,9 @@
     if (self) {
         self.toolbar = toolbar;
         self.wvc = wvc;
+        self.backButton = [[LEANToolbarItem alloc] init];
+        self.forwardButton = [[LEANToolbarItem alloc] init];
+        self.refreshButton = [[LEANToolbarItem alloc] init];
         [self processConfig];
     }
     return self;
@@ -35,10 +48,7 @@
 
 - (void)processConfig
 {
-    self.visibility = [GoNativeAppConfig sharedAppConfig].toolbarVisibility;
     NSMutableArray *toolbarItems = [NSMutableArray array];
-    NSMutableArray *toolbarItemTypes = [NSMutableArray array];
-    NSMutableArray *toolbarItemUrlRegexes = [NSMutableArray array];
 
     // loop through items from appConfig
     if ([GoNativeAppConfig sharedAppConfig].toolbarItems) {
@@ -46,83 +56,89 @@
         // fill the toolbar with spaces first
         UIBarButtonItem *flexibleSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         toolbarItems = [NSMutableArray arrayWithObjects:flexibleSpacer, flexibleSpacer, flexibleSpacer, flexibleSpacer, flexibleSpacer, nil];
-        toolbarItemTypes = [NSMutableArray arrayWithObjects:@"spacer", @"spacer", @"spacer", @"spacer", @"spacer", nil];
-        BOOL refreshButtonEnabled = NO;
         
-        void (^addToolbarItemAndRemove) (int, NSObject*, NSString*) = ^(int toolbarIndex, NSObject* item, NSString *itemType){
-            [toolbarItems removeObjectAtIndex:toolbarIndex];
-            [toolbarItems insertObject:item atIndex:toolbarIndex];
-            [toolbarItemTypes removeObjectAtIndex:toolbarIndex];
-            [toolbarItemTypes insertObject:itemType atIndex:toolbarIndex];
-        };
+        BOOL refreshButtonEnabled = NO;
+        BOOL forwardButtonEnabled = NO;
         
         // loop through items to add to
         for (NSDictionary *entry in [GoNativeAppConfig sharedAppConfig].toolbarItems) {
             if (![entry isKindOfClass:[NSDictionary class]]) continue;
-            NSString *system = entry[@"system"];
-            NSString *title = entry[@"title"];
             
-            // process items
-            UIBarButtonItem *item = nil;
-            NSString *itemType = nil;
-            int toolbarIndex = 0;
+            NSString *system = entry[@"system"];
+            NSString *visibility = entry[@"visibility"];
+            BOOL enabled = NO;
+            
+            if ([entry[@"enabled"] isKindOfClass:[NSNumber class]])
+                enabled = [entry[@"enabled"] boolValue];
 
             if ([system isEqualToString:@"back"]) {
-                if(!title) title = @"Back";
-                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:title forButton:@"Back" andIcon:@"fas fa-chevron-left" centerRefresh:NO]];
-                itemType = @"back";
-                toolbarIndex = 0;
-                if([system isEqualToString:@"back"]){
-                    NSArray *itemRegexes = [LEANUtilities createRegexArrayFromStrings:entry[@"urlRegex"]];
-                    [toolbarItemUrlRegexes addObject:itemRegexes];
-                }
-            } else if([system isEqualToString:@"refresh"]){
+                NSString *title = [self getLabelUsingEntry:entry defaultLabel:@"Back"];
+                self.backButton.enabled = YES;
+                self.backButton.regexes = [self getRegexesFromQuery:entry[@"urlRegex"]];
+                self.backButton.visibility = visibility;
+                self.backButton.item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:title forButton:@"Back" andIcon:@"fas fa-chevron-left" centerRefresh:NO]];
+                self.backButton.item.enabled = NO;
+                [toolbarItems replaceObjectAtIndex:0 withObject:self.backButton.item];
+            }
+            else if([system isEqualToString:@"refresh"]){
+                if (!enabled) continue;
                 // to be added later below
                 refreshButtonEnabled = YES;
-            } else if ([system isEqualToString:@"forward"]){
-                if(!title) title = @"Forward";
-                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:title forButton:@"Forward" andIcon:@"fas fa-chevron-right" centerRefresh:NO]];
-                itemType = @"forward";
-                toolbarIndex = 4;
-            } else return;
-            item.enabled = NO;
-            
-            // add items except refresh for now
-            if(![system isEqualToString:@"refresh"]) addToolbarItemAndRemove(toolbarIndex, item, itemType);
+                
+                self.refreshButton.enabled = enabled;
+                self.refreshButton.regexes = [self getRegexesFromQuery:entry[@"urlRegex"]];
+                self.refreshButton.visibility = visibility;
+            }
+            else if ([system isEqualToString:@"forward"]){
+                if (!enabled) continue;
+                forwardButtonEnabled = YES;
+                
+                NSString *title = [self getLabelUsingEntry:entry defaultLabel:@"Forward"];
+                self.forwardButton.enabled = enabled;
+                self.forwardButton.regexes = [self getRegexesFromQuery:entry[@"urlRegex"]];
+                self.forwardButton.visibility = visibility;
+                self.forwardButton.item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:title forButton:@"Forward" andIcon:@"fas fa-chevron-right" centerRefresh:NO]];
+                self.forwardButton.item.enabled = NO;
+                [toolbarItems replaceObjectAtIndex:4 withObject:self.forwardButton.item];
+            }
         }
         
         // refresh button needs different positioning based on the presence of Forward button
-        if(refreshButtonEnabled){
+        if(refreshButtonEnabled) {
             // center refresh button if forward button is not present
-            UIBarButtonItem *item;
-            if([toolbarItemTypes.lastObject isEqualToString:@"spacer"]){
-                // remove extra space from the toolbar
-                [toolbarItems removeObjectAtIndex:4];
-                [toolbarItemTypes removeObjectAtIndex:4];
-                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:nil forButton:@"Refresh" andIcon:@"fas fa-redo-alt" centerRefresh:YES]];
-            } else {
-                item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:nil forButton:@"Refresh" andIcon:@"fas fa-redo-alt" centerRefresh:NO]];
-            }
-            // insert refresh button
-            [toolbarItems insertObject:item atIndex:2];
-            [toolbarItemTypes insertObject:@"refresh" atIndex:2];
-            [toolbarItems removeObjectAtIndex:3];
-            [toolbarItemTypes removeObjectAtIndex:3];
+            self.refreshButton.item = [[UIBarButtonItem alloc] initWithCustomView:[self createButtonWithTitle:nil forButton:@"Refresh" andIcon:@"fas fa-redo-alt" centerRefresh:!forwardButtonEnabled]];
+            [toolbarItems replaceObjectAtIndex:2 withObject:self.refreshButton.item];
         }
     }
     
-    self.toolbarItems = toolbarItems;
-    self.toolbarItemTypes = toolbarItemTypes;
-    self.toolbarItemUrlRegexes = toolbarItemUrlRegexes;
-    [self.toolbar setItems:self.toolbarItems animated:YES];
+    [self.toolbar setItems:toolbarItems animated:YES];
+}
+
+- (NSString *)getLabelUsingEntry:(NSDictionary *)entry defaultLabel:(NSString *)defaultLabel {
+    NSString *titleType = entry[@"titleType"];
+    if ([titleType isKindOfClass:[NSString class]]) {
+        if ([titleType isEqualToString:@"noText"]) {
+            return @"";
+        }
+        if ([titleType isEqualToString:@"customText"]) {
+            NSString *title = entry[@"title"];
+            if ([title isKindOfClass:[NSString class]]) {
+                return title;
+            }
+            return @"";
+        }
+    }
+    return defaultLabel;
 }
 
 - (UIButton*)createButtonWithTitle:(NSString*)title forButton:(NSString*)buttonType andIcon:(NSString*)icon centerRefresh:(BOOL)centerRefreshBool{
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     
     // title
-    if(title) [button setTitle:title forState:UIControlStateNormal];
-    if(title) [button setTitleColor:[UIColor colorNamed:@"tintColor"] forState:UIControlStateNormal];
+    if(title) {
+        [button setTitle:title forState:UIControlStateNormal];
+        [button setTitleColor:[UIColor colorNamed:@"tintColor"] forState:UIControlStateNormal];
+    }
     
     // image
     [button setImage:[LEANIcons imageForIconIdentifier:icon size:23 color:[UIColor colorNamed:@"tintColor"]] forState:UIControlStateNormal];
@@ -143,84 +159,46 @@
 
 - (void)didLoadUrl:(NSURL*)url
 {
-    if (![GoNativeAppConfig sharedAppConfig].toolbarEnabled)
-        return;
+    self.currentUrl = url;
     
-    // 1. Check canGoBack
-    // 2. Check toolbarNavigation.urlRegex (if exist)
-    // 3. Check Back button regex (if exists)
-    // 1 && (2 || 3)
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    if (!appConfig.toolbarEnabled) return;
+    
+    // 1. Check visibilityByPages
+    // 2. Check if back button is active
+    // 3. Check visibilityByBackButton
+    // 4. Check if refresh button is active
+    // 5. Check if forward button is active
+    // 6. 1 && 3 && (2 || 4 || 5)
     
     NSString *urlString = [url absoluteString];
-    BOOL backEnabled = NO;
-    BOOL backRegexMatches = YES;
     
-    // update toolbar buttons
-    for (NSInteger i = 0; i < [self.toolbarItems count]; i++) {
-        if ([self.toolbarItemTypes[i] isEqualToString:@"back"] || [self.toolbarItemTypes[i] isEqualToString:@"forward"] || [self.toolbarItemTypes[i] isEqualToString:@"refresh"]) {
-            
-            UIBarButtonItem *item = self.toolbarItems[i];
-            if([self.toolbarItemTypes[i] isEqualToString:@"back"]){
-                item.enabled = [self.wvc canGoBack];
-                backEnabled = item.enabled;
-            } else if([self.toolbarItemTypes[i] isEqualToString:@"forward"]){
-                item.enabled = [self.wvc canGoForward];
-                // design the button "disabled"
-                UIView *customView = [item customView];
-                if(item.enabled) customView.alpha = 1;
-                else customView.alpha = 0.3;
-                [item setCustomView:customView];
-            } else {
-                item.enabled = YES;
-            }
-            
-            // check regex array of Back button
-            if([self.toolbarItemTypes[i] isEqualToString:@"back"]){
-                NSArray *regexArray = self.toolbarItemUrlRegexes[i];
-                if ([regexArray isKindOfClass:[NSArray class]] && [regexArray count] > 0) {
-                    backRegexMatches = NO;
-                    for (NSPredicate *predicate in regexArray) {
-                        @try {
-                            BOOL matches = [predicate evaluateWithObject:urlString];
-                            if (matches) {
-                                backRegexMatches = YES;
-                                break;
-                            }
-                        }
-                        @catch (NSException* exception) {
-                            NSLog(@"Error in toolbar regexes: %@", exception);
-                        }
-                    }
-                }
-            }
-        }
+    BOOL visibilityByPages = YES;
+    BOOL visibilityByBackButton = YES;
+    
+    // Check visibilityByPages
+    // if specific pages only
+    if (appConfig.toolbarVisibilityByPages == LEANToolbarVisibilityByPagesSpecific) {
+        visibilityByPages = [self evaluateUrlString:urlString usingRegexes:appConfig.toolbarRegexes];
     }
     
-    // check for toolbar regex match
-    BOOL toolbarRegexMatches = YES;
-    for (RegexEnabled *toolbarRegexObject in [[GoNativeAppConfig sharedAppConfig] toolbarRegexes]) {
-        toolbarRegexMatches = NO;
-        @try {
-            BOOL matches = [toolbarRegexObject.regex evaluateWithObject:urlString];
-            if (matches) {
-                toolbarRegexMatches = toolbarRegexObject.enabled;
-                break;
-            };
-        }
-        @catch (NSException* exception) {
-            NSLog(@"Error in toolbar regexes: %@", exception);
-        }
+    // Update back button
+    BOOL backEnabled = [self checkToolbarItem:self.backButton forUrl:urlString enabled:[self.wvc canGoBack]];
+    
+    // Check visibilityByBackButton
+    // if back button active only
+    if (appConfig.toolbarVisibilityByBackButton == LEANToolbarVisibilityByBackButtonActive) {
+        visibilityByBackButton = backEnabled;
     }
     
-    // show/hide toolbar
-    BOOL makeVisible = NO;
-    if (self.visibility == LEANToolbarVisibilityAlways) {
-        makeVisible = YES;
-    } else if(backEnabled && (backRegexMatches || toolbarRegexMatches)){
-        makeVisible = YES;
-    }
-
-    if (makeVisible) {
+    // Update forward button
+    BOOL forwardEnabled = [self checkToolbarItem:self.forwardButton forUrl:urlString enabled:[self.wvc canGoForward]];
+    
+    // Update refresh button
+    BOOL refreshEnabled = [self checkToolbarItem:self.refreshButton forUrl:urlString enabled:YES];
+    
+    BOOL toolbarVisible = visibilityByPages && visibilityByBackButton && (backEnabled || forwardEnabled || refreshEnabled);
+    if (toolbarVisible) {
         [self.wvc showToolbarAnimated:YES];
     } else {
         [self.wvc hideToolbarAnimated:YES];
@@ -241,5 +219,70 @@
 {
     [self.wvc refreshPage];
 }
+
+- (void)setToolbarEnabled:(BOOL)enabled {
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    [appConfig setToolbarEnabled:enabled];
+    if (enabled && self.currentUrl)
+        [self didLoadUrl:self.currentUrl];
+    else
+        [self.wvc hideToolbarAnimated:YES];
+}
+
+- (BOOL)checkToolbarItem:(LEANToolbarItem *)toolbarItem forUrl:(NSString *)urlString enabled:(BOOL)enabled {
+    if (!enabled || !toolbarItem.enabled) {
+        [self setToolbarItem:toolbarItem enabled:NO];
+        return NO;
+    }
+    
+    if (![toolbarItem.visibility isEqualToString:@"specificPages"]) {
+        [self setToolbarItem:toolbarItem enabled:YES];
+        return YES;
+    }
+        
+    BOOL value = [self evaluateUrlString:urlString usingRegexes:toolbarItem.regexes];
+    [self setToolbarItem:toolbarItem enabled:value];
+    return value;
+}
+
+- (void)setToolbarItem:(LEANToolbarItem *)toolbarItem enabled:(BOOL)enabled {
+    // design the button "disabled"
+    UIView *customView = [toolbarItem.item customView];
+    toolbarItem.item.enabled = enabled;
+    customView.alpha = enabled ? 1 : 0.3;
+    [toolbarItem.item setCustomView:customView];
+}
+
+- (BOOL)evaluateUrlString:(NSString *)urlString usingRegexes:(NSArray *)regexes {
+    for (RegexEnabled *regexObject in regexes) {
+        @try {
+            BOOL matches = [regexObject.regex evaluateWithObject:urlString];
+            if (matches) return regexObject.enabled;
+        }
+        @catch (NSException* exception) {
+            NSLog(@"Error in toolbar regexes: %@", exception);
+        }
+    }
+    return NO;
+}
+
+- (NSArray *)getRegexesFromQuery:(NSArray *)query {
+    NSMutableArray *regexes = [NSMutableArray array];
+    if ([query isKindOfClass:[NSArray class]]) {
+        for (NSDictionary *entry in query) {
+            if ([entry[@"regex"] isKindOfClass:[NSString class]] &&
+                [entry[@"enabled"] isKindOfClass:[NSNumber class]]) {
+                
+                RegexEnabled *item = [[RegexEnabled alloc] init];
+                item.regex = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
+                item.enabled = [entry[@"enabled"] boolValue];
+                [regexes addObject:item];
+            }
+        }
+    }
+    return regexes;
+}
+
+
 
 @end
