@@ -1145,22 +1145,26 @@ static NSInteger _currentWindows = 0;
     [[LEANDocumentSharer sharedSharer] receivedRequest:navigationAction.request];
     
     NSDictionary *customHeaders = [GNCustomHeaders getCustomHeaders];
+    
     if (navigationAction.targetFrame.isMainFrame &&
         ![OFFLINE_URL isEqualToString:navigationAction.request.URL.absoluteString] &&
         customHeaders && [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
-        decisionHandler(WKNavigationActionPolicyCancel, preferences);
         NSURLRequest *modifiedRequest = [GNCustomHeaders modifyRequest:navigationAction.request];
-        [self.wkWebview loadRequest:modifiedRequest];
-    } else {
-        if (@available(iOS 15.0, *)) {
-            if (navigationAction.shouldPerformDownload) {
-                decisionHandler(WKNavigationActionPolicyDownload, preferences);
-                return;
-            }
+        if (![navigationAction.request.URL.absoluteString isEqualToString:modifiedRequest.URL.absoluteString]) {
+            decisionHandler(WKNavigationActionPolicyCancel, preferences);
+            [self.wkWebview loadRequest:modifiedRequest];
+            return;
         }
-        
-        decisionHandler(WKNavigationActionPolicyAllow, preferences);
     }
+    
+    if (@available(iOS 15.0, *)) {
+        if (navigationAction.shouldPerformDownload) {
+            decisionHandler(WKNavigationActionPolicyDownload, preferences);
+            return;
+        }
+    }
+    
+    decisionHandler(WKNavigationActionPolicyAllow, preferences);
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
