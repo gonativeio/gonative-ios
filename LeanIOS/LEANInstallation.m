@@ -71,7 +71,8 @@
                            @"model": device.model,
                            @"timeZone": timeZone,
                            @"hardware": hardware,
-                           @"installationId": [device.identifierForVendor UUIDString]} mutableCopy];
+                           @"installationId": [device.identifierForVendor UUIDString],
+                           @"deviceName": device.name} mutableCopy];
     
     if (deviceRegKey) info[@"deviceRegKey"] = deviceRegKey;
     

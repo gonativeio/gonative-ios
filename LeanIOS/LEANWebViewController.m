@@ -1150,11 +1150,9 @@ static NSInteger _currentWindows = 0;
         ![OFFLINE_URL isEqualToString:navigationAction.request.URL.absoluteString] &&
         customHeaders && [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
         NSURLRequest *modifiedRequest = [GNCustomHeaders modifyRequest:navigationAction.request];
-        if (![navigationAction.request.URL.absoluteString isEqualToString:modifiedRequest.URL.absoluteString]) {
-            decisionHandler(WKNavigationActionPolicyCancel, preferences);
-            [self.wkWebview loadRequest:modifiedRequest];
-            return;
-        }
+        decisionHandler(WKNavigationActionPolicyCancel, preferences);
+        [self.wkWebview loadRequest:modifiedRequest];
+        return;
     }
     
     if (@available(iOS 15.0, *)) {
