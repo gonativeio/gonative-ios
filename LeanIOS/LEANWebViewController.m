@@ -118,6 +118,8 @@
 @property GNJSBridgeInterface *JSBridgeInterface;
 @property NSString *JSBridgeScript;
 
+@property BOOL wvGoBack;
+
 @end
 
 @implementation LEANWebViewController
@@ -913,6 +915,7 @@ static NSInteger _currentWindows = 0;
 - (void)goBack
 {
     if (self.wkWebview && [self.wkWebview canGoBack]) {
+        self.wvGoBack = YES;
         [self.wkWebview goBack];
     }
 }
@@ -1128,6 +1131,9 @@ static NSInteger _currentWindows = 0;
 
 #pragma mark - WebView Delegate
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction preferences:(nonnull WKWebpagePreferences *)preferences decisionHandler:(nonnull void (^)(WKNavigationActionPolicy, WKWebpagePreferences * _Nonnull))decisionHandler  API_AVAILABLE(ios(13.0)) {
+    BOOL wvGoBack = self.wvGoBack;
+    self.wvGoBack = NO;
+    
     // is target="_blank" and we are allowing window open? Always accept, skipping logic. This makes
     // target="_blank" behave like window.open
     if (navigationAction.targetFrame == nil && [GoNativeAppConfig sharedAppConfig].enableWindowOpen) {
@@ -1144,11 +1150,9 @@ static NSInteger _currentWindows = 0;
     
     [[LEANDocumentSharer sharedSharer] receivedRequest:navigationAction.request];
     
-    NSDictionary *customHeaders = [GNCustomHeaders getCustomHeaders];
-    
-    if (navigationAction.targetFrame.isMainFrame &&
+    if (!wvGoBack && navigationAction.targetFrame.isMainFrame &&
         ![OFFLINE_URL isEqualToString:navigationAction.request.URL.absoluteString] &&
-        customHeaders && [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
+        [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
         NSURLRequest *modifiedRequest = [GNCustomHeaders modifyRequest:navigationAction.request];
         decisionHandler(WKNavigationActionPolicyCancel, preferences);
         [self.wkWebview loadRequest:modifiedRequest];
