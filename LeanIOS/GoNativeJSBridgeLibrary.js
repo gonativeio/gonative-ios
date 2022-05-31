@@ -215,8 +215,8 @@ gonative.run = {
     }
 };
 
-gonative.deviceInfo = function(){
-    return addCommandCallback("gonative://run/gonative_device_info");
+gonative.deviceInfo = function(params){
+    return addCommandCallback("gonative://run/gonative_device_info", params, true);
 };
 
 ///////////////////////////////
