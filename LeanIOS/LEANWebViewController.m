@@ -1179,10 +1179,9 @@ static NSInteger _currentWindows = 0;
     }
     
     [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge webView:webView handleURL:navigationResponse.response.URL];
-
-    decisionHandler(WKNavigationResponsePolicyCancel);
     
     if ([@"application/vnd.apple.pkpass" isEqualToString:navigationResponse.response.MIMEType]) {
+        decisionHandler(WKNavigationResponsePolicyCancel);
         NSURL *url = navigationResponse.response.URL;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self hideWebview];
@@ -1252,6 +1251,8 @@ static NSInteger _currentWindows = 0;
         decisionHandler(WKNavigationResponsePolicyDownload);
         return;
     }
+    
+    decisionHandler(WKNavigationResponsePolicyCancel);
 }
 
 - (void)webView:(WKWebView *)webView navigationAction:(WKNavigationAction *)navigationAction didBecomeDownload:(WKDownload *)download  API_AVAILABLE(ios(15.0)) {

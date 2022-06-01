@@ -132,11 +132,12 @@
 }
 
 - (UIButton*)createButtonWithTitle:(NSString*)title forButton:(NSString*)buttonType andIcon:(NSString*)icon centerRefresh:(BOOL)centerRefreshBool{
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
     
     // title
     if(title) {
         [button setTitle:title forState:UIControlStateNormal];
+        [[button titleLabel] setFont:[UIFont systemFontOfSize:18]];
         [button setTitleColor:[UIColor colorNamed:@"tintColor"] forState:UIControlStateNormal];
     }
     
