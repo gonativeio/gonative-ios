@@ -808,13 +808,13 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GoNativeCore/GoNativeCore.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftIconFont/SwiftIconFont.framework",
+				"${BUILT_PRODUCTS_DIR}/GonativeIcons/GonativeIcons.framework",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoNativeCore/GoNative.framework/GoNative",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNativeCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftIconFont.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GonativeIcons.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNative.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

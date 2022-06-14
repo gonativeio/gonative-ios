@@ -16,6 +16,7 @@
 #import "LEANProfilePicker.h"
 #import "LEANUtilities.h"
 #import "GonativeIO-Swift.h"
+@import GonativeIcons;
 
 @interface LEANMenuViewController ()
 
@@ -258,8 +259,7 @@
             // add fontawesome icon to imageView
             icon = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageView.bounds.size.width, imageView.bounds.size.height)];
             icon.textAlignment = NSTextAlignmentCenter;
-            icon.font = [LEANIcons fontAwesomeFontOfNameAndSize:menuItem[@"icon"] size:[UIFont systemFontSize]];
-            icon.text = [LEANIcons fontAwesomeIconStringForIconIdentifier:menuItem[@"icon"]];
+            icon.attributedText = [[NSAttributedString alloc] initWithIconName:menuItem[@"icon"] color:[UIColor colorNamed:@"sidebarTextColor"] size:[UIFont systemFontSize]];
             [imageView addSubview:icon];
         } else {
             UIImage *image = [UIImage imageNamed:menuItem[@"icon"]];
@@ -274,7 +274,6 @@
     // configure text color
     UIColor *sidebarTextColor = [UIColor colorNamed:@"sidebarTextColor"];
     label.textColor = sidebarTextColor;
-    icon.textColor = sidebarTextColor;
     cell.tintColor = sidebarTextColor;
     
     // hide separator line from first cell

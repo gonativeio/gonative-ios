@@ -12,7 +12,7 @@ target 'GonativeIO' do
 
   # Pods for GonativeIO
   pod 'GoNativeCore'
-  pod 'SwiftIconFont'
+  pod 'GonativeIcons'
   
   use_plugins!
 
