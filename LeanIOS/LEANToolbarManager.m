@@ -32,7 +32,7 @@
 
 @implementation LEANToolbarManager
 
-- (instancetype)initWithToolbar:(UIToolbar*)toolbar webviewController:(LEANWebViewController*)wvc;
+- (instancetype)initWithToolbar:(UIToolbar*)toolbar webviewController:(LEANWebViewController*)wvc
 {
     self = [super init];
     if (self) {

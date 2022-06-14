@@ -29,6 +29,7 @@
 #import "Reachability.h"
 #import "LEANActionManager.h"
 #import "GNRegistrationManager.h"
+#import "LEANRegexRulesManager.h"
 #import "LEANWebViewIntercept.h"
 #import "GNFileWriterSharer.h"
 #import "GNConfigPreferences.h"
@@ -105,6 +106,7 @@
 
 @property LEANActionManager *actionManager;
 @property LEANToolbarManager *toolbarManager;
+@property LEANRegexRulesManager *regexRulesManager;
 @property CLLocationManager *locationManager;
 @property GNFileWriterSharer *fileWriterSharer;
 @property NSString *connectivityCallback;
@@ -267,6 +269,8 @@ static NSInteger _currentWindows = 0;
     
     // to help fix status bar issues when rotating in full-screen video
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object:nil];
+    
+    self.regexRulesManager = [[LEANRegexRulesManager alloc] init];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
@@ -1377,6 +1381,13 @@ static NSInteger _currentWindows = 0;
         return;
     }
     
+    if ([@"internalExternal" isEqualToString:url.host]) {
+        if ([@"/set" isEqualToString:url.path]) {
+            [self.regexRulesManager setRules:query[@"rules"]];
+        }
+        return;
+    }
+    
     // config preferences
     if ([@"config" isEqualToString:url.host]) {
         GNConfigPreferences *config = [GNConfigPreferences sharedPreferences];
@@ -1916,26 +1927,15 @@ static NSInteger _currentWindows = 0;
     // external sites: don't launch if in iframe.
     if (isUserAction || (isMainFrame && ![[request URL] matchesPathOf:[self.currentRequest URL]])) {
         // first check regexInternalExternal
-        bool matchedRegex = NO;
-        for (NSUInteger i = 0; i < [appConfig.regexInternalEternal count]; i++) {
-            NSPredicate *predicate = appConfig.regexInternalEternal[i];
-            BOOL matches = NO;
-            @try {
-                matches = [predicate evaluateWithObject:urlString];
-            }
-            @catch (NSException* exception) {
-                NSLog(@"Error in regex internal external: %@", exception);
-            }
-            if (matches) {
-                matchedRegex = YES;
-                if (![appConfig.regexIsInternal[i] boolValue]) {
-                    // external
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
-                    });
-                    return NO;
-                }
-                break;
+        NSDictionary *matchResult = [self.regexRulesManager matchesWithUrlString:urlString];
+        BOOL matchedRegex = [matchResult[@"matches"] boolValue];
+        if (matchedRegex) {
+            BOOL isInternal = [matchResult[@"isInternal"] boolValue];
+            if (!isInternal) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication] openURL:request.URL options:@{} completionHandler:nil];
+                });
+                return NO;
             }
         }
         

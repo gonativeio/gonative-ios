@@ -94,6 +94,7 @@
 		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
+		39B9701728589A3C00C77B69 /* LEANRegexRulesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B9701528589A3C00C77B69 /* LEANRegexRulesManager.m */; };
 		BB3C460E26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js in Resources */ = {isa = PBXBuildFile; fileRef = BB3C460D26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js */; };
 		BB6E68A9273C731E004846A3 /* GNJSBridgeInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6E68A8273C731E004846A3 /* GNJSBridgeInterface.m */; };
 		BB9A3B012631D2A7002C38F1 /* LEANIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */; };
@@ -288,6 +289,8 @@
 		39A2444427F1F2DB00A6D222 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		39A2444727F1F33400A6D222 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
 		39A2444927F1F4D400A6D222 /* nn-NO */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "nn-NO"; path = "nn-NO.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		39B9701528589A3C00C77B69 /* LEANRegexRulesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANRegexRulesManager.m; sourceTree = "<group>"; };
+		39B9701628589A3C00C77B69 /* LEANRegexRulesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANRegexRulesManager.h; sourceTree = "<group>"; };
 		5F73A1FB3A20E35B94078BCF /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		78876735F56F7A0B2F189019 /* Pods_GoNativeIOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoNativeIOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8890E2BBEF17B6220BC9926B /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -448,6 +451,8 @@
 				2002B4F318A99C4100495B3D /* LEANNavigationController.m */,
 				2002B4F418A99C4100495B3D /* LEANRootViewController.h */,
 				2002B4F518A99C4100495B3D /* LEANRootViewController.m */,
+				39B9701628589A3C00C77B69 /* LEANRegexRulesManager.h */,
+				39B9701528589A3C00C77B69 /* LEANRegexRulesManager.m */,
 				20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */,
 				20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */,
 				20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */,
@@ -887,6 +892,7 @@
 				2002BA991F9A758600439AD6 /* GNSubscriptionsTableViewController.m in Sources */,
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
+				39B9701728589A3C00C77B69 /* LEANRegexRulesManager.m in Sources */,
 				209A964323BABF2D001906F1 /* GNBackgroundAudio.m in Sources */,
 				BB6E68A9273C731E004846A3 /* GNJSBridgeInterface.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,

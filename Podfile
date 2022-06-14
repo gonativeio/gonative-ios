@@ -28,6 +28,7 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
       config.build_settings.delete 'ARCHS'
+      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
     end
   end
   installer.pods_project.build_configurations.each do |config|
