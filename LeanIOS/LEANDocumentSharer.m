@@ -269,4 +269,11 @@
     }
 }
 
+- (void)downloadImage:(NSURL*)url {
+    if (!url) return;
+    NSData *data = [NSData dataWithContentsOfURL:url];
+    UIImage *image = [[UIImage alloc] initWithData:data];
+    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+}
+
 @end

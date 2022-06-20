@@ -54,7 +54,7 @@
     }
 }
 
-- (void)setRules:(NSDictionary *)rules {
+- (void)setRules:(NSArray *)rules {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     if (rules == nil) {

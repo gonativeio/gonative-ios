@@ -108,6 +108,9 @@ gonative.share = {
     },
     downloadFile: function (params){
         addCommand("gonative://share/downloadFile", params);
+    },
+    downloadImage: function (params){
+        addCommand("gonative://share/downloadImage", params);
     }
 };
 
@@ -220,8 +223,8 @@ gonative.deviceInfo = function(params){
 };
 
 gonative.internalExternal = {
-    set: function(rules){
-        addCommand("gonative://internalExternal/set", { rules });
+    set: function(params){
+        addCommand("gonative://internalExternal/set", params);
     }
 };
 

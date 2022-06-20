@@ -10,6 +10,7 @@
 
 @interface LEANDocumentSharer : NSObject
 + (LEANDocumentSharer*)sharedSharer;
+- (void)downloadImage:(NSURL*)url;
 - (BOOL)isSharableRequest:(NSURLRequest*)req;
 - (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button;
 - (void)shareUrl:(NSURL*)url fromView:(UIView*)view;

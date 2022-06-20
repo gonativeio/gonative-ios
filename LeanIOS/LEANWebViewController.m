@@ -1560,9 +1560,13 @@ static NSInteger _currentWindows = 0;
         
         if ([@"/sharePage" isEqualToString:url.path]) {
             [self sharePageWithUrl:shareUrl sender:nil];
-        } else if ([@"/downloadFile" isEqualToString:url.path] && shareUrl) {
+        } else if (shareUrl) {
             NSURL *urlToDownload = [NSURL URLWithString:shareUrl relativeToURL:self.currentRequest.URL];
-            [[LEANDocumentSharer sharedSharer] shareUrl:urlToDownload fromView:self.wkWebview];
+            if ([@"/downloadFile" isEqualToString:url.path]) {
+                [[LEANDocumentSharer sharedSharer] shareUrl:urlToDownload fromView:self.wkWebview];
+            } else if ([@"/downloadImage" isEqualToString:url.path]) {
+                [[LEANDocumentSharer sharedSharer] downloadImage:urlToDownload];
+            }
         }
         return;
     }
