@@ -170,12 +170,6 @@ gonative.statusbar = {
     }
 };
 
-gonative.toolbar = {
-    set: function (params){
-        addCommand("gonative://toolbar/set", params);
-    }
-};
-
 gonative.screen = {
     setBrightness: function(data){
         var params = data;
@@ -270,6 +264,13 @@ gonative.ios.backgroundAudio = {
         addCommand("gonative://backgroundAudio/end");
     }
 };
+
+gonative.ios.contextualNavToolbar = {
+    set: function (params){
+        addCommand("gonative://ios/contextualNavToolbar/set", params);
+    }
+};
+
 
 ///////////////////////////////
 ////   Android Exclusive   ////

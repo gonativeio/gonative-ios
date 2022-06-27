@@ -1655,13 +1655,6 @@ static NSInteger _currentWindows = 0;
         }
     }
     
-    if ([@"toolbar" isEqualToString:url.host]) {
-        if ([url.path isEqualToString:@"/set"]) {
-            [self.toolbarManager setToolbarEnabled:[query[@"enabled"] boolValue]];
-        }
-        return;
-    }
-    
     // connectivity
     if ([@"connectivity" isEqualToString:url.host]) {
         NSString *callback = query[@"callback"];
@@ -1689,6 +1682,11 @@ static NSInteger _currentWindows = 0;
     
     // tracking consent
     if ([@"ios" isEqualToString:url.host]) {
+        if ([url.path isEqualToString:@"/contextualNavToolbar/set"]) {
+            [self.toolbarManager setToolbarEnabled:[query[@"enabled"] boolValue]];
+            return;
+        }
+        
         NSString *callback = query[@"callback"];
         if ([@"/attconsent/request" isEqualToString:url.path]) {
             if (@available(iOS 14.5, *)) {
@@ -1713,6 +1711,7 @@ static NSInteger _currentWindows = 0;
             
             [self runJavascript:js];
         }
+        return;
     }
     
     if ([@"navigationMaxWindows" isEqualToString:url.host]) {
