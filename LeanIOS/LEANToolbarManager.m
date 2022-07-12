@@ -181,7 +181,12 @@
 {
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     if (!appConfig.toolbarEnabled) {
-        [self.wvc hideToolbarAnimated:YES];
+        BOOL toolbarVisible = [self tryToShowBackButton:url];
+        if (toolbarVisible) {
+            [self.wvc showToolbarAnimated:YES];
+        } else {
+            [self.wvc hideToolbarAnimated:YES];
+        }
         return;
     }
     
@@ -204,7 +209,10 @@
     }
     
     // Update back button
-    BOOL backEnabled = [self checkToolbarItem:self.backButton forUrl:urlString enabled:[self.wvc canGoBack]];
+    BOOL backEnabled = [self tryToShowBackButton:url];
+    if (!backEnabled) {
+        backEnabled = [self checkToolbarItem:self.backButton forUrl:urlString enabled:[self.wvc canGoBack]];
+    }
     
     // Check visibilityByBackButton
     // if back button active only
@@ -224,6 +232,17 @@
     } else {
         [self.wvc hideToolbarAnimated:YES];
     }
+}
+
+- (BOOL)tryToShowBackButton:(NSURL *)url {
+    if (![self.wvc canGoBack]) return NO;
+    
+    if ([self.urlMimeType isEqualToString:@"application/pdf"] || [self.urlMimeType hasPrefix:@"image/"]) {
+        [self setToolbarItem:self.backButton enabled:YES];
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (BOOL)checkToolbarItem:(LEANToolbarItem *)toolbarItem forUrl:(NSString *)urlString enabled:(BOOL)enabled {

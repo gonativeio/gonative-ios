@@ -11,19 +11,31 @@
 
 @implementation GNJSBridgeInterface : NSObject
 
--(instancetype) init
+- (LEANWebViewController *)webViewController
 {
-    self = [super init];
-    return self;
+    // Get current webview controller
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    if ([topController isKindOfClass:[LEANRootViewController class]]) {
+        LEANRootViewController *rvc = (LEANRootViewController *)topController;
+        return [rvc webViewController];
+    }
+    return nil;
 }
 
 - (void)userContentController:(nonnull WKUserContentController *)userContentController didReceiveScriptMessage:(nonnull WKScriptMessage *)message {
+    LEANWebViewController *wvc = [self webViewController];
+    if (![wvc isKindOfClass:[LEANWebViewController class]]) return;
+    
     if([message.body isKindOfClass:[NSDictionary class]]){
-        [self.wvc handleJSBridgeFunctions:(NSDictionary*)message.body];
+        [wvc handleJSBridgeFunctions:(NSDictionary*)message.body];
     } else if ([message.body isKindOfClass:[NSString class]]){
         NSURL *url = [NSURL URLWithString:(NSString*) message.body];
         if(!url) return;
-        [self.wvc handleJSBridgeFunctions:url];
+        [wvc handleJSBridgeFunctions:url];
     }
 }
 

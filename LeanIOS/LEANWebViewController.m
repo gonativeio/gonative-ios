@@ -166,6 +166,7 @@ static NSInteger _currentWindows = 0;
     self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
     self.javascriptTabs = NO;
     self.toolbarManager = [[LEANToolbarManager alloc] initWithToolbar:self.toolbar webviewController:self];
+    self.JSBridgeInterface = [[GNJSBridgeInterface alloc] init];
     
     // set title to application title
     if ([appConfig.navTitles count] == 0) {
@@ -1176,6 +1177,7 @@ static NSInteger _currentWindows = 0;
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
 {
     [[LEANDocumentSharer sharedSharer] receivedWebviewResponse:navigationResponse.response];
+    [self.toolbarManager setUrlMimeType:navigationResponse.response.MIMEType];
     
     if (navigationResponse.canShowMIMEType) {
         decisionHandler(WKNavigationResponsePolicyAllow);
@@ -1274,10 +1276,6 @@ static NSInteger _currentWindows = 0;
 
 -(void)initializeJSInterfaceInWebView:(WKWebView*) wkWebview
 {
-    if(!self.JSBridgeInterface){
-        self.JSBridgeInterface = [[GNJSBridgeInterface alloc] init];
-        self.JSBridgeInterface.wvc = self;
-    }
     [wkWebview.configuration.userContentController removeScriptMessageHandlerForName:GNJSBridgeName];
     [wkWebview.configuration.userContentController addScriptMessageHandler:self.JSBridgeInterface name:GNJSBridgeName];
 }
