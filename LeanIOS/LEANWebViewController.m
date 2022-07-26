@@ -141,6 +141,7 @@ static NSInteger _currentWindows = 0;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self becomeFirstResponder];
     LEANWebViewController.currentWindows += 1;
     self.checkLoginSignup = YES;
     
@@ -296,6 +297,10 @@ static NSInteger _currentWindows = 0;
     }
     
     [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runnerDidLoad:self];
+}
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
 }
 
 // called when screen touched
@@ -2947,6 +2952,12 @@ static NSInteger _currentWindows = 0;
             self.view.backgroundColor = [UIColor whiteColor];
             self.webviewContainer.backgroundColor = [UIColor whiteColor];
         }
+    }
+}
+
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    if(event.subtype == UIEventSubtypeMotionShake){
+        [[NSNotificationCenter defaultCenter] postNotificationName:kGoNativeCoreDeviceDidShake object:nil];
     }
 }
 
