@@ -1726,6 +1726,30 @@ static NSInteger _currentWindows = 0;
             [WindowsController windowCountChanged];
         }
     }
+    
+    if ([@"clipboard" isEqualToString:url.host]) {
+        if ([@"/set" isEqualToString:url.path]) {
+            NSString *clipboardContent = query[@"data"];
+            if (clipboardContent && ![clipboardContent isEqual: [NSNull null]]) {
+                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                [pasteboard setString:clipboardContent];
+            }
+        } else if ([@"/get" isEqualToString:url.path]) {
+            NSString *callback = query[@"callback"];
+            if (callback && callback.length > 0) {
+                UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+                NSDictionary *dict = @{};
+                if (pasteboard && [pasteboard hasStrings]) {
+                    dict = @{@"data": [pasteboard string]};
+                } else {
+                    dict = @{@"error": @("Clipboard item is not a string.")};
+                }
+                NSString *js = [LEANUtilities createJsForCallback:callback data:dict];
+                [self runJavascript:js];
+            }
+        }
+        return;
+    }
 }
 
 // currently, sender is used to receive a selected UIBarButtonItem from the action bar
