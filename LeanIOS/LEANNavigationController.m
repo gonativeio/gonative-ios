@@ -61,7 +61,19 @@
     }
 
     UIColor *titleColor = [UIColor colorNamed:@"titleColor"];
-    self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: titleColor};
+    UIColor *navBarTintColor = [UIColor colorNamed:@"navigationBarTintColor"];
+    NSDictionary *titleTextAttributes = @{NSForegroundColorAttributeName: titleColor};
+    self.navigationBar.titleTextAttributes = titleTextAttributes;
+    self.navigationBar.barTintColor = navBarTintColor;
+    
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+        [appearance configureWithOpaqueBackground];
+        [appearance setBackgroundColor:navBarTintColor];
+        [appearance setTitleTextAttributes:titleTextAttributes];
+        [self.navigationBar setStandardAppearance:appearance];
+        [self.navigationBar setScrollEdgeAppearance:appearance];
+    }
     
     [super viewDidLayoutSubviews];
 }

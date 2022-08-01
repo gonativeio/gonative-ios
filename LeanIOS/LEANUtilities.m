@@ -313,6 +313,14 @@
     }
 }
 
++ (void)matchStatusBarToBodyBackgroundColor:(WKWebView *)webview enabled:(BOOL)enabled {
+    if (!webview) return;
+    NSString *js = enabled
+        ? @" window.addEventListener('load', gonative_match_statusbar_to_body_background_color); "
+        : @" window.removeEventListener('load', gonative_match_statusbar_to_body_background_color); ";
+    [webview evaluateJavaScript:js completionHandler:nil];
+}
+
 +(NSString*)jsWrapString:(NSString*)string
 {
     return [NSString stringWithFormat:@"decodeURIComponent(\"%@\")", [string stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];

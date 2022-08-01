@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C09BC7A225A3986BFA87855 /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8890E2BBEF17B6220BC9926B /* Pods_GonativeIO.framework */; };
 		2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49B18A9991300495B3D /* Foundation.framework */; };
 		2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49D18A9991300495B3D /* CoreGraphics.framework */; };
 		2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2002B49F18A9991300495B3D /* UIKit.framework */; };
@@ -52,7 +51,6 @@
 		204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 204D783E18F9A4F7005DD37E /* GTMNSString+HTML.m */; };
 		20580E031B2E53730061943C /* offline.html in Resources */ = {isa = PBXBuildFile; fileRef = 20580E021B2E53730061943C /* offline.html */; };
 		20689025215E9FD900419CB2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 20689023215E9FD900419CB2 /* Localizable.strings */; };
-		2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */; };
 		2075775621957C1600ADD73A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2075775521957C1600ADD73A /* LaunchScreen.storyboard */; };
 		207577582195BE3500ADD73A /* LaunchScreenNoNav.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 207577572195BE3500ADD73A /* LaunchScreenNoNav.storyboard */; };
 		2075775A2195D80300ADD73A /* LaunchScreenNav.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 207577592195D80300ADD73A /* LaunchScreenNav.storyboard */; };
@@ -90,12 +88,14 @@
 		20F49C2519C7BE8900B46C5A /* MediaAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2419C7BE8900B46C5A /* MediaAccessibility.framework */; };
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
-		39B9701728589A3C00C77B69 /* LEANRegexRulesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B9701528589A3C00C77B69 /* LEANRegexRulesManager.m */; };
+		39B8E8632858B04A00355B24 /* LEANRegexRulesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */; };
+		39B9701728589A3C00C77B69 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
+		819367FAA49CF2412FB7D362 /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8070A7DACE54310282403AE6 /* Pods_GonativeIO.framework */; };
 		BB3C460E26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js in Resources */ = {isa = PBXBuildFile; fileRef = BB3C460D26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js */; };
 		BB6E68A9273C731E004846A3 /* GNJSBridgeInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6E68A8273C731E004846A3 /* GNJSBridgeInterface.m */; };
 		BB9A3B012631D2A7002C38F1 /* LEANIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9A3B002631D2A7002C38F1 /* LEANIcons.swift */; };
 		BBD972F227AF17C500AD4FC0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BBD972F127AF17C500AD4FC0 /* GoogleService-Info.plist */; };
-		CFD5D5D922B3ACAEC5D51409 /* Pods_GoNativeIOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78876735F56F7A0B2F189019 /* Pods_GoNativeIOSTests.framework */; };
+		C998731A34E1EC954763F8EB /* Pods_GoNativeIOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88A370049F0BF6D1FF36DAEE /* Pods_GoNativeIOSTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -122,9 +122,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0C7DB840C5C868C16F32E637 /* Pods-GonativeIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.debug.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.debug.xcconfig"; sourceTree = "<group>"; };
-		19CA02271DB94B823691D9F8 /* Pods-GoNativeIOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.release.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		1F8FE6763E25BB9C4B38FEB4 /* Pods_OneSignalNotificationServiceExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OneSignalNotificationServiceExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		123B42EE01E9717A212060F2 /* Pods-GonativeIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.release.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.release.xcconfig"; sourceTree = "<group>"; };
 		2002B49818A9991300495B3D /* GonativeIO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GonativeIO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2002B49B18A9991300495B3D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		2002B49D18A9991300495B3D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -198,7 +196,6 @@
 		20639D7E250CF4EF007FE46C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		20689024215E9FD900419CB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		20689026215EA28D00419CB2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
-		2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navbar_logo.png; sourceTree = "<group>"; };
 		2075775521957C1600ADD73A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		207577572195BE3500ADD73A /* LaunchScreenNoNav.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreenNoNav.storyboard; sourceTree = "<group>"; };
 		207577592195D80300ADD73A /* LaunchScreenNav.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreenNav.storyboard; sourceTree = "<group>"; };
@@ -273,16 +270,16 @@
 		20F49C2619C7BE9100B46C5A /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANTabManager.h; sourceTree = "<group>"; };
 		20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANTabManager.m; sourceTree = "<group>"; };
-		31F0E4C64BF4301E509E549B /* Pods-GonativeIO.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.release.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.release.xcconfig"; sourceTree = "<group>"; };
 		39A2444327F1F29A00A6D222 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Localizable.strings; sourceTree = "<group>"; };
 		39A2444427F1F2DB00A6D222 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		39A2444727F1F33400A6D222 /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
 		39A2444927F1F4D400A6D222 /* nn-NO */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "nn-NO"; path = "nn-NO.lproj/Localizable.strings"; sourceTree = "<group>"; };
-		39B9701528589A3C00C77B69 /* LEANRegexRulesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANRegexRulesManager.m; sourceTree = "<group>"; };
-		39B9701628589A3C00C77B69 /* LEANRegexRulesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANRegexRulesManager.h; sourceTree = "<group>"; };
-		5F73A1FB3A20E35B94078BCF /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
-		78876735F56F7A0B2F189019 /* Pods_GoNativeIOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoNativeIOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8890E2BBEF17B6220BC9926B /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANRegexRulesManager.m; sourceTree = "<group>"; };
+		39B8E8622858B04A00355B24 /* LEANRegexRulesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANRegexRulesManager.h; sourceTree = "<group>"; };
+		6321B2F0F247B73B862558F0 /* Pods-GoNativeIOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.release.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		704A05039A2CBBE8CEFF1108 /* Pods-GonativeIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.debug.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.debug.xcconfig"; sourceTree = "<group>"; };
+		8070A7DACE54310282403AE6 /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		88A370049F0BF6D1FF36DAEE /* Pods_GoNativeIOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoNativeIOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B816044C27480DB900D1CA9C /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B816044D27480E6800D1CA9C /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B816044E27480EA500D1CA9C /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -301,8 +298,7 @@
 		BBCD252D2665ADBA000CEE11 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BBCD252E2665ADD7000CEE11 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BBD972F127AF17C500AD4FC0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		D66F266924630849AFD26040 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
-		EAA67CABDEB525BD0A6DC7D6 /* Pods-GoNativeIOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.debug.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E07AD9F93CDDA4A887CC8FBB /* Pods-GoNativeIOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.debug.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -325,7 +321,7 @@
 				2002B49E18A9991300495B3D /* CoreGraphics.framework in Frameworks */,
 				2002B4A018A9991300495B3D /* UIKit.framework in Frameworks */,
 				2002B49C18A9991300495B3D /* Foundation.framework in Frameworks */,
-				0C09BC7A225A3986BFA87855 /* Pods_GonativeIO.framework in Frameworks */,
+				819367FAA49CF2412FB7D362 /* Pods_GonativeIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,7 +331,7 @@
 			files = (
 				2002B4C018A9991300495B3D /* UIKit.framework in Frameworks */,
 				2002B4BF18A9991300495B3D /* Foundation.framework in Frameworks */,
-				CFD5D5D922B3ACAEC5D51409 /* Pods_GoNativeIOSTests.framework in Frameworks */,
+				C998731A34E1EC954763F8EB /* Pods_GoNativeIOSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,9 +378,8 @@
 				2002B49B18A9991300495B3D /* Foundation.framework */,
 				2002B49D18A9991300495B3D /* CoreGraphics.framework */,
 				2002B49F18A9991300495B3D /* UIKit.framework */,
-				78876735F56F7A0B2F189019 /* Pods_GoNativeIOSTests.framework */,
-				8890E2BBEF17B6220BC9926B /* Pods_GonativeIO.framework */,
-				1F8FE6763E25BB9C4B38FEB4 /* Pods_OneSignalNotificationServiceExtension.framework */,
+				88A370049F0BF6D1FF36DAEE /* Pods_GoNativeIOSTests.framework */,
+				8070A7DACE54310282403AE6 /* Pods_GonativeIO.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -405,7 +400,6 @@
 				20AEC8C9234BE20200DBE24D /* Assets.xcassets */,
 				20689023215E9FD900419CB2 /* Localizable.strings */,
 				20A525ED1A7D94EE00936DC5 /* Settings.bundle */,
-				2070E7BF19AA9F9C00C07C65 /* navbar_logo.png */,
 				209A964423BAC508001906F1 /* appbeep.wav */,
 				200F75CF1BCDA6B800C08BB5 /* notification.aff */,
 				20F1F40824F969EF004F680B /* custom_sound_1.aff */,
@@ -439,13 +433,13 @@
 				2002B4F318A99C4100495B3D /* LEANNavigationController.m */,
 				2002B4F418A99C4100495B3D /* LEANRootViewController.h */,
 				2002B4F518A99C4100495B3D /* LEANRootViewController.m */,
-				39B9701628589A3C00C77B69 /* LEANRegexRulesManager.h */,
-				39B9701528589A3C00C77B69 /* LEANRegexRulesManager.m */,
 				20FC7FB3199D1C7800A70B08 /* LEANTabManager.h */,
 				20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */,
 				20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */,
 				20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */,
 				20D77B6E1A2547E5008A938D /* LEANActionManager.h */,
+				39B8E8622858B04A00355B24 /* LEANRegexRulesManager.h */,
+				39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */,
 				20D77B6F1A2547E5008A938D /* LEANActionManager.m */,
 				209B3217193FA36F0052A7C6 /* LEANUrlCache.h */,
 				209B3218193FA36F0052A7C6 /* LEANUrlCache.m */,
@@ -605,12 +599,10 @@
 		94421A86163F4578AAF865FD /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				EAA67CABDEB525BD0A6DC7D6 /* Pods-GoNativeIOSTests.debug.xcconfig */,
-				19CA02271DB94B823691D9F8 /* Pods-GoNativeIOSTests.release.xcconfig */,
-				0C7DB840C5C868C16F32E637 /* Pods-GonativeIO.debug.xcconfig */,
-				31F0E4C64BF4301E509E549B /* Pods-GonativeIO.release.xcconfig */,
-				5F73A1FB3A20E35B94078BCF /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
-				D66F266924630849AFD26040 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
+				E07AD9F93CDDA4A887CC8FBB /* Pods-GoNativeIOSTests.debug.xcconfig */,
+				6321B2F0F247B73B862558F0 /* Pods-GoNativeIOSTests.release.xcconfig */,
+				704A05039A2CBBE8CEFF1108 /* Pods-GonativeIO.debug.xcconfig */,
+				123B42EE01E9717A212060F2 /* Pods-GonativeIO.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -622,12 +614,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2002B4CD18A9991300495B3D /* Build configuration list for PBXNativeTarget "GonativeIO" */;
 			buildPhases = (
-				8AF39AB08E6CAADDF41749E3 /* [CP] Check Pods Manifest.lock */,
+				203E7F916C980AD1752153DE /* [CP] Check Pods Manifest.lock */,
 				2002B49418A9991300495B3D /* Sources */,
 				2002B49518A9991300495B3D /* Frameworks */,
 				2002B49618A9991300495B3D /* Resources */,
 				2081A2921F33ECE900057E3F /* Embed App Extensions */,
-				64CC36DB99FD3CBD7BF9DD93 /* [CP] Embed Pods Frameworks */,
+				62F936383ED2769E752E0C07 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -642,7 +634,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2002B4D018A9991300495B3D /* Build configuration list for PBXNativeTarget "GoNativeIOSTests" */;
 			buildPhases = (
-				C8B8D4F5B93214BAAE19689C /* [CP] Check Pods Manifest.lock */,
+				2726021EDB0A4B8F63959258 /* [CP] Check Pods Manifest.lock */,
 				2002B4B818A9991300495B3D /* Sources */,
 				2002B4B918A9991300495B3D /* Frameworks */,
 				2002B4BA18A9991300495B3D /* Resources */,
@@ -737,7 +729,6 @@
 				20580E031B2E53730061943C /* offline.html in Resources */,
 				20AEC8CA234BE20200DBE24D /* Assets.xcassets in Resources */,
 				20A13AB81905DFFC00B997DD /* MenuGroupNoIcon.xib in Resources */,
-				2070E7C019AA9F9C00C07C65 /* navbar_logo.png in Resources */,
 				2002B4B718A9991300495B3D /* Images.xcassets in Resources */,
 				207577582195BE3500ADD73A /* LaunchScreenNoNav.storyboard in Resources */,
 				20A13AB61905DED100B997DD /* MenuChildIcon.xib in Resources */,
@@ -773,29 +764,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		64CC36DB99FD3CBD7BF9DD93 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/GoNativeCore/GoNativeCore.framework",
-				"${BUILT_PRODUCTS_DIR}/GonativeIcons/GonativeIcons.framework",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoNativeCore/GoNative.framework/GoNative",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNativeCore.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GonativeIcons.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNative.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8AF39AB08E6CAADDF41749E3 /* [CP] Check Pods Manifest.lock */ = {
+		203E7F916C980AD1752153DE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -817,7 +786,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C8B8D4F5B93214BAAE19689C /* [CP] Check Pods Manifest.lock */ = {
+		2726021EDB0A4B8F63959258 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -837,6 +806,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		62F936383ED2769E752E0C07 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GoNativeCore/GoNativeCore.framework",
+				"${BUILT_PRODUCTS_DIR}/GonativeIcons/GonativeIcons.framework",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoNativeCore/GoNative.framework/GoNative",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNativeCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GonativeIcons.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNative.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -863,7 +854,7 @@
 				204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */,
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
-				39B9701728589A3C00C77B69 /* LEANRegexRulesManager.m in Sources */,
+				39B9701728589A3C00C77B69 /* BuildFile in Sources */,
 				209A964323BABF2D001906F1 /* GNBackgroundAudio.m in Sources */,
 				BB6E68A9273C731E004846A3 /* GNJSBridgeInterface.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
@@ -885,6 +876,7 @@
 				20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */,
 				209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */,
 				2002B4F918A99C4100495B3D /* LEANMenuViewController.m in Sources */,
+				39B8E8632858B04A00355B24 /* LEANRegexRulesManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1082,7 +1074,7 @@
 		};
 		2002B4CE18A9991300495B3D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0C7DB840C5C868C16F32E637 /* Pods-GonativeIO.debug.xcconfig */;
+			baseConfigurationReference = 704A05039A2CBBE8CEFF1108 /* Pods-GonativeIO.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1123,7 +1115,7 @@
 		};
 		2002B4CF18A9991300495B3D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 31F0E4C64BF4301E509E549B /* Pods-GonativeIO.release.xcconfig */;
+			baseConfigurationReference = 123B42EE01E9717A212060F2 /* Pods-GonativeIO.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1163,7 +1155,7 @@
 		};
 		2002B4D118A9991300495B3D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EAA67CABDEB525BD0A6DC7D6 /* Pods-GoNativeIOSTests.debug.xcconfig */;
+			baseConfigurationReference = E07AD9F93CDDA4A887CC8FBB /* Pods-GoNativeIOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GonativeIO.app/GonativeIO";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1187,7 +1179,7 @@
 		};
 		2002B4D218A9991300495B3D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 19CA02271DB94B823691D9F8 /* Pods-GoNativeIOSTests.release.xcconfig */;
+			baseConfigurationReference = 6321B2F0F247B73B862558F0 /* Pods-GoNativeIOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/GonativeIO.app/GonativeIO";
 				FRAMEWORK_SEARCH_PATHS = (

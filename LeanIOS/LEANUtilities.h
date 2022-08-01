@@ -22,6 +22,7 @@
 + (UIColor *)colorFromHexString:(NSString *)hexString;
 +(UIColor*)colorWithAlphaFromHexString:(NSString*)hexString;
 + (void)overrideGeolocation:(UIView*)webview;
++ (void)matchStatusBarToBodyBackgroundColor:(WKWebView *)webview enabled:(BOOL)enabled;
 +(NSString*)jsWrapString:(NSString*)string;
 +(NSString*)capitalizeWords:(NSString*)string;
 +(NSString*)getLaunchImageName;

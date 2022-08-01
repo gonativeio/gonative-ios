@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "2x.png",
+      "filename" : "navBar.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,7 +26,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "2xDark.png",
+      "filename" : "navBarDark.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

@@ -214,9 +214,10 @@ static NSInteger _currentWindows = 0;
         [self.view addSubview:self.statusBarBackground];
     }
     
-    if (appConfig.iosStatusBarBackgroundColor) {
+    UIColor *statusBarBackgroundColor = [UIColor colorNamed:@"statusBarBackgroundColor"];
+    if (statusBarBackgroundColor) {
         UIView *background = [[UIView alloc] init];
-        background.backgroundColor = appConfig.iosStatusBarBackgroundColor;
+        background.backgroundColor = statusBarBackgroundColor;
         [self.statusBarBackground removeFromSuperview];
         self.statusBarBackground = background;
         [self.view addSubview:self.statusBarBackground];
@@ -295,6 +296,11 @@ static NSInteger _currentWindows = 0;
         [self.toolbarLeftSafeAreaLeft setActive:NO];
         [self.toolbarRightSafeAreaRight setActive:NO];
     }
+    
+    // set initial native theme
+    NSString *mode = [[NSUserDefaults standardUserDefaults] objectForKey:@"darkMode"];
+    if (!mode) mode = appConfig.iosDarkMode;
+    [self setNativeTheme:mode];
     
     [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runnerDidLoad:self];
 }
@@ -605,7 +611,7 @@ static NSInteger _currentWindows = 0;
         // create the view if necesary
         if (!self.navigationTitleImageView) {
             UIImage *im = [GoNativeAppConfig sharedAppConfig].navigationTitleIcon;
-            if (!im) im = [UIImage imageNamed:@"navbar_logo"];
+            if (!im) im = [UIImage imageNamed:@"NavBarImage"];
             
             if (im) {
                 CGRect bounds = CGRectMake(0, 0, 30 * im.size.width / im.size.height, 30);
@@ -1400,6 +1406,12 @@ static NSInteger _currentWindows = 0;
     
     // brightness
     if ([@"screen" isEqualToString:url.host]) {
+        if ([@"/setMode" isEqualToString:url.path]) {
+            [self setNativeTheme:query[@"mode"]];
+            [self setCssTheme:query[@"mode"] andPersistData:YES];
+            return;
+        }
+        
         id brightness = query[@"brightness"];
         if (!brightness) {
             NSLog(@"Brightness not specified in %@", [url absoluteString]);
@@ -1655,6 +1667,13 @@ static NSInteger _currentWindows = 0;
             BOOL overlay = [query[@"overlay"] boolValue];
             self.statusBarOverlay = overlay;
             [self applyStatusBarOverlay];
+        } else if ([url.path isEqualToString:@"/matchBodyBackgroundColor"]) {
+            BOOL enableMatching = [[query objectForKey:@"active"] boolValue];
+            [LEANUtilities matchStatusBarToBodyBackgroundColor:self.wkWebview enabled:enableMatching];
+            
+            // persist statusbar and body bg color matching status
+            [[NSUserDefaults standardUserDefaults] setBool:enableMatching forKey:@"matchStatusBarToBodyBgColor"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         }
     }
     
@@ -2434,6 +2453,18 @@ static NSInteger _currentWindows = 0;
                 }
             }];
         }
+        
+        // persist previous status of statusbar and body bg color matching
+        BOOL enableMatching = [[NSUserDefaults standardUserDefaults] boolForKey:@"matchStatusBarToBodyBgColor"];
+        if (enableMatching) {
+            [LEANUtilities matchStatusBarToBodyBackgroundColor:self.wkWebview enabled:enableMatching];
+        }
+        
+        // set initial css theme
+        NSString *mode = [[NSUserDefaults standardUserDefaults] objectForKey:@"darkMode"];
+        if (!mode) mode = appConfig.iosDarkMode;
+        [self setCssTheme:mode andPersistData:NO];
+        
         [self runJavascript:[LEANUtilities createJsForCallback:@"gonative_library_ready" data:nil]];
     });
 }
@@ -2977,6 +3008,54 @@ static NSInteger _currentWindows = 0;
             self.webviewContainer.backgroundColor = [UIColor whiteColor];
         }
     }
+    
+    self.tabBar.barTintColor = [UIColor colorNamed:@"tabBarTintColor"];
+}
+
+# pragma theme
+-(void)setNativeTheme:(NSString *)mode {
+    if (@available(iOS 13.0, *)) {
+        GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+        UIWindow *window = [UIApplication sharedApplication].delegate.window;
+        if ([appConfig.iosTheme isEqualToString:@"dark"] || [mode isEqualToString:@"dark"]) {
+            window.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
+            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDarkContent];
+        }
+        else if ([mode isEqualToString:@"light"]) {
+            window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
+        } else {
+            window.overrideUserInterfaceStyle = UIUserInterfaceStyleUnspecified;
+            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
+        }
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
+}
+
+-(void)setCssTheme:(NSString *)mode andPersistData:(BOOL)persist {
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    if ([mode isEqualToString:@"dark"]) {
+        [self setCssThemeAttribute:@"data-mode" withValue:mode];
+        [self setCssThemeAttribute:@"data-theme" withValue:mode];
+    }
+    else {
+        if (![mode isEqualToString:@"light"]) {
+            mode = @"auto";
+        }
+        UIWindow *window = UIApplication.sharedApplication.delegate.window;
+        NSString *value = window.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark || [appConfig.iosTheme isEqualToString:@"dark"] ? @"dark" : @"light";
+        [self setCssThemeAttribute:@"data-mode" withValue:mode];
+        [self setCssThemeAttribute:@"data-theme" withValue:value];
+    }
+    if (persist) {
+        [[NSUserDefaults standardUserDefaults] setValue:mode forKey:@"darkMode"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+-(void)setCssThemeAttribute:(NSString *)attr withValue:(NSString *)value {
+    NSString *js = [NSString stringWithFormat:@"document.documentElement.setAttribute(\"%@\", \"%@\");", attr, value];
+    [self.wkWebview evaluateJavaScript:js completionHandler:nil];
 }
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {

@@ -270,7 +270,10 @@
         [[imageView subviews]
          makeObjectsPerformSelector:@selector(removeFromSuperview)];
     }
-                              
+                           
+    // configure background color
+    self.view.backgroundColor = [UIColor colorNamed:@"sidebarBackgroundColor"];
+    
     // configure text color
     UIColor *sidebarTextColor = [UIColor colorNamed:@"sidebarTextColor"];
     label.textColor = sidebarTextColor;
