@@ -74,6 +74,7 @@
 
 @property UISearchBar *searchBar;
 @property UIView *statusBarBackground;
+@property UIVisualEffectView *blurEffectView;
 @property UIBarButtonItem *shareButton;
 @property UIBarButtonItem *refreshButton;
 @property UIRefreshControl *pullRefreshControl;
@@ -214,14 +215,7 @@ static NSInteger _currentWindows = 0;
         [self.view addSubview:self.statusBarBackground];
     }
     
-    UIColor *statusBarBackgroundColor = [UIColor colorNamed:@"statusBarBackgroundColor"];
-    if (statusBarBackgroundColor) {
-        UIView *background = [[UIView alloc] init];
-        background.backgroundColor = statusBarBackgroundColor;
-        [self.statusBarBackground removeFromSuperview];
-        self.statusBarBackground = background;
-        [self.view addSubview:self.statusBarBackground];
-    }
+    [self updateStatusBarBackgroundColor:[UIColor colorNamed:@"statusBarBackgroundColor"]];
     
     if (appConfig.searchTemplateURL) {
         UIImage *iconImage;
@@ -1120,6 +1114,12 @@ static NSInteger _currentWindows = 0;
     return nil;
 }
 
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    if(event.subtype == UIEventSubtypeMotionShake){
+        [[NSNotificationCenter defaultCenter] postNotificationName:kGoNativeCoreDeviceDidShake object:nil];
+    }
+}
+
 #pragma mark - Search Bar Delegate
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
@@ -1654,14 +1654,7 @@ static NSInteger _currentWindows = 0;
             
             NSString *color = query[@"color"];
             if (color) {
-                UIColor *parsedColor = [LEANUtilities colorWithAlphaFromHexString:color];
-                if (parsedColor) {
-                    UIView *background = [[UIView alloc] init];
-                    background.backgroundColor = parsedColor;
-                    [self.statusBarBackground removeFromSuperview];
-                    self.statusBarBackground = background;
-                    [self.view addSubview:self.statusBarBackground];
-                }
+                [self updateStatusBarBackgroundColor:[LEANUtilities colorWithAlphaFromHexString:color]];
             }
             
             BOOL overlay = [query[@"overlay"] boolValue];
@@ -2954,6 +2947,10 @@ static NSInteger _currentWindows = 0;
         }
         CGFloat width = MAX(statusSize.height, statusSize.width);
         self.statusBarBackground.frame = CGRectMake(0, 0, width, height);
+        
+        if (self.blurEffectView) {
+            self.blurEffectView.frame = CGRectMake(0, 0, width, height);
+        }
     }
     [self adjustInsets];
 }
@@ -3058,10 +3055,19 @@ static NSInteger _currentWindows = 0;
     [self.wkWebview evaluateJavaScript:js completionHandler:nil];
 }
 
-- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
-    if(event.subtype == UIEventSubtypeMotionShake){
-        [[NSNotificationCenter defaultCenter] postNotificationName:kGoNativeCoreDeviceDidShake object:nil];
-    }
+- (void)updateStatusBarBackgroundColor:(UIColor *)backgroundColor {
+    if (!backgroundColor) return;
+
+    UIView *background = [[UIView alloc] init];
+    background.backgroundColor = backgroundColor;
+    [self.statusBarBackground removeFromSuperview];
+    self.statusBarBackground = background;
+    [self.view addSubview:self.statusBarBackground];
+    
+    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    [self.blurEffectView removeFromSuperview];
+    self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    [self.view addSubview:self.blurEffectView];
 }
 
 @end
