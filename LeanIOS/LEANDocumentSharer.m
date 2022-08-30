@@ -194,8 +194,27 @@
 {
     if (!url) return;
     
-    NSURLRequest *req = [NSURLRequest requestWithURL:url];
-    [self shareRequest:req from:view force:YES];
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
+    // If using WKWebView on iOS11+, get cookies from WKHTTPCookieStore
+    if ([GoNativeAppConfig sharedAppConfig].useWKWebView && @available(iOS 11.0, *)) {
+        WKHTTPCookieStore *cookieStore = [WKWebsiteDataStore defaultDataStore].httpCookieStore;
+        [cookieStore getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull cookies) {
+            NSMutableArray *cookiesToSend = [NSMutableArray array];
+            for (NSHTTPCookie *cookie in cookies) {
+                if ([LEANUtilities cookie:cookie matchesUrl:url]) {
+                    [cookiesToSend addObject:cookie];
+                }
+            }
+            NSDictionary *headerFields = [NSHTTPCookie requestHeaderFieldsWithCookies:cookiesToSend];
+            NSString *cookieHeader = headerFields[@"Cookie"];
+            if (cookieHeader) {
+                [req addValue:cookieHeader forHTTPHeaderField:@"Cookie"];
+            }
+            [self shareRequest:req from:view force:YES];
+        }];
+    } else {
+        [self shareRequest:req from:view force:YES];
+    }
 }
 
 - (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button
