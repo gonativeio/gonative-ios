@@ -196,23 +196,28 @@
     
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     // If using WKWebView on iOS11+, get cookies from WKHTTPCookieStore
-    if ([GoNativeAppConfig sharedAppConfig].useWKWebView && @available(iOS 11.0, *)) {
-        WKHTTPCookieStore *cookieStore = [WKWebsiteDataStore defaultDataStore].httpCookieStore;
-        [cookieStore getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull cookies) {
-            NSMutableArray *cookiesToSend = [NSMutableArray array];
-            for (NSHTTPCookie *cookie in cookies) {
-                if ([LEANUtilities cookie:cookie matchesUrl:url]) {
-                    [cookiesToSend addObject:cookie];
+    BOOL gettingWKWebviewCookies = NO;
+    if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
+        if (@available(iOS 11.0, *)) {
+            gettingWKWebviewCookies = YES;
+            WKHTTPCookieStore *cookieStore = [WKWebsiteDataStore defaultDataStore].httpCookieStore;
+            [cookieStore getAllCookies:^(NSArray<NSHTTPCookie *> * _Nonnull cookies) {
+                NSMutableArray *cookiesToSend = [NSMutableArray array];
+                for (NSHTTPCookie *cookie in cookies) {
+                    if ([LEANUtilities cookie:cookie matchesUrl:url]) {
+                        [cookiesToSend addObject:cookie];
+                    }
                 }
-            }
-            NSDictionary *headerFields = [NSHTTPCookie requestHeaderFieldsWithCookies:cookiesToSend];
-            NSString *cookieHeader = headerFields[@"Cookie"];
-            if (cookieHeader) {
-                [req addValue:cookieHeader forHTTPHeaderField:@"Cookie"];
-            }
-            [self shareRequest:req from:view force:YES];
-        }];
-    } else {
+                NSDictionary *headerFields = [NSHTTPCookie requestHeaderFieldsWithCookies:cookiesToSend];
+                NSString *cookieHeader = headerFields[@"Cookie"];
+                if (cookieHeader) {
+                    [req addValue:cookieHeader forHTTPHeaderField:@"Cookie"];
+                }
+                [self shareRequest:req from:view force:YES];
+            }];
+        }
+    }
+    if (!gettingWKWebviewCookies) {
         [self shareRequest:req from:view force:YES];
     }
 }

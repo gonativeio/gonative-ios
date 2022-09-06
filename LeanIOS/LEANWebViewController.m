@@ -215,7 +215,7 @@ static NSInteger _currentWindows = 0;
         [self.view addSubview:self.statusBarBackground];
     }
     
-    [self updateStatusBarBackgroundColor:[UIColor colorNamed:@"statusBarBackgroundColor"]];
+    [self updateStatusBarBackgroundColor:[UIColor colorNamed:@"statusBarBackgroundColor"] enableBlurEffect:appConfig.iosEnableBlurInStatusBar];
     
     if (appConfig.searchTemplateURL) {
         UIImage *iconImage;
@@ -1653,8 +1653,9 @@ static NSInteger _currentWindows = 0;
             }
             
             NSString *color = query[@"color"];
+            BOOL isBlurEnabled = [query[@"blur"] boolValue];
             if (color) {
-                [self updateStatusBarBackgroundColor:[LEANUtilities colorWithAlphaFromHexString:color]];
+                [self updateStatusBarBackgroundColor:[LEANUtilities colorWithAlphaFromHexString:color] enableBlurEffect:isBlurEnabled];
             }
             
             BOOL overlay = [query[@"overlay"] boolValue];
@@ -3055,7 +3056,7 @@ static NSInteger _currentWindows = 0;
     [self.wkWebview evaluateJavaScript:js completionHandler:nil];
 }
 
-- (void)updateStatusBarBackgroundColor:(UIColor *)backgroundColor {
+- (void)updateStatusBarBackgroundColor:(UIColor *)backgroundColor enableBlurEffect:(BOOL)isBlurEnabled{
     if (!backgroundColor) return;
 
     UIView *background = [[UIView alloc] init];
@@ -3064,10 +3065,12 @@ static NSInteger _currentWindows = 0;
     self.statusBarBackground = background;
     [self.view addSubview:self.statusBarBackground];
     
-    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    [self.blurEffectView removeFromSuperview];
-    self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    [self.view addSubview:self.blurEffectView];
+    if (isBlurEnabled) {
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        [self.blurEffectView removeFromSuperview];
+        self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        [self.view addSubview:self.blurEffectView];
+    }
 }
 
 @end
