@@ -712,7 +712,9 @@ static NSInteger _currentWindows = 0;
             self.topGuideConstraint.constant = -20.0;
         }
     } else {
-        self.topGuideConstraint.constant = 0;
+        // use the gap between safeArea and statusbar as constraint if top nav bar is hidden
+        float gap = self.view.safeAreaInsets.top - [UIApplication sharedApplication].statusBarFrame.size.height;
+        self.topGuideConstraint.constant = gap < 20.0 ? -gap : 0;
     }
 }
 
