@@ -124,6 +124,7 @@
     
     button.alpha = 0;
     button.enabled = NO;
+    button.frame = CGRectMake(0, 0, button.intrinsicContentSize.width + 2, 44);
     
     return [[UIBarButtonItem alloc] initWithCustomView:button];
 }
