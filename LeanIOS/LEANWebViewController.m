@@ -296,6 +296,10 @@ static NSInteger _currentWindows = 0;
     if (!mode) mode = appConfig.iosDarkMode;
     [self setNativeTheme:mode];
     
+    if (![appConfig.iosStatusBarStyle isEqualToString:@"auto"]) {
+        [self updateStatusBarStyle:appConfig.iosStatusBarStyle];
+    }
+    
     [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runnerDidLoad:self];
 }
 
@@ -1639,19 +1643,7 @@ static NSInteger _currentWindows = 0;
             
             NSString *style = query[@"style"];
             if (style) {
-                if ([style isEqualToString:@"dark"]) {
-                    // dark icons and text
-                    if (@available(iOS 13.0, *)) {
-                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDarkContent];
-                    } else {
-                        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
-                    }
-                    [self setNeedsStatusBarAppearanceUpdate];
-                } else {
-                    // light icons and text
-                    self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
-                    [self setNeedsStatusBarAppearanceUpdate];
-                }
+                [self updateStatusBarStyle:style];
             }
             
             NSString *color = query[@"color"];
@@ -1661,8 +1653,7 @@ static NSInteger _currentWindows = 0;
             }
             
             BOOL overlay = [query[@"overlay"] boolValue];
-            self.statusBarOverlay = overlay;
-            [self applyStatusBarOverlay];
+            [self updateStatusBarOverlay:overlay];
         } else if ([url.path isEqualToString:@"/matchBodyBackgroundColor"]) {
             BOOL enableMatching = [[query objectForKey:@"active"] boolValue];
             [LEANUtilities matchStatusBarToBodyBackgroundColor:self.wkWebview enabled:enableMatching];
@@ -3009,6 +3000,11 @@ static NSInteger _currentWindows = 0;
         }
     }
     
+    [self applyStatusBarOverlay];
+    if (appConfig.iosEnableOverlayInStatusBar) {
+        [self updateStatusBarOverlay:appConfig.iosEnableOverlayInStatusBar];
+    }
+    
     self.tabBar.barTintColor = [UIColor colorNamed:@"tabBarTintColor"];
 }
 
@@ -3072,6 +3068,27 @@ static NSInteger _currentWindows = 0;
         [self.blurEffectView removeFromSuperview];
         self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
         [self.view addSubview:self.blurEffectView];
+    }
+}
+
+- (void)updateStatusBarOverlay:(BOOL)isOverlayEnabled{
+    self.statusBarOverlay = isOverlayEnabled;
+    [self applyStatusBarOverlay];
+}
+
+- (void)updateStatusBarStyle:(NSString *)statusBarStyle{
+    if ([statusBarStyle isEqualToString:@"dark"]) {
+        // dark icons and text
+        if (@available(iOS 13.0, *)) {
+            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDarkContent];
+        } else {
+            self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
+        }
+        [self setNeedsStatusBarAppearanceUpdate];
+    } else {
+        // light icons and text
+        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
+        [self setNeedsStatusBarAppearanceUpdate];
     }
 }
 
