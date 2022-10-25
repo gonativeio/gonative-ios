@@ -74,10 +74,12 @@
 		20AEC8CA234BE20200DBE24D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 20AEC8C9234BE20200DBE24D /* Assets.xcassets */; };
 		20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */; };
 		20B8FFB71EB79D3F000F4CFA /* GNCustomHeaders.m in Sources */ = {isa = PBXBuildFile; fileRef = 20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */; };
+		20B927AA28C4F03E004D4C15 /* custom-icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 20B927A928C4EFE9004D4C15 /* custom-icons.ttf */; };
 		20C62B7D1D2708B7001D1646 /* GoNativeKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */; };
 		20CC06A72671191C00C794F2 /* LEANJsCustomCodeExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2018EE931907671A00EC5312 /* LEANJsCustomCodeExecutor.m */; };
 		20CC8EFE2677BE470083982E /* WindowsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC8EFD2677BE470083982E /* WindowsController.swift */; };
 		20D77B701A2547E5008A938D /* LEANActionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20D77B6F1A2547E5008A938D /* LEANActionManager.m */; };
+		20DDA55B28BE706D00635E59 /* custom-icons.json in Resources */ = {isa = PBXBuildFile; fileRef = 20DDA55A28BE706D00635E59 /* custom-icons.json */; };
 		20E49F8219A2C30C00B9343E /* LEANWebViewPool.m in Sources */ = {isa = PBXBuildFile; fileRef = 20E49F8119A2C30C00B9343E /* LEANWebViewPool.m */; };
 		20F1F40D24F969F0004F680B /* custom_sound_1.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40824F969EF004F680B /* custom_sound_1.aff */; };
 		20F1F40E24F969F0004F680B /* custom_sound_4.aff in Resources */ = {isa = PBXBuildFile; fileRef = 20F1F40924F969EF004F680B /* custom_sound_4.aff */; };
@@ -89,7 +91,6 @@
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
 		39B8E8632858B04A00355B24 /* LEANRegexRulesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */; };
-		39B9701728589A3C00C77B69 /* BuildFile in Sources */ = {isa = PBXBuildFile; };
 		819367FAA49CF2412FB7D362 /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8070A7DACE54310282403AE6 /* Pods_GonativeIO.framework */; };
 		BB3C460E26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js in Resources */ = {isa = PBXBuildFile; fileRef = BB3C460D26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js */; };
 		BB6E68A9273C731E004846A3 /* GNJSBridgeInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6E68A8273C731E004846A3 /* GNJSBridgeInterface.m */; };
@@ -227,11 +228,13 @@
 		20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANDocumentSharer.m; sourceTree = "<group>"; };
 		20B8FFB51EB79D3F000F4CFA /* GNCustomHeaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GNCustomHeaders.h; sourceTree = "<group>"; };
 		20B8FFB61EB79D3F000F4CFA /* GNCustomHeaders.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GNCustomHeaders.m; sourceTree = "<group>"; };
+		20B927A928C4EFE9004D4C15 /* custom-icons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "custom-icons.ttf"; sourceTree = "<group>"; };
 		20C62B7B1D2708B7001D1646 /* GonativeIO-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GonativeIO-Bridging-Header.h"; sourceTree = "<group>"; };
 		20C62B7C1D2708B7001D1646 /* GoNativeKeychain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoNativeKeychain.swift; sourceTree = "<group>"; };
 		20CC8EFD2677BE470083982E /* WindowsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowsController.swift; sourceTree = "<group>"; };
 		20D77B6E1A2547E5008A938D /* LEANActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANActionManager.h; sourceTree = "<group>"; };
 		20D77B6F1A2547E5008A938D /* LEANActionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANActionManager.m; sourceTree = "<group>"; };
+		20DDA55A28BE706D00635E59 /* custom-icons.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "custom-icons.json"; sourceTree = "<group>"; };
 		20E471F520B75AE6004E0045 /* ZZFileChannelOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZFileChannelOutput.h; sourceTree = "<group>"; };
 		20E471F620B75AE7004E0045 /* ZZStoreOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZStoreOutputStream.h; sourceTree = "<group>"; };
 		20E471F720B75AE7004E0045 /* ZZDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZZDataProvider.h; sourceTree = "<group>"; };
@@ -387,6 +390,7 @@
 		2002B4A118A9991300495B3D /* LeanIOS */ = {
 			isa = PBXGroup;
 			children = (
+				20B927A928C4EFE9004D4C15 /* custom-icons.ttf */,
 				203E19DC26DE45C3006F0E6C /* GonativeIO.entitlements */,
 				20C23645193E32EA00F6ADF0 /* Config */,
 				20A13AA61905A3EC00B997DD /* Menus */,
@@ -470,6 +474,7 @@
 				BB3C460D26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js */,
 				BB6E68A7273C7308004846A3 /* GNJSBridgeInterface.h */,
 				BB6E68A8273C731E004846A3 /* GNJSBridgeInterface.m */,
+				20DDA55A28BE706D00635E59 /* custom-icons.json */,
 			);
 			path = LeanIOS;
 			sourceTree = "<group>";
@@ -722,6 +727,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20B927AA28C4F03E004D4C15 /* custom-icons.ttf in Resources */,
 				20F1F41024F969F0004F680B /* custom_sound_5.aff in Resources */,
 				2002B51318AB093900495B3D /* jquery-2.1.0.min.js in Resources */,
 				20A13ABC1905FAA600B997DD /* MenuChildNoIcon.xib in Resources */,
@@ -736,6 +742,7 @@
 				2075775A2195D80300ADD73A /* LaunchScreenNav.storyboard in Resources */,
 				209B321D193FB11A0052A7C6 /* localCache.zip in Resources */,
 				20F1F40D24F969F0004F680B /* custom_sound_1.aff in Resources */,
+				20DDA55B28BE706D00635E59 /* custom-icons.json in Resources */,
 				209A964523BAC508001906F1 /* appbeep.wav in Resources */,
 				BBD972F227AF17C500AD4FC0 /* GoogleService-Info.plist in Resources */,
 				208A9F42191AEBAD0049E664 /* appConfig.json in Resources */,
@@ -854,7 +861,6 @@
 				204D783F18F9A4F7005DD37E /* GTMNSString+HTML.m in Sources */,
 				20B6B55519AC4C2E004019C4 /* LEANDocumentSharer.m in Sources */,
 				20A7FF05197F6DDE006FDF44 /* LEANConfigUpdater.m in Sources */,
-				39B9701728589A3C00C77B69 /* BuildFile in Sources */,
 				209A964323BABF2D001906F1 /* GNBackgroundAudio.m in Sources */,
 				BB6E68A9273C731E004846A3 /* GNJSBridgeInterface.m in Sources */,
 				2002B4FB18A99C4100495B3D /* LEANRootViewController.m in Sources */,
