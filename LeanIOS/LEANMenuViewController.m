@@ -254,16 +254,17 @@
     
     // icon
     UILabel *icon;
-    if (menuItem[@"icon"] && [menuItem[@"icon"] isKindOfClass:[NSString class]]) {
-        if ([menuItem[@"icon"] hasPrefix:@"fas fa-"] || [menuItem[@"icon"] hasPrefix:@"fab fa-"]) {
-            // add fontawesome icon to imageView
+    NSString *iconName = menuItem[@"icon"];
+    if (iconName && [iconName isKindOfClass:[NSString class]]) {
+        if ([iconName hasPrefix:@"gonative-"]) {
+            UIImage *image = [UIImage imageNamed:iconName];
+            imageView.image = image;
+        } else {
+            // add fontawesome/material/custom icon to imageView
             icon = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageView.bounds.size.width, imageView.bounds.size.height)];
             icon.textAlignment = NSTextAlignmentCenter;
-            icon.attributedText = [[NSAttributedString alloc] initWithIconName:menuItem[@"icon"] color:[UIColor colorNamed:@"sidebarTextColor"] size:[UIFont systemFontSize]];
+            icon.attributedText = [[NSAttributedString alloc] initWithIconName:iconName color:[UIColor colorNamed:@"sidebarTextColor"] size:[UIFont systemFontSize]];
             [imageView addSubview:icon];
-        } else {
-            UIImage *image = [UIImage imageNamed:menuItem[@"icon"]];
-            imageView.image = image;
         }
     } else {
         imageView.image = nil;

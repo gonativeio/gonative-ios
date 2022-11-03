@@ -9,6 +9,7 @@
 #import <WebKit/WebKit.h>
 #import <MessageUI/MessageUI.h>
 #import <CoreLocation/CoreLocation.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import "LEANWebViewController.h"
 #import "LEANAppDelegate.h"
@@ -293,8 +294,7 @@ static NSInteger _currentWindows = 0;
     
     // set initial native theme
     NSString *mode = [[NSUserDefaults standardUserDefaults] objectForKey:@"darkMode"];
-    if (!mode) mode = appConfig.iosDarkMode;
-    [self setNativeTheme:mode];
+    [self setNativeTheme:mode ?: appConfig.iosDarkMode];
     
     if (![appConfig.iosStatusBarStyle isEqualToString:@"auto"]) {
         [self updateStatusBarStyle:appConfig.iosStatusBarStyle];
@@ -1289,6 +1289,12 @@ static NSInteger _currentWindows = 0;
 - (void)download:(nonnull WKDownload *)download decideDestinationUsingResponse:(nonnull NSURLResponse *)response suggestedFilename:(nonnull NSString *)suggestedFilename completionHandler:(nonnull void (^)(NSURL * _Nullable))completionHandler  API_AVAILABLE(ios(15.0)) {
     NSURL *url = [NSFileManager.defaultManager.temporaryDirectory URLByAppendingPathComponent:suggestedFilename isDirectory:YES];
     completionHandler(url);
+}
+
+-(void)webView:(WKWebView *)webView requestMediaCapturePermissionForOrigin:(WKSecurityOrigin *)origin initiatedByFrame:(WKFrameInfo *)frame type:(WKMediaCaptureType)type decisionHandler:(void (^)(WKPermissionDecision))decisionHandler  API_AVAILABLE(ios(15.0)){
+    [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
+        decisionHandler(granted ? WKPermissionDecisionGrant : WKPermissionDecisionDeny);
+    }];
 }
 
 -(void)initializeJSInterfaceInWebView:(WKWebView*) wkWebview
@@ -2449,7 +2455,6 @@ static NSInteger _currentWindows = 0;
         
         // set initial css theme
         NSString *mode = [[NSUserDefaults standardUserDefaults] objectForKey:@"darkMode"];
-        if (!mode) mode = appConfig.iosDarkMode;
         [self setCssTheme:mode andPersistData:NO];
         
         [self runJavascript:[LEANUtilities createJsForCallback:@"gonative_library_ready" data:nil]];
@@ -3011,38 +3016,42 @@ static NSInteger _currentWindows = 0;
 # pragma theme
 -(void)setNativeTheme:(NSString *)mode {
     if (@available(iOS 13.0, *)) {
-        GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-        UIWindow *window = [UIApplication sharedApplication].delegate.window;
-        if ([appConfig.iosTheme isEqualToString:@"dark"] || [mode isEqualToString:@"dark"]) {
-            window.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
+        if (mode == nil) {
+            return;
+        }
+        
+        if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+            mode = @"dark";
+        }
+        
+        if ([mode isEqualToString:@"dark"]) {
+            [UIApplication sharedApplication].delegate.window.overrideUserInterfaceStyle = UIUserInterfaceStyleDark;
             self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDarkContent];
         }
         else if ([mode isEqualToString:@"light"]) {
-            window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+            [UIApplication sharedApplication].delegate.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
             self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
         } else {
-            window.overrideUserInterfaceStyle = UIUserInterfaceStyleUnspecified;
+            [UIApplication sharedApplication].delegate.window.overrideUserInterfaceStyle = UIUserInterfaceStyleUnspecified;
             self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
         }
+        
         [self setNeedsStatusBarAppearanceUpdate];
     }
 }
 
 -(void)setCssTheme:(NSString *)mode andPersistData:(BOOL)persist {
-    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-    if ([mode isEqualToString:@"dark"]) {
-        [self setCssThemeAttribute:@"data-mode" withValue:mode];
-        [self setCssThemeAttribute:@"data-theme" withValue:mode];
+    if (mode == nil) {
+        return;
     }
-    else {
-        if (![mode isEqualToString:@"light"]) {
-            mode = @"auto";
-        }
-        UIWindow *window = UIApplication.sharedApplication.delegate.window;
-        NSString *value = window.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark || [appConfig.iosTheme isEqualToString:@"dark"] ? @"dark" : @"light";
-        [self setCssThemeAttribute:@"data-mode" withValue:mode];
-        [self setCssThemeAttribute:@"data-theme" withValue:value];
+    
+    if ([[GoNativeAppConfig sharedAppConfig].iosTheme isEqualToString:@"dark"]) {
+        mode = @"dark";
     }
+
+    [self setCssThemeAttribute:@"data-mode" withValue:mode];
+    [self setCssThemeAttribute:@"data-theme" withValue:mode];
+    
     if (persist) {
         [[NSUserDefaults standardUserDefaults] setValue:mode forKey:@"darkMode"];
         [[NSUserDefaults standardUserDefaults] synchronize];
