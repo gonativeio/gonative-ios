@@ -495,9 +495,9 @@
         }
         
         // user script for customCSS
-        NSString *customCss = [GoNativeAppConfig sharedAppConfig].customCss;
-        if ([customCss length] > 0) {
-            NSString *scriptSource = [NSString stringWithFormat:@"var gonative_styleElement = document.createElement('style'); document.documentElement.appendChild(gonative_styleElement); gonative_styleElement.textContent = %@;", [LEANUtilities jsWrapString:customCss]];
+        GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+        if ([appConfig.customCss length] > 0) {
+            NSString *scriptSource = [NSString stringWithFormat:@"var gonative_styleElement = document.createElement('style'); document.documentElement.appendChild(gonative_styleElement); gonative_styleElement.textContent = %@;", [LEANUtilities jsWrapString:appConfig.customCss]];
             
             WKUserScript *userScript = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:scriptSource injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
             [webview.configuration.userContentController addUserScript:userScript];
@@ -508,6 +508,16 @@
         if (GNJSBridgeFile){
             NSString *JSBridgeScript = [NSString stringWithContentsOfURL:GNJSBridgeFile encoding:NSUTF8StringEncoding error:nil];
             WKUserScript *GNJSBridgeLibrary = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:JSBridgeScript injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+            [webview.configuration.userContentController addUserScript:GNJSBridgeLibrary];
+        }
+        
+        if (appConfig.customJs) {
+            WKUserScript *GNJSBridgeLibrary = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:appConfig.customJs injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
+            [webview.configuration.userContentController addUserScript:GNJSBridgeLibrary];
+        }
+        
+        if (appConfig.iosCustomJs) {
+            WKUserScript *GNJSBridgeLibrary = [[NSClassFromString(@"WKUserScript") alloc] initWithSource:appConfig.iosCustomJs injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
             [webview.configuration.userContentController addUserScript:GNJSBridgeLibrary];
         }
             
