@@ -1379,6 +1379,10 @@ static NSInteger _currentWindows = 0;
             }];
         }
         
+        if ([@"/reload" isEqualToString:url.path]) {
+            [self refreshPage];
+        }
+        
         return;
     }
     

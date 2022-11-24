@@ -120,6 +120,9 @@ gonative.open = {
 gonative.webview = {
     clearCache: function(){
         addCommand("gonative://webview/clearCache");
+    },
+    reload: function () {
+        addCommand("gonative://webview/reload");
     }
 };
 

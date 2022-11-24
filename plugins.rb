@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cocoapods'
+require 'xcodeproj'
 require 'active_support/inflector'
 
 def use_plugins!
@@ -18,4 +19,11 @@ def use_plugins!
 
     pod "#{pod_name}/#{variant}"
   end
+end
+
+def default_app_target
+  proj_path = Dir.glob("*.xcodeproj").first
+  proj = Xcodeproj::Project.open(proj_path)
+
+  proj.targets.first.name
 end
