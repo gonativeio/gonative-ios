@@ -91,6 +91,7 @@
 		20F49C2719C7BE9100B46C5A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20F49C2619C7BE9100B46C5A /* CoreText.framework */; };
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
 		39B8E8632858B04A00355B24 /* LEANRegexRulesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */; };
+		39DE1B492935E67F0001E926 /* GNLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39DE1B482935E67F0001E926 /* GNLogManager.m */; };
 		819367FAA49CF2412FB7D362 /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8070A7DACE54310282403AE6 /* Pods_GonativeIO.framework */; };
 		BB3C460E26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js in Resources */ = {isa = PBXBuildFile; fileRef = BB3C460D26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js */; };
 		BB6E68A9273C731E004846A3 /* GNJSBridgeInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6E68A8273C731E004846A3 /* GNJSBridgeInterface.m */; };
@@ -279,6 +280,8 @@
 		39A2444927F1F4D400A6D222 /* nn-NO */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "nn-NO"; path = "nn-NO.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANRegexRulesManager.m; sourceTree = "<group>"; };
 		39B8E8622858B04A00355B24 /* LEANRegexRulesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANRegexRulesManager.h; sourceTree = "<group>"; };
+		39DE1B472935E66E0001E926 /* GNLogManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNLogManager.h; sourceTree = "<group>"; };
+		39DE1B482935E67F0001E926 /* GNLogManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNLogManager.m; sourceTree = "<group>"; };
 		6321B2F0F247B73B862558F0 /* Pods-GoNativeIOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.release.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		704A05039A2CBBE8CEFF1108 /* Pods-GonativeIO.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GonativeIO.debug.xcconfig"; path = "Target Support Files/Pods-GonativeIO/Pods-GonativeIO.debug.xcconfig"; sourceTree = "<group>"; };
 		8070A7DACE54310282403AE6 /* Pods_GonativeIO.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GonativeIO.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -423,6 +426,8 @@
 				20890D862383421800BC9335 /* BlobDownloader.js */,
 				20912D712380DB7600506807 /* GNFileWriterSharer.h */,
 				20912D722380DB7600506807 /* GNFileWriterSharer.m */,
+				39DE1B472935E66E0001E926 /* GNLogManager.h */,
+				39DE1B482935E67F0001E926 /* GNLogManager.m */,
 				2002B4AA18A9991300495B3D /* LEANAppDelegate.h */,
 				2002B4AB18A9991300495B3D /* LEANAppDelegate.m */,
 				20A7FF03197F6DDE006FDF44 /* LEANConfigUpdater.h */,
@@ -442,9 +447,9 @@
 				20F38BAC1B0D5AC700E90B4D /* LEANToolbarManager.h */,
 				20F38BAD1B0D5AC700E90B4D /* LEANToolbarManager.m */,
 				20D77B6E1A2547E5008A938D /* LEANActionManager.h */,
+				20D77B6F1A2547E5008A938D /* LEANActionManager.m */,
 				39B8E8622858B04A00355B24 /* LEANRegexRulesManager.h */,
 				39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */,
-				20D77B6F1A2547E5008A938D /* LEANActionManager.m */,
 				209B3217193FA36F0052A7C6 /* LEANUrlCache.h */,
 				209B3218193FA36F0052A7C6 /* LEANUrlCache.m */,
 				2018EE931907671A00EC4311 /* LEANUrlInspector.h */,
@@ -871,6 +876,7 @@
 				2002B4AC18A9991300495B3D /* LEANAppDelegate.m in Sources */,
 				20191C471923DF6400BF1549 /* LEANProfilePicker.m in Sources */,
 				204AE86318D4D60D009AF272 /* NSURL+LEANUtilities.m in Sources */,
+				39DE1B492935E67F0001E926 /* GNLogManager.m in Sources */,
 				20912D732380DB7600506807 /* GNFileWriterSharer.m in Sources */,
 				2092E238205C3E83005E8B71 /* GNConfigPreferences.m in Sources */,
 				2002B4A818A9991300495B3D /* main.m in Sources */,

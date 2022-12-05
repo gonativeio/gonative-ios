@@ -38,6 +38,7 @@
 #import "GonativeIO-Swift.h"
 #import <AppTrackingTransparency/ATTrackingManager.h>
 #import "GNJSBridgeInterface.h"
+#import "GNLogManager.h"
 @import GoNativeCore;
 
 #define OFFLINE_URL @"http://offline/"
@@ -112,8 +113,8 @@
 @property CLLocationManager *locationManager;
 @property GNFileWriterSharer *fileWriterSharer;
 @property NSString *connectivityCallback;
-@property BOOL javascriptTabs;
 @property GNBackgroundAudio *backgroundAudio;
+@property GNLogManager *logManager;
 
 @property NSNumber* statusBarStyle; // set via native bridge, only works if no navigation bar
 @property IBOutlet NSLayoutConstraint *topGuideConstraint; // modify constant to place content under status bar
@@ -167,7 +168,6 @@ static NSInteger _currentWindows = 0;
     self.sidebarItemsEnabled = YES;
     
     self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
-    self.javascriptTabs = NO;
     self.toolbarManager = [[LEANToolbarManager alloc] initWithToolbar:self.toolbar webviewController:self];
     self.JSBridgeInterface = [[GNJSBridgeInterface alloc] init];
     
@@ -556,7 +556,7 @@ static NSInteger _currentWindows = 0;
 
 - (void)checkNavigationForUrl:(NSURL*) url;
 {
-    if (!self.javascriptTabs) {
+    if (!self.tabManager.javascriptTabs) {
         if (![GoNativeAppConfig sharedAppConfig].tabMenus) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self hideTabBarAnimated:YES];
@@ -1386,6 +1386,11 @@ static NSInteger _currentWindows = 0;
         return;
     }
     
+    if ([@"weblogs" isEqualToString:url.host]) {
+        [self.logManager handleUrl:url query:query];
+        return;
+    }
+    
     if ([@"backgroundAudio" isEqualToString:url.host]) {
         if (!self.backgroundAudio) {
             self.backgroundAudio = [[GNBackgroundAudio alloc] init];
@@ -1616,34 +1621,22 @@ static NSInteger _currentWindows = 0;
     
     // Tabs
     if ([@"tabs" isEqualToString:url.host]) {
-        if ([url.path hasPrefix:@"/select/"]) {
-            NSArray *components = url.pathComponents;
-            if (components.count == 3 ) {
-                NSString *tabNumberString = components[2];
-                NSInteger tabNumber = [tabNumberString integerValue];
-                if (tabNumberString >= 0) {
-                    [self.tabManager selectTabNumber:tabNumber];
-                }
+        if ([@"/select" isEqualToString:url.path]) {
+            NSInteger tabNumber = [query[@"tabIndex"] integerValue];
+            if (tabNumber >= 0) {
+                [self.tabManager selectTabNumber:tabNumber];
             }
-        } else if ([@"/deselect" isEqualToString:url.path]) {
+            return;
+        }
+        
+        if ([@"/deselect" isEqualToString:url.path]) {
             [self.tabManager deselectTabs];
-        } else if ([@"/setTabs" isEqualToString:url.path]) {
-            NSDictionary *tabsJson;
-            NSError *jsonError;
-            if([query[@"tabs"] isKindOfClass:[NSString class]]){
-                tabsJson = [NSJSONSerialization JSONObjectWithData:[query[@"tabs"] dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&jsonError];
-                if (jsonError) {
-                    NSLog(@"Error parsing JSON: %@", jsonError);
-                    return;
-                }
-                if (![tabsJson isKindOfClass:[NSDictionary class]]) {
-                    NSLog(@"Not JSON object");
-                    return;
-                }
-            } else tabsJson = query[@"tabs"];
-            if(!tabsJson) return;
-            [self.tabManager setTabsWithJson:tabsJson];
-            self.javascriptTabs = YES;
+            return;
+        }
+        
+        if ([@"/setTabs" isEqualToString:url.path]) {
+            [self.tabManager setTabsWithJson:query];
+            return;
         }
     }
     
@@ -2341,6 +2334,7 @@ static NSInteger _currentWindows = 0;
         [self setNavigationButtonStatus];
 
         [LEANUtilities overrideGeolocation:self.wkWebview];
+        self.logManager = [[GNLogManager alloc] initWithWebview:self.wkWebview];
         
         // update navigation title
         if (appConfig.useWebpageTitle) {

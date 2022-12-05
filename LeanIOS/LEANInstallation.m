@@ -19,8 +19,6 @@
     NSString *publicKey = [GoNativeAppConfig sharedAppConfig].publicKey;
     if (!publicKey) publicKey = @"";
     
-    NSString *deviceRegKey = [GoNativeAppConfig sharedAppConfig].deviceRegKey;
-    
     BOOL debug = NO;
 #ifdef DEBUG
     debug = YES;
@@ -73,8 +71,6 @@
                            @"hardware": hardware,
                            @"installationId": [device.identifierForVendor UUIDString],
                            @"deviceName": device.name} mutableCopy];
-    
-    if (deviceRegKey) info[@"deviceRegKey"] = deviceRegKey;
     
     LEANAppDelegate *appDelegate = (LEANAppDelegate*)[UIApplication sharedApplication].delegate;
     info[@"isFirstLaunch"] = [NSNumber numberWithBool:appDelegate.isFirstLaunch];

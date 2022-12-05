@@ -88,13 +88,12 @@ gonative.sidebar = {
 
 gonative.tabNavigation = {
     selectTab: function (tabIndex){
-        addCommand("gonative://tabs/select/" + tabIndex);
+        addCommand("gonative://tabs/select", {tabIndex});
     },
     deselect: function (){
         addCommand("gonative://tabs/deselect");
     },
-    setTabs: function (tabsObject){
-        var params = {tabs: tabsObject};
+    setTabs: function (params){
         addCommand("gonative://tabs/setTabs", params);
     }
 };
@@ -125,6 +124,18 @@ gonative.webview = {
         addCommand("gonative://webview/reload");
     }
 };
+
+gonative.weblogs = {
+    enable: function(){
+        addCommand("gonative://weblogs/enable");
+    },
+    disable: function(){
+        addCommand("gonative://weblogs/disable");
+    },
+    print: function(params){
+        addCommand("gonative://weblogs/print", params);
+    }
+}
 
 gonative.config = {
     set: function(params){

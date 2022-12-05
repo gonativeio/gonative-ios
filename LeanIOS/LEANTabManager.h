@@ -18,4 +18,6 @@
 - (void)deselectTabs;
 - (void)setTabsWithJson:(NSDictionary*)json;
 - (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection;
+
+@property BOOL javascriptTabs; // disables auto-loading of tabs from config
 @end

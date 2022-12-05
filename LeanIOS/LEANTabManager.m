@@ -21,7 +21,6 @@
 @property NSString *currentMenuID;
 @property BOOL showTabBar;
 @property NSMutableDictionary<NSObject*, NSArray<NSPredicate*>*> *tabRegexCache;
-@property BOOL useJavascript; // disables auto-loading of tabs from config
 @end
 
 @implementation LEANTabManager
@@ -34,6 +33,7 @@
         self.tabBar.delegate = self;
         self.wvc = wvc;
         self.showTabBar = NO;
+        self.javascriptTabs = NO;
         self.tabRegexCache = [NSMutableDictionary dictionary];
     }
     return self;
@@ -41,7 +41,7 @@
 
 - (void)didLoadUrl:(NSURL *)url
 {
-    if (self.useJavascript) {
+    if (self.javascriptTabs) {
         [self autoSelectTabForUrl:url];
         return;
     }
@@ -84,10 +84,12 @@
         return;
     }
     
-    self.currentMenuID = menuID;
-    
     NSArray *menu = [GoNativeAppConfig sharedAppConfig].tabMenus[menuID];
-    [self setTabBarItems:menu];
+    
+    if (menu) {
+        self.currentMenuID = menuID;
+        [self setTabBarItems:menu];
+    }
 }
 
 - (void)setTabBarItems:(NSArray*) menu
@@ -280,23 +282,33 @@
     self.tabBar.selectedItem = nil;
 }
 
-- (void)setTabsWithJson:(NSDictionary*)json
+- (void)setTabsWithJson:(NSDictionary*)json;
 {
-    self.useJavascript = YES;
-    
-    NSArray *menu = json[@"items"];
-    if ([menu isKindOfClass:[NSArray class]]) {
-        [self setTabBarItems:menu];
-    }
-    
     NSNumber *showTabBar = json[@"enabled"];
-    if ([showTabBar isKindOfClass:[NSNumber class]]) {
-        if ([showTabBar boolValue]) {
+    if (![showTabBar isKindOfClass:[NSNumber class]]) {
+        return;
+    }
+    self.showTabBar = [showTabBar boolValue];
+    
+    if (self.showTabBar) {
+        NSArray *menu = json[@"items"];
+        if ([menu isKindOfClass:[NSArray class]]) {
+            [self setTabBarItems:menu];
             [self.wvc showTabBarAnimated:YES];
+            self.javascriptTabs = YES;
+            self.currentMenuID = nil;
         } else {
-            [self.wvc hideTabBarAnimated:YES];
+            NSString *menuID = json[@"tabMenu"];
+            if ([menuID isKindOfClass:[NSString class]] && menuID.length > 0) {
+                [self loadTabBarMenu:menuID];
+                self.javascriptTabs = NO;
+            }
+            [self.wvc showTabBarAnimated:YES];
         }
-        self.showTabBar = [showTabBar boolValue];
+    } else {
+        [self.wvc hideTabBarAnimated:YES];
+        self.javascriptTabs = YES;
+        self.currentMenuID = nil;
     }
 }
 @end

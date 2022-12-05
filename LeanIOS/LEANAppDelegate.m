@@ -155,18 +155,8 @@
         return UIInterfaceOrientationMaskAllButUpsideDown;
     }
 
-    // use appConfig.forceScreenOrientation
-    GoNativeScreenOrientation orientation = [GoNativeAppConfig sharedAppConfig].forceScreenOrientation;
-    if (orientation == GoNativeScreenOrientationPortrait) {
-        return UIInterfaceOrientationMaskPortrait;
-    }
-    else if (orientation == GoNativeScreenOrientationLandscape) {
-        return UIInterfaceOrientationMaskLandscape;
-    }
-    else {
-        // default implementation, use what the Info.plist specifies
-        return [application supportedInterfaceOrientationsForWindow:window];
-    }
+    // default implementation, use what the Info.plist specifies
+    return [application supportedInterfaceOrientationsForWindow:window];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
