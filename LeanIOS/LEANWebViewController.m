@@ -342,7 +342,21 @@ static NSInteger _currentWindows = 0;
         }
     }
     if (!self.initialUrl && appConfig.initialURL) {
-        self.initialUrl = appConfig.initialURL;
+        NSURLComponents *components = [[NSURLComponents alloc] initWithURL:appConfig.initialURL resolvingAgainstBaseURL:NO];
+        NSMutableArray *newQueryItems = [NSMutableArray array];
+        if (components.queryItems) {
+            [newQueryItems addObjectsFromArray:components.queryItems];
+        }
+        
+        NSArray *addedQueryItems = [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge getInitialUrlQueryItems];
+        [newQueryItems addObjectsFromArray:addedQueryItems];
+        
+        components.queryItems = newQueryItems;
+        if (newQueryItems.count > 0) {
+            self.initialUrl = [components URL];
+        } else {
+            self.initialUrl = appConfig.initialURL;
+        }
     }
     [self loadUrl:self.initialUrl];
     
