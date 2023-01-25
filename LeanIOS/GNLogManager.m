@@ -14,10 +14,14 @@
 
 @implementation GNLogManager
 
-- (instancetype)initWithWebview:(WKWebView *)webview {
+- (instancetype)initWithWebview:(WKWebView *)webview enabled:(BOOL)enabled {
     self = [super init];
     if (self) {
         self.webview = webview;
+        
+        if (enabled) {
+            [self enableLogging];
+        }
     }
     return self;
 }
@@ -27,53 +31,32 @@
     "var globalConsole = console; "
     "var console = { "
     "   log: function(data) { "
-    "      gonative.weblogs.print({ data, type: 'console.log' }) "
+    "      gonative.webconsolelogs.print({ data, type: 'console.log' }) "
     "   }, "
     "   error: function(data) { "
-    "      gonative.weblogs.print({ data, type: 'console.error' }) "
+    "      gonative.webconsolelogs.print({ data, type: 'console.error' }) "
     "   }, "
     "   warn: function(data) { "
-    "      gonative.weblogs.print({ data, type: 'console.warn' }) "
+    "      gonative.webconsolelogs.print({ data, type: 'console.warn' }) "
     "   }, "
     "   debug: function(data) { "
-    "      gonative.weblogs.print({ data, type: 'console.debug' }) "
+    "      gonative.webconsolelogs.print({ data, type: 'console.debug' }) "
     "   }, "
     "}; "
     " ";
     [self.webview evaluateJavaScript:js completionHandler:nil];
-    NSLog(@"WebLogs enabled");
-}
-
-- (void)disableLogging {
-    NSString *js = @" "
-    "console = globalConsole; "
-    " ";
-    [self.webview evaluateJavaScript:js completionHandler:nil];
-    NSLog(@"WebLogs disabled");
+    NSLog(@"Web console logs enabled");
 }
 
 - (void)handleUrl:(NSURL *)url query:(NSDictionary *)query {
-    if (![url.host isEqualToString:@"weblogs"]) {
+    if (![url.host isEqualToString:@"webconsolelogs"] || ![url.path isEqualToString:@"/print"]) {
         return;
     }
     
-    if ([url.path isEqualToString:@"/enable"]) {
-        [self enableLogging];
-        return;
-    }
-    
-    if ([url.path isEqualToString:@"/disable"]) {
-        [self disableLogging];
-        return;
-    }
-    
-    if ([url.path isEqualToString:@"/print"]) {
-        @try {
-            NSLog(@"[%@] %@", query[@"type"], query[@"data"]);
-        } @catch(id exception) {
-            // Do nothing
-        }
-        return;
+    @try {
+        NSLog(@"[%@] %@", query[@"type"], query[@"data"]);
+    } @catch(id exception) {
+        // Do nothing
     }
 }
 

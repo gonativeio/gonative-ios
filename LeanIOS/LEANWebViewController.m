@@ -1400,7 +1400,7 @@ static NSInteger _currentWindows = 0;
         return;
     }
     
-    if ([@"weblogs" isEqualToString:url.host]) {
+    if ([@"webconsolelogs" isEqualToString:url.host]) {
         [self.logManager handleUrl:url query:query];
         return;
     }
@@ -2290,6 +2290,7 @@ static NSInteger _currentWindows = 0;
 
 - (void)didStartLoad
 {
+    self.startedLoading = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![GoNativeAppConfig sharedAppConfig].pullToRefresh) {
             [self removePullRefresh];
@@ -2348,7 +2349,7 @@ static NSInteger _currentWindows = 0;
         [self setNavigationButtonStatus];
 
         [LEANUtilities overrideGeolocation:self.wkWebview];
-        self.logManager = [[GNLogManager alloc] initWithWebview:self.wkWebview];
+        self.logManager = [[GNLogManager alloc] initWithWebview:self.wkWebview enabled:appConfig.enableWebConsoleLogs];
         
         // update navigation title
         if (appConfig.useWebpageTitle) {

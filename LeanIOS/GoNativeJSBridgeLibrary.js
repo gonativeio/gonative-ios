@@ -125,15 +125,9 @@ gonative.webview = {
     }
 };
 
-gonative.weblogs = {
-    enable: function(){
-        addCommand("gonative://weblogs/enable");
-    },
-    disable: function(){
-        addCommand("gonative://weblogs/disable");
-    },
+gonative.webconsolelogs = {
     print: function(params){
-        addCommand("gonative://weblogs/print", params);
+        addCommand("gonative://webconsolelogs/print", params);
     }
 }
 

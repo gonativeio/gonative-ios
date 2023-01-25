@@ -76,15 +76,22 @@
     info[@"isFirstLaunch"] = [NSNumber numberWithBool:appDelegate.isFirstLaunch];
     
 #if !(TARGET_IPHONE_SIMULATOR)
-    NSString *carrierName = nil;
     CTTelephonyNetworkInfo *netinfo = [[CTTelephonyNetworkInfo alloc] init];
+    NSMutableArray *carrierNames = [NSMutableArray array];
     if (netinfo) {
-        CTCarrier *carrier = netinfo.subscriberCellularProvider;
-        carrierName = carrier.carrierName;
+        NSDictionary<NSString *, CTCarrier *> *carriers = netinfo.serviceSubscriberCellularProviders;
+        NSString *carrierName = [[carriers allValues] firstObject].carrierName;
+        if (carrierName) {
+            info[@"carrierName"] = carrierName;
+        }
+        
+        [carriers enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, CTCarrier * _Nonnull obj, BOOL * _Nonnull stop) {
+            if (obj.carrierName) {
+                [carrierNames addObject:obj.carrierName];
+            }
+        }];
     }
-    if (carrierName) {
-        info[@"carrierName"] = carrierName;
-    }
+    info[@"carrierNames"] = carrierNames;
 #endif
     
     return info;

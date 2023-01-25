@@ -12,7 +12,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface GNLogManager : NSObject
-- (instancetype)initWithWebview:(WKWebView *)webview;
+- (instancetype)initWithWebview:(WKWebView *)webview enabled:(BOOL)enabled;
 - (void)handleUrl:(NSURL *)url query:(NSDictionary *)query;
 
 @end
