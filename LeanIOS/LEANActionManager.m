@@ -9,11 +9,13 @@
 #import "LEANActionManager.h"
 #import "GonativeIO-Swift.h"
 
+#define ICON_SIZE 28
+
 @interface LEANActionManager ()
 @property (weak, nonatomic) LEANWebViewController *wvc;
 @property NSString *currentMenuID;
-@property NSMutableArray *urls;
 @property NSMutableArray *buttons;
+@property NSMutableArray *urls;
 @end
 
 @implementation LEANActionManager
@@ -29,40 +31,32 @@
 
 - (void)didLoadUrl:(NSURL *)url
 {
-    NSArray *actionRegexes = [GoNativeAppConfig sharedAppConfig].actionRegexes;
-    if (!actionRegexes || !url) return;
+    if (!url) {
+        return;
+    }
     
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     NSString *urlString = [url absoluteString];
     
-    for (NSUInteger i = 0; i < [actionRegexes count]; i++) {
-        NSPredicate *predicate = actionRegexes[i];
-        BOOL matches = NO;
+    for (NSUInteger i = 0; i < appConfig.actionSelection.count; i++) {
+        ActionSelection *actionSelection = appConfig.actionSelection[i];
         @try {
-            matches = [predicate evaluateWithObject:urlString];
+            if ([actionSelection.regex evaluateWithObject:urlString]) {
+                [self setMenuID:actionSelection.identifier];
+                return;
+            }
         }
         @catch (NSException* exception) {
             NSLog(@"Error in action regex: %@", exception);
-        }
-
-        if (matches) {
-            [self setMenuID:[GoNativeAppConfig sharedAppConfig].actionIDs[i]];
-            return;
         }
     }
     
     [self setMenuID:nil];
 }
 
-- (void)setMenuID:(NSString*)menuID
+- (void)setMenuID:(NSString *)menuID
 {
-    BOOL changed;
-    if (self.currentMenuID == nil && menuID == nil) {
-        changed = NO;
-    } else {
-        changed = ![self.currentMenuID isEqualToString:menuID];
-    }
-    
-    if (changed) {
+    if (![self.currentMenuID isEqualToString:menuID] && (self.currentMenuID != nil || menuID != nil)) {
         self.currentMenuID = menuID;
         [self createButtonItems];
     }
@@ -75,50 +69,77 @@
         return;
     }
     
-    NSMutableArray *newButtonItems = [NSMutableArray array];
-    self.urls = [NSMutableArray array];
+    self.items = [NSMutableArray array];
     self.buttons = [NSMutableArray array];
+    self.urls = [NSMutableArray array];
     
     NSArray *menu = [GoNativeAppConfig sharedAppConfig].actions[self.currentMenuID];
     for (NSDictionary *entry in menu) {
         NSString *system = entry[@"system"];
+        NSString *label = entry[@"label"];
+        NSString *icon = entry[@"icon"];
+        NSString *url = entry[@"url"];
+        
         if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"share"]) {
-            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self.wvc action:@selector(sharePage:)];
-            [newButtonItems insertObject:button atIndex:0];
-        } else {
-            NSString *label = entry[@"label"];
-            NSString *iconName = entry[@"icon"];
-            NSString *url = entry[@"url"];
-            // the tint color is automatically applied to the button, so a black icon is enough
-            UIImage *iconImage = [LEANIcons imageForIconIdentifier:iconName size:28 color:[UIColor blackColor]];
-            
-            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-            [button setImage:iconImage forState:UIControlStateNormal];
-            [button addTarget:self action:@selector(itemWasSelected:)
-                forControlEvents:UIControlEventTouchUpInside];
-            [button setFrame:CGRectMake(0, 0, 36, 30)];
-            
-            UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
-            
-            barButtonItem.accessibilityLabel = label;
-            [newButtonItems insertObject:barButtonItem atIndex:0];
-            [self.buttons insertObject:button atIndex:0];
-            if (!url) {
-                url = @"";
-            }
-            [self.urls insertObject:url atIndex:0];
+            [self createButtonWithIcon:icon defaultIcon:@"md mi-ios-share" label:label action:@selector(sharePage:)];
+            continue;
         }
+        
+        if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"refresh"]) {
+            [self createButtonWithIcon:icon defaultIcon:@"fas fa-redo-alt" label:label action:@selector(refreshPressed:)];
+            continue;
+        }
+        
+        if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"search"]) {
+            [self createButtonWithIcon:icon defaultIcon:@"fas fa-search" label:label action:@selector(searchPressed:)];
+            continue;
+        }
+        
+        [self createButtonWithIcon:icon label:label url:url];
     }
-    
-    self.items = newButtonItems;
 }
 
-- (void)itemWasSelected:(id)sender
-{
+- (void)createButtonWithIcon:(NSString *)icon defaultIcon:(NSString *)defaultIcon label:(NSString *)label action:(SEL)action {
+    if (![icon isKindOfClass:[NSString class]] && icon.length == 0) {
+        icon = defaultIcon;
+    }
+    
+    // The tint color is automatically applied to the button, so a black icon is enough
+    UIImage *iconImage = [LEANIcons imageForIconIdentifier:icon size:ICON_SIZE color:[UIColor blackColor]];
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setImage:iconImage forState:UIControlStateNormal];
+    [button addTarget:self.wvc action:action forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:CGRectMake(0, 0, 36, 30)];
+    
+    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    [buttonItem setAccessibilityLabel:label];
+    
+    [self.items insertObject:buttonItem atIndex:0];
+}
+
+- (void)createButtonWithIcon:(NSString *)icon label:(NSString *)label url:(NSString *)url {
+    // The tint color is automatically applied to the button, so a black icon is enough
+    UIImage *iconImage = [LEANIcons imageForIconIdentifier:icon size:ICON_SIZE color:[UIColor blackColor]];
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    [button setImage:iconImage forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(itemWasSelected:) forControlEvents:UIControlEventTouchUpInside];
+    [button setFrame:CGRectMake(0, 0, 36, 30)];
+    
+    UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
+    [buttonItem setAccessibilityLabel:label];
+    
+    [self.items insertObject:buttonItem atIndex:0];
+    [self.buttons insertObject:button atIndex:0];
+    [self.urls insertObject:url ? url : @"" atIndex:0];
+}
+
+- (void)itemWasSelected:(id)sender {
     NSUInteger index = [self.buttons indexOfObject:sender];
-    if (index != NSNotFound && index < [self.urls count]) {
-        NSString *url = self.urls[index];
-        [self.wvc loadUrlString:url];
+    
+    if (index != NSNotFound && index < self.urls.count) {
+        [self.wvc loadUrlString:self.urls[index]];
     }
 }
 

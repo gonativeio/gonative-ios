@@ -10,7 +10,7 @@
 #import "LEANWebViewController.h"
 
 @interface LEANActionManager : NSObject
-@property NSArray *items;
+@property NSMutableArray<UIBarButtonItem *> *items;
 
 - (instancetype)initWithWebviewController:(LEANWebViewController*)wvc;
 - (void)didLoadUrl:(NSURL*)url;

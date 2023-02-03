@@ -44,8 +44,6 @@
 #define OFFLINE_URL @"http://offline/"
 #define LOCAL_FILE_URL @"http://localFile/"
 
-#define NAV_BUTTON_SIZE 36
-
 @interface LEANWebViewController () <UISearchBarDelegate, UIActionSheetDelegate, UIScrollViewDelegate, UITabBarDelegate, WKNavigationDelegate, WKUIDelegate, WKDownloadDelegate, MFMailComposeViewControllerDelegate, CLLocationManagerDelegate, GNJavascriptRunner>
 
 @property WKWebView *wkWebview;
@@ -72,13 +70,10 @@
 @property NSArray *defaultToolbarItems;
 @property UIBarButtonItem *customActionButton;
 @property NSArray *customActions;
-@property UIBarButtonItem *searchButton;
 
-@property UISearchBar *searchBar;
 @property UIView *statusBarBackground;
 @property UIVisualEffectView *blurEffectView;
 @property UIBarButtonItem *shareButton;
-@property UIBarButtonItem *refreshButton;
 @property UIRefreshControl *pullRefreshControl;
 
 @property BOOL keyboardVisible;
@@ -218,36 +213,6 @@ static NSInteger _currentWindows = 0;
     
     [self updateStatusBarBackgroundColor:[UIColor colorNamed:@"statusBarBackgroundColor"] enableBlurEffect:appConfig.iosEnableBlurInStatusBar];
     
-    if (appConfig.searchTemplateURL) {
-        UIImage *iconImage;
-        if (@available(iOS 13.0, *)) {
-            iconImage = [UIImage systemImageNamed:@"magnifyingglass"];
-        } else {
-            iconImage = [LEANIcons imageForIconIdentifier:@"fas fa-search" size:28 color:[UIColor blackColor]];
-        }
-        
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button setImage:iconImage forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(searchPressed:)
-            forControlEvents:UIControlEventTouchUpInside];
-        [button setFrame:CGRectMake(0, 0, NAV_BUTTON_SIZE, 30)];
-        
-        self.searchButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-        
-        self.searchBar = [[UISearchBar alloc] init];
-        self.searchBar.showsCancelButton = NO;
-        self.searchBar.delegate = self;
-    }
-    
-    if (appConfig.showRefreshButton) {
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-        [button setImage:[UIImage imageNamed:@"refresh"] forState:UIControlStateNormal];
-        [button addTarget:self action:@selector(refreshPressed:)
-            forControlEvents:UIControlEventTouchUpInside];
-        [button setFrame:CGRectMake(0, 0, NAV_BUTTON_SIZE, 30)];
-        self.refreshButton = [[UIBarButtonItem alloc] initWithCustomView:button];
-    }
-    
     self.sidebarItemsEnabled = appConfig.showNavigationMenu && [self isRootWebView];
     [self showNavigationItemButtonsAnimated:NO];
     [self buildDefaultToobar];
@@ -267,6 +232,8 @@ static NSInteger _currentWindows = 0;
     
     // to help fix status bar issues when rotating in full-screen video
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object:nil];
+    
+    self.actionManager = [[LEANActionManager alloc] initWithWebviewController:self];
     
     self.regexRulesManager = [[LEANRegexRulesManager alloc] init];
     
@@ -591,15 +558,6 @@ static NSInteger _currentWindows = 0;
     });
 }
 
-- (void)checkActionsForUrl:(NSURL*) url;
-{
-    if (!self.actionManager) {
-        self.actionManager = [[LEANActionManager alloc] initWithWebviewController:self];
-    }
-    
-    [self.actionManager didLoadUrl:url];
-}
-
 - (void)checkNavigationTitleImageForUrl:(NSURL*)url
 {
     // check if navbar titles has regex match
@@ -779,13 +737,17 @@ static NSInteger _currentWindows = 0;
 
 - (void) searchPressed:(id)sender
 {
-    self.navigationItem.titleView = self.searchBar;
+    UISearchBar *searchBar = [[UISearchBar alloc] init];
+    searchBar.showsCancelButton = NO;
+    searchBar.delegate = self;
+    
+    self.navigationItem.titleView = searchBar;
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"button-cancel", @"Button: Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(searchCanceled)];
     
     [self.navigationItem setHidesBackButton:YES animated:YES];
     [self.navigationItem setLeftBarButtonItems:nil animated:YES];
     [self.navigationItem setRightBarButtonItems:@[cancelButton] animated:YES];
-    [self.searchBar becomeFirstResponder];
+    [searchBar becomeFirstResponder];
 }
 
 - (void) sharePressed:(UIBarButtonItem*)sender
@@ -795,35 +757,19 @@ static NSInteger _currentWindows = 0;
 
 - (void) showNavigationItemButtonsAnimated:(BOOL)animated
 {
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:4];
+    NSMutableArray *buttons = [NSMutableArray array];
+    NSMutableArray *leftButtons = [NSMutableArray array];
+    NSMutableArray *rightButtons = [NSMutableArray array];
     
-    if (self.refreshButton)
-        [buttons addObject:self.refreshButton];
-    
-    if (self.shareButton)
-        [buttons addObject:self.shareButton];
-    
-    if (self.actionManager)
+    if (self.actionManager.items)
         [buttons addObjectsFromArray:self.actionManager.items];
     
-    if (self.searchButton)
-        [buttons addObject:self.searchButton];
-    
-    BOOL showSidebarNav = self.sidebarItemsEnabled && self.navButton;
-    if (showSidebarNav)
+    if (self.sidebarItemsEnabled && self.navButton)
         [buttons addObject:self.navButton];
     
-    NSMutableArray *leftButtons = [[NSMutableArray alloc] initWithCapacity:4];
-    NSMutableArray *rightButtons = [[NSMutableArray alloc] initWithCapacity:4];
-    
-    // if it's only the sidebar nav button, put it in the left navigation
-    if ([buttons count] == 1 && showSidebarNav) {
-        [leftButtons insertObject:self.navButton atIndex:0];
-    }
-    // if there are 2 buttons, put them in the right corner
-    else if ([buttons count] == 2 && !showSidebarNav) {
-        [rightButtons addObject:buttons[0]];
-        [rightButtons addObject:buttons[1]];
+    // put sidebar button to the left
+    if (buttons.count == 1 && self.sidebarItemsEnabled && self.navButton) {
+        [leftButtons addObject:self.navButton];
     }
     // split buttons between the left and right navigation items
     else {
@@ -838,8 +784,9 @@ static NSInteger _currentWindows = 0;
     }
     
     // do not override the back button
-    if (self.urlLevel <= 1)
+    if (self.urlLevel <= 1) {
         [self.navigationItem setLeftBarButtonItems:leftButtons animated:animated];
+    }
     
     [self.navigationItem setRightBarButtonItems:rightButtons animated:animated];
     [self.navigationItem setHidesBackButton:NO animated:animated];
@@ -1143,6 +1090,7 @@ static NSInteger _currentWindows = 0;
 #pragma mark - Search Bar Delegate
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    /*
     NSString *searchText = [searchBar.text stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     NSString *searchTemplate = [GoNativeAppConfig sharedAppConfig].searchTemplateURL;
     NSURL *url = [NSURL URLWithString:[searchTemplate stringByAppendingString:searchText]];
@@ -1151,6 +1099,7 @@ static NSInteger _currentWindows = 0;
     
     self.navigationItem.titleView = self.defaultTitleView;
     [self showNavigationItemButtonsAnimated:YES];
+     */
 }
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar
@@ -2390,7 +2339,7 @@ static NSInteger _currentWindows = 0;
         [self checkNavigationForUrl: url];
         
         // actions
-        [self checkActionsForUrl: url];
+        [self.actionManager didLoadUrl:url];
         
         // post-load js
         if (self.postLoadJavascript) {
