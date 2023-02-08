@@ -21,7 +21,16 @@
     }
     if ([topController isKindOfClass:[LEANRootViewController class]]) {
         LEANRootViewController *rvc = (LEANRootViewController *)topController;
-        return [rvc webViewController];
+        
+        // Get top most WebViewController
+        LEANWebViewController *wvc;
+        NSArray<UIViewController *> *viewControllers = rvc.webViewController.navigationController.viewControllers;
+        for (int i = 0; i < viewControllers.count; i++) {
+            if ([viewControllers[i] isKindOfClass:[LEANWebViewController class]]) {
+                wvc = (LEANWebViewController *)viewControllers[i];
+            }
+        }
+        return wvc;
     }
     return nil;
 }
