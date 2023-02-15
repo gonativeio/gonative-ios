@@ -1090,16 +1090,14 @@ static NSInteger _currentWindows = 0;
 #pragma mark - Search Bar Delegate
 - (void) searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    /*
     NSString *searchText = [searchBar.text stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    NSString *searchTemplate = [GoNativeAppConfig sharedAppConfig].searchTemplateURL;
+    NSString *searchTemplate = self.actionManager.currentSearchTemplateUrl;
     NSURL *url = [NSURL URLWithString:[searchTemplate stringByAppendingString:searchText]];
 
     [self loadUrl:url];
     
     self.navigationItem.titleView = self.defaultTitleView;
     [self showNavigationItemButtonsAnimated:YES];
-     */
 }
 
 - (void) searchBarCancelButtonClicked:(UISearchBar *)searchBar

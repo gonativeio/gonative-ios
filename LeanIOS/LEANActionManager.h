@@ -11,6 +11,7 @@
 
 @interface LEANActionManager : NSObject
 @property NSMutableArray<UIBarButtonItem *> *items;
+@property(readonly, assign) NSString *currentSearchTemplateUrl;
 
 - (instancetype)initWithWebviewController:(LEANWebViewController*)wvc;
 - (void)didLoadUrl:(NSURL*)url;

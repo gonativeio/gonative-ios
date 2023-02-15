@@ -16,6 +16,7 @@
 @property NSString *currentMenuID;
 @property NSMutableArray *buttons;
 @property NSMutableArray *urls;
+@property(readwrite, assign) NSString *currentSearchTemplateUrl;
 @end
 
 @implementation LEANActionManager
@@ -66,6 +67,7 @@
 {
     if (!self.currentMenuID) {
         self.items = nil;
+        self.currentSearchTemplateUrl = nil;
         return;
     }
     
@@ -92,6 +94,7 @@
         
         if ([system isKindOfClass:[NSString class]] && [system isEqualToString:@"search"]) {
             [self createButtonWithIcon:icon defaultIcon:@"fas fa-search" label:label action:@selector(searchPressed:)];
+            self.currentSearchTemplateUrl = entry[@"url"];
             continue;
         }
         
