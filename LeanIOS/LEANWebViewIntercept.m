@@ -202,6 +202,7 @@ static LEANUrlCache *urlCache;
         NSString *customCss = [GoNativeAppConfig sharedAppConfig].customCss;
         NSString *stringViewport = [GoNativeAppConfig sharedAppConfig].stringViewport;
         NSNumber *viewportWidth = [GoNativeAppConfig sharedAppConfig].forceViewportWidth;
+        NSString *pinchToZoom = [GoNativeAppConfig sharedAppConfig].pinchToZoom ? @"yes" : @"no";
         
         NSMutableString *newString = [[htmlString substringToIndex:insertPoint.location] mutableCopy];
         if (customCss) {
@@ -217,7 +218,7 @@ static LEANUrlCache *urlCache;
             [newString appendString:@"\">"];
         }
         if (viewportWidth) {
-            [newString appendFormat:@"<meta name=\"viewport\" content=\"width=%@,user-scalable=no\"/>", viewportWidth];
+            [newString appendFormat:@"<meta name=\"viewport\" content=\"width=%@,user-scalable=%@\"/>", viewportWidth, pinchToZoom];
         }
         
         if (!stringViewport && !viewportWidth) {
@@ -225,10 +226,10 @@ static LEANUrlCache *urlCache;
             NSString *origViewport = [LEANWebViewIntercept extractViewport:htmlString];
             
             if ([origViewport length] > 0) {
-                [newString appendFormat:@"<meta name=\"viewport\" content=\"%@,user-scalable=no\"/>", origViewport];
+                [newString appendFormat:@"<meta name=\"viewport\" content=\"%@,user-scalable=%@\"/>", origViewport, pinchToZoom];
             }
             else {
-                [newString appendFormat:@"<meta name=\"viewport\" content=\"user-scalable=no\"/>"];
+                [newString appendFormat:@"<meta name=\"viewport\" content=\"user-scalable=%@\"/>", pinchToZoom];
             }
         }
         
