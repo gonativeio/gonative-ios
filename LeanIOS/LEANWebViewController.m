@@ -118,7 +118,7 @@
 @property GNJSBridgeInterface *JSBridgeInterface;
 @property NSString *JSBridgeScript;
 
-@property BOOL wvGoBack;
+@property NSUInteger prevBackHistoryCount;
 
 @end
 
@@ -892,7 +892,6 @@ static NSInteger _currentWindows = 0;
 - (void)goBack
 {
     if (self.wkWebview && [self.wkWebview canGoBack]) {
-        self.wvGoBack = YES;
         [self.wkWebview goBack];
     }
 }
@@ -1114,8 +1113,11 @@ static NSInteger _currentWindows = 0;
 
 #pragma mark - WebView Delegate
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction preferences:(nonnull WKWebpagePreferences *)preferences decisionHandler:(nonnull void (^)(WKNavigationActionPolicy, WKWebpagePreferences * _Nonnull))decisionHandler  API_AVAILABLE(ios(13.0)) {
-    BOOL wvGoBack = self.wvGoBack;
-    self.wvGoBack = NO;
+    
+    // Do not modify the request if going back
+    NSUInteger newBackHistoryCount = [self.wkWebview backForwardList].backList.count;
+    BOOL didGoBack = self.prevBackHistoryCount > 0 && newBackHistoryCount < self.prevBackHistoryCount;
+    self.prevBackHistoryCount = newBackHistoryCount;
     
     // is target="_blank" and we are allowing window open? Always accept, skipping logic. This makes
     // target="_blank" behave like window.open
@@ -1133,7 +1135,8 @@ static NSInteger _currentWindows = 0;
     
     [[LEANDocumentSharer sharedSharer] receivedRequest:navigationAction.request];
     
-    if (!wvGoBack && navigationAction.targetFrame.isMainFrame &&
+    if (!didGoBack &&
+        navigationAction.targetFrame.isMainFrame &&
         ![OFFLINE_URL isEqualToString:navigationAction.request.URL.absoluteString] &&
         [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
         NSURLRequest *modifiedRequest = [GNCustomHeaders modifyRequest:navigationAction.request];
@@ -1747,7 +1750,8 @@ static NSInteger _currentWindows = 0;
         // for some reason we will get an empty url before the actual blob url on iOS 11
         return NO;
     }
-    if ([url.scheme isEqualToString:@"blob"]) {
+    // Only start blob downloads on the main frame
+    if ([url.scheme isEqualToString:@"blob"] && isMainFrame) {
         [self.fileWriterSharer downloadBlobUrl:urlString];
         return NO;
     }
