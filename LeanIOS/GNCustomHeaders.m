@@ -10,6 +10,11 @@
 
 static NSString * kOurRequestProperty = @"io.gonative.ios.GNCustomHeaders";
 
+@interface GNCustomHeaders()
+@property NSArray<WKBackForwardListItem *> *backHistory;
+@property NSArray<WKBackForwardListItem *> *forwardHistory;
+@end
+
 @implementation GNCustomHeaders
 +(NSDictionary*)getCustomHeaders
 {
@@ -53,11 +58,11 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.GNCustomHeaders";
     return value;
 }
 
-+(NSURLRequest*)modifyRequest:(NSURLRequest*)request
+-(NSURLRequest*)modifyRequest:(NSURLRequest*)request
 {
     NSMutableURLRequest *modifiedRequest = [request mutableCopy];
     
-    NSDictionary *headers = [self getCustomHeaders];
+    NSDictionary *headers = [GNCustomHeaders getCustomHeaders];
     for (NSString *key in headers) {
         [modifiedRequest setValue:headers[key] forHTTPHeaderField:key];
     }
@@ -65,24 +70,53 @@ static NSString * kOurRequestProperty = @"io.gonative.ios.GNCustomHeaders";
     return modifiedRequest;
 }
 
-+(BOOL)shouldModifyRequest:(NSURLRequest *)request
+-(BOOL)shouldModifyRequest:(NSURLRequest *)request webview:(WKWebView *)webview
 {
+    BOOL goingBack = [self isBackNavigationRequest:request webview:webview];
+    BOOL goingForward = [self isForwardNavigationRequest:request webview:webview];
+    
+    if (goingBack || goingForward) {
+        return NO;
+    }
+    
     if (request.HTTPMethod && ![request.HTTPMethod isEqualToString:@"GET"]) {
         return NO;
     }
     
-    NSDictionary *headers = [self getCustomHeaders];
-    if (!headers || headers.count == 0) return NO;
+    NSDictionary *headers = [GNCustomHeaders getCustomHeaders];
+    if (!headers || headers.count == 0) {
+        return NO;
+    }
     
-    BOOL missingField = NO;
     for (NSString *key in headers) {
         if (![request valueForHTTPHeaderField:key]) {
-            missingField = YES;
-            break;
+            return YES;
         }
     }
     
-    return missingField;
+    return NO;
+}
+
+-(BOOL)isBackNavigationRequest:(NSURLRequest *)request webview:(WKWebView *)webview
+{
+    NSArray<WKBackForwardListItem *> *newBackHistory = [webview backForwardList].backList;
+    NSArray<WKBackForwardListItem *> *prevBackHistory = self.backHistory;
+    
+    self.backHistory = newBackHistory;
+    
+    NSString *lastItemUrl = [prevBackHistory lastObject].URL.absoluteString;
+    return newBackHistory.count < prevBackHistory.count && [lastItemUrl isEqualToString:request.URL.absoluteString];
+}
+
+-(BOOL)isForwardNavigationRequest:(NSURLRequest *)request webview:(WKWebView *)webview
+{
+    NSArray<WKBackForwardListItem *> *newForwardHistory = [webview backForwardList].forwardList;
+    NSArray<WKBackForwardListItem *> *prevForwardHistory = self.forwardHistory;
+    
+    self.forwardHistory = newForwardHistory;
+    
+    NSString *lastItemUrl = [prevForwardHistory lastObject].URL.absoluteString;
+    return newForwardHistory.count < prevForwardHistory.count && [lastItemUrl isEqualToString:request.URL.absoluteString];
 }
 
 @end

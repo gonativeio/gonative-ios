@@ -110,6 +110,7 @@
 @property NSString *connectivityCallback;
 @property GNBackgroundAudio *backgroundAudio;
 @property GNLogManager *logManager;
+@property GNCustomHeaders *customHeadersManager;
 
 @property NSNumber* statusBarStyle; // set via native bridge, only works if no navigation bar
 @property IBOutlet NSLayoutConstraint *topGuideConstraint; // modify constant to place content under status bar
@@ -165,6 +166,8 @@ static NSInteger _currentWindows = 0;
     self.tabManager = [[LEANTabManager alloc] initWithTabBar:self.tabBar webviewController:self];
     self.toolbarManager = [[LEANToolbarManager alloc] initWithToolbar:self.toolbar webviewController:self];
     self.JSBridgeInterface = [[GNJSBridgeInterface alloc] init];
+    
+    self.customHeadersManager = [[GNCustomHeaders alloc] init];
     
     // set title to application title
     if ([appConfig.navTitles count] == 0) {
@@ -1113,11 +1116,7 @@ static NSInteger _currentWindows = 0;
 
 #pragma mark - WebView Delegate
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction preferences:(nonnull WKWebpagePreferences *)preferences decisionHandler:(nonnull void (^)(WKNavigationActionPolicy, WKWebpagePreferences * _Nonnull))decisionHandler  API_AVAILABLE(ios(13.0)) {
-    
-    // Do not modify the request if going back
-    NSUInteger newBackHistoryCount = [self.wkWebview backForwardList].backList.count;
-    BOOL didGoBack = self.prevBackHistoryCount > 0 && newBackHistoryCount < self.prevBackHistoryCount;
-    self.prevBackHistoryCount = newBackHistoryCount;
+    BOOL shouldModifyRequest = [self.customHeadersManager shouldModifyRequest:navigationAction.request webview:webView];
     
     // is target="_blank" and we are allowing window open? Always accept, skipping logic. This makes
     // target="_blank" behave like window.open
@@ -1135,11 +1134,10 @@ static NSInteger _currentWindows = 0;
     
     [[LEANDocumentSharer sharedSharer] receivedRequest:navigationAction.request];
     
-    if (!didGoBack &&
+    if (shouldModifyRequest &&
         navigationAction.targetFrame.isMainFrame &&
-        ![OFFLINE_URL isEqualToString:navigationAction.request.URL.absoluteString] &&
-        [GNCustomHeaders shouldModifyRequest:navigationAction.request]) {
-        NSURLRequest *modifiedRequest = [GNCustomHeaders modifyRequest:navigationAction.request];
+        ![OFFLINE_URL isEqualToString:navigationAction.request.URL.absoluteString]) {
+        NSURLRequest *modifiedRequest = [self.customHeadersManager modifyRequest:navigationAction.request];
         decisionHandler(WKNavigationActionPolicyCancel, preferences);
         [self.wkWebview loadRequest:modifiedRequest];
         return;

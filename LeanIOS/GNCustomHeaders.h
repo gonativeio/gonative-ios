@@ -7,9 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <WebKit/WebKit.h>
 
 @interface GNCustomHeaders : NSObject
 +(NSDictionary*)getCustomHeaders;
-+(NSURLRequest*)modifyRequest:(NSURLRequest*)request;
-+(BOOL)shouldModifyRequest:(NSURLRequest*)request;
+-(NSURLRequest*)modifyRequest:(NSURLRequest*)request;
+-(BOOL)shouldModifyRequest:(NSURLRequest *)request webview:(WKWebView *)webview;
 @end
