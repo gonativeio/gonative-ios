@@ -28,10 +28,10 @@
 	<string></string>
 	<key>FacebookDisplayName</key>
 	<string></string>
-    <key>FacebookAutoLogAppEventsEnabled</key>
-    <false/>
-    <key>FacebookAdvertiserIDCollectionEnabled</key>
-    <false/>
+	<key>FacebookAutoLogAppEventsEnabled</key>
+	<false/>
+	<key>FacebookAdvertiserIDCollectionEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -76,6 +76,8 @@
 	<string>${BUILD_SETTINGS_APP_NAME} needs access to your camera roll to upload photos.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Your data will be used to personalize your experience and at times to deliver personalized ads.</string>
+	<key>NFCReaderUsageDescription</key>
+	<string>${BUILD_SETTINGS_APP_NAME} wants to read and write NFC tags</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FontAwesome.ttf</string>
