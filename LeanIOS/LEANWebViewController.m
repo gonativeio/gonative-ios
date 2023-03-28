@@ -764,6 +764,8 @@ static NSInteger _currentWindows = 0;
     NSMutableArray *leftButtons = [NSMutableArray array];
     NSMutableArray *rightButtons = [NSMutableArray array];
     
+    BOOL backButtonShown = self.urlLevel > 1 || self.isWindowOpen;
+    
     if (self.actionManager.items)
         [buttons addObjectsFromArray:self.actionManager.items];
     
@@ -773,6 +775,9 @@ static NSInteger _currentWindows = 0;
     // put sidebar button to the left
     if (buttons.count == 1 && self.sidebarItemsEnabled && self.navButton) {
         [leftButtons addObject:self.navButton];
+    }
+    else if (buttons.count <= 3 && backButtonShown) {
+        [rightButtons addObjectsFromArray:buttons];
     }
     // split buttons between the left and right navigation items
     else {
@@ -787,7 +792,7 @@ static NSInteger _currentWindows = 0;
     }
     
     // do not override the back button
-    if (self.urlLevel <= 1) {
+    if (!backButtonShown) {
         [self.navigationItem setLeftBarButtonItems:leftButtons animated:animated];
     }
     

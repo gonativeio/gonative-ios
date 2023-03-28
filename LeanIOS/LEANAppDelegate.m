@@ -181,17 +181,17 @@
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
 {
+    if ([bridge application:application continueUserActivity:userActivity]) {
+        return YES;
+    }
+    
     if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
         UIViewController *rvc = self.window.rootViewController;
-        if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+        if ([rvc isKindOfClass:[LEANRootViewController class]] && userActivity.webpageURL) {
             LEANRootViewController *vc = (LEANRootViewController*)rvc;
             [vc loadUrl:userActivity.webpageURL];
             return YES;
         }
-    }
-    
-    if ([bridge application:application continueUserActivity:userActivity]) {
-        return YES;
     }
     
     return NO;
