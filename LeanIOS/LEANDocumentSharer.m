@@ -195,6 +195,13 @@
     if (!url) return;
     
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
+    
+    // Add user-agent
+    NSString *userAgent = [[GoNativeAppConfig sharedAppConfig] userAgentForUrl:url];
+    if (userAgent) {
+        [req setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+    }
+    
     // If using WKWebView on iOS11+, get cookies from WKHTTPCookieStore
     BOOL gettingWKWebviewCookies = NO;
     if ([GoNativeAppConfig sharedAppConfig].useWKWebView) {
