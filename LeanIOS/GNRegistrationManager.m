@@ -230,4 +230,25 @@
     self.registrationInfo.oneSignalRequiresPrivacyConsent = requiresPrivacyConsent;
 }
 
+- (void)handleUrl:(NSURL *)url query:(NSDictionary *)query {
+    if ([@"/send" isEqualToString:url.path]) {
+        id customData = query[@"customData"];
+        
+        if (!customData) {
+            [self sendToAllEndpoints];
+            return;
+        }
+        
+        if ([customData isKindOfClass:[NSString class]]) {
+            NSData *jsonData = [customData dataUsingEncoding:NSUTF8StringEncoding];
+            customData = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+        }
+        
+        if ([customData isKindOfClass:[NSDictionary class]]) {
+            [self setCustomData:customData];
+            [self sendToAllEndpoints];
+        }
+    }
+}
+
 @end

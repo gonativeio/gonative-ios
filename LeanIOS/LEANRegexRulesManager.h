@@ -10,6 +10,7 @@
 #import "LEANWebViewController.h"
 
 @interface LEANRegexRulesManager : NSObject
+- (void)handleUrl:(NSURL *)url query:(NSDictionary*)query;
 - (void)setRules:(NSArray *)rules;
 - (NSDictionary *)matchesWithUrlString:(NSString *)urlString;
 @end

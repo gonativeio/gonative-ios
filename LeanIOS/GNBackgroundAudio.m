@@ -42,6 +42,14 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+-(void)handleUrl:(NSURL *)url query:(NSDictionary*)query {
+    if ([@"/start" isEqualToString:url.path]) {
+        [self start];
+    } else if ([@"/end" isEqualToString:url.path]) {
+        [self end];
+    }
+}
+
 -(void)start
 {
     self.keepAwake = YES;

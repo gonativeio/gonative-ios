@@ -11,8 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface GNBackgroundAudio : NSObject
--(void)start;
--(void)end;
+- (void)handleUrl:(NSURL *)url query:(NSDictionary*)query;
+- (void)start;
+- (void)end;
 @end
 
 NS_ASSUME_NONNULL_END

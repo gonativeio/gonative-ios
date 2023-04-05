@@ -827,14 +827,14 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/GoNativeCore/GoNativeCore.framework",
 				"${BUILT_PRODUCTS_DIR}/GonativeIcons/GonativeIcons.framework",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoNativeCore/GoNative.framework/GoNative",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoNativeCore/Binary/GoNativeCore.framework/GoNativeCore",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoNativeCore/Binary/GoNative.framework/GoNative",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNativeCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GonativeIcons.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNativeCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNative.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1094,6 +1094,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1109,6 +1110,7 @@
 					"$(PROJECT_DIR)/lib",
 					"$(PROJECT_DIR)/lib/include",
 				);
+				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"$(inherited)",
@@ -1136,6 +1138,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1151,6 +1154,7 @@
 					"$(PROJECT_DIR)/lib",
 					"$(PROJECT_DIR)/lib/include",
 				);
+				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"$(inherited)",

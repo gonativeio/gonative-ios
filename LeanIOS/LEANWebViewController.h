@@ -46,4 +46,5 @@ static NSString *kLEANWebViewControllerClearPools = @"io.gonative.ios.WebViewCon
 - (void) searchPressed:(id)sender;
 - (void) setSharePopOverRect:(CGRect)rect;
 - (void) handleJSBridgeFunctions:(id)data;
+- (void) runJavascriptWithCallback:(NSString *)callback data:(NSDictionary*)data;
 @end

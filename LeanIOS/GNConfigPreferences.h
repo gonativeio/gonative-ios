@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @interface GNConfigPreferences : NSObject
-+(instancetype)sharedPreferences;
++ (instancetype)sharedPreferences;
 
--(BOOL)handleUrl:(NSURL*)url withJSData:(NSDictionary*)jsData;
--(void)setInitialUrl:(NSString*)url;
--(NSString*)getInitialUrl;
+- (void)handleUrl:(NSURL *)url query:(NSDictionary*)query;
+- (void)setInitialUrl:(NSString*)url;
+- (NSString*)getInitialUrl;
 @end

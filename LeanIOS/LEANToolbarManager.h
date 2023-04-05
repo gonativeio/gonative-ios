@@ -11,6 +11,7 @@
 
 @interface LEANToolbarManager : NSObject
 - (instancetype)initWithToolbar:(UIToolbar*)toolbar webviewController:(LEANWebViewController*)wvc;
+- (void)handleUrl:(NSURL *)url query:(NSDictionary*)query;
 - (void)didLoadUrl:(NSURL*)url;
 - (void)setToolbarEnabled:(BOOL)enabled;
 @property NSString *urlMimeType;

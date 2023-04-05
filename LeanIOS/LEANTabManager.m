@@ -7,7 +7,6 @@
 //
 
 #import "LEANTabManager.h"
-#import "LEANWebViewController.h"
 #import "LEANUtilities.h"
 #import "GonativeIO-Swift.h"
 
@@ -286,29 +285,55 @@
 {
     NSNumber *showTabBar = json[@"enabled"];
     if (![showTabBar isKindOfClass:[NSNumber class]]) {
-        return;
+       return;
     }
     self.showTabBar = [showTabBar boolValue];
-    
+
     if (self.showTabBar) {
-        NSArray *menu = json[@"items"];
-        if ([menu isKindOfClass:[NSArray class]]) {
-            [self setTabBarItems:menu];
-            [self.wvc showTabBarAnimated:YES];
-            self.javascriptTabs = YES;
-            self.currentMenuID = nil;
-        } else {
-            NSString *menuID = json[@"tabMenu"];
-            if ([menuID isKindOfClass:[NSString class]] && menuID.length > 0) {
-                [self loadTabBarMenu:menuID];
-                self.javascriptTabs = NO;
-            }
-            [self.wvc showTabBarAnimated:YES];
-        }
+       NSArray *menu = json[@"items"];
+       if ([menu isKindOfClass:[NSArray class]]) {
+           [self setTabBarItems:menu];
+           [self.wvc showTabBarAnimated:YES];
+           self.javascriptTabs = YES;
+           self.currentMenuID = nil;
+       } else {
+           NSString *menuID = json[@"tabMenu"];
+           if ([menuID isKindOfClass:[NSString class]] && menuID.length > 0) {
+               [self loadTabBarMenu:menuID];
+               self.javascriptTabs = NO;
+           }
+           [self.wvc showTabBarAnimated:YES];
+       }
     } else {
-        [self.wvc hideTabBarAnimated:YES];
-        self.javascriptTabs = YES;
-        self.currentMenuID = nil;
+       [self.wvc hideTabBarAnimated:YES];
+       self.javascriptTabs = YES;
+       self.currentMenuID = nil;
     }
 }
+
+- (void)handleUrl:(NSURL *)url query:(NSDictionary *)query {
+    if ([@"/select" isEqualToString:url.path]) {
+        NSInteger tabNumber = [query[@"tabIndex"] integerValue];
+        if (tabNumber >= 0) {
+            [self selectTabNumber:tabNumber];
+        }
+    }
+    else if ([@"/deselect" isEqualToString:url.path]) {
+        [self deselectTabs];
+    }
+    else if ([@"/setTabs" isEqualToString:url.path]) {
+        id tabsJson = query[@"tabs"];
+        if ([query[@"tabs"] isKindOfClass:[NSString class]]) {
+            NSData *jsonData = [query[@"tabs"] dataUsingEncoding:NSUTF8StringEncoding];
+            tabsJson = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
+        }
+        if(![tabsJson isKindOfClass:[NSDictionary class]]) {
+            return;
+        }
+        
+        [self setTabsWithJson:tabsJson];
+        self.javascriptTabs = YES;
+    }
+}
+
 @end

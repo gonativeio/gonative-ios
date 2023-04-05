@@ -318,4 +318,11 @@
     }
 }
 
+- (void)handleUrl:(NSURL *)url query:(NSDictionary *)query {
+    if ([url.path isEqualToString:@"/contextualNavToolbar/set"]) {
+        [self setToolbarEnabled:[query[@"enabled"] boolValue]];
+    }
+    return;
+}
+
 @end

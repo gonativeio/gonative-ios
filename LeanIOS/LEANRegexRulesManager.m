@@ -49,8 +49,14 @@
         self.regexes = regexes;
         self.isInternal = validIsInternal;
     } else {
-        self.regexes = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexInternalEternal];
+        self.regexes = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexInternalExternal];
         self.isInternal = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexIsInternal];
+    }
+}
+
+- (void)handleUrl:(NSURL *)url query:(NSDictionary*)query {
+    if ([@"/set" isEqualToString:url.path]) {
+        [self setRules:query[@"rules"]];
     }
 }
 
@@ -58,7 +64,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     if (rules == nil) {
-        self.regexes = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexInternalEternal];
+        self.regexes = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexInternalExternal];
         self.isInternal = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexIsInternal];
         
         [defaults removeObjectForKey:LEAN_REGEX_RULES_MANAGER_REGEXES];

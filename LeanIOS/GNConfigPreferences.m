@@ -24,17 +24,11 @@
     }
 }
 
--(BOOL)handleUrl:(NSURL *)url withJSData:(NSDictionary*)jsData
+- (void)handleUrl:(NSURL *)url query:(NSDictionary*)query
 {
-    if (![@"gonative" isEqualToString:url.scheme] || ![@"config" isEqualToString:url.host]) {
-        return NO;
+    if ([@"/set" isEqualToString:url.path]) {
+        [self setInitialUrl:query[@"initialUrl"]];
     }
-    
-    if ([@"/set" isEqualToString:url.path] && jsData) {
-        [self setInitialUrl:jsData[@"initialUrl"]];
-    }
-    
-    return YES;
 }
 
 -(void)setInitialUrl:(NSString*)url
