@@ -322,16 +322,11 @@
         [self deselectTabs];
     }
     else if ([@"/setTabs" isEqualToString:url.path]) {
-        id tabsJson = query[@"tabs"];
-        if ([query[@"tabs"] isKindOfClass:[NSString class]]) {
-            NSData *jsonData = [query[@"tabs"] dataUsingEncoding:NSUTF8StringEncoding];
-            tabsJson = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
-        }
-        if(![tabsJson isKindOfClass:[NSDictionary class]]) {
+        if(![query isKindOfClass:[NSDictionary class]]) {
             return;
         }
         
-        [self setTabsWithJson:tabsJson];
+        [self setTabsWithJson:query];
         self.javascriptTabs = YES;
     }
 }
