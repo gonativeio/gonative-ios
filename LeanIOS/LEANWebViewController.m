@@ -2095,9 +2095,22 @@ static NSInteger _currentWindows = 0;
         }
     }
     
-    if (![GoNativeAppConfig sharedAppConfig].enableWindowOpen) {
+    GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
+    
+    if (!appConfig.enableWindowOpen) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self loadRequest:navigationAction.request];
+        });
+        return nil;
+    }
+    
+    if (appConfig.maxWindowsAutoClose && _currentWindows == appConfig.maxWindows && [appConfig.initialURL matchesIgnoreAnchor:navigationAction.request.URL]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            LEANWebViewController *vc = self.navigationController.viewControllers.firstObject;
+            [self loadRequest:navigationAction.request];
+            [vc switchToWebView:self.wkWebview showImmediately:YES];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+            
         });
         return nil;
     }
