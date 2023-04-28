@@ -171,6 +171,14 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIViewController *rvc = self.window.rootViewController;
+        if ([rvc isKindOfClass:[LEANRootViewController class]]) {
+            NSString *js = [LEANUtilities createJsForCallback:@"gonative_app_resumed" data:nil];
+            [(LEANRootViewController *)rvc runJavascript:js];
+        }
+    });
+    
     [bridge applicationWillEnterForeground:application];
 }
 

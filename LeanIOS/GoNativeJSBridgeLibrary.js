@@ -190,6 +190,12 @@ gonative.screen = {
         if (params.mode) {
             addCommand("gonative://screen/setMode", params);
         }
+    },
+    keepScreenOn: function(params){
+        addCommand("gonative://screen/keepScreenOn", params);
+    },
+    keepScreenNormal: function(){
+        addCommand("gonative://screen/keepScreenNormal");
     }
 };
 

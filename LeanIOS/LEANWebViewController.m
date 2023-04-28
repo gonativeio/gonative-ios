@@ -277,10 +277,7 @@ static NSInteger _currentWindows = 0;
     // set initial native theme
     NSString *mode = [[NSUserDefaults standardUserDefaults] objectForKey:@"darkMode"];
     [self setNativeTheme:mode ?: appConfig.iosDarkMode];
-    
-    if (![appConfig.iosStatusBarStyle isEqualToString:@"auto"]) {
-        [self updateStatusBarStyle:appConfig.iosStatusBarStyle];
-    }
+    [self updateStatusBarStyle:appConfig.iosStatusBarStyle];
     
     [((LEANAppDelegate *)[UIApplication sharedApplication].delegate).bridge runnerDidLoad:self];
 }
@@ -726,7 +723,7 @@ static NSInteger _currentWindows = 0;
             
         case 3:
             //action
-            [self sharePageWithUrl:nil sender:sender];
+            [self sharePageWithUrl:nil text:nil sender:sender];
             break;
             
         case 4:
@@ -814,20 +811,24 @@ static NSInteger _currentWindows = 0;
 
 - (void) sharePage:(id)sender
 {
-    [self sharePageWithUrl:nil sender:sender];
+    [self sharePageWithUrl:nil text:nil sender:sender];
 }
 
-- (void) sharePageWithUrl:(NSString*)url sender:(id)sender;
+- (void) sharePageWithUrl:(NSString*)url text:(NSString*)text sender:(id)sender;
 {
-    NSURL *shareUrl;
+    NSMutableArray *shareData = [NSMutableArray array];
+    
     if (url) {
-        shareUrl = [NSURL URLWithString:url relativeToURL:[self.currentRequest URL]];
+        [shareData addObject:[NSURL URLWithString:url relativeToURL:self.currentRequest.URL]];
     } else {
-        shareUrl = [self.currentRequest URL];
+        [shareData addObject:self.currentRequest.URL];
     }
     
-    UIActivityViewController * avc = [[UIActivityViewController alloc]
-                                      initWithActivityItems:@[shareUrl] applicationActivities:nil];
+    if (text) {
+        [shareData addObject:text];
+    }
+
+    UIActivityViewController *avc = [[UIActivityViewController alloc] initWithActivityItems:shareData applicationActivities:nil];
     
     // For iPads starting in iOS 8, we need to specify where the pop over should occur from.
     if ( [avc respondsToSelector:@selector(popoverPresentationController)] ) {
@@ -2701,12 +2702,13 @@ static NSInteger _currentWindows = 0;
         } else {
             self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
         }
-        [self setNeedsStatusBarAppearanceUpdate];
-    } else {
+    } else if ([statusBarStyle isEqualToString:@"light"]) {
         // light icons and text
         self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
-        [self setNeedsStatusBarAppearanceUpdate];
+    } else {
+        self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
     }
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)themeManagerHandleUrl:(NSURL *)url query:(NSDictionary *)query {
