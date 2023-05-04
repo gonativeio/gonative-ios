@@ -1,7 +1,7 @@
 // this function accepts a callback function as params.callback that will be called with the command results
 // if a callback is not provided it returns a promise that will resolve with the command results
 function addCommandCallback(command, params, persistCallback) {
-    if(params && params.callback){
+    if(params && (params.callback || params.callbackFunction)){
         // execute command with provided callback function
         addCommand(command, params, persistCallback);
     } else {
