@@ -1182,7 +1182,9 @@ static NSInteger _currentWindows = 0;
     
     if (@available(iOS 15.0, *)) {
         if (navigationAction.shouldPerformDownload) {
-            decisionHandler(WKNavigationActionPolicyDownload, preferences);
+            decisionHandler(WKNavigationActionPolicyCancel, preferences);
+            [self.documentSharer shareUrl:navigationAction.request.URL fromView:self.wkWebview];
+            [self showWebviewWithDelay:0.5];
             return;
         }
     }
