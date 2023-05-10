@@ -312,22 +312,29 @@
 }
 
 - (void)handleUrl:(NSURL *)url query:(NSDictionary *)query {
-    if ([@"/select" isEqualToString:url.path]) {
-        NSInteger tabNumber = [query[@"tabIndex"] integerValue];
-        if (tabNumber >= 0) {
-            [self selectTabNumber:tabNumber];
+    if ([url.path hasPrefix:@"/select/"]) {
+        NSArray *components = url.pathComponents;
+        if (components.count == 3) {
+            NSInteger tabNumber = [components[2] integerValue];
+            if (tabNumber >= 0) {
+                [self selectTabNumber:tabNumber];
+            }
         }
     }
     else if ([@"/deselect" isEqualToString:url.path]) {
         [self deselectTabs];
     }
     else if ([@"/setTabs" isEqualToString:url.path]) {
-        if(![query isKindOfClass:[NSDictionary class]]) {
-            return;
+        id tabs = query[@"tabs"];
+        
+        if([tabs isKindOfClass:[NSString class]]) {
+            tabs = [NSJSONSerialization JSONObjectWithData:[tabs dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
         }
         
-        [self setTabsWithJson:query];
-        self.javascriptTabs = YES;
+        if([tabs isKindOfClass:[NSDictionary class]]) {
+            [self setTabsWithJson:tabs];
+            self.javascriptTabs = YES;
+        }
     }
 }
 
