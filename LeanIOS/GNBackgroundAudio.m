@@ -22,7 +22,7 @@
     
     AVAudioSession *session = [AVAudioSession sharedInstance];
     [session setActive:NO error:nil];
-    [session setCategory:AVAudioSessionCategoryPlayback withOptions:AVAudioSessionCategoryOptionMixWithOthers error:nil];
+    [session setCategory:AVAudioSessionCategoryPlayback error:nil];
     [session setActive:YES error:nil];
     
     
