@@ -176,11 +176,6 @@ static NSInteger _currentWindows = 0;
     
     self.customHeadersManager = [[GNCustomHeaders alloc] init];
     
-    // set title to application title
-    if ([appConfig.navTitles count] == 0) {
-        self.navigationItem.title = appConfig.appName;
-    }
-    
     // add nav button
     if (appConfig.showNavigationMenu &&  [self isRootWebView]) {
         [self showSidebarNavButton];
@@ -385,12 +380,7 @@ static NSInteger _currentWindows = 0;
         if (self.wkWebview) url = self.wkWebview.URL;
         
         if (url) {
-            NSString *newTitle = [LEANWebViewController titleForUrl:url];
-            if (newTitle) {
-                self.navigationItem.title = newTitle;
-            } else {
-                self.navigationItem.title = [GoNativeAppConfig sharedAppConfig].appName;
-            }
+            self.navigationItem.title = [LEANWebViewController titleForUrl:url];
         }
     }
     else if ([name isEqualToString:kLEANAppConfigNotificationProcessedNavigationLevels]) {
@@ -469,13 +459,15 @@ static NSInteger _currentWindows = 0;
     }
     
     if ([self isRootWebView]) {
-        [self.navigationController setNavigationBarHidden:![GoNativeAppConfig sharedAppConfig].showNavigationBar animated:YES];
+        if ([GoNativeAppConfig sharedAppConfig].showNavigationBar) {
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+        }
     } else if (self.isWindowOpen && [GoNativeAppConfig sharedAppConfig].windowOpenHideNavbar){
-            [self.navigationController setNavigationBarHidden:YES animated:YES];
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
     } else if ([GoNativeAppConfig sharedAppConfig].showNavigationBarWithNavigationLevels) {
         [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
-    
+
     [self adjustInsets];
     
     NSURL *url = self.wkWebview.URL;
@@ -574,8 +566,10 @@ static NSInteger _currentWindows = 0;
 {
     // check if navbar titles has regex match
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
-    BOOL showImageView = [appConfig shouldShowNavigationTitleImageForUrl:[url absoluteString]];
     NSArray *entries = appConfig.navTitles;
+    
+    BOOL showImageView = [appConfig shouldShowNavigationTitleImageForUrl:[url absoluteString]];
+    BOOL showNavBar = showImageView;
     
     if (!showImageView && entries) {
         NSString *urlString = [url absoluteString];
@@ -583,6 +577,7 @@ static NSInteger _currentWindows = 0;
             NSPredicate *predicate = entry[@"predicate"];
             if ([predicate evaluateWithObject:urlString]) {
                 showImageView = [entry[@"showImage"] boolValue];
+                showNavBar = YES;
                 break;
             }
         }
@@ -609,9 +604,15 @@ static NSInteger _currentWindows = 0;
         // set the view
         self.defaultTitleView = self.navigationTitleImageView;
         self.navigationItem.titleView = self.navigationTitleImageView;
+        self.navigationItem.title = nil;
     } else {
         self.defaultTitleView = nil;
         self.navigationItem.titleView = nil;
+        self.navigationItem.title = [LEANWebViewController titleForUrl:url];
+    }
+    
+    if (showNavBar) {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
     }
 }
 
@@ -1106,18 +1107,19 @@ static NSInteger _currentWindows = 0;
 
 + (NSString*) titleForUrl:(NSURL*)url
 {
+    NSString *appName = [GoNativeAppConfig sharedAppConfig].appName;
     NSArray *entries = [GoNativeAppConfig sharedAppConfig].navTitles;
-    if (!entries) return nil;
+    if (!entries) return appName;
     
     NSString *urlString = [url absoluteString];
     for (NSDictionary *entry in entries) {
         NSPredicate *predicate = entry[@"predicate"];
         if ([predicate evaluateWithObject:urlString]) {
-            return entry[@"title"];
+            return entry[@"title"] ?: appName;
         }
     }
     
-    return nil;
+    return appName;
 }
 
 - (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
@@ -1674,11 +1676,7 @@ static NSInteger _currentWindows = 0;
         self.urlLevel = [LEANWebViewController urlLevelForUrl:url];
     }
     
-    NSString *newTitle = [LEANWebViewController titleForUrl:url];
-    if (newTitle) {
-        self.navigationItem.title = newTitle;
-    }
-    
+    self.navigationItem.title = [LEANWebViewController titleForUrl:url];
     
     // save request for various functions that require the current request
     NSURLRequest *previousRequest = self.currentRequest;
