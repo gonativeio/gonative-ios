@@ -576,6 +576,7 @@ static NSInteger _currentWindows = 0;
     GoNativeAppConfig *appConfig = [GoNativeAppConfig sharedAppConfig];
     BOOL showImageView = [appConfig shouldShowNavigationTitleImageForUrl:[url absoluteString]];
     NSArray *entries = appConfig.navTitles;
+    NSString *title;
     
     if (!showImageView && entries) {
         NSString *urlString = [url absoluteString];
@@ -583,6 +584,7 @@ static NSInteger _currentWindows = 0;
             NSPredicate *predicate = entry[@"predicate"];
             if ([predicate evaluateWithObject:urlString]) {
                 showImageView = [entry[@"showImage"] boolValue];
+                title = entry[@"title"] ?: appConfig.appName;
                 break;
             }
         }
@@ -609,9 +611,15 @@ static NSInteger _currentWindows = 0;
         // set the view
         self.defaultTitleView = self.navigationTitleImageView;
         self.navigationItem.titleView = self.navigationTitleImageView;
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
     } else {
         self.defaultTitleView = nil;
         self.navigationItem.titleView = nil;
+        
+        if (title) {
+            self.navigationItem.title = title;
+            [self.navigationController setNavigationBarHidden:NO animated:YES];
+        }
     }
 }
 

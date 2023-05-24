@@ -65,6 +65,9 @@ var gonative = {};
 
 // to be modified as required
 gonative.nativebridge = {
+    custom: function (params){
+        addCommand("gonative://nativebridge/custom", params);
+    },
     multi: function (params){
         addCommand("gonative://nativebridge/multi", params);
     }
