@@ -1190,9 +1190,9 @@ static NSInteger _currentWindows = 0;
     
     if (@available(iOS 15.0, *)) {
         if (navigationAction.shouldPerformDownload) {
-            decisionHandler(WKNavigationActionPolicyCancel, preferences);
             [self.documentSharer shareUrl:navigationAction.request.URL fromView:self.wkWebview];
-            [self showWebviewWithDelay:0.5];
+            [self showWebviewWithDelay:0.3]; // Stop loading animation
+            decisionHandler(WKNavigationActionPolicyCancel, preferences);
             return;
         }
     }
@@ -1204,6 +1204,17 @@ static NSInteger _currentWindows = 0;
 {
     [self.documentSharer receivedWebviewResponse:navigationResponse.response];
     [self.toolbarManager setUrlMimeType:navigationResponse.response.MIMEType];
+    
+    if ([navigationResponse.response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
+        NSString *contentDisposition = [response.allHeaderFields objectForKey:@"Content-Disposition"];
+        
+        if ([contentDisposition.lowercaseString containsString:@"attachment"]) {
+            [self.documentSharer shareUrl:response.URL fromView:self.wkWebview];
+            decisionHandler(WKNavigationResponsePolicyCancel);
+            return;
+        }
+    }
     
     if (navigationResponse.canShowMIMEType) {
         decisionHandler(WKNavigationResponsePolicyAllow);
