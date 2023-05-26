@@ -73,7 +73,7 @@
 
 -(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSLog(@"Successfully registered for push notifications");
-    [self setApnsToken:[deviceToken base64EncodedStringWithOptions:0]];
+    [self setApnsToken:[GNSwiftUtilities deviceTokenWithData:deviceToken]];
     [self.bridge application:application didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
