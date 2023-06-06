@@ -190,8 +190,11 @@
     && req1.HTTPBodyStream == req2.HTTPBodyStream;
 }
 
-- (void)shareUrl:(NSURL*)url fromView:(UIView*) view
-{
+- (void)shareUrl:(NSURL*)url fromView:(UIView*)view {
+    [self shareUrl:url fromView:view filename:nil];
+}
+
+- (void)shareUrl:(NSURL*)url fromView:(UIView*)view filename:(NSString*)filename {
     if (!url) return;
     
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
@@ -220,21 +223,21 @@
                 if (cookieHeader) {
                     [req addValue:cookieHeader forHTTPHeaderField:@"Cookie"];
                 }
-                [self shareRequest:req from:view force:YES];
+                [self shareRequest:req from:view force:YES filename:filename];
             }];
         }
     }
     if (!gettingWKWebviewCookies) {
-        [self shareRequest:req from:view force:YES];
+        [self shareRequest:req from:view force:YES filename:filename];
     }
 }
 
 - (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button
 {
-    [self shareRequest:req from:button force:NO];
+    [self shareRequest:req from:button force:NO filename:nil];
 }
 
-- (void)shareRequest:(NSURLRequest *)req from:(id) buttonOrView force:(BOOL)force;
+- (void)shareRequest:(NSURLRequest *)req from:(id) buttonOrView force:(BOOL)force filename:(NSString *)filename
 {
     if (!force && ![self isSharableRequest:req]) {
         return;
@@ -254,7 +257,7 @@
     if ([LEANDocumentSharer request:req matchesRequest:self.lastRequest] && self.dataFile) {
         // copy to documents folder with a good suggested file name
         NSURL *documentsDir = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]];
-        NSURL *sharedFile = [documentsDir URLByAppendingPathComponent:[self.lastResponse suggestedFilename]];
+        NSURL *sharedFile = [documentsDir URLByAppendingPathComponent:filename ?: [self.lastResponse suggestedFilename]];
         [[NSFileManager defaultManager] removeItemAtURL:sharedFile error:nil];
         [[NSFileManager defaultManager] copyItemAtURL:self.dataFile toURL:sharedFile error:nil];
         
@@ -276,7 +279,7 @@
             NSFileManager *fileManager = [NSFileManager defaultManager];
             
             NSURL *documentsDirectoryPath = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]];
-            NSURL *destination = [documentsDirectoryPath URLByAppendingPathComponent:[response suggestedFilename]];
+            NSURL *destination = [documentsDirectoryPath URLByAppendingPathComponent:filename ?: [response suggestedFilename]];
             [fileManager removeItemAtURL:destination error:nil];
             [fileManager moveItemAtURL:location toURL:destination error:nil];
             

@@ -27,6 +27,7 @@
 @property NSMutableDictionary *idToFileInfo;
 @property UIDocumentInteractionController *documentInteractionController;
 @property GNFileWriterSharerFileInfo *interactingFile;
+@property NSString *defaultFileName;
 @property NSString *nextFileName;
 @end
 
@@ -81,7 +82,7 @@
         return;
     }
     
-    NSString *fileName = message[@"name"];
+    NSString *fileName = self.defaultFileName ?: message[@"name"];
     if (![fileName isKindOfClass:[NSString class]] || fileName.length == 0) {
         if (self.nextFileName) {
             fileName = self.nextFileName;
@@ -218,12 +219,12 @@
     self.nextFileName = name;
 }
 
--(void)downloadBlobUrl:(NSString *)url
-{
+-(void)downloadBlobUrl:(NSURL*)url filename:(NSString*)filename {
+    self.defaultFileName = filename;
     NSURL *jsFile = [[NSBundle mainBundle] URLForResource:@"BlobDownloader" withExtension:@"js"];
     NSString *js = [NSString stringWithContentsOfURL:jsFile encoding:NSUTF8StringEncoding error:nil];
     [self.wvc runJavascript:js];
-    js = [NSString stringWithFormat:@"gonativeDownloadBlobUrl(%@)", [LEANUtilities jsWrapString:url]];
+    js = [NSString stringWithFormat:@"gonativeDownloadBlobUrl(%@)", [LEANUtilities jsWrapString:url.absoluteString]];
     [self.wvc runJavascript:js];
 }
 

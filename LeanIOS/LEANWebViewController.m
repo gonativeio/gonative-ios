@@ -1405,7 +1405,7 @@ static NSInteger _currentWindows = 0;
     }
     // Only start blob downloads on the main frame
     if ([url.scheme isEqualToString:@"blob"] && isMainFrame) {
-        [self.fileWriterSharer downloadBlobUrl:urlString];
+        [self.fileWriterSharer downloadBlobUrl:url filename:nil];
         return NO;
     }
     

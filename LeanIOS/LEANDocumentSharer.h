@@ -14,6 +14,7 @@
 - (BOOL)isSharableRequest:(NSURLRequest*)req;
 - (void)shareRequest:(NSURLRequest *)req fromButton:(UIBarButtonItem*) button;
 - (void)shareUrl:(NSURL*)url fromView:(UIView*)view;
+- (void)shareUrl:(NSURL*)url fromView:(UIView*)view filename:(NSString*)filename;
 - (void)receivedRequest:(NSURLRequest*)request;
 - (void)receivedResponse:(NSURLResponse*)response;
 - (void)receivedWebviewResponse:(NSURLResponse*)response;
