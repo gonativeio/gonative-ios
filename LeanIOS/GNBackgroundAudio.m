@@ -12,6 +12,7 @@
 @interface GNBackgroundAudio()
 @property AVAudioPlayer *audioPlayer;
 @property BOOL keepAwake;
+@property BOOL isMixedSession;
 @end
 
 @implementation GNBackgroundAudio
@@ -20,14 +21,7 @@
 {
     self = [super init];
     
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    [session setActive:NO error:nil];
-    [session setCategory:AVAudioSessionCategoryPlayback error:nil];
-    [session setActive:YES error:nil];
-    
-    
-    NSString* path = [[NSBundle mainBundle]
-                      pathForResource:@"appbeep" ofType:@"wav"];
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"appbeep" ofType:@"wav"];
     NSURL* url = [NSURL fileURLWithPath:path];
     self.audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:nil];
     self.audioPlayer.volume = 0;
@@ -52,6 +46,15 @@
 
 -(void)start
 {
+    // Turn on mixed session
+    if (!self.isMixedSession) {
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        [session setActive:NO error:nil];
+        [session setCategory:AVAudioSessionCategoryPlayback withOptions:AVAudioSessionCategoryOptionMixWithOthers error:nil];
+        [session setActive:YES error:nil];
+        self.isMixedSession = YES;
+    }
+    
     self.keepAwake = YES;
     [self startKeepingAwake];
 }
@@ -60,6 +63,14 @@
 {
     self.keepAwake = NO;
     [self stopKeepingAwake];
+    
+    // Turn off mixed session
+    if (self.isMixedSession) {
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        [session setActive:NO error:nil];
+        [session setCategory:AVAudioSessionCategoryPlayback withOptions:AVAudioSessionCategoryOptionDuckOthers error:nil];
+        self.isMixedSession = NO;
+    }
 }
 
 -(void)startKeepingAwake
