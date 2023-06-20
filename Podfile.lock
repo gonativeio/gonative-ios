@@ -1,7 +1,7 @@
 PODS:
-  - GoNativeCore (1.5.3):
-    - GoNativeCore/Binary (= 1.5.3)
-  - GoNativeCore/Binary (1.5.3)
+  - GoNativeCore (1.5.4):
+    - GoNativeCore/Binary (= 1.5.4)
+  - GoNativeCore/Binary (1.5.4)
   - GonativeIcons (1.0.5)
 
 DEPENDENCIES:
@@ -14,7 +14,7 @@ SPEC REPOS:
     - GonativeIcons
 
 SPEC CHECKSUMS:
-  GoNativeCore: e05f3a851a0452e4c7c6626b523a536498b60502
+  GoNativeCore: 25062bf740a44943c70316ba4408a7dd76e2931d
   GonativeIcons: 3b0d9e25558f9b740255dedb0f218d622ff836b0
 
 PODFILE CHECKSUM: fc71fe0500b4921f8956f67fc774515cb148943e
