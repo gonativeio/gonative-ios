@@ -254,6 +254,12 @@ gonative.clipboard = {
     }
 };
 
+gonative.window = {
+    close: function () {
+        addCommand("gonative://window/close");
+    }
+}
+
 ///////////////////////////////
 ////     iOS Exclusive     ////
 ///////////////////////////////
