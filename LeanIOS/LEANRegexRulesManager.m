@@ -9,9 +9,6 @@
 #import "LEANRegexRulesManager.h"
 #import "GonativeIO-Swift.h"
 
-#define LEAN_REGEX_RULES_MANAGER_REGEXES @"LEANRegexRulesManagerRegexes"
-#define LEAN_REGEX_RULES_MANAGER_IS_INTERNAL @"LEANRegexRulesManagerIsInternal"
-
 @interface LEANRegexRulesManager()
 @property NSArray *regexes;
 @property NSArray *isInternal;
@@ -29,29 +26,11 @@
 }
 
 - (void)initializeValues {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSArray *stringRegexes = [defaults valueForKey:LEAN_REGEX_RULES_MANAGER_REGEXES];
-    NSArray *isInternal = [defaults valueForKey:LEAN_REGEX_RULES_MANAGER_IS_INTERNAL];
-    
-    if ([stringRegexes isKindOfClass:[NSArray class]] && [isInternal isKindOfClass:[NSArray class]]) {
-        NSMutableArray *regexes = [NSMutableArray array];
-        NSMutableArray *validIsInternal = [NSMutableArray array];
-        
-        for (NSUInteger i = 0; i < [stringRegexes count] && i < [isInternal count]; i++) {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", stringRegexes[i]];
-            NSNumber *internal = isInternal[i];
-            if (predicate) {
-                [regexes addObject:predicate];
-                [validIsInternal addObject:internal];
-            }
-        }
-        
-        self.regexes = regexes;
-        self.isInternal = validIsInternal;
-    } else {
-        self.regexes = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexInternalExternal];
-        self.isInternal = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexIsInternal];
-    }
+    NSArray *regexArray;
+    NSArray *isInternalArray;
+    [[GoNativeAppConfig sharedAppConfig] initializeRegexRules:&regexArray isInternalArray:&isInternalArray];
+    self.regexes = regexArray;
+    self.isInternal = isInternalArray;
 }
 
 - (void)handleUrl:(NSURL *)url query:(NSDictionary*)query {
@@ -61,42 +40,12 @@
 }
 
 - (void)setRules:(NSArray *)rules {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    if (rules == nil) {
-        self.regexes = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexInternalExternal];
-        self.isInternal = [NSArray arrayWithArray:[GoNativeAppConfig sharedAppConfig].regexIsInternal];
-        
-        [defaults removeObjectForKey:LEAN_REGEX_RULES_MANAGER_REGEXES];
-        [defaults removeObjectForKey:LEAN_REGEX_RULES_MANAGER_IS_INTERNAL];
-        [defaults synchronize];
-        return;
-    }
-    
-    if (![rules isKindOfClass:[NSArray class]]) return;
-    
-    NSMutableArray *stringRegexes = [NSMutableArray array];
-    NSMutableArray *regexes = [NSMutableArray array];
-    NSMutableArray *isInternal = [NSMutableArray array];
-    
-    for (id entry in rules) {
-        if ([entry isKindOfClass:[NSDictionary class]] && entry[@"regex"] && entry[@"internal"]) {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", entry[@"regex"]];
-            NSNumber *internal = entry[@"internal"];
-            if (predicate) {
-                [stringRegexes addObject:entry[@"regex"]];
-                [regexes addObject:predicate];
-                [isInternal addObject:internal];
-            }
-        }
-    }
-    
-    self.regexes = regexes;
-    self.isInternal = isInternal;
-    
-    [defaults setValue:stringRegexes forKey:LEAN_REGEX_RULES_MANAGER_REGEXES];
-    [defaults setValue:isInternal forKey:LEAN_REGEX_RULES_MANAGER_IS_INTERNAL];
-    [defaults synchronize];
+    if (rules != nil && ![rules isKindOfClass:[NSArray class]]) return;
+    NSArray *regexArray;
+    NSArray *isInternalArray;
+    [[GoNativeAppConfig sharedAppConfig] setRegexRules:rules regexArray:&regexArray isInternalArray:&isInternalArray];
+    self.regexes = regexArray;
+    self.isInternal = isInternalArray;
 }
 
 - (NSDictionary *)matchesWithUrlString:(NSString *)urlString {
