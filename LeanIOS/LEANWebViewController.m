@@ -2716,14 +2716,14 @@ static NSInteger _currentWindows = 0;
 }
 
 - (void)updateStatusBarStyle:(NSString *)statusBarStyle{
-    if ([statusBarStyle isEqualToString:@"dark"]) {
+    if ([statusBarStyle isEqualToString:@"light"]) {
         // dark icons and text
         if (@available(iOS 13.0, *)) {
             self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDarkContent];
         } else {
             self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleDefault];
         }
-    } else if ([statusBarStyle isEqualToString:@"light"]) {
+    } else if ([statusBarStyle isEqualToString:@"dark"]) {
         // light icons and text
         self.statusBarStyle = [NSNumber numberWithInteger:UIStatusBarStyleLightContent];
     } else {
