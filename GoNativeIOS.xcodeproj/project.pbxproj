@@ -633,7 +633,6 @@
 				2002B49618A9991300495B3D /* Resources */,
 				2081A2921F33ECE900057E3F /* Embed App Extensions */,
 				62F936383ED2769E752E0C07 /* [CP] Embed Pods Frameworks */,
-				EF3B98FBB1AD3CCB82012CC6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -831,47 +830,17 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GonativeIcons/GonativeIcons.framework",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/GoNativeCore/Binary/GoNativeCore.framework/GoNativeCore",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GonativeIcons.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoNativeCore.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EF3B98FBB1AD3CCB82012CC6 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-resources.sh",
-				"${PODS_ROOT}/GonativeIcons/GonativeIcons/Assets/FontAwesome6_Brands.ttf",
-				"${PODS_ROOT}/GonativeIcons/GonativeIcons/Assets/FontAwesome6_Light.ttf",
-				"${PODS_ROOT}/GonativeIcons/GonativeIcons/Assets/FontAwesome6_Regular.ttf",
-				"${PODS_ROOT}/GonativeIcons/GonativeIcons/Assets/FontAwesome6_Solid.ttf",
-				"${PODS_ROOT}/GonativeIcons/GonativeIcons/Assets/FontAwesome6_Thin.ttf",
-				"${PODS_ROOT}/GonativeIcons/GonativeIcons/Assets/MaterialDesign.ttf",
-				"${PODS_ROOT}/GonativeIcons/GonativeIcons/Assets/FontAwesome.json",
-				"${PODS_ROOT}/GonativeIcons/GonativeIcons/Assets/MaterialDesign.json",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome6_Brands.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome6_Light.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome6_Regular.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome6_Solid.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome6_Thin.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialDesign.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.json",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialDesign.json",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GonativeIO/Pods-GonativeIO-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
