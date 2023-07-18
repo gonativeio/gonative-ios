@@ -107,11 +107,12 @@
         icon = defaultIcon;
     }
     
-    // The tint color is automatically applied to the button, so a black icon is enough
-    UIImage *iconImage = [LEANIcons imageForIconIdentifier:icon size:ICON_SIZE color:[UIColor blackColor]];
+    UIColor *titleColor = [UIColor colorNamed:@"titleColor"];
+    UIImage *iconImage = [LEANIcons imageForIconIdentifier:icon size:ICON_SIZE color:titleColor];
+    UIImage *nonTintedImage = [iconImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setImage:iconImage forState:UIControlStateNormal];
+    [button setImage:nonTintedImage forState:UIControlStateNormal];
     [button addTarget:self.wvc action:action forControlEvents:UIControlEventTouchUpInside];
     [button setFrame:CGRectMake(0, 0, 36, 30)];
     
@@ -122,11 +123,12 @@
 }
 
 - (void)createButtonWithIcon:(NSString *)icon label:(NSString *)label url:(NSString *)url {
-    // The tint color is automatically applied to the button, so a black icon is enough
-    UIImage *iconImage = [LEANIcons imageForIconIdentifier:icon size:ICON_SIZE color:[UIColor blackColor]];
+    UIColor *titleColor = [UIColor colorNamed:@"titleColor"];
+    UIImage *iconImage = [LEANIcons imageForIconIdentifier:icon size:ICON_SIZE color:titleColor];
+    UIImage *nonTintedImage = [iconImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-    [button setImage:iconImage forState:UIControlStateNormal];
+    [button setImage:nonTintedImage forState:UIControlStateNormal];
     [button addTarget:self action:@selector(itemWasSelected:) forControlEvents:UIControlEventTouchUpInside];
     [button setFrame:CGRectMake(0, 0, 36, 30)];
     

@@ -1312,9 +1312,17 @@ static NSInteger _currentWindows = 0;
 }
 
 -(void)webView:(WKWebView *)webView requestMediaCapturePermissionForOrigin:(WKSecurityOrigin *)origin initiatedByFrame:(WKFrameInfo *)frame type:(WKMediaCaptureType)type decisionHandler:(void (^)(WKPermissionDecision))decisionHandler  API_AVAILABLE(ios(15.0)){
-    [[AVAudioSession sharedInstance] requestRecordPermission:^(BOOL granted) {
-        decisionHandler(granted ? WKPermissionDecisionGrant : WKPermissionDecisionDeny);
-    }];
+    if (type == WKMediaCaptureTypeCameraAndMicrophone) {
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+            decisionHandler(granted ? WKPermissionDecisionGrant : WKPermissionDecisionDeny);
+        }];
+    } else if (type == WKMediaCaptureTypeMicrophone) {
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+            decisionHandler(granted ? WKPermissionDecisionGrant : WKPermissionDecisionDeny);
+        }];
+    } else {
+        decisionHandler(WKPermissionDecisionGrant);
+    }
 }
 
 -(void)initializeJSInterfaceInWebView:(WKWebView*) wkWebview
@@ -2359,6 +2367,7 @@ static NSInteger _currentWindows = 0;
     [favButton addTarget:self action:@selector(showMenu)
         forControlEvents:UIControlEventTouchUpInside];
     [favButton setFrame:CGRectMake(0, 0, 36, 30)];
+    favButton.tintColor = [UIColor colorNamed:@"titleColor"];
     self.navButton = [[UIBarButtonItem alloc] initWithCustomView:favButton];
     self.navButton.accessibilityLabel = NSLocalizedString(@"button-menu", @"Button: Menu");
 }
