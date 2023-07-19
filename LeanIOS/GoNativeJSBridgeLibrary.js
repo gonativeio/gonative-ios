@@ -123,6 +123,9 @@ gonative.webview = {
     clearCache: function(){
         addCommand("gonative://webview/clearCache");
     },
+    clearCookies: function(){
+        addCommand("gonative://webview/clearCookies");
+    },
     reload: function () {
         addCommand("gonative://webview/reload");
     }
@@ -255,6 +258,10 @@ gonative.clipboard = {
 };
 
 gonative.window = {
+    open: function (urlString){
+        var params = {url: urlString};
+        addCommand("gonative://window/open", params);
+    },
     close: function () {
         addCommand("gonative://window/close");
     }
@@ -270,6 +277,10 @@ gonative.ios.window = {
     open: function (urlString){
         var params = {url: urlString};
         addCommand("gonative://window/open", params);
+    },
+    setWindowOpenHideNavbar: function (value){
+        var params = {windowOpenHideNavbar: value};
+        addCommand("gonative://window/setWindowOpenHideNavbar", params);
     }
 };
 
