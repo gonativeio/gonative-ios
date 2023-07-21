@@ -1203,7 +1203,9 @@ static NSInteger _currentWindows = 0;
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler
 {
     [self.documentSharer receivedWebviewResponse:navigationResponse.response];
-    [self.toolbarManager setUrlMimeType:navigationResponse.response.MIMEType];
+    if (navigationResponse.forMainFrame){
+        [self.toolbarManager setUrlMimeType:navigationResponse.response.MIMEType];
+    }
     
     if ([navigationResponse.response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
