@@ -375,3 +375,18 @@ function gonative_match_statusbar_to_body_background_color() {
         gonative.statusbar.set({'style': 'light', 'color': hex});
     }
 }
+
+///////////////////////////////
+////    Median Functions   ////
+///////////////////////////////
+
+var median = {};
+
+median.keyboard = {
+    info: function () {
+        return addCommandCallback("median://keyboard/info");
+    },
+    listen: function (callback) {
+        addCommand("median://keyboard/listen", { callback });
+    }
+};

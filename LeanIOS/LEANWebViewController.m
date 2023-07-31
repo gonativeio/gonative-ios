@@ -410,16 +410,21 @@ static NSInteger _currentWindows = 0;
     self.keyboardRect = kbRect;
     self.keyboardVisible = YES;
     [self adjustInsets];
+    
+    [self runKeyboardInfoWithCallback:[GoNativeAppConfig sharedAppConfig].listeners[MEDIAN_KEYBOARD_EVENT_LISTENER]];
 }
 
 - (void)keyboardHidden:(NSNotification*)notification
 {
     self.keyboardVisible = NO;
+    self.keyboardRect = CGRectZero;
     [self adjustInsets];
     
     // work around a bug starting in iOS 12 where the scroll doesn't readjust when the keyboard is hidden
     [self.wkWebview.scrollView setContentInset:UIEdgeInsetsMake(0.0001, 0, 0, 0)];
     [self.wkWebview.scrollView setContentInset:UIEdgeInsetsMake(0, 0, 0, 0)];
+    
+    [self runKeyboardInfoWithCallback:[GoNativeAppConfig sharedAppConfig].listeners[MEDIAN_KEYBOARD_EVENT_LISTENER]];
 }
 
 - (void)retryFailedPage
@@ -1473,7 +1478,7 @@ static NSInteger _currentWindows = 0;
     }
     
     // JS Bridge Commands
-    if ([@"gonative" isEqualToString:url.scheme]) {
+    if ([@"gonative" isEqualToString:url.scheme] || [@"median" isEqualToString:url.scheme]) {
         [self handleJSBridgeFunctions:url];
         return NO;
     }
@@ -2112,6 +2117,34 @@ static NSInteger _currentWindows = 0;
     if (jsCallback) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self runJavascript:jsCallback];
+        });
+    }
+}
+
+-(void)runKeyboardInfoWithCallback:(NSString*)callback {
+    if(!callback) return;
+    
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
+    data[@"visible"] = @(self.keyboardVisible);
+    
+    CGFloat keyboardWidth = self.keyboardRect.size.width;
+    CGFloat keyboardHeight = self.keyboardRect.size.height;
+    data[@"keyboardWindowSize"] = @{
+        @"width": @(keyboardWidth),
+        @"height": @(keyboardHeight)
+    };
+    
+    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+    data[@"visibleWindowSize"] = @{
+        @"width": @(screenWidth),
+        @"height": @(screenHeight - keyboardHeight)
+    };
+    
+    NSString *js = [LEANUtilities createJsForCallback:callback data:data];
+    if (js) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self runJavascript:js];
         });
     }
 }
