@@ -23,6 +23,7 @@
 #import "LEANUrlInspector.h"
 #import "LEANProfilePicker.h"
 #import "LEANInstallation.h"
+#import "LEANLaunchScreenManager.h"
 #import "LEANTabManager.h"
 #import "LEANToolbarManager.h"
 #import "LEANWebViewPool.h"
@@ -175,6 +176,9 @@ static NSInteger _currentWindows = 0;
     self.JSBridgeInterface = [[GNJSBridgeInterface alloc] init];
     
     self.customHeadersManager = [[GNCustomHeaders alloc] init];
+    
+    // Launch screen overlay
+    [[LEANLaunchScreenManager sharedManager] show];
     
     // set title to application title
     if ([appConfig.navTitles count] == 0) {
@@ -2345,6 +2349,7 @@ static NSInteger _currentWindows = 0;
     [self.timer invalidate];
     self.timer = nil;
     self.wkWebview.userInteractionEnabled = YES;
+    [[LEANLaunchScreenManager sharedManager] hide];
     
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^(void){
         self.wkWebview.alpha = 1.0;

@@ -92,6 +92,7 @@
 		20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 20FC7FB4199D1C7800A70B08 /* LEANTabManager.m */; };
 		379E3D432A2147C4001C8A01 /* GNSwiftUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379E3D422A2147C4001C8A01 /* GNSwiftUtilities.swift */; };
 		39B8E8632858B04A00355B24 /* LEANRegexRulesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */; };
+		39C7BFCB2A85E666006AF63C /* LEANLaunchScreenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39C7BFCA2A85E666006AF63C /* LEANLaunchScreenManager.m */; };
 		39DE1B492935E67F0001E926 /* GNLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 39DE1B482935E67F0001E926 /* GNLogManager.m */; };
 		819367FAA49CF2412FB7D362 /* Pods_GonativeIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8070A7DACE54310282403AE6 /* Pods_GonativeIO.framework */; };
 		BB3C460E26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js in Resources */ = {isa = PBXBuildFile; fileRef = BB3C460D26A9C1F9007D03DA /* GoNativeJSBridgeLibrary.js */; };
@@ -282,6 +283,8 @@
 		39A2444927F1F4D400A6D222 /* nn-NO */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "nn-NO"; path = "nn-NO.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		39B8E8612858B04A00355B24 /* LEANRegexRulesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LEANRegexRulesManager.m; sourceTree = "<group>"; };
 		39B8E8622858B04A00355B24 /* LEANRegexRulesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LEANRegexRulesManager.h; sourceTree = "<group>"; };
+		39C7BFC92A85E64A006AF63C /* LEANLaunchScreenManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LEANLaunchScreenManager.h; sourceTree = "<group>"; };
+		39C7BFCA2A85E666006AF63C /* LEANLaunchScreenManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LEANLaunchScreenManager.m; sourceTree = "<group>"; };
 		39DE1B472935E66E0001E926 /* GNLogManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GNLogManager.h; sourceTree = "<group>"; };
 		39DE1B482935E67F0001E926 /* GNLogManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GNLogManager.m; sourceTree = "<group>"; };
 		6321B2F0F247B73B862558F0 /* Pods-GoNativeIOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoNativeIOSTests.release.xcconfig"; path = "Target Support Files/Pods-GoNativeIOSTests/Pods-GoNativeIOSTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -438,6 +441,8 @@
 				20B6B55419AC4C2E004019C4 /* LEANDocumentSharer.m */,
 				201AB2D41996AD66008C31BF /* LEANInstallation.h */,
 				201AB2D51996AD66008C31BF /* LEANInstallation.m */,
+				39C7BFC92A85E64A006AF63C /* LEANLaunchScreenManager.h */,
+				39C7BFCA2A85E666006AF63C /* LEANLaunchScreenManager.m */,
 				2089662518AC6753007FC34F /* LEANLoginManager.h */,
 				2089662618AC6753007FC34F /* LEANLoginManager.m */,
 				2002B4F218A99C4100495B3D /* LEANNavigationController.h */,
@@ -889,6 +894,7 @@
 				2002B4E918A99A9900495B3D /* UIView+REFrostedViewController.m in Sources */,
 				20FC7FB5199D1C7800A70B08 /* LEANTabManager.m in Sources */,
 				209B3219193FA36F0052A7C6 /* LEANUrlCache.m in Sources */,
+				39C7BFCB2A85E666006AF63C /* LEANLaunchScreenManager.m in Sources */,
 				2002B4F918A99C4100495B3D /* LEANMenuViewController.m in Sources */,
 				39B8E8632858B04A00355B24 /* LEANRegexRulesManager.m in Sources */,
 			);

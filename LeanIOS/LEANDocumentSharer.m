@@ -257,7 +257,7 @@
     if ([LEANDocumentSharer request:req matchesRequest:self.lastRequest] && self.dataFile) {
         // copy to documents folder with a good suggested file name
         NSURL *documentsDir = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]];
-        NSURL *sharedFile = [documentsDir URLByAppendingPathComponent:filename ?: [self.lastResponse suggestedFilename]];
+        NSURL *sharedFile = [documentsDir URLByAppendingPathComponent:filename ?: [self getFilenameFromUrlResponse:self.lastResponse]];
         [[NSFileManager defaultManager] removeItemAtURL:sharedFile error:nil];
         [[NSFileManager defaultManager] copyItemAtURL:self.dataFile toURL:sharedFile error:nil];
         
@@ -279,7 +279,7 @@
             NSFileManager *fileManager = [NSFileManager defaultManager];
             
             NSURL *documentsDirectoryPath = [NSURL fileURLWithPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject]];
-            NSURL *destination = [documentsDirectoryPath URLByAppendingPathComponent:filename ?: [response suggestedFilename]];
+            NSURL *destination = [documentsDirectoryPath URLByAppendingPathComponent:filename ?: [self getFilenameFromUrlResponse:response]];
             [fileManager removeItemAtURL:destination error:nil];
             [fileManager moveItemAtURL:location toURL:destination error:nil];
             
@@ -301,6 +301,29 @@
         button.enabled = NO;
         [downloadTask resume];
     }
+}
+
+- (NSString *)getFilenameFromUrlResponse:(id)response {
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSDictionary *headers = [(NSHTTPURLResponse *)response allHeaderFields];
+        NSString *contentDisposition = headers[@"Content-Disposition"];
+        
+        if (contentDisposition) {
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"filename=\"(.*)\"" options:0 error:nil];
+            NSTextCheckingResult *result = [regex firstMatchInString:contentDisposition options:0 range:NSMakeRange(0, contentDisposition.length)];
+            if (result && result.numberOfRanges > 1) {
+                NSRange filenameRange = [result rangeAtIndex:1];
+                NSString *filename = [contentDisposition substringWithRange:filenameRange];
+                return filename;
+            }
+        }
+    }
+    
+    if ([response isKindOfClass:[NSURLResponse class]]) {
+        return [response suggestedFilename];
+    }
+    
+    return nil;
 }
 
 - (void)downloadImage:(NSURL*)url {
