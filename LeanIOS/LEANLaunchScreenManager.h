@@ -12,4 +12,5 @@
 + (LEANLaunchScreenManager *)sharedManager;
 - (void)show;
 - (void)hide;
+- (void)hideAfterDelay:(double)delay;
 @end

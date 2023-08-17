@@ -2349,13 +2349,13 @@ static NSInteger _currentWindows = 0;
     [self.timer invalidate];
     self.timer = nil;
     self.wkWebview.userInteractionEnabled = YES;
-    [[LEANLaunchScreenManager sharedManager] hide];
     
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionAllowUserInteraction animations:^(void){
         self.wkWebview.alpha = 1.0;
         self.activityIndicator.alpha = 0.0;
     } completion:^(BOOL finished){
         [self.activityIndicator stopAnimating];
+        [[LEANLaunchScreenManager sharedManager] hideAfterDelay:0.3];
     }];
 }
 
